@@ -22,7 +22,7 @@
 
 <body class="font-sans antialiased" style="background-image: url('/assets/background%203-D8NZkScg.png');">
     <!-- Navbar -->
-    <nav class="bg-white p-4 shadow">
+    <nav class="bg-white p-4 shadow fixed top-0 left-0 right-0 z-10">
         <div class="container mx-auto flex items-center justify-between">
             <img src="/assets/LOGO-DP4bRQMr.png" alt="Beal Offshore Ltd Logo" class="h-14">
             <!-- Sign out button for mobile and desktop -->
@@ -30,63 +30,131 @@
         </div>
     </nav>
 
-    <div class="flex">
-        <!-- Main Profile Content -->
-        <div class="flex-1 p-4 mt-2">
-            <!-- Profile Header -->
-            <div id="profileInfoCard" class="max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-8 mt-2 md-12 hidden">
-                <a href="profile.html" class="flex items-center mb-6 text-indigo-600 hover:text-indigo-800 transition">
-                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAACxLAAAsSwGlPZapAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAJrSURBVHgB7dzPbRNREIDx2XUK4IjExUckLqEEOqAFOoBKKIEWQgXQAVyQOPoSiWMKwF7eOApJlNh+mzfv7bzM97tEcS72fNr43+yKAAAAAAAAAACA526QDr1cv17LdvqS7vz5JPIi/byYVsOnP5vfG+lMdwFerd+c77Z/v+ng796eHshVivC2twijdOTQ8NX+tnRUSGe6CXBs+Df0X5J0posAOcNXp/7ukfsAucNX6Qj4Kp05E8dmDX9IT8Lj8FE64/YImDv8cTx7x8tQI08Z/uXm10/pkLsAkYavXAWINnzlJkDE4SsXAaIOXy0eIPLw1aIBog9fLRaA4V9bJADDv9U8AMO/r2kAhv9QswAM/3FNAjD8w6oHYPjHVQ3A8E+rFoDh56kSgOHnMw/A8OcxDcDw5zMLwPCfxiTAnOE/B5a7qMUBdFF22E4/ogz/htUuavFaShr+52jDV1a7qMUB0h15L0FZ7KKWHwHpCVWCsjjyy4+ASSK/hi/eRS1fTVwNHyIeBftd1FX5LmpxAH0VoK/po0S4fpzD92m0ORvH9o3YLr0XmLLWyK/GXXojdskbMfuPIogwS50P44iQrd7H0UTIUvcLGSKcVP8rSSIc1eZLeSIc1G4thQiParuYRYQH2q8mEuGeZZZzifDfcuvpRNhb9gQNIjg4RSl4BB8n6QWO4Oc01aARfJ2oHTCCv0sVBIvgKoCKFsFdABUpgssAKkoEtwHU3AhcN9SYrq/nrrxw3dBK5kTguqGV5EbguqEV5UTo8bqhXV07+lgEq13N1roKoDSC7mUOMl7o79a7mgAAAAAAAAAAANb+AdTvb2O64NNOAAAAAElFTkSuQmCC" alt="Back" class="h-5 w-5 mr-2">
-                    <span class="text-sm font-medium">Back to Profile</span>
-                </a>
-                
-                <h2 class="text-xl font-bold text-center text-gray-800 mb-8">Your Profile Information</h2>
-                
-                <form class="space-y-8">
-                    <!-- Profile Image Section -->
-                    <div class="flex flex-col items-center space-y-4">
-                        <div class="relative group">
-                            <img id="profileImage" 
-                                src="https://via.placeholder.com/150" 
-                                alt="Profile Picture" 
-                                class="w-32 h-32 rounded-full object-cover border-2 border-indigo-200 shadow-md transition duration-300 hover:shadow-lg">
-                            <label 
-                                class="absolute bottom-0 right-0 w-8 h-8 bg-indigo-600 text-white flex items-center justify-center rounded-full cursor-pointer shadow-md hover:bg-indigo-700 transition">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                                </svg>
-                                <input type="file" id="imageUpload" accept="image/*" 
-                                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
-                            </label>
-                        </div>
-                        <p class="text-sm text-gray-500">Click the + icon to upload a new profile picture</p>
-                    </div>
+    <div class="flex" style="margin-top: 80px;">
 
-                    <!-- User Information Section -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div>
-                            <label for="firstName" class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+        <!-- Main Profile Content -->
+    <div class="flex-1 p-4 mt-12 mb-32">
+    <!-- Profile Header -->
+    <div id="profileInfoCard" class="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl p-8 mt-2 md-12 hidden">
+        <!-- Back Button with Animation -->
+        <a href="profile.html" class="inline-flex items-center mb-8 text-blue-600 hover:text-blue-800 transition-all duration-300 group">
+            <div class="bg-blue-50 p-2 rounded-full mr-3 group-hover:-translate-x-1 transition-transform">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAACxLAAAsSwGlPZapAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAJrSURBVHgB7dzPbRNREIDx2XUK4IjExUckLqEEOqAFOoBKKIEWQgXQAVyQOPoSiWMKwF7eOApJlNh+mzfv7bzM97tEcS72fNr43+yKAAAAAAAAAACA526QDr1cv17LdvqS7vz5JPIi/byYVsOnP5vfG+lMdwFerd+c77Z/v+ng796eHshVivC2twijdOTQ8NX+tnRUSGe6CXBs+Df0X5J0posAOcNXp/7ukfsAucNX6Qj4Kp05E8dmDX9IT8Lj8FE64/YImDv8cTx7x8tQI08Z/uXm10/pkLsAkYavXAWINnzlJkDE4SsXAaIOXy0eIPLw1aIBog9fLRaA4V9bJADDv9U8AMO/r2kAhv9QswAM/3FNAjD8w6oHYPjHVQ3A8E+rFoDh56kSgOHnMw/A8OcxDcDw5zMLwPCfxiTAnOE/B5a7qMUBdFF22E4/ogz/htUuavFaShr+52jDV1a7qMUB0h15L0FZ7KKWHwHpCVWCsjjyy4+ASSK/hi/eRS1fTVwNHyIeBftd1FX5LmpxAH0VoK/po0S4fpzD92m0ORvH9o3YLr0XmLLWyK/GXXojdskbMfuPIogwS50P44iQrd7H0UTIUvcLGSKcVP8rSSIc1eZLeSIc1G4thQiParuYRYQH2q8mEuGeZZZzifDfcuvpRNhb9gQNIjg4RSl4BB8n6QWO4Oc01aARfJ2oHTCCv0sVBIvgKoCKFsFdABUpgssAKkoEtwHU3AhcN9SYrq/nrrxw3dBK5kTguqGV5EbguqEV5UTo8bqhXV07+lgEq13N1roKoDSC7mUOMl7o79a7mgAAAAAAAAAAANb+AdTvb2O64NNOAAAAAElFTkSuQmCC" alt="Back" class="h-4 w-4">
+            </div>
+            <span class="text-sm font-medium">Back to Profile</span>
+        </a>
+        
+        <div class="flex flex-col items-center mb-8">
+            <div class="relative mb-2">
+                <div class="absolute inset-0 bg-gradient-to-r from-blue-400 to-indigo-600 rounded-full animate-pulse opacity-30"></div>
+                <h2 class="relative text-2xl font-bold text-center text-gray-800 py-2 px-10 bg-white bg-opacity-90 rounded-full shadow-sm">Your Profile</h2>
+            </div>
+            <div class="h-1 w-24 bg-gradient-to-r from-blue-400 to-indigo-600 rounded-full"></div>
+        </div>
+        
+        <form class="space-y-10">
+            <!-- Profile Image Section -->
+            <div class="flex flex-col items-center space-y-4">
+                <div class="relative group">
+                    <!-- Profile Picture Container with Animated Border -->
+                    <div class="absolute inset-0 bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-600 rounded-full p-1 animate-spin-slow opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="relative bg-white rounded-full p-1">
+                        <img id="profileImage" 
+                            src="https://via.placeholder.com/150" 
+                            alt="Profile Picture" 
+                            class="w-32 h-32 rounded-full object-cover shadow-lg transition duration-300 group-hover:scale-105">
+                    </div>
+                    
+                    <!-- Upload Button with Enhanced Design -->
+                    <label class="absolute bottom-0 right-0 w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 text-white flex items-center justify-center rounded-full cursor-pointer shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 transform">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        <input type="file" id="imageUpload" accept="image/*" 
+                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                    </label>
+                </div>
+                <p class="text-sm text-gray-500 bg-gray-50 px-4 py-2 rounded-full">Click the + button to update your profile picture</p>
+            </div>
+
+            <!-- User Information Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Full Name Card -->
+                <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden border border-gray-100">
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-3 border-b border-gray-100">
+                        <label for="firstName" class="block text-sm font-semibold text-gray-700">Full Name</label>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 mr-3" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                            </svg>
                             <input type="text" id="firstName" name="firstName" 
-                                class="block w-full px-4 py-3 text-sm border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-gray-50"
+                                class="block w-full text-gray-700 bg-transparent border-0 focus:ring-0 text-sm font-medium"
                                 placeholder="Loading name..."
                                 readonly>
                         </div>
-                        <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                    </div>
+                </div>
+                
+                <!-- Email Address Card -->
+                <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden border border-gray-100">
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-3 border-b border-gray-100">
+                        <label for="email" class="block text-sm font-semibold text-gray-700">Email Address</label>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 mr-3" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                            </svg>
                             <input type="email" id="email" 
-                                class="block w-full px-4 py-3 text-sm border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-gray-50"
+                                class="block w-full text-gray-700 bg-transparent border-0 focus:ring-0 text-sm font-medium"
                                 placeholder="Loading email..."
                                 readonly>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
-        </div>
+            
+            <!-- Security Section -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-gray-100 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                    <h3 class="text-sm font-semibold text-gray-700">Account Security</h3>
+                </div>
+                <div class="p-6">
+                    <p class="text-sm text-gray-600 mb-4">Your personal information is secure and protected.</p>
+                    <div class="flex justify-end">
+                        <a href="pin.html" class="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-700 text-xs font-medium rounded-full hover:bg-blue-200 transition-colors">
+                            Manage PIN
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
+</div>
 
-    <section class="py-24" id="spacing"></section>
-    <div class="container mx-auto text-center">
-    </div>
+<style>
+    @keyframes spin-slow {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+    .animate-spin-slow {
+        animation: spin-slow 4s linear infinite;
+    }
+</style>
+
 
     <!-- Bottom Navbar (Mobile Friendly) -->
     <div class="mobile-nav fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t p-3" style="height: 100px;">

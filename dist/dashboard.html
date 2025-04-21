@@ -572,7 +572,7 @@
             <hr class="my-4 border-gray-400"> <!-- Added line -->
 
             <!-- Profit Wallet Card -->
-            <div class="bg-white rounded p-4 w-full mb-20">
+            <div class="bg-white rounded p-4 w-full mb-12 ">
                 
                 <!-- Header Section -->
                 <div class="flex items-center justify-between mb-2">
@@ -584,11 +584,11 @@
                 <div class="flex flex-col items-start text-sm mb-4 space-y-4">
                     <!-- History Entries -->
                 <div class="space-y-4">
-                    <div id="history1" class="bg-white rounded-xl border-l-4 border-gray-300 shadow-sm px-4 py-3 hover:shadow-md transition-all duration-200">
+                    <div id="history1" class="bg-white rounded-xl border-l-4 border-red-500 shadow-sm px-4 py-3 hover:shadow-md transition-all duration-200">
                         <h3 class="font-semibold text-base text-gray-700">No history available</h3>
                     </div>
 
-                    <div id="history2" class="bg-white rounded-xl border-l-4 border-green-500 shadow-sm px-4 py-3 hover:shadow-md transition-all duration-200">
+                    <div id="history2" class="bg-white rounded-xl border-l-4 border-red-500 shadow-sm px-4 py-3 hover:shadow-md transition-all duration-200">
                         <h3 class="font-semibold text-sm text-green-600"></h3>
                         <p class="text-base text-green-800 font-medium"></p>
                     </div>
@@ -598,12 +598,12 @@
                         <p class="text-base text-gray-800 font-bold"></p>
                     </div>
 
-                    <div id="history4" class="bg-white rounded-xl border-l-4 border-blue-500 shadow-sm px-4 py-3 hover:shadow-md transition-all duration-200">
+                    <div id="history4" class="bg-white rounded-xl border-l-4 border-red-500 shadow-sm px-4 py-3 hover:shadow-md transition-all duration-200">
                         <h3 class="font-semibold text-sm text-blue-600"></h3>
                         <p class="text-base text-gray-800 font-bold"></p>
                     </div>
 
-                    <div id="history5" class="bg-white rounded-xl border-l-4 border-yellow-500 shadow-sm px-4 py-3 hover:shadow-md transition-all duration-200">
+                    <div id="history5" class="bg-white rounded-xl border-l-4 border-green-500 shadow-sm px-4 py-3 hover:shadow-md transition-all duration-200">
                         <h3 class="font-semibold text-sm text-yellow-600"></h3>
                         <p class="text-base text-gray-800 font-bold"></p>
                     </div>
@@ -613,7 +613,7 @@
                         <p class="text-base text-gray-800 font-bold"></p>
                     </div>
 
-                    <div id="history7" class="bg-white rounded-xl border-l-4 border-gray-400 shadow-sm px-4 py-3 hover:shadow-md transition-all duration-200">
+                    <div id="history7" class="bg-white rounded-xl border-l-4 border-green-500 shadow-sm px-4 py-3 hover:shadow-md transition-all duration-200">
                         <h3 class="font-semibold text-sm text-gray-800"></h3>
                         <p class="text-base text-gray-800 font-bold"></p>
                     </div>
@@ -639,19 +639,49 @@
 
                 <!-- Content Section -->
                 <div class="space-y-4">
-                    <div id="pending1" class="bg-gray-50 rounded-lg border-l-4 border-red-500 px-5 py-4  hover: transition-all duration-200">
+                    <div id="pending1" class="bg-gray-50 rounded-lg border-l-4 border-gray-500 px-5 py-4  hover: transition-all duration-200">
                         <h3 class="text-red-600 font-semibold text-base mb-1"></h3>
                         <p class="text-gray-700 text-sm font-medium leading-relaxed"></p>
                     </div>
                 </div>
             </div>
-
-
         
-            <section class="py-8 bg" id="spacing">
-            <div class="container mx-auto text-center">
-            </div>
-            </section>
+
+<!-- Additional transaction items would go here -->
+</div>
+</section>
+
+<section class="notifications-section mt-4 mb-32"> <!-- Reduced top margin -->
+    <div class="section-header flex items-center justify-between">
+        <h2 class="section-title text-xl font-semibold">Notifications</h2>
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAABYlAAAWJQFJUiTwAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAO7SURBVHgB7ZnNUhNBEIC7d1E4oKIFVdEi1HKB3ISbN8PNm/oEhCcAnkC4eZOjx/AECU8gPIHhYBXh4spPkQOHxeIQrWTbniWLmVmTnc3OSizzVQFhNvPTM/03vQAj7hYEg+ScQhHb9BqIioDoEMBUZxKPP9f4b41s3Gu4R/tgCCMC5PKFEgC944+OZheXp95unB6VISWpBOAdd7DlVwhxCQbDBRtX+ERcGBALBiQ3t7DK6vI5xeIFjhjjWX7hDQzIQAIEExKWQx0PQQSPf5ctoLe8s/ON0zqKH9seWw7aAHfVscQYPmBFbAgMQGIVCtRG7Ly6eIDquP1jzXVdL64/tGGLl76q9PfYwJeTqlNyAfKLX0ExVvRh8+K8vgMJyM0WtgADw/89DlHt4ux4GRJgJ/nyjbeBktSI7E3O6u8hIdffL/cfTE1f8cdXXWPlJh/NfONnNd1xEp1AdPep3Dg9XoMUPM0vVlgdu43YZbuZ1+2vbcR85EVQ/bxtbUNKhN3cGP8tjgiIuv21BUCLFFfHu5/Cf4cIoyfAPWmuFmm7VW0BiOC53NHeA0NY5FflBngJmuifAIIUsNC2XDCEb1uy0ZJ2SpLoBCS/f+5+0fYUcaiqqMaYfgycSgwL/4cAjuOoaYMHhlFcaWTOXmgJ0IQJaTDKQAAi9PrN2Qs9FWqpXgFdMAznQeqmOBrd9ASw0FdUiK7AMGThodTQNiiAj5YUA/gSY8yFhvCmSCfAJ6J1UdJTISIpMlpkXgBSx0SDJ5BlFL7Fhn2lRSudiBVAZKHdUVi4UJNROERE425XKqKxTlYafwII6l31ADJCzUrBh2JcHw0V4iKVPEkVsoJkNWJDXo/r0leAzhXSuR2Q1WfCbmYmgBg7okY3a+hJzAnIl24CqsZVHdLQGXu33xpUegqQm12IlgoNXCHj4ICmVjec3BxXMHrwx6qEKFxxsPqoDF1unNR3IWOuvUvvwcPpx6yvL7qai5NPZg74mat+P1KVCEqGhDtJLhV/g6DwhbTRODmWNjGqQoRbw7Z4gViT2Fi1PSIAe4GhW3wIYTSNjwjAOckmn5cLQ0bgXgkzdyIjRvxrmH1LmV/8xH+K6ssOUWFotscr4pkIiBP2z01TKUmi9wP96CRdG51/Cy2ycxw9D6enJqHZvv+B96pTsMWlFt2rJ3kH0I8xyAwsQZtKTRiHLDFWmQvSbJ34geIFRvr3wyHGBAh02sKVvkKIZ+I7BjFqxCHCHhBpne/SSyKCBhUHgoOJseZOlveJEXfBLwMiVzqgr7/1AAAAAElFTkSuQmCC" alt="Notification Icon" class="w-6 h-6 border-b-2 border-gray-200 rounded-full">
+    </div>
+    
+    <div class="notification-item mt-4">
+        <div class="notification-icon">
+            <i class="fas fa-shield-alt"></i>
+        </div>
+        <div class="notification-content">
+            <h3 class="notification-title">Security Alert</h3>
+            <p class="notification-message">Your security is our priority. Please keep your account details confidential at all times.</p>
+            <span class="notification-time">Today</span>
+        </div>
+    </div>
+    
+    <div class="notification-item mt-4">
+        <div class="notification-icon">
+            <i class="fas fa-bell"></i>
+        </div>
+        <div class="notification-content">
+            <h3 class="notification-title">Welcome to Offshore Banking</h3>
+            <p class="notification-message">Thank you for choosing our banking services. Explore our features to make the most of your account.</p>
+            <span class="notification-time">1 day ago</span>
+        </div>
+    </div>
+</section>
+</div>
+
+
 
             <script>
                 // Toggle balance visibility functions

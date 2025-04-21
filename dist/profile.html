@@ -57,8 +57,9 @@
     </style>
     
     
+    
     <body class="font-sans antialiased" style="background-image: url('/assets/background-CsKMVAM_.png');">
-      <script type="module" crossorigin src="/assets/profile-D591XZBX.js"></script>
+      <script type="module" crossorigin src="/assets/profile-DRxGMr7g.js"></script>
       <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
     </head>
 <!-- <body class="font-sans antialiased bg-gray-100"> -->
@@ -83,15 +84,41 @@
 <!-- Main Profile Content -->
 <div class="flex-1 p-4 mt-2">
         <div class="w-full bg-white px-1 py-2 rounded mt-0">
-<!-- Profile Header -->
-<!-- <div class="flex items-left-2 mb-4">
-    <input type="file" id="profileImageInput" accept="image/*" class="hidden" onchange="uploadProfilePicture(event)">
-    <img id="profilePic" src="https://via.placeholder.com/100" alt="Profile Picture" class="w-16 h-16 rounded-lg border-black ml-4 mt-4" onclick="document.getElementById('profileImageInput').click();">    
-    <div class="ml-4 mt-4">
-        <h1 id="profileUsername" class="text-sm font-bold"></h1> -->
-        <!-- <span class="inline-block bg-purple-500 text-white text-xs font-semibold px-2 py-1 rounded-full">Fresher 🐾</span> -->
-    <!-- </div>
-</div> -->
+
+<!-- Right Column: Instructions and Status -->
+<div class="lg:col-span-5">
+    <div class="glass-card bg-white rounded border shadow  p-6 mb-6 border border-gray-100">
+        <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center space-x-2">
+                <h2 class="text-lg font-bold text-gray-800">Account Status</h2>
+            </div>
+            <div id="status" class="text-white text-xs px-4 py-1.5 rounded-full font-medium shadow-sm flex items-center">
+                <div class="h-2 w-2 rounded-full bg-white mr-2 animate-pulse"></div>
+                Loading...
+            </div>
+        </div>
+        
+        <div class="bg-gray-50 rounded-lg p-4 mb-6">
+            <div class="flex items-center">
+                <div class="bg-blue-100 rounded-full p-2 mr-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <p class="text-xs text-gray-600">View your transaction history to track all account activities and payments.</p>
+            </div>
+        </div>
+        
+        <div class="text-center">
+            <button onclick="navigateWithSpinner('dashboard.html')" class="bg-blue-600 hover:bg-blue-700 text-white text-sm py-3 px-6 rounded-full w-full transition-colors duration-300 flex items-center justify-center group shadow-md">
+                <span>View Transaction History</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>
 
 
         <!-- Profile Sections -->
