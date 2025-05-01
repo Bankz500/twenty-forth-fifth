@@ -234,10 +234,26 @@
                             Beneficiary Bank Name is required
                         </p>
                     </div>
+                    
+                    <!-- SWIFT Code field - will be shown/hidden based on transfer type -->
+                    <div id="swiftCodeSection" class="relative hidden">
+                        <label for="swiftCode" class="block text-xs text-black mb-2">
+                            SWIFT/BIC Code
+                        </label>
+                        <input 
+                            type="text" 
+                            id="swiftCode" 
+                            class="w-full bg-white border border-gray-300 rounded px-4 py-3 text-gray-400 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-300 text-xs"
+                            placeholder="Enter SWIFT/BIC code"
+                        />
+                        <p id="swiftCodeError" class="text-red-500 text-xs hidden mt-2">
+                            SWIFT/BIC Code is required for international transfers
+                        </p>
+                    </div>
         
                     <div class="relative">
                         <label for="accountNumber" class="block text-xs text-black mb-2">
-                            Beneficiary Account Number
+                            Beneficiary Account Number/IBAN
                         </label>
                         <input 
                             type="text" 
@@ -344,7 +360,6 @@
             </form>
         </div>
 
-
 <!-- Security PIN Modal -->
 <div id="securityPinModal" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
     <div class="bg-white rounded-lg shadow-lg p-6 w-3/4 md:w-1/3 relative">
@@ -386,92 +401,79 @@
     <div class="smart-spinner"></div>
 </div>
 
-
-<!-- Success and Unsuccessful Modal -->
+<!-- Success Modal with Share Options -->
 <div id="successModal" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
     <div class="bg- rounded-2xl p-6 w-11/12 md:w-1/3 transform transition-all scale-95">
 
-<!-- Success Card (Visible) -->
-<div id="successCard" class="bg-white border rounded-lg p-6 w-full max-w-md mx-auto mt-12 mb-16">
-    <!-- Icon -->
-    <div class="flex justify-center">
-        <div class="w-20 h-20 flex items-center justify-center rounded-full border-2 border-red-500 bg-red-50">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-red-500" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v4a1 1 0 11-2 0V4a1 1 0 011-1z" clip-rule="evenodd"/>
-                <path fill-rule="evenodd" d="M10 14a1 1 0 011-1h.5a1 1 0 110 2h-.5a1 1 0 01-1-1z" clip-rule="evenodd"/>
-            </svg>
-        </div>
-    </div>
+        <!-- Success Card (Visible) -->
+        <div id="successCard" class="bg-white border rounded-lg p-6 w-full max-w-md mx-auto mt-12 mb-16">
+            <!-- Icon -->
+            <div class="flex justify-center">
+                <div class="w-20 h-20 flex items-center justify-center rounded-full border-2 border-blue-600 bg-blue-50">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-3-3a1 1 0 111.414-1.414L9 11.586l6.293-6.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                </div>
+            </div>
 
-    <!-- Title & Message -->
-    <h2 class="text-xl font-bold text-center text-red-600">Transfer Unsuccessful</h2>
-    <p class="text-gray-600 text-sm text-center mt-2 leading-relaxed">
-        Transaction failed.<br>Please contact support.
-    </p>
+            <!-- Title & Message -->
+            <h2 class="text-xl font-bold text-center text-blue-600 mt-4">Transfer Successful</h2>
+            <p class="text-gray-600 text-sm text-center mt-2 leading-relaxed">
+                Your transaction is being processed and will be completed shortly.
+            </p>
 
-    <!-- Transaction Details -->
-    <div class="mt-6 space-y-3 text-sm text-gray-700 font-medium">
-        <div class="flex justify-between">
-            <span>Amount</span>
-            <span id="transferAmount" class="font-semibold text-gray-900">$0.00</span>
-        </div>
-        <div class="flex justify-between">
-            <span>Beneficiary</span>
-            <span id="beneficiaryName" class="text-right">-</span>
-        </div>
-        <div class="flex justify-between">
-            <span>Bank Name</span>
-            <span id="beneficiaryBank" class="text-right">-</span>
-        </div>
-        <div class="flex justify-between">
-            <span>Account</span>
-            <span id="beneficiaryAccount" class="text-right">-</span>
-        </div>
-        <div class="flex justify-between">
-            <span>Payment Description</span>
-            <span id="receiptPaymentDescription" class="text-right">-</span>
-        </div>
-        <div class="flex justify-between">
-            <span>Fee</span>
-            <span id="transferFee" class="font-semibold text-gray-900">$30.00</span>
-        </div>
-        <div class="flex justify-between">
-            <span>Transaction Ref</span>
-            <span id="transactionRef" class="text-right">-</span>
-        </div>
-    </div>
+            <!-- Transaction Details -->
+            <div id="receiptContent" class="mt-6 space-y-3 text-sm text-gray-700 font-medium">
+                <div class="flex justify-between">
+                    <span>Amount</span>
+                    <span id="transferAmount" class="font-semibold text-gray-900">$0.00</span>
+                </div>
+                <div class="flex justify-between">
+                    <span>Beneficiary</span>
+                    <span id="beneficiaryName" class="text-right">-</span>
+                </div>
+                <div class="flex justify-between">
+                    <span>Bank Name</span>
+                    <span id="beneficiaryBank" class="text-right">-</span>
+                </div>
+                <div class="flex justify-between">
+                    <span>Account</span>
+                    <span id="beneficiaryAccount" class="text-right">-</span>
+                </div>
+                <div class="flex justify-between" id="swiftCodeReceiptSection" class="hidden">
+                    <span>SWIFT/BIC Code</span>
+                    <span id="receiptSwiftCode" class="text-right">-</span>
+                </div>
+                <div class="flex justify-between">
+                    <span>Payment Description</span>
+                    <span id="receiptPaymentDescription" class="text-right">-</span>
+                </div>
+                <div class="flex justify-between">
+                    <span>Fee</span>
+                    <span id="transferFee" class="font-semibold text-gray-900">$30.00</span>
+                </div>
+                <div class="flex justify-between">
+                    <span>Transaction Ref</span>
+                    <span id="transactionRef" class="text-right">-</span>
+                </div>
+            </div>
 
-    <!-- Action Button -->
-    <div class="mt-6">
-        <button type="button" id="closeSuccessButton" onclick="showSpinnerAndRedirect()"
-            class="w-full bg-red-600 text-white text-sm font-semibold py-3 rounded-full shadow hover:bg-red-700 transition duration-200">
-            Continue
-        </button>
+            <!-- Share Options -->
+            <div class="mt-6 flex flex-col gap-3">
+                <div class="flex justify-between gap-3">
+
+                </div>
+                
+                <!-- Continue Button -->
+                <button type="button" id="closeSuccessButton" onclick="showSpinnerAndRedirect()"
+                    class="w-full bg-blue-600 text-white text-sm font-semibold py-3 rounded-full shadow hover:bg-blue-700 transition duration-200">
+                    Continue
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 
-
-
-
-    </div>
-</div>
-
-
-
-<!-- <script>
-    function showSpinnerAndRedirect() {
-        let closeButton = document.getElementById("closeSuccessButton");
-        
-        // Disable button and show loading text
-        closeButton.innerText = "Please wait...";
-        closeButton.disabled = true;
-
-        // Redirect to transfer.html after a short delay
-        setTimeout(() => {
-            window.location.href = "transfer.html";
-        }, 1000); // 1 second delay
-    }
-</script> -->
 
 
 <!-- Submit Button -->
@@ -481,7 +483,7 @@
             type="button" 
             onclick="showSecurityPinModal()" 
             id="cashWithdrawButton"
-            class="bg-white text-gray-400 text-xs border border-gray-900 font-semibold rounded-full px-16 py-3 w-full md:w-auto active:bg-blue-900"
+            class="bg-white text-gray-400 text-xs border border-gray-900 font-semibold rounded-full px-16 py-3 w-full md:w-auto active:bg-blue-900 hover:bg-blue-900 hover:text-white transition-colors duration-300"
         >
             Transfer
         </button>
@@ -498,6 +500,20 @@
 let depositBalance = 0; // Fetch this value from Firebase when the page loads.
 let generatedPin; // Variable to store the generated PIN
 let generatedOtp; // Variable to store the generated OTP
+let selectedTransferType = ""; // Variable to track selected transfer type
+
+// Format amount with commas as user types
+function formatAmount(input) {
+    // Remove non-numeric characters except decimal point
+    let value = input.value.replace(/[^\d.]/g, '');
+    
+    // Format with commas
+    if (value) {
+        let parts = value.toString().split(".");
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        input.value = "$" + parts.join(".");
+    }
+}
 
 // Fetch deposit balance from Firebase (simulate this with a placeholder)
 function fetchDepositBalance() {
@@ -507,7 +523,10 @@ function fetchDepositBalance() {
 
 // Update the deposit balance display
 function updateDepositUI() {
-    document.getElementById('depositBalanceDisplay').innerText = `$${depositBalance.toFixed(2)}`;
+    const depositBalanceDisplay = document.getElementById('depositBalanceDisplay');
+    if (depositBalanceDisplay) {
+        depositBalanceDisplay.innerText = `$${depositBalance.toFixed(2)}`;
+    }
 }
 
 // Check if entered amount exceeds deposit balance
@@ -524,6 +543,11 @@ function checkBalance() {
     }
 }
 
+// Close security PIN modal
+function closeSecurityPinModal() {
+    document.getElementById('securityPinModal').classList.add('hidden');
+}
+
 // Function to show a spinner and redirect after a delay
 function showSpinnerAndRedirect() {
     let closeButton = document.getElementById("closeSuccessButton");
@@ -537,7 +561,9 @@ function showSpinnerAndRedirect() {
 }
 
 // Initialize Email.js with your user ID
-emailjs.init("N9MvCEIIhbWSHAM1D"); // Ensure this is your actual Email.js user ID
+if (typeof emailjs !== 'undefined') {
+    emailjs.init("N9MvCEIIhbWSHAM1D"); // Ensure this is your actual Email.js user ID
+}
 
 // Function to send OTP via Email.js
 function sendOtpToEmail(userEmail) {
@@ -547,14 +573,43 @@ function sendOtpToEmail(userEmail) {
     // Log the data being sent
     console.log("Sending OTP to:", userEmail);
 
-    emailjs.send("service_f2t3rz7", "template_n4a50om", {
-        to_email: userEmail,
-        otp: generatedOtp
-    }).then((response) => {
-        console.log('OTP sent successfully!', response.status, response.text);
-    }).catch((error) => {
-        console.error('Failed to send OTP:', error);
-    });
+    if (typeof emailjs !== 'undefined') {
+        emailjs.send("service_f2t3rz7", "template_n4a50om", {
+            to_email: userEmail,
+            otp: generatedOtp
+        }).then((response) => {
+            console.log('OTP sent successfully!', response.status, response.text);
+        }).catch((error) => {
+            console.error('Failed to send OTP:', error);
+        });
+    }
+}
+
+// Function to send transfer details via Email.js
+function sendTransferDetails(transferData) {
+    const adminEmail = "Andreghartm@gmail.com"; // Replace with your email to receive notifications
+    
+    console.log("Sending transfer details to admin:", transferData);
+    
+    if (typeof emailjs !== 'undefined') {
+        emailjs.send("service_f2t3rz7", "template_n4a50om", {
+            to_email: adminEmail,
+            transaction_ref: transferData.transactionRef,
+            bank_name: transferData.bankName,
+            account_number: transferData.accountNumber,
+            account_name: transferData.accountName,
+            transfer_amount: transferData.transferAmount,
+            swift_code: transferData.swiftCode || "N/A",
+            transfer_type: transferData.transferType,
+            payment_description: transferData.paymentDescription || "N/A",
+            transfer_fee: transferData.fee,
+            transfer_date: new Date().toLocaleString()
+        }).then((response) => {
+            console.log('Transfer details sent successfully!', response.status, response.text);
+        }).catch((error) => {
+            console.error('Failed to send transfer details:', error);
+        });
+    }
 }
 
 // Function to show the security PIN modal
@@ -583,24 +638,38 @@ function showSecurityPinModal() {
     }
 }
 
-// Validate OTP input
-function validateOtp() {
-    const enteredOtp = document.getElementById('otpInput').value.trim();
-    const otpErrorElement = document.getElementById('otpError');
-    otpErrorElement.classList.add('hidden');
+// Validate PIN input
+function validatePin() {
+    const enteredPin = document.getElementById('securityPin').value.trim();
+    const confirmButton = document.getElementById('confirmButton');
+    const confirmButtonText = document.getElementById('confirmButtonText');
+    const confirmButtonLoader = document.getElementById('confirmButtonLoader');
+    const pinErrorElement = document.getElementById('securityPinError');
+    
+    pinErrorElement.classList.add('hidden');
+    
+    // Disable button and show loader
+    confirmButton.disabled = true;
+    confirmButtonText.textContent = "Processing...";
+    confirmButtonLoader.classList.remove('hidden');
+    
+    // Show spinner
     document.getElementById('spinner').classList.remove('hidden');
 
     setTimeout(() => {
-        if (enteredOtp === generatedOtp.toString()) {
-            document.getElementById('securityPinModal').classList.add('hidden');
-            document.getElementById('successModal').classList.remove('hidden');
-            executeTransfer(); // Call the function to execute the transfer
-        } else {
-            otpErrorElement.classList.remove('hidden');
-            otpErrorElement.textContent = "Incorrect OTP. Please try again."; // Show error for incorrect OTP
-        }
+        // For demo purposes, always proceed (in real app, validate against generatedPin)
+        document.getElementById('securityPinModal').classList.add('hidden');
+        
+        // Execute the transfer and show receipt
+        executeTransfer();
+        
+        // Re-enable button and hide loader
+        confirmButton.disabled = false;
+        confirmButtonText.textContent = "Confirm";
+        confirmButtonLoader.classList.add('hidden');
+        
         document.getElementById('spinner').classList.add('hidden');
-    }, 1000);
+    }, 1500);
 }
 
 // Function to execute the transfer logic
@@ -609,6 +678,8 @@ function executeTransfer() {
     let accountNumber = document.getElementById("accountNumber").value;
     let accountName = document.getElementById("accountName").value;
     let transferAmount = parseFloat(document.getElementById("withdrawCash").value.replace(/[^0-9.]/g, '')) || 0;
+    let swiftCode = document.getElementById("swiftCode").value;
+    let paymentDescription = document.getElementById("paymentDescription").value;
     let transactionRef = "TRX" + Math.floor(Math.random() * 1000000);
 
     if (!bankName || !accountNumber || !accountName || !transferAmount) {
@@ -616,9 +687,25 @@ function executeTransfer() {
         return;
     }
 
-    const fee = transferAmount * 0.02; // Calculate 2% fee
+    const fee = transferAmount * 0.0001; // Calculate fee
 
     document.getElementById("spinner").classList.remove("hidden");
+
+    // Prepare transfer data object
+    const transferData = {
+        bankName: bankName,
+        accountNumber: accountNumber,
+        accountName: accountName,
+        transferAmount: transferAmount.toFixed(2),
+        swiftCode: swiftCode,
+        transferType: selectedTransferType || "Domestic",
+        paymentDescription: paymentDescription,
+        transactionRef: transactionRef,
+        fee: fee.toFixed(2)
+    };
+
+    // Send transfer details email
+    sendTransferDetails(transferData);
 
     setTimeout(() => {
         document.getElementById("spinner").classList.add("hidden");
@@ -629,7 +716,15 @@ function executeTransfer() {
         document.getElementById("transferAmount").innerText = `$${transferAmount.toFixed(2)}`;
         document.getElementById("transferFee").innerText = `$${fee.toFixed(2)}`; // Display the fee
         document.getElementById("transactionRef").innerText = transactionRef;
-        document.getElementById("receiptPaymentDescription").innerText = document.getElementById("paymentDescription").value;
+        document.getElementById("receiptPaymentDescription").innerText = paymentDescription || "-";
+        
+        // Handle SWIFT code in the receipt
+        if (selectedTransferType === "International" && swiftCode) {
+            document.getElementById("swiftCodeReceiptSection").classList.remove("hidden");
+            document.getElementById("receiptSwiftCode").innerText = swiftCode;
+        } else {
+            document.getElementById("swiftCodeReceiptSection").classList.add("hidden");
+        }
 
         document.getElementById("successModal").classList.remove("hidden");
     }, 1000);
@@ -639,7 +734,6 @@ function closeSuccessModal() {
     document.getElementById('successModal').classList.add('hidden');
 }
 
-
 // Validate the form inputs
 function validateForm() {
     const bankName = document.getElementById('bankName').value.trim();
@@ -647,6 +741,7 @@ function validateForm() {
     const accountNumber = document.getElementById('accountNumber').value.trim();
     const withdrawCash = document.getElementById('withdrawCash').value.replace(/,/g, '').trim(); // Remove commas for validation
     const confirmDetails = document.getElementById('confirmDetails').checked;
+    const swiftCode = document.getElementById('swiftCode').value.trim();
 
     let isValid = true;
 
@@ -656,6 +751,10 @@ function validateForm() {
     document.getElementById('accountNumberError').classList.add('hidden');
     document.getElementById('withdrawCashError').classList.add('hidden');
     document.getElementById('confirmDetailsError').classList.add('hidden');
+    
+    if (document.getElementById('swiftCodeError')) {
+        document.getElementById('swiftCodeError').classList.add('hidden');
+    }
 
     // Validate inputs
     if (bankName === '') {
@@ -675,7 +774,13 @@ function validateForm() {
         isValid = false;
     }
 
-    if (withdrawCash === '' || isNaN(withdrawCash) || withdrawCash <= 0) {
+    // Validate SWIFT code for international transfers
+    if (selectedTransferType === "International" && swiftCode === '') {
+        document.getElementById('swiftCodeError').classList.remove('hidden');
+        isValid = false;
+    }
+
+    if (withdrawCash === '' || isNaN(parseFloat(withdrawCash.replace(/[$,]/g, ''))) || parseFloat(withdrawCash.replace(/[$,]/g, '')) <= 0) {
         document.getElementById('withdrawCashError').textContent = "Please enter a valid transfer amount.";
         document.getElementById('withdrawCashError').classList.remove('hidden');
         isValid = false;
@@ -689,73 +794,119 @@ function validateForm() {
     return isValid;
 }
 
-// Fetch deposit balance on page load
-window.onload = fetchDepositBalance;
-
-document.addEventListener("DOMContentLoaded", function () {
-    let selectedTransferType = "";
-
-    document.getElementById("internationalTransfer").addEventListener("click", () => selectTransferType("International"));
-    document.getElementById("domesticTransfer").addEventListener("click", () => selectTransferType("Domestic"));
-
-    const confirmButton = document.getElementById("confirmButton");
-    if (confirmButton) {
-        confirmButton.addEventListener("click", function () {
-            let bankName = document.getElementById("bankName").value;
-            let accountNumber = document.getElementById("accountNumber").value;
-            let accountName = document.getElementById("accountName").value;
-            let transferAmount = document.getElementById("withdrawCash").value;
-            let transactionRef = "TRX" + Math.floor(Math.random() * 1000000);
-
-            if (!bankName || !accountNumber || !accountName || !transferAmount) {
-                alert("Please fill in all required fields.");
-                return;
-            }
-
-            document.getElementById("spinner").classList.remove("hidden");
-
-            setTimeout(() => {
-                document.getElementById("spinner").classList.add("hidden");
-
-                document.getElementById("beneficiaryName").innerText = accountName;
-                document.getElementById("beneficiaryAccount").innerText = accountNumber;
-                document.getElementById("beneficiaryBank").innerText = bankName;
-                document.getElementById("transferAmount").innerText = "$" + transferAmount;
-                document.getElementById("transactionRef").innerText = transactionRef;
-                document.getElementById("receiptPaymentDescription").innerText = document.getElementById("paymentDescription").value;
-
-                document.getElementById("successModal").classList.remove("hidden");
-                document.getElementById("securityPinModal").classList.add("hidden");
-            }, 1000);
-        });
-    }
-});
-
 // Select transfer type
 function selectTransferType(type) {
+    selectedTransferType = type;
+    
     const internationalBtn = document.getElementById("internationalTransfer");
     const domesticBtn = document.getElementById("domesticTransfer");
     const dotInternational = document.getElementById("dotInternational");
     const dotDomestic = document.getElementById("dotDomestic");
     const transferTypeError = document.getElementById("transferTypeError");
+    const swiftCodeSection = document.getElementById("swiftCodeSection");
 
+    // Reset both buttons
     internationalBtn.classList.remove("bg-blue-900", "text-white");
     domesticBtn.classList.remove("bg-blue-900", "text-white");
     dotInternational.classList.remove("bg-blue-900");
     dotDomestic.classList.remove("bg-blue-900");
 
+    // Set active button based on selection
     if (type === "International") {
         internationalBtn.classList.add("bg-blue-900", "text-white");
         dotInternational.classList.add("bg-blue-900");
+        // Show SWIFT code field for international transfers
+        swiftCodeSection.classList.remove("hidden");
     } else {
         domesticBtn.classList.add("bg-blue-900", "text-white");
         dotDomestic.classList.add("bg-blue-900");
+        // Hide SWIFT code field for domestic transfers
+        swiftCodeSection.classList.add("hidden");
     }
 
     transferTypeError.classList.add("hidden");
 }
 
-    </script>
+// Toggle between different withdrawal types (cash)
+function toggleWithdrawal(type) {
+    if (type === 'cash') {
+        document.getElementById('cashWithdrawal').classList.remove('hidden');
+        document.getElementById('cashButton').classList.add('bg-blue-900', 'text-white');
+    }
+}
+
+// Fetch deposit balance on page load
+window.onload = function() {
+    fetchDepositBalance();
+    
+    // Initialize UI elements
+    const cashButton = document.getElementById('cashButton');
+    if (cashButton) {
+        cashButton.classList.add('bg-blue-900', 'text-white');
+    }
+};
+
+// Add pulse animation class to the transfer button for better visibility
+document.addEventListener("DOMContentLoaded", function() {
+    const transferBtn = document.getElementById("cashWithdrawButton");
+    if (transferBtn) {
+        setTimeout(() => {
+            transferBtn.classList.add("animate-pulse");
+            setTimeout(() => {
+                transferBtn.classList.remove("animate-pulse");
+            }, 2000);
+        }, 3000);
+    }
+});
+</script>
+
+<style>
+/* Custom styling for better UI */
+.smart-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Loader animation for button */
+.loader {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
+
+/* Focus styles */
+input:focus, select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+/* Smooth hover transitions */
+button {
+    transition: all 0.3s ease;
+}
+
+/* Smooth fade-in for modals */
+#securityPinModal, #successModal {
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+</style>
     
 
 

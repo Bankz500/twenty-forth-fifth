@@ -143,7 +143,7 @@
                     const statusElement = document.getElementById('status');
                     if (statusElement) {
                         // Set default if no status exists
-                        const userStatus = userData.status || 'Unknown';
+                        const userStatus = userData.status || 'Processing...';
                         
                         // Update the status text
                         statusElement.textContent = userStatus;
@@ -159,9 +159,15 @@
                             case 'banned':
                                 statusElement.className = 'bg-red-500 text-white text-xs px-3 py-1 rounded-full';
                                 break;
-                            default:
-                                statusElement.textContent = 'Unknown Status';
+                            case 'Processing':
+                                statusElement.className = 'bg-blue-700 text-white text-xs px-3 py-1 rounded-full';
+                                break;
+                            case 'inactive':
                                 statusElement.className = 'bg-gray-500 text-white text-xs px-3 py-1 rounded-full';
+                                break;
+                            default:
+                                statusElement.textContent = 'Processing';
+                                statusElement.className = 'bg-blue-500 text-white text-xs px-3 py-1 rounded-full';
                         }
                     }
                 } else {
@@ -299,7 +305,7 @@
     <div class="glass-card bg-white rounded border shadow  p-6 mb-6 border border-gray-100">
         <div class="flex items-center justify-between mb-6">
             <div class="flex items-center space-x-2">
-                <h2 class="text-lg font-bold text-gray-800">Account Status</h2>
+                <h2 class="text-sm font-bold text-gray-800">Account Status</h2>
             </div>
             <div id="status" class="text-white text-xs px-4 py-1.5 rounded-full font-medium shadow-sm flex items-center">
                 <div class="h-2 w-2 rounded-full bg-white mr-2 animate-pulse"></div>
