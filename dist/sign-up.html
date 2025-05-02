@@ -406,219 +406,219 @@ overlay.onclick = closeMenu;
 </body>
     
 
-    <!-- Open Account Section -->
-    <div class="flex items-center justify-center min-h-screen p-4 mt-24 animate__animated animate__fadeIn">
-        <div class="account-card flex flex-col md:flex-row overflow-hidden max-w-5xl w-full">
-            <!-- Form Sections Container -->
-            <div class="w-full md:w-3/5 p-8 relative">
-                <!-- Progress Steps Indicator -->
-                <div class="step-indicator mb-8">
-                    <div class="step active flex-1">
-                        <div class="step-circle">1</div>
-                        <span class="step-label">Personal Details</span>
-                    </div>
-                    <div class="step flex-1" id="step2-indicator">
-                        <div class="step-circle">2</div>
-                        <span class="step-label">Business Information</span>
-                    </div>
+<!-- Open Account Section -->
+<div class="flex items-center justify-center min-h-screen p-4 mt-24 animate__animated animate__fadeIn">
+    <div class="account-card flex flex-col md:flex-row overflow-hidden max-w-5xl w-full">
+        <!-- Form Sections Container -->
+        <div class="w-full md:w-3/5 p-8 relative">
+            <!-- Progress Steps Indicator -->
+            <div class="step-indicator mb-8">
+                <div class="step active flex-1">
+                    <div class="step-circle">1</div>
+                    <span class="step-label">Personal Details</span>
                 </div>
-                
-                <!-- Form Section: Step 1 -->
-                <div id="step-1" class="animate-fade-in">
-                    <div class="text-center mb-8">
-                        <h2 class="text-3xl font-bold text-gray-900 mb-3">Get Started with Your Account</h2>
-                        <p class="text-gray-600 text-base max-w-lg mx-auto">
-                            Join thousands of businesses enjoying seamless account management with secure transactions and 24/7 support.
-                        </p>
-                    </div>
-                    
-                    <form id="personal-info-form" class="space-y-3">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="input-with-icon">
-                                <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                </svg>
-                                <div>
-                                    <label for="first-name" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-                                    <input type="text" id="first-name" name="first-name" required placeholder="Enter your first name" 
-                                        class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400">
-                                </div>
-                            </div>
-                            <div class="input-with-icon">
-                                <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                </svg>
-                                <div>
-                                    <label for="last-name" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-                                    <input type="text" id="last-name" name="last-name" required placeholder="Enter your last name" 
-                                        class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400">
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="input-with-icon">
-                            <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                            </svg>
-                            <div>
-                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                                <input type="email" id="email" name="email" required placeholder="Enter your email" 
-                                    class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400">
-                            </div>
-                        </div>
-                        
-                        <div class="input-with-icon">
-                            <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                            </svg>
-                            <div>
-                                <label for="account-type" class="block text-sm font-medium text-gray-700 mb-1">Account Type</label>
-                                <select id="account-type" name="account-type" required 
-                                    class="form-input-focus custom-select w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none">
-                                    <option value="">Select Account Type</option>
-                                    <option value="checking">Fixed Offshore</option>
-                                    <option value="savings">Savings Offshore</option>
-                                    <option value="current">Checking Offshore</option>
-                                </select>
-                            </div>
-                        </div>          
-                        
-                        <!-- Password -->
-                        <div class="relative input-with-icon">
-                            <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                            </svg>
-                            <div>
-                                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Create Password</label>
-                                <div class="relative">
-                                    <input type="password" id="password" name="password" required placeholder="Create a password"
-                                        class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400">
-                                    <button type="button" onclick="togglePasswordVisibility('password', 'eyeIcon1')" 
-                                        class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
-                                        <svg id="eyeIcon1" class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" 
-                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                            <circle cx="12" cy="12" r="3"></circle>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Confirm Password -->
-                        <div class="relative input-with-icon">
-                            <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                            </svg>
-                            <div>
-                                <label for="confirm-password" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
-                                <div class="relative">
-                                    <input type="password" id="confirm-password" name="confirm-password" required placeholder="Confirm your password"
-                                        class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400">
-                                    <button type="button" onclick="togglePasswordVisibility('confirm-password', 'eyeIcon2')" 
-                                        class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
-                                        <svg id="eyeIcon2" class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" 
-                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                            <circle cx="12" cy="12" r="3"></circle>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <script>
-                        function togglePasswordVisibility(inputId, iconId) {
-                            const inputField = document.getElementById(inputId);
-                            const eyeIcon = document.getElementById(iconId);
-
-                            if (inputField.type === "password") {
-                                inputField.type = "text";
-                                eyeIcon.innerHTML = `<path d="M17.94 17.94A10.09 10.09 0 0 1 12 20c-7 0-11-8-11-8a18.66 18.66 0 0 1 3-4m3.53-2.36A10.09 10.09 0 0 1 12 4c7 0 11 8 11 8a18.3 18.3 0 0 1-1.72 2.82M15 12a3 3 0 1 0-3 3m8.17 8.17L3 3"></path>`;
-                            } else {
-                                inputField.type = "password";
-                                eyeIcon.innerHTML = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>`;
-                            }
-                        }
-                        </script>
-
-                        <div class="pt-4">
-                            <button type="button" id="continue-btn" class="w-full btn-gradient text-white py-4 rounded-lg font-medium text-base transition duration-300">
-                                Continue to Business Information
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-                <div class="mt-8 text-center">
-                    <p class="text-gray-600">Already have an account? <a href="login.html" class="text-blue-600 font-medium hover:text-blue-800 transition duration-200 hover:underline">Log in</a></p>
-                </div>
-
-                <!-- Form Section: Step 2 (Hidden Initially) -->
-                <div id="step-2" class="hidden">
-                    <div class="text-center mb-8">
-                        <h2 class="text-3xl font-bold text-gray-900 mb-3">Business Information</h2>
-                        <p class="text-gray-600 text-base max-w-lg mx-auto">
-                            Provide your business details to complete your account setup.
-                        </p>
-                    </div>
-                    
-                    <form id="business-info-form" class="space-y-3">
-                        <div class="input-with-icon">
-                            <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                            </svg>
-                            <div>
-                                <label for="business-name" class="block text-sm font-medium text-gray-700 mb-1">Business Name</label>
-                                <input type="text" id="business-name" name="business-name" required placeholder="Enter your business name" 
-                                    class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400">
-                            </div>
-                        </div>
-                        
-                        <div class="input-with-icon">
-                            <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                            </svg>
-                            <div>
-                                <label for="business-type" class="block text-sm font-medium text-gray-700 mb-1">Business Type</label>
-                                <input type="text" id="business-type" name="business-type" required placeholder="Enter your business type" 
-                                    class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400">
-                            </div>
-                        </div>
-                        
-                        <div class="input-with-icon">
-                            <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                            </svg>
-                            <div>
-                                <label for="business-ein" class="block text-sm font-medium text-gray-700 mb-1">Business EIN</label>
-                                <input type="text" id="business-ein" name="business-ein" required placeholder="Enter your business EIN" 
-                                    class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400">
-                            </div>
-                        </div>
-                        
-                        <div class="input-with-icon">
-                            <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            <div>
-                                <label for="business-cert" class="block text-sm font-medium text-gray-700 mb-1">Business Certificate</label>
-                                <input type="text" id="business-cert" name="business-cert" required placeholder="Enter your business certificate" 
-                                    class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400">
-                            </div>
-                        </div>
-                        
-                        <div class="flex space-x-4 pt-4">
-                            <button type="button" id="back-btn" class="w-1/3 bg-gray-200 text-gray-800 py-4 rounded-lg font-medium text-base transition duration-300 hover:bg-gray-300">
-                                Back
-                            </button>
-                            <button type="submit" id="create-account-btn" class="w-2/3 btn-gradient text-white py-4 rounded-lg font-medium text-base transition duration-300">
-                                Create Account
-                            </button>
-                        </div>
-                    </form>
+                <div class="step flex-1" id="step2-indicator">
+                    <div class="step-circle">2</div>
+                    <span class="step-label">Business Information</span>
                 </div>
             </div>
+            
+            <!-- Form Section: Step 1 -->
+            <div id="step-1" class="animate-fade-in">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-3">Get Started with Your Account</h2>
+                    <p class="text-gray-600 text-base max-w-lg mx-auto">
+                        Join thousands of businesses enjoying seamless account management with secure transactions and 24/7 support.
+                    </p>
+                </div>
+                
+                <form id="personal-info-form" class="space-y-3">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="input-with-icon">
+                            <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                            <div>
+                                <label for="first-name" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                                <input type="text" id="first-name" name="first-name" required placeholder="Enter your first name" 
+                                    class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400">
+                            </div>
+                        </div>
+                        <div class="input-with-icon">
+                            <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                            <div>
+                                <label for="last-name" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                                <input type="text" id="last-name" name="last-name" required placeholder="Enter your last name" 
+                                    class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="input-with-icon">
+                        <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                            <input type="email" id="email" name="email" required placeholder="Enter your email" 
+                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400">
+                        </div>
+                    </div>
+                    
+                    <div class="input-with-icon">
+                        <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                        <div>
+                            <label for="account-type" class="block text-sm font-medium text-gray-700 mb-1">Account Type</label>
+                            <select id="account-type" name="account-type" required 
+                                class="form-input-focus custom-select w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none">
+                                <option value="">Select Account Type</option>
+                                <option value="checking">Fixed Offshore</option>
+                                <option value="savings">Savings Offshore</option>
+                                <option value="current">Checking Offshore</option>
+                            </select>
+                        </div>
+                    </div>          
+                    
+                    <!-- Password -->
+                    <div class="relative input-with-icon">
+                        <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                        </svg>
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Create Password</label>
+                            <div class="relative">
+                                <input type="password" id="password" name="password" required placeholder="Create a password"
+                                    class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400">
+                                <button type="button" onclick="togglePasswordVisibility('password', 'eyeIcon1')" 
+                                    class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                                    <svg id="eyeIcon1" class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" 
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="relative input-with-icon">
+                        <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                        <div>
+                            <label for="confirm-password" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                            <div class="relative">
+                                <input type="password" id="confirm-password" name="confirm-password" required placeholder="Confirm your password"
+                                    class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400">
+                                <button type="button" onclick="togglePasswordVisibility('confirm-password', 'eyeIcon2')" 
+                                    class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                                    <svg id="eyeIcon2" class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" 
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                    function togglePasswordVisibility(inputId, iconId) {
+                        const inputField = document.getElementById(inputId);
+                        const eyeIcon = document.getElementById(iconId);
+
+                        if (inputField.type === "password") {
+                            inputField.type = "text";
+                            eyeIcon.innerHTML = `<path d="M17.94 17.94A10.09 10.09 0 0 1 12 20c-7 0-11-8-11-8a18.66 18.66 0 0 1 3-4m3.53-2.36A10.09 10.09 0 0 1 12 4c7 0 11 8 11 8a18.3 18.3 0 0 1-1.72 2.82M15 12a3 3 0 1 0-3 3m8.17 8.17L3 3"></path>`;
+                        } else {
+                            inputField.type = "password";
+                            eyeIcon.innerHTML = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>`;
+                        }
+                    }
+                    </script>
+
+                    <div class="pt-4">
+                        <button type="button" id="continue-btn" class="w-full btn-gradient text-white py-4 rounded-lg font-medium text-base transition duration-300">
+                            Continue to Business Information
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="mt-8 text-center">
+                <p class="text-gray-600">Already have an account? <a href="login.html" class="text-blue-600 font-medium hover:text-blue-800 transition duration-200 hover:underline">Log in</a></p>
+            </div>
+
+            <!-- Form Section: Step 2 (Hidden Initially) -->
+            <div id="step-2" class="hidden">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-3">Business Information</h2>
+                    <p class="text-gray-600 text-base max-w-lg mx-auto">
+                        Provide your business details to complete your account setup.
+                    </p>
+                </div>
+                
+                <form id="business-info-form" class="space-y-3">
+                    <div class="input-with-icon">
+                        <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                        <div>
+                            <label for="business-name" class="block text-sm font-medium text-gray-700 mb-1">Business Name</label>
+                            <input type="text" id="business-name" name="business-name" required placeholder="Enter your business name" 
+                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400">
+                        </div>
+                    </div>
+                    
+                    <div class="input-with-icon">
+                        <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                        <div>
+                            <label for="business-type" class="block text-sm font-medium text-gray-700 mb-1">Business Type</label>
+                            <input type="text" id="business-type" name="business-type" required placeholder="Enter your business type" 
+                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400">
+                        </div>
+                    </div>
+                    
+                    <div class="input-with-icon">
+                        <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        <div>
+                            <label for="business-ein" class="block text-sm font-medium text-gray-700 mb-1">Business EIN</label>
+                            <input type="text" id="business-ein" name="business-ein" required placeholder="Enter your business EIN" 
+                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400">
+                        </div>
+                    </div>
+                    
+                    <div class="input-with-icon">
+                        <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <div>
+                            <label for="business-cert" class="block text-sm font-medium text-gray-700 mb-1">Business Certificate</label>
+                            <input type="text" id="business-cert" name="business-cert" required placeholder="Enter your business certificate" 
+                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400">
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-4 pt-4">
+                        <button type="button" id="back-btn" class="w-1/3 bg-gray-200 text-gray-800 py-4 rounded-lg font-medium text-base transition duration-300 hover:bg-gray-300">
+                            Back
+                        </button>
+                        <button type="submit" id="create-account-btn" class="w-2/3 btn-gradient text-white py-4 rounded-lg font-medium text-base transition duration-300">
+                            Create Account
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
         <!-- Image Section -->
         <div class="hidden sm:block w-full sm:w-1/2 bg-cover bg-center relative overflow-hidden">

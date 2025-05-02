@@ -84,6 +84,41 @@
         // Make executeTransfer function globally accessible
         window.executeTransfer = async function() {
             try {
+                // Get current user and check status first
+                const user = window.auth.currentUser;
+                if (!user) {
+                    throw new Error("No user is signed in");
+                }
+
+                // Check account status before proceeding
+                const userDocRef = doc(window.db, 'users', user.uid);
+                const userDoc = await getDoc(userDocRef);
+                
+                if (!userDoc.exists()) {
+                    throw new Error("User account not found");
+                }
+
+                const userData = userDoc.data();
+                const accountStatus = userData.status || 'inactive';
+
+                // Check account status
+                switch(accountStatus.toLowerCase()) {
+                    case 'suspended':
+                        throw new Error("Your account is currently suspended. Please contact support for assistance.");
+                    case 'inactive':
+                        throw new Error("Your account is inactive. Please activate your account to make transfers.");
+                    case 'banned':
+                        throw new Error("This account has been banned. Please contact support for more information.");
+                    case 'processing':
+                        throw new Error("Your account is currently under review. Please try again later.");
+                    case 'active':
+                        // Proceed with transfer only if account is active
+                        break;
+                    default:
+                        throw new Error("Unable to verify account status. Please contact support.");
+                }
+
+                // If account is active, proceed with transfer
                 let bankName = document.getElementById("bankName").value;
                 let accountNumber = document.getElementById("accountNumber").value;
                 let accountName = document.getElementById("accountName").value;
@@ -92,8 +127,8 @@
                 let paymentDescription = document.getElementById("paymentDescription").value;
                 let transactionRef = "TRX" + Math.floor(Math.random() * 1000000);
                 
-                // Calculate fee first
-                const fee = transferAmount * 0.0001; // Calculate fee
+                // Calculate fee
+                const fee = transferAmount * 0.0001;
 
                 // Format date and time
                 const now = new Date();
@@ -118,14 +153,6 @@
 
                 // Create the formatted string
                 const formattedTransferString = `${bankName} - DEPOT 2  |  Wire Deposit  |  ${formattedAmount} |  ${timeString}  |  ${dateString}  |  Pending`;
-
-                // Get current user
-                const user = window.auth.currentUser;
-                if (!user) {
-                    throw new Error("No user is signed in");
-                }
-
-                const userDocRef = doc(window.db, 'users', user.uid);
                 
                 // Update user's document with the formatted string
                 await updateDoc(userDocRef, {
@@ -175,12 +202,8 @@
                 console.error("Error executing transfer:", error);
                 document.getElementById("spinner").classList.add("hidden");
                 
-                if (error.message === "No user is signed in") {
-                    alert("Please sign in to complete the transfer.");
-                    window.location.href = 'login.html';
-                } else {
-                    alert("Error processing transfer: " + error.message);
-                }
+                // Show error in modal instead of alert
+                showErrorModal(error.message);
             }
         };
 
@@ -1087,6 +1110,40 @@ async function registerTransferInFirebase(transferData) {
         } catch (error) {
             console.error('Error registering transfer in Firebase:', error);
         }
+    }
+}
+</script>
+
+<script>
+// Add these functions for error handling
+function showErrorModal(message) {
+    const errorModalHTML = `
+    <div id="errorModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <div class="bg-white rounded-lg shadow-lg p-6 w-11/12 md:w-1/3 max-w-md">
+            <div class="text-center">
+                <!-- Error Icon -->
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                    <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">Account Status Alert</h3>
+                <p class="text-sm text-gray-500 mb-6">${message}</p>
+                <button onclick="closeErrorModal()" class="w-full bg-red-600 text-white rounded-lg px-4 py-2 hover:bg-red-700 transition-colors duration-150">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>`;
+
+    // Add modal to document
+    document.body.insertAdjacentHTML('beforeend', errorModalHTML);
+}
+
+function closeErrorModal() {
+    const errorModal = document.getElementById('errorModal');
+    if (errorModal) {
+        errorModal.remove();
     }
 }
 </script>
