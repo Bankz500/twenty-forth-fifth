@@ -19,6 +19,166 @@
         import firebaseConfig from './firebase-config.js';
     </script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        
+        .form-input-focus {
+            transition: all 0.3s ease;
+        }
+        
+        .form-input-focus:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .login-card {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        
+        .btn-gradient {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.5);
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+        }
+        
+        .input-with-icon input {
+            padding-left: 40px;
+        }
+        
+        .brand-accent {
+            color: #1e40af;
+        }
+        
+        .floating-shapes div {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(25px);
+            opacity: 0.3;
+            z-index: -1;
+        }
+        
+        .shape-1 {
+            width: 200px;
+            height: 200px;
+            background: #3b82f6;
+            top: 10%;
+            left: 10%;
+            animation: float 8s infinite alternate;
+        }
+        
+        .shape-2 {
+            width: 150px;
+            height: 150px;
+            background: #60a5fa;
+            bottom: 10%;
+            right: 10%;
+            animation: float 6s infinite alternate-reverse;
+        }
+        
+        .shape-3 {
+            width: 100px;
+            height: 100px;
+            background: #93c5fd;
+            top: 40%;
+            right: 20%;
+            animation: float 10s infinite alternate;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            100% {
+                transform: translate(30px, 30px) rotate(10deg);
+            }
+        }
+        
+        /* Custom checkbox */
+        .custom-checkbox {
+            position: relative;
+            padding-left: 35px;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .custom-checkbox input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+        
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 20px;
+            width: 20px;
+            background-color: #eee;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .custom-checkbox:hover input ~ .checkmark {
+            background-color: #ccc;
+        }
+        
+        .custom-checkbox input:checked ~ .checkmark {
+            background-color: #3b82f6;
+        }
+        
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+        
+        .custom-checkbox input:checked ~ .checkmark:after {
+            display: block;
+        }
+        
+        .custom-checkbox .checkmark:after {
+            left: 7px;
+            top: 3px;
+            width: 6px;
+            height: 12px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+        
+        /* OTP input styling */
+        .otp-input {
+            letter-spacing: 12px;
+            font-size: 24px;
+            text-align: center;
+            font-weight: 600;
+        }
+    </style>
+    <style>
         html, body {
             overflow: auto; /* Ensures scrolling is enabled */
         }
@@ -153,7 +313,12 @@
     });
 </script>
 
-
+<body class="antialiased">
+    <div class="floating-shapes">
+        <div class="shape-1"></div>
+        <div class="shape-2"></div>
+        <div class="shape-3"></div>
+    </div>
 
 <!-- Overlay -->
 <div id="overlay" class="fixed inset-0 bg- opacity-90 hidden z-40"></div>
@@ -297,33 +462,50 @@ overlay.onclick = closeMenu;
 <body>
 
 <!-- Login Section -->
-<div id="login-section" class="flex items-center justify-center min-h-screen bg- px-4">
-    <div class="flex flex-col sm:flex-row bg-white rounded-lg overflow-hidden w-full sm:max-w-4xl">
+<div id="login-section" class="flex items-center justify-center min-h-screen p-4 animate__animated animate__fadeIn">
+    <div class="flex flex-col sm:flex-row login-card rounded-2xl overflow-hidden w-full sm:max-w-4xl">
         <!-- Form Section -->
-        <div class="w-full sm:w-1/2 p-8">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6">Login</h2>
-            <form id="login-form" class="space-y-4">
-                <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700">Your Email</label>
-                    <input type="email" id="email" name="email" required placeholder="Email"
-                        class="mt-1 block w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <div class="w-full sm:w-1/2 p-8 sm:p-12">
+            <div class="mb-10">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">Welcome Back</h2>
+                <p class="text-gray-600">Sign in to continue to your account</p>
+            </div>
+            
+            <form id="login-form" class="space-y-2">
+                <div class="input-with-icon">
+                    <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Your Email</label>
+                        <input type="email" id="email" name="email" required placeholder="Enter your email"
+                            class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
                 </div>
-                <div class="relative">
-                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                    <input 
-                        type="password" 
-                        id="password" 
-                        name="password" 
-                        required 
-                        placeholder="Password"
-                        class="mt-1 block w-full border border-gray-300 rounded-lg p-3 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                    <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-10">
-                        <svg id="passwordEyeIcon" class="w-4 h-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                        </svg>
-                    </button>
+                
+                <div class="relative input-with-icon">
+                    <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                    </svg>
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <div class="relative">
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                required 
+                                placeholder="Enter your password"
+                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            />
+                            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none">
+                                <svg id="passwordEyeIcon" class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 
                 <script>
@@ -342,55 +524,144 @@ overlay.onclick = closeMenu;
                 </script>
                 
                 <div class="flex items-center justify-between">
-                    <label class="inline-flex items-center">
-                        <input type="checkbox" class="form-checkbox text-blue-600">
-                        <span class="ml-2 text-sm text-gray-600">Remember me</span>
+                    <label class="custom-checkbox">
+                        <span class="text-sm text-gray-600">Remember me</span>
+                        <input type="checkbox">
+                        <span class="checkmark"></span>
                     </label>
-                    <a href="forgot-password.html" class="text-sm text-blue-600 hover:underline">Forgot password?</a>
+                    <a href="forgot-password.html" class="text-sm text-blue-600 hover:text-blue-800 font-medium transition duration-200 hover:underline">Forgot password?</a>
                 </div>
-                <button type="submit" id="login-btn" class="w-full bg-blue-800 text-white py-3 rounded-lg hover:bg-blue-900 transition duration-200 mt-8">
+                
+                <button type="submit" id="login-btn" class="w-full btn-gradient text-white py-4 rounded-lg font-medium text-base transition duration-300 mt-4">
                     Log in
                 </button>
             </form>
-            <p class="mt-4 text-sm text-gray-600">Don't have an account? <a href="sign-up.html" class="text-blue-600 hover:underline">Sign Up</a></p>
+            
+            <div class="mt-8 text-center">
+                <p class="text-gray-600">Don't have an account? <a href="sign-up.html" class="text-blue-600 font-medium hover:text-blue-800 transition duration-200 hover:underline">Sign Up</a></p>
+            </div>
         </div>
+        
         <!-- Image Section -->
-        <div class="hidden sm:block w-full sm:w-1/2 bg-cover bg-center" style="background-image: url('happy-woman-writing-notepad.jpg');">
+        <div class="hidden sm:block w-full sm:w-1/2 bg-cover bg-center relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-900/90 to-blue-600/80 mix-blend-multiply"></div>
+            <img src="three-serious-young-businesspeople-watching-data-pc-tablet.jpg" alt="Login background" class="object-cover h-full w-full" />
+            <div class="absolute inset-0 flex flex-col items-center justify-center p-10 text-white">
+                <div class="w-20 h-20 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center mb-6">
+                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-bold mb-2">Secure Access</h3>
+                <p class="text-sm text-center text-white/80 mb-6">Your data is protected with industry-leading encryption standards</p>
+                <div class="flex space-x-2">
+                    <span class="w-2 h-2 rounded-full bg-white/30"></span>
+                    <span class="w-2 h-2 rounded-full bg-white/60"></span>
+                    <span class="w-2 h-2 rounded-full bg-white"></span>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 <!-- OTP Section (Initially Hidden) -->
-<div id="otp-section" class="hidden flex items-center justify-center min-h-screen bg- px-4">
-    <div class="flex flex-col sm:flex-row bg-white rounded-lg overflow-hidden w-full sm:max-w-4xl">
+<div id="otp-section" class="hidden flex items-center justify-center min-h-screen p-4 animate__animated animate__fadeIn">
+    <div class="flex flex-col sm:flex-row login-card rounded-2xl overflow-hidden w-full sm:max-w-4xl">
         <!-- Form Section -->
-        <div class="w-full sm:w-1/2 p-8">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6">Enter OTP</h2>
-            <p class="text-sm text-gray-600 mb-4">
-                Enter the 6-digit OTP code sent to your provided email:
-            </p>
-            <p class="text-sm text-gray-600 mb-6">
-                <span class="font-bold">Email:</span> <span id="email-display" class="font-bold text-blue-600"></span>
-            </p>
-            <form id="otp-form" class="space-y-4">
-                <div>
-                    <label for="otp" class="block text-sm font-medium text-gray-700">OTP</label>
-                    <input type="text" id="otp" name="otp" maxlength="6" required placeholder="Enter OTP"
-                        class="mt-1 block w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <div class="w-full sm:w-1/2 p-8 sm:p-12">
+            <div class="mb-10">
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">Verification Required</h2>
+                <p class="text-gray-600">We've sent a 6-digit code to your email</p>
+            </div>
+            
+            <div class="bg-blue-50 p-4 rounded-lg mb-6">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-blue-700">
+                            A verification code has been sent to <span id="email-display" class="font-bold"></span>
+                        </p>
+                    </div>
                 </div>
-                <button type="submit" id="verify-otp-btn" class="w-full bg-blue-800 text-white py-3 rounded-lg hover:bg-blue-900 transition duration-200 mt-8">
-                    Proceed
+            </div>
+            
+            <form id="otp-form" class="space-y-3">
+                <div>
+                    <label for="otp" class="block text-sm font-medium text-gray-700 mb-1">Enter Verification Code</label>
+                    <input type="text" id="otp" name="otp" maxlength="6" required placeholder="······"
+                        class="otp-input form-input-focus w-full border border-gray-300 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+                
+                <button type="submit" id="verify-otp-btn" class="w-full btn-gradient text-white py-4 rounded-lg font-medium text-base transition duration-300 mt-8">
+                    Verify & Continue
                 </button>
             </form>
-            <p class="mt-4 text-sm text-gray-600">
-                Didn't get the code? <a href="#" id="resend-otp" class="text-blue-600 hover:underline">Request again</a>
-            </p>
+            
+            <div class="mt-8 text-center">
+                <p class="text-gray-600 flex items-center justify-center">
+                    <svg class="w-5 h-5 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Code expires in <span class="font-medium text-gray-800 mx-1">4:59</span>
+                </p>
+                <p class="mt-4">
+                    Didn't receive the code? <a href="#" id="resend-otp" class="text-blue-600 font-medium hover:text-blue-800 transition duration-200 hover:underline">Resend Code</a>
+                </p>
+            </div>
         </div>
+        
         <!-- Image Section -->
-        <div class="hidden sm:block w-full sm:w-1/2 bg-cover bg-center" style="background-image: url('happy-woman-writing-notepad.jpg');">
+        <div class="hidden sm:block w-full sm:w-1/2 bg-cover bg-center relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-900/90 to-blue-600/80 mix-blend-multiply"></div>
+            <img src="happy-woman-writing-notepad.jpg" alt="OTP verification background" class="object-cover h-full w-full" />
+            <div class="absolute inset-0 flex flex-col items-center justify-center p-10 text-white">
+                <div class="w-20 h-20 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center mb-6">
+                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-bold mb-2">Two-Step Verification</h3>
+                <p class="text-sm text-center text-white/80 mb-6">For your security, we require two-factor authentication</p>
+                <div class="flex space-x-2">
+                    <span class="w-2 h-2 rounded-full bg-white/30"></span>
+                    <span class="w-2 h-2 rounded-full bg-white/60"></span>
+                    <span class="w-2 h-2 rounded-full bg-white"></span>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+    // Demo functionality to show the OTP section
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        document.getElementById('email-display').textContent = email;
+        
+        document.getElementById('login-section').classList.add('animate__fadeOut');
+        setTimeout(() => {
+            document.getElementById('login-section').classList.add('hidden');
+            document.getElementById('otp-section').classList.remove('hidden');
+            document.getElementById('otp-section').classList.add('animate__fadeIn');
+        }, 500);
+    });
+    
+    // Demo functionality for resend link
+    document.getElementById('resend-otp').addEventListener('click', function(e) {
+        e.preventDefault();
+        this.textContent = "Code resent";
+        this.classList.add('text-green-600');
+        setTimeout(() => {
+            this.textContent = "Resend Code";
+            this.classList.remove('text-green-600');
+        }, 3000);
+    });
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <script type="module">
@@ -554,13 +825,6 @@ overlay.onclick = closeMenu;
     sessionStorage.removeItem('loginOtp');
 </script>
 
-
-
-
-<!-- Email Button -->
-<a href="https://wa.me/13657758413" target="_blank" class="fixed bottom-16 right-6">
-    <img src="Chat bot.png" alt="Chat with us on Telegram" class="w-16 h-18">
-</a>
 
 <!-- Spinner -->
 <div id="spinner" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">

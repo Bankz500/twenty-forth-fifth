@@ -556,7 +556,7 @@ function showSpinnerAndRedirect() {
         closeButton.disabled = true;
         setTimeout(() => {
             window.location.href = "transfer.html";
-        }, 1000);
+        }, 3000);
     }
 }
 
@@ -633,7 +633,7 @@ function showSecurityPinModal() {
             setTimeout(() => {
                 document.getElementById('spinner').classList.add('hidden');
                 document.getElementById('securityPinModal').classList.remove('hidden');
-            }, 1000);
+            }, 3000);
         }
     }
 }
@@ -669,7 +669,7 @@ function validatePin() {
         confirmButtonLoader.classList.add('hidden');
         
         document.getElementById('spinner').classList.add('hidden');
-    }, 1500);
+    }, 2500);
 }
 
 // Function to execute the transfer logic
