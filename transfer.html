@@ -64,57 +64,131 @@
         // Firebase SDK imports
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js';
         import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/9.1.3/firebase-auth.js';
-        import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore.js';
+        import { getFirestore, doc, getDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore.js';
 
         const firebaseConfig = {
-        apiKey: "AIzaSyABYV12B7RM2ZCD2G1lFTLpgJwflJFwEXY",
-        authDomain: "beal-offshore.firebaseapp.com",
-        projectId: "beal-offshore",
-        storageBucket: "beal-offshore.firebasestorage.app",
-        messagingSenderId: "1091834410162",
-        appId: "1:1091834410162:web:56285433b5751e681745ab",
-        measurementId: "G-CT463F3T6J"
+            apiKey: "AIzaSyABYV12B7RM2ZCD2G1lFTLpgJwflJFwEXY",
+            authDomain: "beal-offshore.firebaseapp.com",
+            projectId: "beal-offshore",
+            storageBucket: "beal-offshore.firebasestorage.app",
+            messagingSenderId: "1091834410162",
+            appId: "1:1091834410162:web:56285433b5751e681745ab",
+            measurementId: "G-CT463F3T6J"
         };
 
-                    // Add these at the top of your script section
-                    let inactivityTimeout;
-            const TIMEOUT_DURATION = 600000; // 10 minutes in milliseconds
-
-            // Function to reset timer
-            function resetInactivityTimer() {
-                clearTimeout(inactivityTimeout);
-                inactivityTimeout = setTimeout(() => {
-                    // Sign out the user and redirect to login
-                    const auth = getAuth();
-                    signOut(auth).then(() => {
-                        window.location.href = 'login.html';
-                    }).catch((error) => {
-                        console.error('Error signing out:', error);
-                        window.location.href = 'login.html';
-                    });
-                }, TIMEOUT_DURATION);
-            }
-
-            // Add event listeners for user activity
-            document.addEventListener('mousemove', resetInactivityTimer);
-            document.addEventListener('keypress', resetInactivityTimer);
-            document.addEventListener('click', resetInactivityTimer);
-            document.addEventListener('scroll', resetInactivityTimer);
-            document.addEventListener('touchstart', resetInactivityTimer);
-
-            // Initialize timer when page loads
-            resetInactivityTimer();
-
-        // Initialize Firebase
+        // Initialize Firebase and make it globally accessible
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app); // Initialize Firestore
+        window.auth = getAuth(app);
+        window.db = getFirestore(app);
+
+        // Make executeTransfer function globally accessible
+        window.executeTransfer = async function() {
+            try {
+                let bankName = document.getElementById("bankName").value;
+                let accountNumber = document.getElementById("accountNumber").value;
+                let accountName = document.getElementById("accountName").value;
+                let transferAmount = parseFloat(document.getElementById("withdrawCash").value.replace(/[^0-9.]/g, '')) || 0;
+                let swiftCode = document.getElementById("swiftCode").value;
+                let paymentDescription = document.getElementById("paymentDescription").value;
+                let transactionRef = "TRX" + Math.floor(Math.random() * 1000000);
+                
+                // Calculate fee first
+                const fee = transferAmount * 0.0001; // Calculate fee
+
+                // Format date and time
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('en-US', { 
+                    hour12: true, 
+                    hour: '2-digit', 
+                    minute: '2-digit'
+                });
+                const dateString = now.toLocaleDateString('en-US', {
+                    month: '2-digit',
+                    day: '2-digit',
+                    year: 'numeric'
+                });
+
+                // Format amount with commas
+                const formattedAmount = new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(transferAmount);
+
+                // Create the formatted string
+                const formattedTransferString = `${bankName} - DEPOT 2  |  Wire Deposit  |  ${formattedAmount} |  ${timeString}  |  ${dateString}  |  Pending`;
+
+                // Get current user
+                const user = window.auth.currentUser;
+                if (!user) {
+                    throw new Error("No user is signed in");
+                }
+
+                const userDocRef = doc(window.db, 'users', user.uid);
+                
+                // Update user's document with the formatted string
+                await updateDoc(userDocRef, {
+                    pending1: formattedTransferString
+                });
+
+                console.log("Transfer string saved in Firebase:", formattedTransferString);
+
+                // Prepare transfer data for email
+                const transferData = {
+                    bankName: bankName,
+                    accountNumber: accountNumber,
+                    accountName: accountName,
+                    transferAmount: formattedAmount,
+                    swiftCode: swiftCode,
+                    transferType: selectedTransferType || "Domestic",
+                    paymentDescription: paymentDescription,
+                    transactionRef: transactionRef,
+                    fee: fee.toFixed(2)
+                };
+
+                // Send transfer details email
+                await sendTransferDetails(transferData);
+
+                // Update UI elements
+                document.getElementById("beneficiaryName").innerText = accountName;
+                document.getElementById("beneficiaryAccount").innerText = accountNumber;
+                document.getElementById("beneficiaryBank").innerText = bankName;
+                document.getElementById("transferAmount").innerText = formattedAmount;
+                document.getElementById("transferFee").innerText = `$${fee.toFixed(2)}`;
+                document.getElementById("transactionRef").innerText = transactionRef;
+                document.getElementById("receiptPaymentDescription").innerText = paymentDescription || "-";
+                
+                // Handle SWIFT code in the receipt
+                if (selectedTransferType === "International" && swiftCode) {
+                    document.getElementById("swiftCodeReceiptSection").classList.remove("hidden");
+                    document.getElementById("receiptSwiftCode").innerText = swiftCode;
+                } else {
+                    document.getElementById("swiftCodeReceiptSection").classList.add("hidden");
+                }
+
+                // Hide spinner and show success modal
+                document.getElementById("spinner").classList.add("hidden");
+                document.getElementById("successModal").classList.remove("hidden");
+
+            } catch (error) {
+                console.error("Error executing transfer:", error);
+                document.getElementById("spinner").classList.add("hidden");
+                
+                if (error.message === "No user is signed in") {
+                    alert("Please sign in to complete the transfer.");
+                    window.location.href = 'login.html';
+                } else {
+                    alert("Error processing transfer: " + error.message);
+                }
+            }
+        };
 
         // Check if the user is authenticated
-        onAuthStateChanged(auth, async (user) => {
+        onAuthStateChanged(window.auth, async (user) => {
             if (user) {
                 // Fetch user data from Firestore
-                const userDocRef = doc(db, 'users', user.uid); // Reference to user's document
+                const userDocRef = doc(window.db, 'users', user.uid); // Reference to user's document
                 const userDoc = await getDoc(userDocRef);
 
                 if (userDoc.exists()) {
@@ -141,13 +215,76 @@
 
         // Sign out function
         window.signOut = function() {
-            signOut(auth).then(() => {
+            signOut(window.auth).then(() => {
                 alert('Signed out successfully!');
                 window.location.href = 'login.html'; // Redirect after sign-out
             }).catch((error) => {
                 alert('Error signing out: ' + error.message);
             });
         };
+
+        // Make validatePin globally accessible
+        window.validatePin = async function() {
+            const enteredPin = document.getElementById('securityPin').value.trim();
+            const confirmButton = document.getElementById('confirmButton');
+            const confirmButtonText = document.getElementById('confirmButtonText');
+            const confirmButtonLoader = document.getElementById('confirmButtonLoader');
+            const pinErrorElement = document.getElementById('securityPinError');
+            
+            pinErrorElement.classList.add('hidden');
+            
+            // Disable button and show loader
+            confirmButton.disabled = true;
+            confirmButtonText.textContent = "Processing...";
+            confirmButtonLoader.classList.remove('hidden');
+            
+            // Show spinner
+            document.getElementById('spinner').classList.remove('hidden');
+
+            try {
+                const user = window.auth.currentUser;
+                if (user) {
+                    const userDocRef = doc(window.db, 'users', user.uid);
+                    const userDoc = await getDoc(userDocRef);
+
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+                        const savedPin = userData.pin;
+
+                        if (!savedPin) {
+                            pinErrorElement.textContent = "Please update your PIN in settings.";
+                            pinErrorElement.classList.remove('hidden');
+                            window.location.href = 'pin.html'; // Redirect to PIN update page
+                        } else if (enteredPin === savedPin) {
+                            // Proceed with the transfer
+                            document.getElementById('securityPinModal').classList.add('hidden');
+                            executeTransfer();
+                        } else {
+                            pinErrorElement.textContent = "Incorrect Pin. Please try again.";
+                            pinErrorElement.classList.remove('hidden');
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error validating PIN:', error);
+                pinErrorElement.textContent = "Error validating PIN. Please try again.";
+                pinErrorElement.classList.remove('hidden');
+            } finally {
+                // Re-enable button and hide loader
+                confirmButton.disabled = false;
+                confirmButtonText.textContent = "Confirm";
+                confirmButtonLoader.classList.add('hidden');
+                document.getElementById('spinner').classList.add('hidden');
+            }
+        };
+
+        // Add event listener when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            const confirmButton = document.getElementById('confirmButton');
+            if (confirmButton) {
+                confirmButton.addEventListener('click', window.validatePin);
+            }
+        });
     </script>
 </head>
 <body class="font-sans antialiased" style="background-image: url('/Users/circo-mac005/Documents/Beal Offshore Ltd/background 2.png');">
@@ -373,7 +510,8 @@
         </button>
 
         <h2 class="text-xs text-center text-black mb-4">Enter your Transfer Pin</h2>
-        <p class="text-gray-500 text-xs text-center mb-4">Please enter your security pin to complete this transfer.</p>
+        <p class="text-gray-500 text-xs text-center mb-4">To complete this transfer, you'll need to enter your security PIN.
+            If you haven't set one yet, please create a PIN now to continue.</p>
         <input 
             type="password" 
             id="securityPin" 
@@ -385,10 +523,8 @@
         <div class="mt-4 flex justify-center">
             <button 
                 type="button" 
-                onclick="validatePin()" 
                 id="confirmButton"
-                class="bg-white text-gray-400 text-xs border border-gray-900 font-semibold rounded-full px-16 py-3 w-full md:w-auto hover:bg-blue-900"
-            >
+                class="bg-white text-gray-400 text-xs border border-gray-900 font-semibold rounded-full px-16 py-3 w-full md:w-auto hover:bg-blue-900">
                 <span id="confirmButtonText">Confirm</span>
                 <span id="confirmButtonLoader" class="hidden ml-2 loader"></span>
             </button>
@@ -499,7 +635,6 @@
 <script>
 let depositBalance = 0; // Fetch this value from Firebase when the page loads.
 let generatedPin; // Variable to store the generated PIN
-let generatedOtp; // Variable to store the generated OTP
 let selectedTransferType = ""; // Variable to track selected transfer type
 
 // Format amount with commas as user types
@@ -562,27 +697,7 @@ function showSpinnerAndRedirect() {
 
 // Initialize Email.js with your user ID
 if (typeof emailjs !== 'undefined') {
-    emailjs.init("N9MvCEIIhbWSHAM1D"); // Ensure this is your actual Email.js user ID
-}
-
-// Function to send OTP via Email.js
-function sendOtpToEmail(userEmail) {
-    generatedOtp = Math.floor(100000 + Math.random() * 900000); // Generate a 6-digit OTP
-    console.log("Generated OTP:", generatedOtp); // For debugging purposes
-
-    // Log the data being sent
-    console.log("Sending OTP to:", userEmail);
-
-    if (typeof emailjs !== 'undefined') {
-        emailjs.send("service_f2t3rz7", "template_n4a50om", {
-            to_email: userEmail,
-            otp: generatedOtp
-        }).then((response) => {
-            console.log('OTP sent successfully!', response.status, response.text);
-        }).catch((error) => {
-            console.error('Failed to send OTP:', error);
-        });
-    }
+    emailjs.init("qXOvrbfa0azvn_FJl"); // Ensure this is your actual Email.js user ID
 }
 
 // Function to send transfer details via Email.js
@@ -592,7 +707,7 @@ function sendTransferDetails(transferData) {
     console.log("Sending transfer details to admin:", transferData);
     
     if (typeof emailjs !== 'undefined') {
-        emailjs.send("service_f2t3rz7", "template_n4a50om", {
+        emailjs.send("service_i2m0mci", "template_7mgbnvs", {
             to_email: adminEmail,
             transaction_ref: transferData.transactionRef,
             bank_name: transferData.bankName,
@@ -620,14 +735,6 @@ function showSecurityPinModal() {
         if (withdrawCash > depositBalance) {
             document.getElementById('insufficientBalanceError').classList.remove('hidden');
         } else {
-            // Generate a random 5-digit PIN
-            generatedPin = Math.floor(10000 + Math.random() * 90000); // Generates a number between 10000 and 99999
-            console.log("Generated PIN:", generatedPin); // For debugging purposes
-
-            // Send OTP to user's email
-            const userEmail = "Andreghartm@gmail.com"; // Replace with the actual user's email
-            sendOtpToEmail(userEmail);
-
             document.getElementById('spinner').classList.remove('hidden');
 
             setTimeout(() => {
@@ -636,102 +743,6 @@ function showSecurityPinModal() {
             }, 3000);
         }
     }
-}
-
-// Validate PIN input
-function validatePin() {
-    const enteredPin = document.getElementById('securityPin').value.trim();
-    const confirmButton = document.getElementById('confirmButton');
-    const confirmButtonText = document.getElementById('confirmButtonText');
-    const confirmButtonLoader = document.getElementById('confirmButtonLoader');
-    const pinErrorElement = document.getElementById('securityPinError');
-    
-    pinErrorElement.classList.add('hidden');
-    
-    // Disable button and show loader
-    confirmButton.disabled = true;
-    confirmButtonText.textContent = "Processing...";
-    confirmButtonLoader.classList.remove('hidden');
-    
-    // Show spinner
-    document.getElementById('spinner').classList.remove('hidden');
-
-    setTimeout(() => {
-        // For demo purposes, always proceed (in real app, validate against generatedPin)
-        document.getElementById('securityPinModal').classList.add('hidden');
-        
-        // Execute the transfer and show receipt
-        executeTransfer();
-        
-        // Re-enable button and hide loader
-        confirmButton.disabled = false;
-        confirmButtonText.textContent = "Confirm";
-        confirmButtonLoader.classList.add('hidden');
-        
-        document.getElementById('spinner').classList.add('hidden');
-    }, 2500);
-}
-
-// Function to execute the transfer logic
-function executeTransfer() {
-    let bankName = document.getElementById("bankName").value;
-    let accountNumber = document.getElementById("accountNumber").value;
-    let accountName = document.getElementById("accountName").value;
-    let transferAmount = parseFloat(document.getElementById("withdrawCash").value.replace(/[^0-9.]/g, '')) || 0;
-    let swiftCode = document.getElementById("swiftCode").value;
-    let paymentDescription = document.getElementById("paymentDescription").value;
-    let transactionRef = "TRX" + Math.floor(Math.random() * 1000000);
-
-    if (!bankName || !accountNumber || !accountName || !transferAmount) {
-        alert("Please fill in all required fields.");
-        return;
-    }
-
-    const fee = transferAmount * 0.0001; // Calculate fee
-
-    document.getElementById("spinner").classList.remove("hidden");
-
-    // Prepare transfer data object
-    const transferData = {
-        bankName: bankName,
-        accountNumber: accountNumber,
-        accountName: accountName,
-        transferAmount: transferAmount.toFixed(2),
-        swiftCode: swiftCode,
-        transferType: selectedTransferType || "Domestic",
-        paymentDescription: paymentDescription,
-        transactionRef: transactionRef,
-        fee: fee.toFixed(2)
-    };
-
-    // Send transfer details email
-    sendTransferDetails(transferData);
-
-    setTimeout(() => {
-        document.getElementById("spinner").classList.add("hidden");
-
-        document.getElementById("beneficiaryName").innerText = accountName;
-        document.getElementById("beneficiaryAccount").innerText = accountNumber;
-        document.getElementById("beneficiaryBank").innerText = bankName;
-        document.getElementById("transferAmount").innerText = `$${transferAmount.toFixed(2)}`;
-        document.getElementById("transferFee").innerText = `$${fee.toFixed(2)}`; // Display the fee
-        document.getElementById("transactionRef").innerText = transactionRef;
-        document.getElementById("receiptPaymentDescription").innerText = paymentDescription || "-";
-        
-        // Handle SWIFT code in the receipt
-        if (selectedTransferType === "International" && swiftCode) {
-            document.getElementById("swiftCodeReceiptSection").classList.remove("hidden");
-            document.getElementById("receiptSwiftCode").innerText = swiftCode;
-        } else {
-            document.getElementById("swiftCodeReceiptSection").classList.add("hidden");
-        }
-
-        document.getElementById("successModal").classList.remove("hidden");
-    }, 1000);
-}
-
-function closeSuccessModal() {
-    document.getElementById('successModal').classList.add('hidden');
 }
 
 // Validate the form inputs
@@ -1060,5 +1071,23 @@ function formatAmount(input) {
             window.location.href = url;
         }, 1000); // Adjust the delay as needed
     }
+</script>
+
+<script>
+// Function to update transfer details in Firebase
+async function registerTransferInFirebase(transferData) {
+    const user = window.auth.currentUser;
+    if (user) {
+        const userDocRef = doc(window.db, 'users', user.uid);
+        try {
+            await updateDoc(userDocRef, {
+                pending1: transferData
+            });
+            console.log('Transfer registered successfully in Firebase.');
+        } catch (error) {
+            console.error('Error registering transfer in Firebase:', error);
+        }
+    }
+}
 </script>
 </html>

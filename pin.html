@@ -170,28 +170,39 @@
             confirmButton.disabled = true; // Disable the button
             confirmButton.textContent = 'Processing...'; // Change button text
 
-            // Simulate processing time before showing success message
-            setTimeout(() => {
-                // Show success message
-                const successMessage = document.createElement('div');
-                successMessage.textContent = "PIN Change updated!";
-                successMessage.className = "text-blue-700 text-xs text-center mt-4";
+            try {
+                // Re-authenticate the user
+                const userCredential = await signInWithEmailAndPassword(auth, email, firebasePassword);
+                const user = userCredential.user;
 
-                // Append to the modal body (the div containing the form)
-                const modalBody = passwordConfirmForm.parentElement; // Get the parent of the form
-                modalBody.appendChild(successMessage); // Append the success message
+                if (user) {
+                    const userDocRef = doc(db, 'users', user.uid);
 
-                // Hide modal after a short delay (optional)
-                setTimeout(() => {
-                    document.getElementById("passwordModal").classList.add("hidden");
-                }, 2000); // Adjust the delay as needed
-            }, 1000); // Simulate processing time (1 second)
+                    // Save the new PIN to the user's document
+                    await setDoc(userDocRef, { pin: newPin }, { merge: true });
 
-            // Re-enable the button and reset text after processing
-            setTimeout(() => {
+                    // Show success message
+                    const successMessage = document.createElement('div');
+                    successMessage.textContent = "PIN Change updated!";
+                    successMessage.className = "text-blue-700 text-xs text-center mt-4";
+
+                    // Append to the modal body (the div containing the form)
+                    const modalBody = passwordConfirmForm.parentElement; // Get the parent of the form
+                    modalBody.appendChild(successMessage); // Append the success message
+
+                    // Hide modal after a short delay (optional)
+                    setTimeout(() => {
+                        document.getElementById("passwordModal").classList.add("hidden");
+                    }, 2000); // Adjust the delay as needed
+                }
+            } catch (error) {
+                console.error('Error updating PIN:', error);
+                alert('Error updating PIN: ' + error.message);
+            } finally {
+                // Re-enable the button and reset text after processing
                 confirmButton.disabled = false;
                 confirmButton.textContent = 'Confirm';
-            }, 1000); // Reset button state after the same delay
+            }
         });
     </script>
 
