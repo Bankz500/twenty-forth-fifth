@@ -152,14 +152,37 @@
                 }).format(transferAmount);
 
                 // Create the formatted string
-                const formattedTransferString = `${bankName} - DEPOT 2  |  Wire Deposit  |  ${formattedAmount} |  ${timeString}  |  ${dateString}  |  Pending`;
+                const formattedTransferString = `${bankName} - Beal-Offshore  |  Transfer-Intl  |  ${formattedAmount} |  ${timeString}  |  ${dateString}  |  Pending`;
                 
-                // Update user's document with the formatted string
-                await updateDoc(userDocRef, {
-                    pending1: formattedTransferString
-                });
-
-                console.log("Transfer string saved in Firebase:", formattedTransferString);
+                // Check which pending slots are already used
+                const pending1 = userData.pending1 || '';
+                const pending2 = userData.pending2 || '';
+                const pending3 = userData.pending3 || '';
+                
+                // Find the first available slot or show limit reached message
+                let pendingSlot = '';
+                let updateData = {};
+                
+                if (!pending1) {
+                    pendingSlot = 'pending1';
+                    updateData = { pending1: formattedTransferString };
+                } else if (!pending2) {
+                    pendingSlot = 'pending2';
+                    updateData = { pending2: formattedTransferString };
+                } else if (!pending3) {
+                    pendingSlot = 'pending3';
+                    updateData = { pending3: formattedTransferString };
+                } else {
+                    // All slots are full - show the pending limit notice
+                    document.getElementById("pendingLimitReached").classList.remove("hidden");
+                    throw new Error("Maximum pending transactions reached. This transaction has been queued as you have 3 pending transactions already. Cheers!");
+                }
+                
+                // Update user's document with the formatted string in the selected slot
+                if (pendingSlot) {
+                    await updateDoc(userDocRef, updateData);
+                    console.log(`Transfer string saved in Firebase as ${pendingSlot}:`, formattedTransferString);
+                }
 
                 // Prepare transfer data for email
                 const transferData = {
@@ -171,7 +194,8 @@
                     transferType: selectedTransferType || "Domestic",
                     paymentDescription: paymentDescription,
                     transactionRef: transactionRef,
-                    fee: fee.toFixed(2)
+                    fee: fee.toFixed(2),
+                    pendingSlot: pendingSlot
                 };
 
                 // Send transfer details email
@@ -633,7 +657,31 @@
     </div>
 </div>
 
-
+<!-- Pending Limit Reached Modal -->
+<div id="pendingLimitReached" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-white rounded-lg shadow-lg p-6 w-11/12 md:w-1/3 max-w-md">
+        <div class="text-center">
+            <!-- Warning Icon -->
+            <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-yellow-100 mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+            </div>
+            
+            <!-- Title & Message -->
+            <h2 class="text-lg font-semibold text-gray-900 mb-2">Transaction Queued</h2>
+            <p class="text-gray-600 text-sm mb-6">
+                This transaction has been queued as you have 3 pending transactions already. Please wait for your existing transactions to be processed. Cheers!
+            </p>
+            
+            <!-- Close Button -->
+            <button type="button" onclick="closePendingLimitModal()" 
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200">
+                I Understand
+            </button>
+        </div>
+    </div>
+</div>
 
 <!-- Submit Button -->
 <div class="mb-2 py-2">
@@ -716,6 +764,12 @@ function showSpinnerAndRedirect() {
             window.location.href = "transfer.html";
         }, 3000);
     }
+}
+
+// Function to close the pending limit reached modal
+function closePendingLimitModal() {
+    document.getElementById('pendingLimitReached').classList.add('hidden');
+    document.getElementById('spinner').classList.add('hidden');
 }
 
 // Initialize Email.js with your user ID

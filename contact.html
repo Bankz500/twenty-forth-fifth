@@ -10,421 +10,401 @@
     <link rel="icon" href="logo new.png" type="image/png">
     <!-- Include Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Include Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js"></script>
-    <!-- Add Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from 'firebase/app';
-        import firebaseConfig from './firebase-config.js';
-    </script>
+    <!-- Include Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .gradient-text {
+            background: linear-gradient(90deg, #1a1a1a 0%, #4a4a4a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hover-scale {
+            transition: transform 0.3s ease;
+        }
+        .hover-scale:hover {
+            transform: scale(1.02);
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+        }
+        .monochrome-gradient {
+            background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            border-color: #333;
+        }
+        .minimal-shadow {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .border-hover {
+            border: 1px solid #e5e5e5;
+            transition: all 0.3s ease;
+        }
+        .border-hover:hover {
+            border-color: #333;
+        }
+        .text-blue-900 { color: #1a1a1a; }
+        .bg-blue-900 { background-color: #1a1a1a; }
+        .hover\:bg-blue-800:hover { background-color: #333333; }
+        .text-blue-700 { color: #4a4a4a; }
+        .hover\:text-blue-700:hover { color: #4a4a4a; }
+    </style>
 </head>
-<body class="font-sans antialiased">
+<body class="font-sans antialiased bg-gray-50">
 
     <!-- Navbar -->
-<nav class="fixed top-0 left-0 right-0 bg-white bg-opacity-800 p-4 z-50">
-  <div class="container mx-auto flex items-center justify-between">
-      <div class="flex items-center justify-center w-full md:w-auto">
-          <a href="index.html">
-              <img src="Logo.png" alt="Beal Offshore Ltd Logo" class="h-14 w-68">
-          </a>
+    <nav class="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 p-4 z-50">
+        <div class="container mx-auto flex items-center justify-between">
+            <div class="flex items-center justify-center w-full md:w-auto">
+                <a href="index.html" class="hover-scale">
+                    <img src="Logo.png" alt="Beal Offshore Ltd Logo" class="h-14 w-68">
+                </a>
 
-          <!-- Mobile Menu Button -->
-          <div class="md:hidden ml-auto">
-              <button id="mobile-menu-button" class="text-blue-600 focus:outline-none">
-                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                  </svg>
-              </button>
-          </div>
-      </div>
-
-<!-- Navigation links -->
-<div class="hidden md:flex items-center space-x-8 ml-auto">
-    <a href="/" class="text-blue text-sm hover:text-blue-800">Home</a>
-    <a href="about-us.html" class="text-blue text-sm hover:text-blue-800">About us</a>
-
-    <!-- Personal Banking Dropdown -->
-    <div class="relative">
-        <!-- Dropdown Button -->
-        <button id="personalBankingDropdownButton" class="text-blue text-sm hover:text-blue-800 focus:outline-none">
-            Personal Offers
-        </button>
-
-        <!-- Dropdown Menu -->
-        <div id="personalBankingDropdownMenu" class="absolute hidden bg-blue-900 shadow-lg mt-2 w-40">
-            <a href="personal.html" class="block px-4 py-2 text-xs font-semibold text-white hover:bg-black">Personal Offshore</a>
-        </div>
-    </div>
-
-    <!-- Business Banking Dropdown -->
-    <div class="relative">
-        <!-- Dropdown Button -->
-        <button id="businessBankingDropdownButton" class="text-blue text-sm hover:text-blue-800 focus:outline-none">
-            Business Offers
-        </button>
-
-        <!-- Dropdown Menu -->
-        <div id="businessBankingDropdownMenu" class="absolute hidden bg-blue-900 shadow-lg mt-2 w-40">
-            <a href="personal.html" class="block px-4 py-2 text-xs font-semibold text-white hover:bg-black">Business Offshore</a>
-        </div>
-    </div>
-
-    <a href="contact.html" class="text-blue text-sm hover:text-blue-800">Contact</a>
-    
-    <!-- Login Button -->
-    <a href="login.html" class="bg-blue-900 text-sm hover:bg-blue-700 text-white px-8 py-4 rounded">Login</a>
-</div>
-</div>
-</nav>
-
-<!-- JavaScript for Dropdown -->
-<script>
-    // Personal Banking Dropdown
-    const personalBankingDropdownButton = document.getElementById("personalBankingDropdownButton");
-    const personalBankingDropdownMenu = document.getElementById("personalBankingDropdownMenu");
-
-    personalBankingDropdownButton.addEventListener("click", (event) => {
-        event.stopPropagation();
-        personalBankingDropdownMenu.classList.toggle("hidden");
-    });
-
-    // Business Banking Dropdown
-    const businessBankingDropdownButton = document.getElementById("businessBankingDropdownButton");
-    const businessBankingDropdownMenu = document.getElementById("businessBankingDropdownMenu");
-
-    businessBankingDropdownButton.addEventListener("click", (event) => {
-        event.stopPropagation();
-        businessBankingDropdownMenu.classList.toggle("hidden");
-    });
-
-    // Close dropdowns if clicking outside
-    window.addEventListener("click", (event) => {
-        if (!personalBankingDropdownMenu.contains(event.target) && !personalBankingDropdownButton.contains(event.target)) {
-            personalBankingDropdownMenu.classList.add("hidden");
-        }
-        if (!businessBankingDropdownMenu.contains(event.target) && !businessBankingDropdownButton.contains(event.target)) {
-            businessBankingDropdownMenu.classList.add("hidden");
-        }
-    });
-</script>
-
-
-
-<!-- Overlay -->
-<div id="overlay" class="fixed inset-0 bg-gray-900 opacity-90 hidden z-40"></div>
-
-<!-- Mobile Menu -->
-<div id="mobile-menu" class="fixed inset-0 bg-white shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out md:hidden z-50">
-    <div class="p-6">
-        <!-- Close Button -->
-        <button id="close-menu" class="absolute top-4 right-4 text-2xl text-gray-600">
-            ✖
-        </button>
-
-        <!-- Navigation Links -->
-        <nav class="w-full flex flex-col items-center space-y-6 mt-8">
-            <a href="/" class="w-4/5 py-3 text-center border text-black text-xs-2 font-regular bg-white rounded hover:bg-blue-900 transition">
-                Home
-            </a>
-            <a href="personal.html" class="w-4/5 py-3 text-center border text-black text-xs-2 font-medium bg-white rounded hover:bg-blue-900 transition">
-                Personal Offshore
-            </a>
-            <a href="personal.html" class="w-4/5 py-3 text-center border text-black text-xs-2 font-medium bg-white rounded hover:bg-blue-900 transition">
-                Business offshore
-            </a>
-            <a href="about-us.html" class="w-4/5 py-3 text-center border text-black text-xs-2 font-medium bg-white rounded hover:bg-blue-900 transition">
-                About us
-            </a>
-            <a href="contact.html" class="w-4/5 py-3 text-center border text-black text-xs-2 font-medium bg-white rounded hover:bg-blue-900 transition">
-                Contact
-            </a>
-            <!-- Login Button -->
-            <a href="login.html" class="w-4/5 py-3 text-center text-white text-xs-2 font-medium bg-blue-800 rounded hover:bg-blue-900 transition">
-                Login
-            </a>
-        </nav>
-    </div>
-</div>
-
-<script>
-window.onload = function () {
-    const splashScreen = document.getElementById('splash-screen');
-    setTimeout(() => {
-        splashScreen.style.display = 'none'; // Hide the splash screen
-        document.body.style.overflow = 'auto'; // Restore scroll
-    }, 4000); // Adjust time to match animation duration
-};
-
-const menu = document.getElementById('mobile-menu');
-const overlay = document.getElementById('overlay');
-const mobileMenuButton = document.getElementById('mobile-menu-button');
-const closeMenuButton = document.getElementById('close-menu');
-
-// Function to open the menu
-function openMenu() {
-    menu.classList.remove('translate-x-full');
-    overlay.classList.add('active');
-    document.body.style.overflow = 'hidden'; // Disable scrolling
-}
-
-// Function to close the menu
-function closeMenu() {
-    menu.classList.add('translate-x-full');
-    overlay.classList.remove('active');
-    document.body.style.overflow = ''; // Restore scrolling
-}
-
-// Toggle mobile menu visibility
-mobileMenuButton.onclick = openMenu;
-closeMenuButton.onclick = closeMenu;
-
-// Close menu when clicking the overlay
-overlay.onclick = closeMenu;
-</script>
-</body>
-
-
-<section class="py-8 bg-gray-100" id="spacing"></section>
-    <div class="container mx-auto text-center">
-    </div>
-</section>
-
-   <!-- Contact Us Section -->
-<section class="py-20 bg-gradient-to-b from-white to-gray-100" id="contact-us">
-    <div class="container mx-auto px-6 max-w-6xl">
-        <!-- Section Header -->
-        <div class="text-center mb-16">
-            <h2 class="text-sm font-bold tracking-widest text-blue-600 uppercase mb-2">Contact Us</h2>
-            <h3 class="text-4xl font-serif font-semibold text-gray-900 mb-4">Get in Touch</h3>
-            <p class="max-w-2xl mx-auto text-gray-600">
-                Beal Offshore Ltd's team of financial professionals is available and on call whenever you need us, offering exceptional banking services and financial solutions across the USA and worldwide.            </p>
-        </div>
-
-        <!-- Two Column Layout -->
-        <div class="flex flex-col lg:flex-row gap-12">
-            <!-- Contact Form Column -->
-            <div class="w-full lg:w-2/3">
-                <div class="bg-white rounded-lg p-8 border border-gray-200">
-                    <h4 class="text-2xl font-serif font-medium text-gray-800 mb-6">How can we help you?</h4>
-                    
-                    <form id="contactForm" class="space-y-6" onsubmit="handleSubmit(event)">
-                        <!-- Name and Email Row -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                                <input type="text" id="name" required 
-                                    class="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" 
-                                    placeholder="Enter your name">
-                            </div>
-                            <div>
-                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                                <input type="email" id="email" required 
-                                    class="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" 
-                                    placeholder="Enter your email">
-                            </div>
-                        </div>
-                        
-                        <!-- Phone Number -->
-                        <div>
-                            <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                            <input type="tel" id="phone" required 
-                                class="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" 
-                                placeholder="Enter your phone number">
-                        </div>
-                        
-                        <!-- Shipping Question Row -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Do you have an acocunt with us?</label>
-                                <select id="cleaningSpace" required 
-                                    class="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition bg-white">
-                                    <option value="" disabled selected>Select an option</option>
-                                    <option value="yes">Yes</option>
-                                    <option value="no">No</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Want to own a Beal-Offhsore account?</label>
-                                <input type="text" id="spaceType" required 
-                                    class="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" 
-                                    placeholder="">
-                            </div>
-                        </div>
-                        
-                        <!-- Message -->
-                        <div>
-                            <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Your Message</label>
-                            <textarea id="message" required 
-                                class="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" 
-                                rows="4" placeholder="How can we assist you?"></textarea>
-                        </div>
-                        
-                        <!-- Submit Button -->
-                        <div>
-                            <button type="submit" id="submitButton" 
-                                class="w-full bg-blue-600 text-white font-medium py-3 px-6 rounded-md hover:bg-blue-700 transition duration-300 focus:outline-none focus:ring-4 focus:ring-blue-300">
-                                Send Message
-                            </button>
-                            <p id="responseMessage" class="mt-4 text-center text-gray-600 hidden"></p>
-                        </div>
-                    </form>
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden ml-auto">
+                    <button id="mobile-menu-button" class="text-gray-800 focus:outline-none">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
                 </div>
             </div>
-            
-            <!-- Contact Info Column -->
-            <div class="w-full lg:w-1/3">
-                <div class="bg-gray-900 text-white rounded-lg shadow-lg p-8 h-full">
-                    <h4 class="text-2xl font-serif font-medium mb-6 text-gray-100">Contact Information</h4>
-                    
-                    <div class="space-y-6">
-                        <!-- Email -->
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0 mt-1">
-                                <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                                </svg>
-                            </div>
-                            <div class="ml-4">
-                                <p class="text-sm font-medium text-gray-300">Email</p>
-                                <a href="mailto:Support@beal-offshore.com" class="text-blue-400 hover:text-blue-300 transition">Support@beal-offshore.com</a>
-                            </div>
-                        </div>
-                        
-                        <!-- Phone -->
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0 mt-1">
-                                <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
-                                </svg>
-                            </div>
-                            <div class="ml-4">
-                                <p class="text-sm font-medium text-gray-300">Phone</p>
-                                <a href="tel:+17472428750" class="text-blue-400 hover:text-blue-300 transition">(998) 884 8355</a>
-                            </div>
-                        </div>
 
+            <!-- Navigation links -->
+            <div class="hidden md:flex items-center space-x-8 ml-auto">
+                <a href="/" class="text-gray-800 text-sm hover:text-gray-600 font-medium flex items-center transition duration-300">
+                    <i class="fas fa-home mr-2"></i>Home
+                </a>
+                <a href="about-us.html" class="text-gray-800 text-sm hover:text-gray-600 font-medium flex items-center transition duration-300">
+                    <i class="fas fa-info-circle mr-2"></i>About us
+                </a>
+
+                <!-- Personal Offers Link -->
+                <a href="personal.html" class="text-gray-800 text-sm hover:text-gray-600 font-medium flex items-center transition duration-300">
+                    <i class="fas fa-user mr-2"></i>Personal Offers
+                </a>
+
+                <!-- Business Offers Link -->
+                <a href="business.html" class="text-gray-800 text-sm hover:text-gray-600 font-medium flex items-center transition duration-300">
+                    <i class="fas fa-building mr-2"></i>Business Offers
+                </a>
+
+                <a href="contact.html" class="text-gray-800 text-sm hover:text-gray-600 font-medium flex items-center transition duration-300">
+                    <i class="fas fa-envelope mr-2"></i>Contact
+                </a>
+                
+                <!-- Login Button -->
+                <a href="login.html" class="border border-gray-200 text-gray-800 text-sm hover:bg-gray-50 px-6 py-3 rounded-lg font-medium transition duration-300 flex items-center">
+                    <i class="fas fa-sign-in-alt mr-2"></i>Login
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Overlay -->
+    <div id="overlay" class="fixed inset-0 bg-gray-900 opacity-90 hidden z-40"></div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="fixed inset-0 bg-white shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out md:hidden z-50">
+        <div class="p-6">
+            <!-- Close Button -->
+            <button id="close-menu" class="absolute top-4 right-4 text-2xl text-gray-600">
+                ✖
+            </button>
+
+            <!-- Navigation Links -->
+            <nav class="w-full flex flex-col items-center space-y-6 mt-8">
+                <a href="/" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
+                    Home
+                </a>
+                <a href="personal.html" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
+                    Personal Offshore
+                </a>
+                <a href="business.html" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
+                    Business offshore
+                </a>
+                <a href="about-us.html" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
+                    About us
+                </a>
+                <a href="contact.html" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
+                    Contact
+                </a>
+                <!-- Login Button -->
+                <a href="login.html" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
+                    Login
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Contact Us Section -->
+    <section class="py-20 bg-gradient-to-b from-white to-gray-100" id="contact-us">
+        <div class="container mx-auto px-6 max-w-6xl">
+            <!-- Section Header -->
+            <div class="text-center mb-16 mt-20">
+                <p class="text-lg font-semibold mb-6 text-gray-800 flex items-center justify-center">
+                    <i class="fas fa-envelope mr-2"></i>CONTACT US
+                </p>
+                <h2 class="text-4xl font-serif font-semibold text-gray-900 mb-4">Get in Touch</h2>
+                <p class="max-w-2xl mx-auto text-gray-600">
+                    Beal Offshore Ltd's team of financial professionals is available and on call whenever you need us, offering exceptional banking services and financial solutions across the USA and worldwide.
+                </p>
+            </div>
+
+            <!-- Two Column Layout -->
+            <div class="flex flex-col lg:flex-row gap-12">
+                <!-- Contact Form Column -->
+                <div class="w-full lg:w-2/3">
+                    <div class="bg-white rounded-lg p-8 border-hover card-hover">
+                        <h4 class="text-2xl font-serif font-medium text-gray-800 mb-6">How can we help you?</h4>
                         
-                        
-                        <!-- Address -->
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0 mt-1">
-                                <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                </svg>
+                        <form id="contactForm" class="space-y-6" onsubmit="handleSubmit(event)">
+                            <!-- Name and Email Row -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                                    <input type="text" id="name" required 
+                                        class="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" 
+                                        placeholder="Enter your name">
+                                </div>
+                                <div>
+                                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                                    <input type="email" id="email" required 
+                                        class="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" 
+                                        placeholder="Enter your email">
+                                </div>
                             </div>
-                            <div class="ml-4">
-                                <p class="text-sm font-medium text-gray-300">Address</p>
-                                <p class="text-gray-400">Forum Lane ,Camana Bay<br>,Grand Cayman</p>
+                            
+                            <!-- Phone Number -->
+                            <div>
+                                <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                                <input type="tel" id="phone" required 
+                                    class="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" 
+                                    placeholder="Enter your phone number">
                             </div>
-                        </div>
-                        
-                        <!-- Hours -->
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0 mt-1">
-                                <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
+                            
+                            <!-- Account Question Row -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Do you have an account with us?</label>
+                                    <select id="cleaningSpace" required 
+                                        class="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition bg-white">
+                                        <option value="" disabled selected>Select an option</option>
+                                        <option value="yes">Yes</option>
+                                        <option value="no">No</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Want to own a Beal-Offshore account?</label>
+                                    <input type="text" id="spaceType" required 
+                                        class="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" 
+                                        placeholder="Enter your preference">
+                                </div>
                             </div>
-                            <div class="ml-4">
-                                <p class="text-sm font-medium text-gray-300">Business Hours</p>
-                                <p class="text-gray-400">Monday - Friday: 9:00 AM - 6:00 PM<br>Weekend: 10:00 AM - 4:00 PM</p>
+                            
+                            <!-- Message -->
+                            <div>
+                                <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Your Message</label>
+                                <textarea id="message" required 
+                                    class="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" 
+                                    rows="4" placeholder="How can we assist you?"></textarea>
                             </div>
-                        </div>
+                            
+                            <!-- Submit Button -->
+                            <div>
+                                <button type="submit" id="submitButton" 
+                                    class="w-full bg-blue-600 text-white font-medium py-3 px-6 rounded-md hover:bg-blue-700 transition duration-300 focus:outline-none focus:ring-4 focus:ring-blue-300">
+                                    Send Message
+                                </button>
+                                <p id="responseMessage" class="mt-4 text-center text-gray-600 hidden"></p>
+                            </div>
+                        </form>
                     </div>
+                </div>
+                
+                <!-- Contact Info Column -->
+                <div class="w-full lg:w-1/3">
+                    <div class="bg-gray-900 text-white rounded-lg shadow-lg p-8 h-full border-hover card-hover">
+                        <h4 class="text-2xl font-serif font-medium mb-6 text-gray-100">Contact Information</h4>
+                        
+                        <div class="space-y-6">
+                            <!-- Email -->
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 mt-1">
+                                    <i class="fas fa-envelope text-blue-400 text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-300">Email</p>
+                                    <a href="mailto:support@beal-offshore.com" class="text-blue-400 hover:text-blue-300 transition">support@beal-offshore.com</a>
+                                </div>
+                            </div>
+                            
+                            <!-- Phone -->
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 mt-1">
+                                    <i class="fas fa-phone text-blue-400 text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-300">Phone</p>
+                                    <a href="tel:+17472428750" class="text-blue-400 hover:text-blue-300 transition">(998) 884 8355</a>
+                                </div>
+                            </div>
+                            
+                            <!-- Address -->
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 mt-1">
+                                    <i class="fas fa-map-marker-alt text-blue-400 text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-300">Address</p>
+                                    <p class="text-gray-400">Forum Lane, Camana Bay<br>Grand Cayman</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Hours -->
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 mt-1">
+                                    <i class="fas fa-clock text-blue-400 text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-medium text-gray-300">Business Hours</p>
+                                    <p class="text-gray-400">Monday - Friday: 9:00 AM - 6:00 PM<br>Weekend: 10:00 AM - 4:00 PM</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-
-    <footer class="bg-black text-white py-10 mt-32">
-        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
-          <!-- Company Info -->
-          <div>
-            <div class="flex items-center mb-4">
-              <img src="Logo.png" alt="Beal Offshore Ltd Logo" class="w-15 h-12 mr-1" />
-              <div>
-                <h1 class="text-lg font-semibold"></h1>
-                <p class="text-sm text-gray-400"></p>
-              </div>
+    <!-- Footer -->
+    <footer class="bg-white text-gray-800 py-16 mt-32 border-t border-gray-200">
+        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-12">
+            <!-- Company Info -->
+            <div>
+                <div class="flex items-center mb-6">
+                    <img src="Logo.png" alt="Beal Offshore Ltd Logo" class="w-15 h-12 mr-3" />
+                </div>
+                <p class="text-gray-600 leading-relaxed">
+                    Being a member of Beal Offshore Ltd is not like opening an account at the usual bank. You have a voice in what and how the organization is run.
+                </p>
             </div>
-            <p class="text-sm text-gray-400 leading-relaxed">
-                Being a member of Beal Offshore Ltd is not like opening an account at the usual bank. You have a voice in what and how the organization is run. 
+
+            <!-- Quick Links -->
+            <div>
+                <h2 class="text-xl font-semibold mb-6 flex items-center">
+                    <i class="fas fa-link mr-2"></i>Quick Links
+                </h2>
+                <ul class="text-gray-600 space-y-4">
+                    <li><a href="about-us.html" class="hover:text-gray-800 transition duration-300 flex items-center">
+                        <i class="fas fa-chevron-right mr-2 text-sm"></i>About
+                    </a></li>
+                    <li><a href="personal.html" class="hover:text-gray-800 transition duration-300 flex items-center">
+                        <i class="fas fa-chevron-right mr-2 text-sm"></i>Personal Offshore
+                    </a></li>
+                    <li><a href="business.html" class="hover:text-gray-800 transition duration-300 flex items-center">
+                        <i class="fas fa-chevron-right mr-2 text-sm"></i>Business Offshore
+                    </a></li>
+                </ul>
+            </div>
+
+            <!-- Services -->
+            <div>
+                <h2 class="text-xl font-semibold mb-6 flex items-center">
+                    <i class="fas fa-cogs mr-2"></i>Services
+                </h2>
+                <ul class="text-gray-600 space-y-4">
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-gray-800 mr-2"></i>Online banking
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-gray-800 mr-2"></i>E-bank Statement
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Contact Info -->
+            <div>
+                <h2 class="text-xl font-semibold mb-6 flex items-center">
+                    <i class="fas fa-map-marker-alt mr-2"></i>HEAD OFFICE
+                </h2>
+                <ul class="text-gray-600 space-y-4">
+                    <li class="flex items-start">
+                        <i class="fas fa-building mt-1 mr-3"></i>
+                        <span>Forum Lane, Camana Bay, Grand Cayman</span>
+                    </li>
+                </ul>
+                <div class="mt-8 border border-gray-200 p-6 rounded-lg">
+                    <p class="text-gray-600 text-sm">
+                        This year, we've been recognized as one of the top financing institutions, offering unparalleled financial solutions.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-12 border-t border-gray-200 pt-8 px-4 text-center">
+            <p class="text-gray-600 text-sm">
+                © 2025 Beal Offshore Ltd. Powered by Menta Digital Marketing Inc.
             </p>
-          </div>
-      
-          <!-- Quick Links -->
-          <div>
-            <h2 class="text-lg font-semibold mb-4">Quick Links</h2>
-            <ul class="text-sm text-gray-400 space-y-2">
-              <li><a href="about-us.html" class="hover:text-white">About</a></li>
-              <li><a href="personal.html" class="hover:text-white">Personal Offshore</a></li>
-              <li><a href="business.html" class="hover:text-white">Business Offshore</a></li>
-            </ul>
-          </div>
-      
-          <!-- Services -->
-          <div>
-            <h2 class="text-lg font-semibold mb-4">Services</h2>
-            <ul class="text-sm text-gray-400 space-y-2">
-            <li>Online banking</li>
-            <li>E-bank Statement</li>
-            </ul>
-          </div>
-      
-          <!-- Social and Review -->
-          <div>
-            <h2 class="text-lg font-semibold mb-4">HEAD OFFICE</h2>
-            <ul class="text-sm text-gray-400 space-y-2">
-              <li>Address: Forum Lane ,Camana Bay ,Grand Cayman</li>
-            </ul>
-            <div class="mt-6 max-w-7xl">
-              <div class="bg-gray-800 p-4 rounded-lg shadow-lg">
-                <p class="text-sm text-gray-400">
-                    This year, we've been recognized as one of the top financing institutions, offering unparalleled financial solutions.</p>
-              </div>
+            <div class="flex justify-center mt-6 space-x-6">
+                <a href="#facebook" class="text-gray-600 hover:text-gray-800 transition duration-300">
+                    <i class="fab fa-facebook text-2xl"></i>
+                </a>
+                <a href="#" class="text-gray-600 hover:text-gray-800 transition duration-300">
+                    <i class="fab fa-instagram text-2xl"></i>
+                </a>
             </div>
-          </div>
         </div>
-      
-        <div class="mt-10 border-t border-gray-700 pt-6 px-4 text-center text-xs text-gray-500">
-          © 2025 Beal Offshore Ltd. Powered by Menta Digital Marketing Inc.
-          <div class="flex justify-center mt-4 space-x-4">
-            <a href="#facebook" class="hover:text-white"><i class="fab fa-facebook"></i></a>
-            <a href="" class="hover:text-white" target="_blank" rel="noopener noreferrer">
-                <i class="fab fa-instagram"></i>
-            </a>
-          </div>
-        </div>
-      </footer>
-    
-    <!-- Email Button -->
-    <a href="https://wa.me/13657758413" target="_blank" class="fixed bottom-16 right-6">
-        <img src="Chat bot.png" alt="Chat with us on Telegram" class="w-16 h-18">
+    </footer>
+
+    <!-- WhatsApp Button -->
+    <a href="https://wa.me/13657758413" target="_blank" class="fixed bottom-16 right-6 hover-scale">
+        <img src="Chat bot.png" alt="Chat with us on WhatsApp" class="w-16 h-18">
     </a>
-    </body>
-    </body>
-    </html>
-    
+
+    <!-- Include Font Awesome -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
     <!-- Firebase Configuration -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
     <script>
-    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-            const firebaseConfig = {
-        apiKey: "AIzaSyABYV12B7RM2ZCD2G1lFTLpgJwflJFwEXY",
-        authDomain: "beal-offshore.firebaseapp.com",
-        projectId: "beal-offshore",
-        storageBucket: "beal-offshore.firebasestorage.app",
-        messagingSenderId: "1091834410162",
-        appId: "1:1091834410162:web:56285433b5751e681745ab",
-        measurementId: "G-CT463F3T6J"
-        };
+        // Mobile menu functionality
+        const menu = document.getElementById('mobile-menu');
+        const overlay = document.getElementById('overlay');
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const closeMenuButton = document.getElementById('close-menu');
 
+        function openMenu() {
+            menu.classList.remove('translate-x-full');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMenu() {
+            menu.classList.add('translate-x-full');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        mobileMenuButton.onclick = openMenu;
+        closeMenuButton.onclick = closeMenu;
+        overlay.onclick = closeMenu;
+
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyABYV12B7RM2ZCD2G1lFTLpgJwflJFwEXY",
+            authDomain: "beal-offshore.firebaseapp.com",
+            projectId: "beal-offshore",
+            storageBucket: "beal-offshore.firebasestorage.app",
+            messagingSenderId: "1091834410162",
+            appId: "1:1091834410162:web:56285433b5751e681745ab",
+            measurementId: "G-CT463F3T6J"
+        };
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
@@ -460,4 +440,5 @@ overlay.onclick = closeMenu;
                 });
         }
     </script>
-    </html>
+</body>
+</html>

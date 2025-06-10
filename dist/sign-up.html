@@ -13,6 +13,8 @@
     <!-- Include Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js"></script>
+    <!-- Include Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -39,13 +41,13 @@
         }
         
         .btn-gradient {
-            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
             transition: all 0.3s ease;
         }
         
         .btn-gradient:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.5);
+            box-shadow: 0 10px 15px -3px rgba(26, 26, 26, 0.5);
         }
         
         .progress-container {
@@ -59,7 +61,7 @@
         
         .progress-bar {
             height: 100%;
-            background: linear-gradient(90deg, #3b82f6, #1e40af);
+            background: linear-gradient(90deg, #1a1a1a, #333333);
             border-radius: 4px;
             transition: width 0.5s ease;
         }
@@ -97,7 +99,7 @@
         }
         
         .step.active:not(:last-child)::after {
-            background: #3b82f6;
+            background: #1a1a1a;
         }
         
         .step-circle {
@@ -117,7 +119,7 @@
         }
         
         .step.active .step-circle {
-            background: #3b82f6;
+            background: #1a1a1a;
             color: white;
             border-color: white;
         }
@@ -134,7 +136,7 @@
         }
         
         .step.active .step-label {
-            color: #3b82f6;
+            color: #1a1a1a;
             font-weight: 600;
         }
         
@@ -234,69 +236,114 @@
             margin-right: 12px;
             flex-shrink: 0;
         }
+        
+        .gradient-text {
+            background: linear-gradient(90deg, #1a1a1a 0%, #4a4a4a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hover-scale {
+            transition: transform 0.3s ease;
+        }
+        
+        .hover-scale:hover {
+            transform: scale(1.02);
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+        }
+        
+        .monochrome-gradient {
+            background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-2px);
+            border-color: #333;
+        }
+        
+        .minimal-shadow {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .border-hover {
+            border: 1px solid #e5e5e5;
+            transition: all 0.3s ease;
+        }
+        
+        .border-hover:hover {
+            border-color: #333;
+        }
+        
+        .text-blue-900 { color: #1a1a1a; }
+        
+        .bg-blue-900 { background-color: #1a1a1a; }
+        
+        .hover\:bg-blue-800:hover { background-color: #333333; }
+        
+        .text-blue-700 { color: #4a4a4a; }
+        
+        .hover\:text-blue-700:hover { color: #4a4a4a; }
     </style>
     <!-- Add Firebase SDK -->
-  <script type="module" crossorigin src="/assets/account-of2w-U6l.js"></script>
+  <script type="module" crossorigin src="/assets/account-BLZJ6nPs.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
   <link rel="modulepreload" crossorigin href="/assets/index.esm-BeIn6wDe.js">
 </head>
 <body class="font-sans antialiased" style="background-image: url('/assets/7-BUCtY05t.png'); background-repeat: no-repeat; background-size: cover;">
 
     <!-- Navbar -->
-<nav class="fixed top-0 left-0 right-0 bg-white bg-opacity-800 p-4 z-50">
-  <div class="container mx-auto flex items-center justify-between">
-      <div class="flex items-center justify-center w-full md:w-auto">
-          <a href="index.html">
-              <img src="/assets/LOGO-DP4bRQMr.png" alt="Beal Offshore Ltd Logo" class="h-14 w-68">
-          </a>
+<nav class="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 p-4 z-50">
+    <div class="container mx-auto flex items-center justify-between">
+        <div class="flex items-center justify-center w-full md:w-auto">
+            <a href="index.html" class="hover-scale">
+                <img src="/assets/LOGO-DP4bRQMr.png" alt="Beal Offshore Ltd Logo" class="h-14 w-68">
+            </a>
 
-          <!-- Mobile Menu Button -->
-          <div class="md:hidden ml-auto">
-              <button id="mobile-menu-button" class="text-blue-600 focus:outline-none">
-                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                  </svg>
-              </button>
-          </div>
-      </div>
+            <!-- Mobile Menu Button -->
+            <div class="md:hidden ml-auto">
+                <button id="mobile-menu-button" class="text-gray-800 focus:outline-none">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
 
-<!-- Navigation links -->
-<div class="hidden md:flex items-center space-x-8 ml-auto">
-    <a href="/" class="text-blue text-sm hover:text-blue-800">Home</a>
-    <a href="about-us.html" class="text-blue text-sm hover:text-blue-800">About us</a>
+        <!-- Navigation links -->
+        <div class="hidden md:flex items-center space-x-8 ml-auto">
+            <a href="/" class="text-gray-800 text-sm hover:text-gray-600 font-medium flex items-center transition duration-300">
+                <i class="fas fa-home mr-2"></i>Home
+            </a>
+            <a href="about-us.html" class="text-gray-800 text-sm hover:text-gray-600 font-medium flex items-center transition duration-300">
+                <i class="fas fa-info-circle mr-2"></i>About us
+            </a>
 
-    <!-- Personal Banking Dropdown -->
-    <div class="relative">
-        <!-- Dropdown Button -->
-        <button id="personalBankingDropdownButton" class="text-blue text-sm hover:text-blue-800 focus:outline-none">
-            Personal Offers
-        </button>
+            <!-- Personal Offers Link -->
+            <a href="personal.html" class="text-gray-800 text-sm hover:text-gray-600 font-medium flex items-center transition duration-300">
+                <i class="fas fa-user mr-2"></i>Personal Offers
+            </a>
 
-        <!-- Dropdown Menu -->
-        <div id="personalBankingDropdownMenu" class="absolute hidden bg-blue-900 shadow-lg mt-2 w-40">
-            <a href="personal.html" class="block px-4 py-2 text-xs font-semibold text-white hover:bg-black">Personal Offshore</a>
+            <!-- Business Offers Link -->
+            <a href="business.html" class="text-gray-800 text-sm hover:text-gray-600 font-medium flex items-center transition duration-300">
+                <i class="fas fa-building mr-2"></i>Business Offers
+            </a>
+
+            <a href="contact.html" class="text-gray-800 text-sm hover:text-gray-600 font-medium flex items-center transition duration-300">
+                <i class="fas fa-envelope mr-2"></i>Contact
+            </a>
+            
+            <!-- Login Button -->
+            <a href="login.html" class="border border-gray-200 text-gray-800 text-sm hover:bg-gray-50 px-6 py-3 rounded-lg font-medium transition duration-300 flex items-center">
+                <i class="fas fa-sign-in-alt mr-2"></i>Login
+            </a>
         </div>
     </div>
-
-    <!-- Business Banking Dropdown -->
-    <div class="relative">
-        <!-- Dropdown Button -->
-        <button id="businessBankingDropdownButton" class="text-blue text-sm hover:text-blue-800 focus:outline-none">
-            Business Offers
-        </button>
-
-        <!-- Dropdown Menu -->
-        <div id="businessBankingDropdownMenu" class="absolute hidden bg-blue-900 shadow-lg mt-2 w-40">
-            <a href="personal.html" class="block px-4 py-2 text-xs font-semibold text-white hover:bg-black">Business Offshore</a>
-        </div>
-    </div>
-
-    <a href="contact.html" class="text-blue text-sm hover:text-blue-800">Contact</a>
-    
-    <!-- Login Button -->
-    <a href="login.html" class="bg-blue-900 text-sm hover:bg-blue-700 text-white px-8 py-4 rounded">Login</a>
-</div>
-</div>
 </nav>
 
 <!-- JavaScript for Dropdown -->
@@ -345,23 +392,23 @@
 
         <!-- Navigation Links -->
         <nav class="w-full flex flex-col items-center space-y-6 mt-8">
-            <a href="/" class="w-4/5 py-3 text-center border text-black text-xs-2 font-regular bg-white rounded hover:bg-blue-900 transition">
+            <a href="/" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
                 Home
             </a>
-            <a href="personal.html" class="w-4/5 py-3 text-center border text-black text-xs-2 font-medium bg-white rounded hover:bg-blue-900 transition">
+            <a href="personal.html" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
                 Personal Offshore
             </a>
-            <a href="personal.html" class="w-4/5 py-3 text-center border text-black text-xs-2 font-medium bg-white rounded hover:bg-blue-900 transition">
+            <a href="business.html" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
                 Business offshore
             </a>
-            <a href="about-us.html" class="w-4/5 py-3 text-center border text-black text-xs-2 font-medium bg-white rounded hover:bg-blue-900 transition">
+            <a href="about-us.html" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
                 About us
             </a>
-            <a href="contact.html" class="w-4/5 py-3 text-center border text-black text-xs-2 font-medium bg-white rounded hover:bg-blue-900 transition">
+            <a href="contact.html" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
                 Contact
             </a>
             <!-- Login Button -->
-            <a href="login.html" class="w-4/5 py-3 text-center text-white text-xs-2 font-medium bg-blue-800 rounded hover:bg-blue-900 transition">
+            <a href="login.html" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
                 Login
             </a>
         </nav>
@@ -435,46 +482,38 @@ overlay.onclick = closeMenu;
                 <form id="personal-info-form" class="space-y-3">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="input-with-icon">
-                            <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                            </svg>
+                            <i class="fas fa-user input-icon"></i>
                             <div>
                                 <label for="first-name" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
                                 <input type="text" id="first-name" name="first-name" required placeholder="Enter your first name" 
-                                    class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400">
+                                    class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent placeholder-gray-400">
                             </div>
                         </div>
                         <div class="input-with-icon">
-                            <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                            </svg>
+                            <i class="fas fa-user input-icon"></i>
                             <div>
                                 <label for="last-name" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
                                 <input type="text" id="last-name" name="last-name" required placeholder="Enter your last name" 
-                                    class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400">
+                                    class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent placeholder-gray-400">
                             </div>
                         </div>
                     </div>
                     
                     <div class="input-with-icon">
-                        <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                        </svg>
+                        <i class="fas fa-envelope input-icon"></i>
                         <div>
                             <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
                             <input type="email" id="email" name="email" required placeholder="Enter your email" 
-                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400">
+                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent placeholder-gray-400">
                         </div>
                     </div>
                     
                     <div class="input-with-icon">
-                        <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                        </svg>
+                        <i class="fas fa-building input-icon"></i>
                         <div>
                             <label for="account-type" class="block text-sm font-medium text-gray-700 mb-1">Account Type</label>
                             <select id="account-type" name="account-type" required 
-                                class="form-input-focus custom-select w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none">
+                                class="form-input-focus custom-select w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent appearance-none">
                                 <option value="">Select Account Type</option>
                                 <option value="checking">Fixed Offshore</option>
                                 <option value="savings">Savings Offshore</option>
@@ -485,21 +524,15 @@ overlay.onclick = closeMenu;
                     
                     <!-- Password -->
                     <div class="relative input-with-icon">
-                        <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                        </svg>
+                        <i class="fas fa-lock input-icon"></i>
                         <div>
                             <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Create Password</label>
                             <div class="relative">
                                 <input type="password" id="password" name="password" required placeholder="Create a password"
-                                    class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400">
+                                    class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent placeholder-gray-400">
                                 <button type="button" onclick="togglePasswordVisibility('password', 'eyeIcon1')" 
                                     class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
-                                    <svg id="eyeIcon1" class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" 
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                        <circle cx="12" cy="12" r="3"></circle>
-                                    </svg>
+                                    <i class="fas fa-eye" id="eyeIcon1"></i>
                                 </button>
                             </div>
                         </div>
@@ -507,44 +540,23 @@ overlay.onclick = closeMenu;
 
                     <!-- Confirm Password -->
                     <div class="relative input-with-icon">
-                        <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                        </svg>
+                        <i class="fas fa-lock input-icon"></i>
                         <div>
                             <label for="confirm-password" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
                             <div class="relative">
                                 <input type="password" id="confirm-password" name="confirm-password" required placeholder="Confirm your password"
-                                    class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400">
+                                    class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent placeholder-gray-400">
                                 <button type="button" onclick="togglePasswordVisibility('confirm-password', 'eyeIcon2')" 
                                     class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
-                                    <svg id="eyeIcon2" class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" 
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                        <circle cx="12" cy="12" r="3"></circle>
-                                    </svg>
+                                    <i class="fas fa-eye" id="eyeIcon2"></i>
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <script>
-                    function togglePasswordVisibility(inputId, iconId) {
-                        const inputField = document.getElementById(inputId);
-                        const eyeIcon = document.getElementById(iconId);
-
-                        if (inputField.type === "password") {
-                            inputField.type = "text";
-                            eyeIcon.innerHTML = `<path d="M17.94 17.94A10.09 10.09 0 0 1 12 20c-7 0-11-8-11-8a18.66 18.66 0 0 1 3-4m3.53-2.36A10.09 10.09 0 0 1 12 4c7 0 11 8 11 8a18.3 18.3 0 0 1-1.72 2.82M15 12a3 3 0 1 0-3 3m8.17 8.17L3 3"></path>`;
-                        } else {
-                            inputField.type = "password";
-                            eyeIcon.innerHTML = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>`;
-                        }
-                    }
-                    </script>
-
                     <div class="pt-4">
                         <button type="button" id="continue-btn" class="w-full btn-gradient text-white py-4 rounded-lg font-medium text-base transition duration-300">
-                            Continue to Business Information
+                            <i class="fas fa-arrow-right mr-2"></i>Continue to Business Information
                         </button>
                     </div>
                 </form>
@@ -565,53 +577,45 @@ overlay.onclick = closeMenu;
                 
                 <form id="business-info-form" class="space-y-3">
                     <div class="input-with-icon">
-                        <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                        </svg>
+                        <i class="fas fa-building input-icon"></i>
                         <div>
                             <label for="business-name" class="block text-sm font-medium text-gray-700 mb-1">Business Name</label>
                             <input type="text" id="business-name" name="business-name" required placeholder="Enter your business name" 
-                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400">
+                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent placeholder-gray-400">
                         </div>
                     </div>
                     
                     <div class="input-with-icon">
-                        <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                        </svg>
+                        <i class="fas fa-building input-icon"></i>
                         <div>
                             <label for="business-type" class="block text-sm font-medium text-gray-700 mb-1">Business Type</label>
                             <input type="text" id="business-type" name="business-type" required placeholder="Enter your business type" 
-                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400">
+                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent placeholder-gray-400">
                         </div>
                     </div>
                     
                     <div class="input-with-icon">
-                        <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                        </svg>
+                        <i class="fas fa-hashtag input-icon"></i>
                         <div>
                             <label for="business-ein" class="block text-sm font-medium text-gray-700 mb-1">Business EIN</label>
                             <input type="text" id="business-ein" name="business-ein" required placeholder="Enter your business EIN" 
-                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400">
+                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent placeholder-gray-400">
                         </div>
                     </div>
                     
                     <div class="input-with-icon">
-                        <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
+                        <i class="fas fa-file-signature input-icon"></i>
                         <div>
                             <label for="business-cert" class="block text-sm font-medium text-gray-700 mb-1">Business Certificate</label>
                             <input type="text" id="business-cert" name="business-cert" required placeholder="Enter your business certificate" 
-                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400">
+                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent placeholder-gray-400">
                         </div>
                     </div>
                     
                     <div class="flex space-x-4 pt-4">
-                        <button type="button" id="back-btn" class="w-1/3 bg-gray-200 text-gray-800 py-4 rounded-lg font-medium text-base transition duration-300 hover:bg-gray-300">
+                        <a href="sign-up.html" id="back-btn" class="w-1/3 bg-gray-200 text-gray-800 py-4 rounded-lg font-medium text-base transition duration-300 hover:bg-gray-300">
                             Back
-                        </button>
+                        </a>
                         <button type="submit" id="create-account-btn" class="w-2/3 btn-gradient text-white py-4 rounded-lg font-medium text-base transition duration-300">
                             Create Account
                         </button>
@@ -626,9 +630,7 @@ overlay.onclick = closeMenu;
             <img src="/assets/happy-woman-writing-notepad-DT4biPz4.jpg" alt="OTP verification background" class="object-cover h-full w-full" />
             <div class="absolute inset-0 flex flex-col items-center justify-center p-10 text-white">
                 <div class="w-20 h-20 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center mb-6">
-                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                    </svg>
+                    <i class="fas fa-check text-2xl text-white"></i>
                 </div>
                 <h3 class="text-2xl font-bold mb-2">Two-Step Verification</h3>
                 <p class="text-sm text-center text-white/80 mb-6">For your security, we require two-factor authentication</p>
@@ -731,66 +733,85 @@ overlay.onclick = closeMenu;
 
 
 
-<footer class="bg-black text-white py-10 mt-32">
-    <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
-      <!-- Company Info -->
-      <div>
-        <div class="flex items-center mb-4">
-          <img src="/assets/LOGO-DP4bRQMr.png" alt="Beal Offshore Ltd Logo" class="w-15 h-12 mr-1" />
-          <div>
-            <h1 class="text-lg font-semibold"></h1>
-            <p class="text-sm text-gray-400"></p>
-          </div>
+    <!-- Footer -->
+    <footer class="bg-white text-gray-800 py-16 mt-32 border-t border-gray-200">
+        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-12">
+            <!-- Company Info -->
+            <div>
+                <div class="flex items-center mb-6">
+                    <img src="/assets/LOGO-DP4bRQMr.png" alt="Beal Offshore Ltd Logo" class="w-15 h-12 mr-3" />
+                </div>
+                <p class="text-gray-600 leading-relaxed">
+                    Being a member of Beal Offshore Ltd is not like opening an account at the usual bank. You have a voice in what and how the organization is run.
+                </p>
+            </div>
+      
+            <!-- Quick Links -->
+            <div>
+                <h2 class="text-xl font-semibold mb-6 flex items-center">
+                    <i class="fas fa-link mr-2"></i>Quick Links
+                </h2>
+                <ul class="text-gray-600 space-y-4">
+                    <li><a href="about-us.html" class="hover:text-gray-800 transition duration-300 flex items-center">
+                        <i class="fas fa-chevron-right mr-2 text-sm"></i>About
+                    </a></li>
+                    <li><a href="personal.html" class="hover:text-gray-800 transition duration-300 flex items-center">
+                        <i class="fas fa-chevron-right mr-2 text-sm"></i>Personal Offshore
+                    </a></li>
+                    <li><a href="business.html" class="hover:text-gray-800 transition duration-300 flex items-center">
+                        <i class="fas fa-chevron-right mr-2 text-sm"></i>Business Offshore
+                    </a></li>
+                </ul>
+            </div>
+      
+            <!-- Services -->
+            <div>
+                <h2 class="text-xl font-semibold mb-6 flex items-center">
+                    <i class="fas fa-cogs mr-2"></i>Services
+                </h2>
+                <ul class="text-gray-600 space-y-4">
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-gray-800 mr-2"></i>Online banking
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-gray-800 mr-2"></i>E-bank Statement
+                    </li>
+                </ul>
+            </div>
+      
+            <!-- Contact Info -->
+            <div>
+                <h2 class="text-xl font-semibold mb-6 flex items-center">
+                    <i class="fas fa-map-marker-alt mr-2"></i>HEAD OFFICE
+                </h2>
+                <ul class="text-gray-600 space-y-4">
+                    <li class="flex items-start">
+                        <i class="fas fa-building mt-1 mr-3"></i>
+                        <span>Forum Lane, Camana Bay, Grand Cayman</span>
+                    </li>
+                </ul>
+                <div class="mt-8 border border-gray-200 p-6 rounded-lg">
+                    <p class="text-gray-600 text-sm">
+                        This year, we've been recognized as one of the top financing institutions, offering unparalleled financial solutions.
+                    </p>
+                </div>
+            </div>
         </div>
-        <p class="text-sm text-gray-400 leading-relaxed">
-            Being a member of Beal Offshore Ltd is not like opening an account at the usual bank. You have a voice in what and how the organization is run. 
-        </p>
-      </div>
-  
-      <!-- Quick Links -->
-      <div>
-        <h2 class="text-lg font-semibold mb-4">Quick Links</h2>
-        <ul class="text-sm text-gray-400 space-y-2">
-          <li><a href="about-us.html" class="hover:text-white">About</a></li>
-          <li><a href="personal.html" class="hover:text-white">Personal Offshore</a></li>
-          <li><a href="business.html" class="hover:text-white">Business Offshore</a></li>
-        </ul>
-      </div>
-  
-      <!-- Services -->
-      <div>
-        <h2 class="text-lg font-semibold mb-4">Services</h2>
-        <ul class="text-sm text-gray-400 space-y-2">
-        <li>Online banking</li>
-        <li>E-bank Statement</li>
-        </ul>
-      </div>
-  
-      <!-- Social and Review -->
-      <div>
-        <h2 class="text-lg font-semibold mb-4">HEAD OFFICE</h2>
-        <ul class="text-sm text-gray-400 space-y-2">
-          <li>Address: Forum Lane ,Camana Bay ,Grand Cayman</li>
-        </ul>
-        <div class="mt-6 max-w-7xl">
-          <div class="bg-gray-800 p-4 rounded-lg shadow-lg">
-            <p class="text-sm text-gray-400">
-                This year, we've been recognized as one of the top financing institutions, offering unparalleled financial solutions.</p>
-          </div>
+      
+        <div class="mt-12 border-t border-gray-200 pt-8 px-4 text-center">
+            <p class="text-gray-600 text-sm">
+                © 2025 Beal Offshore Ltd. Powered by Menta Digital Marketing Inc.
+            </p>
+            <div class="flex justify-center mt-6 space-x-6">
+                <a href="#facebook" class="text-gray-600 hover:text-gray-800 transition duration-300">
+                    <i class="fab fa-facebook text-2xl"></i>
+                </a>
+                <a href="#" class="text-gray-600 hover:text-gray-800 transition duration-300">
+                    <i class="fab fa-instagram text-2xl"></i>
+                </a>
+            </div>
         </div>
-      </div>
-    </div>
-  
-    <div class="mt-10 border-t border-gray-700 pt-6 px-4 text-center text-xs text-gray-500">
-      © 2025 Beal Offshore Ltd. Powered by Menta Digital Marketing Inc.
-      <div class="flex justify-center mt-4 space-x-4">
-        <a href="#facebook" class="hover:text-white"><i class="fab fa-facebook"></i></a>
-        <a href="" class="hover:text-white" target="_blank" rel="noopener noreferrer">
-            <i class="fab fa-instagram"></i>
-        </a>
-      </div>
-    </div>
-  </footer>
+    </footer>
 
 <!-- Email Button -->
 <a href="https://wa.me/13657758413" target="_blank" class="fixed bottom-16 right-6">
@@ -800,6 +821,22 @@ overlay.onclick = closeMenu;
 <!-- Spinner -->
 <div id="spinner" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
     <div class="smart-spinner"></div>
+</div>
+
+<!-- Success Modal -->
+<div id="success-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+        <div class="text-center">
+            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-check text-2xl text-green-500"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Account Created Successfully!</h3>
+            <p class="text-gray-600 mb-6">Please check your email for verification instructions.</p>
+            <button onclick="window.location.href='login.html'" class="w-full btn-gradient text-white py-3 rounded-lg font-medium transition duration-300">
+                <i class="fas fa-sign-in-alt mr-2"></i>Proceed to Login
+            </button>
+        </div>
+    </div>
 </div>
 </body>
 

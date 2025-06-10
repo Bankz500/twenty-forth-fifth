@@ -14,6 +14,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js"></script>
     <!-- Add Firebase SDK -->
+    <!-- Include Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         
@@ -38,13 +40,13 @@
         }
         
         .btn-gradient {
-            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
             transition: all 0.3s ease;
         }
         
         .btn-gradient:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.5);
+            box-shadow: 0 10px 15px -3px rgba(26, 26, 26, 0.5);
         }
         
         .input-with-icon {
@@ -64,7 +66,7 @@
         }
         
         .brand-accent {
-            color: #1e40af;
+            color: #1a1a1a;
         }
         
         .floating-shapes div {
@@ -144,7 +146,7 @@
         }
         
         .custom-checkbox input:checked ~ .checkmark {
-            background-color: #3b82f6;
+            background-color: #1a1a1a;
         }
         
         .checkmark:after {
@@ -220,142 +222,94 @@
             position: absolute;
         }
     </style>
-  <script type="module" crossorigin src="/assets/login-JEDiKTLP.js"></script>
+  <script type="module" crossorigin src="/assets/login-aqpslAS6.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
   <link rel="modulepreload" crossorigin href="/assets/index.esm-BeIn6wDe.js">
 </head>
 <body class="font-sans antialiased" style="background-image: url('/assets/background%202-Dn1co03N.png'), linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));">
 
     <!-- Navbar -->
-<nav class="fixed top-0 left-0 right-0 bg-white bg-opacity-800 p-4 z-50">
-  <div class="container mx-auto flex items-center justify-between">
-      <div class="flex items-center justify-center w-full md:w-auto">
-          <a href="index.html">
-              <img src="/assets/LOGO-DP4bRQMr.png" alt="Beal Offshore Ltd Logo" class="h-14 w-68">
-          </a>
+    <nav class="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 p-4 z-50">
+        <div class="container mx-auto flex items-center justify-between">
+            <div class="flex items-center justify-center w-full md:w-auto">
+                <a href="index.html" class="hover-scale">
+                    <img src="/assets/LOGO-DP4bRQMr.png" alt="Beal Offshore Ltd Logo" class="h-14 w-68">
+                </a>
 
-          <!-- Mobile Menu Button -->
-          <div class="md:hidden ml-auto">
-              <button id="mobile-menu-button" class="text-blue-600 focus:outline-none">
-                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                  </svg>
-              </button>
-          </div>
-      </div>
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden ml-auto">
+                    <button id="mobile-menu-button" class="text-gray-800 focus:outline-none">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
 
-<!-- Navigation links -->
-<div class="hidden md:flex items-center space-x-8 ml-auto">
-    <a href="/" class="text-blue text-sm hover:text-blue-800">Home</a>
-    <a href="about-us.html" class="text-blue text-sm hover:text-blue-800">About us</a>
+            <!-- Navigation links -->
+            <div class="hidden md:flex items-center space-x-8 ml-auto">
+                <a href="/" class="text-gray-800 text-sm hover:text-gray-600 font-medium flex items-center transition duration-300">
+                    <i class="fas fa-home mr-2"></i>Home
+                </a>
+                <a href="about-us.html" class="text-gray-800 text-sm hover:text-gray-600 font-medium flex items-center transition duration-300">
+                    <i class="fas fa-info-circle mr-2"></i>About us
+                </a>
 
-    <!-- Personal Banking Dropdown -->
-    <div class="relative">
-        <!-- Dropdown Button -->
-        <button id="personalBankingDropdownButton" class="text-blue text-sm hover:text-blue-800 focus:outline-none">
-            Personal Offers
-        </button>
+                <!-- Personal Offers Link -->
+                <a href="personal.html" class="text-gray-800 text-sm hover:text-gray-600 font-medium flex items-center transition duration-300">
+                    <i class="fas fa-user mr-2"></i>Personal Offers
+                </a>
 
-        <!-- Dropdown Menu -->
-        <div id="personalBankingDropdownMenu" class="absolute hidden bg-blue-900 shadow-lg mt-2 w-40">
-            <a href="personal.html" class="block px-4 py-2 text-xs font-semibold text-white hover:bg-black">Personal Offshore</a>
+                <!-- Business Offers Link -->
+                <a href="business.html" class="text-gray-800 text-sm hover:text-gray-600 font-medium flex items-center transition duration-300">
+                    <i class="fas fa-building mr-2"></i>Business Offers
+                </a>
+
+                <a href="contact.html" class="text-gray-800 text-sm hover:text-gray-600 font-medium flex items-center transition duration-300">
+                    <i class="fas fa-envelope mr-2"></i>Contact
+                </a>
+                
+                <!-- Login Button -->
+                <a href="login.html" class="border border-gray-200 text-gray-800 text-sm hover:bg-gray-50 px-6 py-3 rounded-lg font-medium transition duration-300 flex items-center">
+                    <i class="fas fa-sign-in-alt mr-2"></i>Login
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Overlay -->
+    <div id="overlay" class="fixed inset-0 bg-gray-900 opacity-90 hidden z-40"></div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="fixed inset-0 bg-white shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out md:hidden z-50">
+        <div class="p-6">
+            <!-- Close Button -->
+            <button id="close-menu" class="absolute top-4 right-4 text-2xl text-gray-600">
+                ✖
+            </button>
+
+            <!-- Navigation Links -->
+            <nav class="w-full flex flex-col items-center space-y-6 mt-8">
+                <a href="/" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
+                    Home
+                </a>
+                <a href="personal.html" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
+                    Personal Offshore
+                </a>
+                <a href="business.html" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
+                    Business offshore
+                </a>
+                <a href="about-us.html" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
+                    About us
+                </a>
+                <a href="contact.html" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
+                    Contact
+                </a>
+                <!-- Login Button -->
+                <a href="login.html" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
+                    Login
+                </a>
+            </nav>
         </div>
     </div>
-
-    <!-- Business Banking Dropdown -->
-    <div class="relative">
-        <!-- Dropdown Button -->
-        <button id="businessBankingDropdownButton" class="text-blue text-sm hover:text-blue-800 focus:outline-none">
-            Business Offers
-        </button>
-
-        <!-- Dropdown Menu -->
-        <div id="businessBankingDropdownMenu" class="absolute hidden bg-blue-900 shadow-lg mt-2 w-40">
-            <a href="personal.html" class="block px-4 py-2 text-xs font-semibold text-white hover:bg-black">Business Offshore</a>
-        </div>
-    </div>
-
-    <a href="contact.html" class="text-blue text-sm hover:text-blue-800">Contact</a>
-    
-    <!-- Login Button -->
-    <a href="login.html" class="bg-blue-900 text-sm hover:bg-blue-700 text-white px-8 py-4 rounded">Login</a>
-</div>
-</div>
-</nav>
-
-<!-- JavaScript for Dropdown -->
-<script>
-    // Personal Banking Dropdown
-    const personalBankingDropdownButton = document.getElementById("personalBankingDropdownButton");
-    const personalBankingDropdownMenu = document.getElementById("personalBankingDropdownMenu");
-
-    personalBankingDropdownButton.addEventListener("click", (event) => {
-        event.stopPropagation();
-        personalBankingDropdownMenu.classList.toggle("hidden");
-    });
-
-    // Business Banking Dropdown
-    const businessBankingDropdownButton = document.getElementById("businessBankingDropdownButton");
-    const businessBankingDropdownMenu = document.getElementById("businessBankingDropdownMenu");
-
-    businessBankingDropdownButton.addEventListener("click", (event) => {
-        event.stopPropagation();
-        businessBankingDropdownMenu.classList.toggle("hidden");
-    });
-
-    // Close dropdowns if clicking outside
-    window.addEventListener("click", (event) => {
-        if (!personalBankingDropdownMenu.contains(event.target) && !personalBankingDropdownButton.contains(event.target)) {
-            personalBankingDropdownMenu.classList.add("hidden");
-        }
-        if (!businessBankingDropdownMenu.contains(event.target) && !businessBankingDropdownButton.contains(event.target)) {
-            businessBankingDropdownMenu.classList.add("hidden");
-        }
-    });
-</script>
-
-<body class="antialiased">
-    <div class="floating-shapes">
-        <div class="shape-1"></div>
-        <div class="shape-2"></div>
-        <div class="shape-3"></div>
-    </div>
-
-<!-- Overlay -->
-<div id="overlay" class="fixed inset-0 bg- opacity-90 hidden z-40"></div>
-
-<!-- Mobile Menu -->
-<div id="mobile-menu" class="fixed inset-0 bg-white shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out md:hidden z-50">
-    <div class="p-6">
-        <!-- Close Button -->
-        <button id="close-menu" class="absolute top-4 right-4 text-2xl text-gray-600">
-            ✖
-        </button>
-
-        <!-- Navigation Links -->
-        <nav class="w-full flex flex-col items-center space-y-6 mt-8">
-            <a href="/" class="w-4/5 py-3 text-center border text-black text-xs-2 font-regular bg-white rounded hover:bg-blue-900 transition">
-                Home
-            </a>
-            <a href="personal.html" class="w-4/5 py-3 text-center border text-black text-xs-2 font-medium bg-white rounded hover:bg-blue-900 transition">
-                Personal Offshore
-            </a>
-            <a href="personal.html" class="w-4/5 py-3 text-center border text-black text-xs-2 font-medium bg-white rounded hover:bg-blue-900 transition">
-                Business offshore
-            </a>
-            <a href="about-us.html" class="w-4/5 py-3 text-center border text-black text-xs-2 font-medium bg-white rounded hover:bg-blue-900 transition">
-                About us
-            </a>
-            <a href="contact.html" class="w-4/5 py-3 text-center border text-black text-xs-2 font-medium bg-white rounded hover:bg-blue-900 transition">
-                Contact
-            </a>
-            <!-- Login Button -->
-            <a href="login.html" class="w-4/5 py-3 text-center text-white text-xs-2 font-medium bg-blue-800 rounded hover:bg-blue-900 transition">
-                Login
-            </a>
-        </nav>
-    </div>
-</div>
 
 <script>
 window.onload = function () {
@@ -414,20 +368,16 @@ overlay.onclick = closeMenu;
             
             <form id="login-form" class="space-y-2">
                 <div class="input-with-icon">
-                    <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                    </svg>
+                    <i class="fas fa-envelope input-icon"></i>
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Your Email</label>
                         <input type="email" id="email" name="email" required placeholder="Enter your email"
-                            class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent">
                     </div>
                 </div>
                 
                 <div class="relative input-with-icon">
-                    <svg class="input-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                    </svg>
+                    <i class="fas fa-lock input-icon"></i>
                     <div>
                         <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
                         <div class="relative">
@@ -437,32 +387,14 @@ overlay.onclick = closeMenu;
                                 name="password" 
                                 required 
                                 placeholder="Enter your password"
-                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
                             />
                             <button type="button" onclick="togglePasswordVisibility()" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none">
-                                <svg id="passwordEyeIcon" class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                    <circle cx="12" cy="12" r="3"></circle>
-                                </svg>
+                                <i class="fas fa-eye" id="passwordEyeIcon"></i>
                             </button>
                         </div>
                     </div>
                 </div>
-                
-                <script>
-                function togglePasswordVisibility() {
-                    const passwordInput = document.getElementById("password");
-                    const eyeIcon = document.getElementById("passwordEyeIcon");
-                
-                    if (passwordInput.type === "password") {
-                        passwordInput.type = "text";
-                        eyeIcon.innerHTML = '<path d="M17.94 17.94A10.09 10.09 0 0 1 12 20c-7 0-11-8-11-8a18.66 18.66 0 0 1 3-4m3.53-2.36A10.09 10.09 0 0 1 12 4c7 0 11 8 11 8a18.3 18.3 0 0 1-1.72 2.82M15 12a3 3 0 1 0-3 3m8.17 8.17L3 3"></path>';
-                    } else {
-                        passwordInput.type = "password";
-                        eyeIcon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
-                    }
-                }
-                </script>
                 
                 <div class="flex items-center justify-between">
                     <label class="custom-checkbox">
@@ -470,28 +402,26 @@ overlay.onclick = closeMenu;
                         <input type="checkbox">
                         <span class="checkmark"></span>
                     </label>
-                    <a href="forgot-password.html" class="text-sm text-blue-600 hover:text-blue-800 font-medium transition duration-200 hover:underline">Forgot password?</a>
+                    <a href="forgot-password.html" class="text-sm text-gray-600 hover:text-gray-800 font-medium transition duration-200 hover:underline">Forgot password?</a>
                 </div>
                 
                 <button type="submit" id="login-btn" class="w-full btn-gradient text-white py-4 rounded-lg font-medium text-base transition duration-300 mt-4">
-                    Log in
+                    <i class="fas fa-sign-in-alt mr-2"></i>Log in
                 </button>
             </form>
             
             <div class="mt-8 text-center">
-                <p class="text-gray-600">Don't have an account? <a href="sign-up.html" class="text-blue-600 font-medium hover:text-blue-800 transition duration-200 hover:underline">Sign Up</a></p>
+                <p class="text-gray-600">Don't have an account? <a href="sign-up.html" class="text-gray-800 font-medium hover:text-gray-600 transition duration-200 hover:underline">Sign Up</a></p>
             </div>
         </div>
         
         <!-- Image Section -->
         <div class="hidden sm:block w-full sm:w-1/2 bg-cover bg-center relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-br from-blue-900/90 to-blue-600/80 mix-blend-multiply"></div>
+            <div class="absolute inset-0 bg-gradient-to-br from-gray-900/90 to-gray-600/80 mix-blend-multiply"></div>
             <img src="/assets/three-serious-young-businesspeople-watching-data-pc-tablet-D7HlN11E.jpg" alt="Login background" class="object-cover h-full w-full" />
             <div class="absolute inset-0 flex flex-col items-center justify-center p-10 text-white">
                 <div class="w-20 h-20 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center mb-6">
-                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                    </svg>
+                    <i class="fas fa-lock text-3xl"></i>
                 </div>
                 <h3 class="text-2xl font-bold mb-2">Secure Access</h3>
                 <p class="text-sm text-center text-white/80 mb-6">Your data is protected with industry-leading encryption standards</p>
@@ -515,15 +445,13 @@ overlay.onclick = closeMenu;
                 <p class="text-gray-600">We've sent a 6-digit code to your email</p>
             </div>
             
-            <div class="bg-blue-50 p-4 rounded-lg mb-6">
+            <div class="bg-gray-50 p-4 rounded-lg mb-6">
                 <div class="flex">
                     <div class="flex-shrink-0">
-                        <svg class="h-5 w-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
+                        <i class="fas fa-info-circle text-gray-400 text-xl"></i>
                     </div>
                     <div class="ml-3">
-                        <p class="text-sm text-blue-700">
+                        <p class="text-sm text-gray-700">
                             A verification code has been sent to <span id="email-display" class="font-bold"></span>
                         </p>
                     </div>
@@ -534,36 +462,32 @@ overlay.onclick = closeMenu;
                 <div>
                     <label for="otp" class="block text-sm font-medium text-gray-700 mb-1">Enter Verification Code</label>
                     <input type="text" id="otp" name="otp" maxlength="6" required placeholder="······"
-                        class="otp-input form-input-focus w-full border border-gray-300 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        class="otp-input form-input-focus w-full border border-gray-300 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent">
                 </div>
                 
                 <button type="submit" id="verify-otp-btn" class="w-full btn-gradient text-white py-4 rounded-lg font-medium text-base transition duration-300 mt-8">
-                    Verify & Continue
+                    <i class="fas fa-check mr-2"></i>Verify & Continue
                 </button>
             </form>
             
             <div class="mt-8 text-center">
                 <p class="text-gray-600 flex items-center justify-center">
-                    <svg class="w-5 h-5 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
+                    <i class="fas fa-clock mr-2 text-gray-400"></i>
                     Code expires in <span class="font-medium text-gray-800 mx-1">4:59</span>
                 </p>
                 <p class="mt-4">
-                    Didn't receive the code? <a href="#" id="resend-otp" class="text-blue-600 font-medium hover:text-blue-800 transition duration-200 hover:underline">Resend Code</a>
+                    Didn't receive the code? <a href="#" id="resend-otp" class="text-gray-800 font-medium hover:text-gray-600 transition duration-200 hover:underline">Resend Code</a>
                 </p>
             </div>
         </div>
         
         <!-- Image Section -->
         <div class="hidden sm:block w-full sm:w-1/2 bg-cover bg-center relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-br from-blue-900/90 to-blue-600/80 mix-blend-multiply"></div>
+            <div class="absolute inset-0 bg-gradient-to-br from-gray-900/90 to-gray-600/80 mix-blend-multiply"></div>
             <img src="/assets/happy-woman-writing-notepad-DT4biPz4.jpg" alt="OTP verification background" class="object-cover h-full w-full" />
             <div class="absolute inset-0 flex flex-col items-center justify-center p-10 text-white">
                 <div class="w-20 h-20 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center mb-6">
-                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                    </svg>
+                    <i class="fas fa-shield-alt text-3xl"></i>
                 </div>
                 <h3 class="text-2xl font-bold mb-2">Two-Step Verification</h3>
                 <p class="text-sm text-center text-white/80 mb-6">For your security, we require two-factor authentication</p>

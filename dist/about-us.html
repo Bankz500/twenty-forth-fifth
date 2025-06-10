@@ -10,107 +10,99 @@
     <link rel="icon" href="/assets/logo%20new-DPEJ_4oz.png" type="image/png">
     <!-- Include Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Include Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js"></script>
-    <!-- Add Firebase SDK -->
-  <script type="module" crossorigin src="/assets/modulepreload-polyfill-B5Qt9EMX.js"></script>
-  <script type="module" crossorigin src="/assets/index.esm-BeIn6wDe.js"></script>
+    <!-- Include Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .gradient-text {
+            background: linear-gradient(90deg, #1a1a1a 0%, #4a4a4a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hover-scale {
+            transition: transform 0.3s ease;
+        }
+        .hover-scale:hover {
+            transform: scale(1.02);
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+        }
+        .monochrome-gradient {
+            background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            border-color: #333;
+        }
+        .minimal-shadow {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .border-hover {
+            border: 1px solid #e5e5e5;
+            transition: all 0.3s ease;
+        }
+        .border-hover:hover {
+            border-color: #333;
+        }
+        .text-blue-900 { color: #1a1a1a; }
+        .bg-blue-900 { background-color: #1a1a1a; }
+        .hover\:bg-blue-800:hover { background-color: #333333; }
+        .text-blue-700 { color: #4a4a4a; }
+        .hover\:text-blue-700:hover { color: #4a4a4a; }
+    </style>
 </head>
-<body class="font-sans antialiased">
+<body class="font-sans antialiased bg-gray-50">
 
     <!-- Navbar -->
-<nav class="fixed top-0 left-0 right-0 bg-white bg-opacity-800 p-4 z-50">
-  <div class="container mx-auto flex items-center justify-between">
-      <div class="flex items-center justify-center w-full md:w-auto">
-          <a href="index.html">
-              <img src="/assets/LOGO-DP4bRQMr.png" alt="Cleaning Services Logo" class="h-14 w-68">
-          </a>
+    <nav class="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 p-4 z-50">
+        <div class="container mx-auto flex items-center justify-between">
+            <div class="flex items-center justify-center w-full md:w-auto">
+                <a href="index.html" class="hover-scale">
+                    <img src="/assets/LOGO-DP4bRQMr.png" alt="Beal Offshore Ltd Logo" class="h-14 w-68">
+                </a>
 
-          <!-- Mobile Menu Button -->
-          <div class="md:hidden ml-auto">
-              <button id="mobile-menu-button" class="text-blue-600 focus:outline-none">
-                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                  </svg>
-              </button>
-          </div>
-      </div>
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden ml-auto">
+                    <button id="mobile-menu-button" class="text-gray-800 focus:outline-none">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
 
-<!-- Navigation links -->
-<div class="hidden md:flex items-center space-x-8 ml-auto">
-    <a href="/" class="text-blue text-sm hover:text-blue-800">Home</a>
-    <a href="about-us.html" class="text-blue text-sm hover:text-blue-800">About us</a>
+            <!-- Navigation links -->
+            <div class="hidden md:flex items-center space-x-8 ml-auto">
+                <a href="/" class="text-gray-800 text-sm hover:text-gray-600 font-medium flex items-center transition duration-300">
+                    <i class="fas fa-home mr-2"></i>Home
+                </a>
+                <a href="about-us.html" class="text-gray-800 text-sm hover:text-gray-600 font-medium flex items-center transition duration-300">
+                    <i class="fas fa-info-circle mr-2"></i>About us
+                </a>
 
-    <!-- Personal Banking Dropdown -->
-    <div class="relative">
-        <!-- Dropdown Button -->
-        <button id="personalBankingDropdownButton" class="text-blue text-sm hover:text-blue-800 focus:outline-none">
-            Personal Offers
-        </button>
+                <!-- Personal Offers Link -->
+                <a href="personal.html" class="text-gray-800 text-sm hover:text-gray-600 font-medium flex items-center transition duration-300">
+                    <i class="fas fa-user mr-2"></i>Personal Offers
+                </a>
 
-        <!-- Dropdown Menu -->
-        <div id="personalBankingDropdownMenu" class="absolute hidden bg-blue-900 shadow-lg mt-2 w-40">
-            <a href="personal.html" class="block px-4 py-2 text-xs font-semibold text-white hover:bg-black">Personal Offshore</a>
+                <!-- Business Offers Link -->
+                <a href="business.html" class="text-gray-800 text-sm hover:text-gray-600 font-medium flex items-center transition duration-300">
+                    <i class="fas fa-building mr-2"></i>Business Offers
+                </a>
+
+                <a href="contact.html" class="text-gray-800 text-sm hover:text-gray-600 font-medium flex items-center transition duration-300">
+                    <i class="fas fa-envelope mr-2"></i>Contact
+                </a>
+                
+                <!-- Login Button -->
+                <a href="login.html" class="border border-gray-200 text-gray-800 text-sm hover:bg-gray-50 px-6 py-3 rounded-lg font-medium transition duration-300 flex items-center">
+                    <i class="fas fa-sign-in-alt mr-2"></i>Login
+                </a>
+            </div>
         </div>
-    </div>
-
-    <!-- Business Banking Dropdown -->
-    <div class="relative">
-        <!-- Dropdown Button -->
-        <button id="businessBankingDropdownButton" class="text-blue text-sm hover:text-blue-800 focus:outline-none">
-            Business Offers
-        </button>
-
-        <!-- Dropdown Menu -->
-        <div id="businessBankingDropdownMenu" class="absolute hidden bg-blue-900 shadow-lg mt-2 w-40">
-            <a href="personal.html" class="block px-4 py-2 text-xs font-semibold text-white hover:bg-black">Business Offshore</a>
-        </div>
-    </div>
-
-    <a href="contact.html" class="text-blue text-sm hover:text-blue-800">Contact</a>
-    
-    <!-- Login Button -->
-    <a href="login.html" class="bg-blue-900 text-sm hover:bg-blue-700 text-white px-8 py-4 rounded">Login</a>
-</div>
-</div>
-</nav>
-
-<!-- JavaScript for Dropdown -->
-<script>
-    // Personal Banking Dropdown
-    const personalBankingDropdownButton = document.getElementById("personalBankingDropdownButton");
-    const personalBankingDropdownMenu = document.getElementById("personalBankingDropdownMenu");
-
-    personalBankingDropdownButton.addEventListener("click", (event) => {
-        event.stopPropagation();
-        personalBankingDropdownMenu.classList.toggle("hidden");
-    });
-
-    // Business Banking Dropdown
-    const businessBankingDropdownButton = document.getElementById("businessBankingDropdownButton");
-    const businessBankingDropdownMenu = document.getElementById("businessBankingDropdownMenu");
-
-    businessBankingDropdownButton.addEventListener("click", (event) => {
-        event.stopPropagation();
-        businessBankingDropdownMenu.classList.toggle("hidden");
-    });
-
-    // Close dropdowns if clicking outside
-    window.addEventListener("click", (event) => {
-        if (!personalBankingDropdownMenu.contains(event.target) && !personalBankingDropdownButton.contains(event.target)) {
-            personalBankingDropdownMenu.classList.add("hidden");
-        }
-        if (!businessBankingDropdownMenu.contains(event.target) && !businessBankingDropdownButton.contains(event.target)) {
-            businessBankingDropdownMenu.classList.add("hidden");
-        }
-    });
-</script>
-
-
-
-    <!-- Overlay -->
-    <div id="overlay" class="fixed inset-0 bg-gray-900 opacity-90 hidden z-40"></div>
+    </nav>
 
     <!-- Mobile Menu -->
     <div id="mobile-menu" class="fixed inset-0 bg-white shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out md:hidden z-50">
@@ -122,303 +114,352 @@
 
             <!-- Navigation Links -->
             <nav class="w-full flex flex-col items-center space-y-6 mt-8">
-                <a href="/" class="w-4/5 py-3 text-center border text-black text-xs-2 font-regular bg-white rounded hover:bg-blue-900 transition">
+                <a href="/" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
                     Home
                 </a>
-                <a href="personal.html" class="w-4/5 py-3 text-center border text-black text-xs-2 font-medium bg-white rounded hover:bg-blue-900 transition">
+                <a href="personal.html" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
                     Personal Offshore
                 </a>
-                <a href="personal.html" class="w-4/5 py-3 text-center border text-black text-xs-2 font-medium bg-white rounded hover:bg-blue-900 transition">
+                <a href="business.html" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
                     Business offshore
                 </a>
-                <a href="about-us.html" class="w-4/5 py-3 text-center border text-black text-xs-2 font-medium bg-white rounded hover:bg-blue-900 transition">
+                <a href="about-us.html" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
                     About us
                 </a>
-                <a href="contact.html" class="w-4/5 py-3 text-center border text-black text-xs-2 font-medium bg-white rounded hover:bg-blue-900 transition">
+                <a href="contact.html" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
                     Contact
                 </a>
                 <!-- Login Button -->
-                <a href="login.html" class="w-4/5 py-3 text-center text-white text-xs-2 font-medium bg-blue-800 rounded hover:bg-blue-900 transition">
+                <a href="login.html" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
                     Login
                 </a>
             </nav>
         </div>
     </div>
 
-    <script>
-    window.onload = function () {
-        const splashScreen = document.getElementById('splash-screen');
-        setTimeout(() => {
-            splashScreen.style.display = 'none'; // Hide the splash screen
-            document.body.style.overflow = 'auto'; // Restore scroll
-        }, 4000); // Adjust time to match animation duration
-    };
-
-    const menu = document.getElementById('mobile-menu');
-    const overlay = document.getElementById('overlay');
-    const mobileMenuButton = document.getElementById('mobile-menu-button');
-    const closeMenuButton = document.getElementById('close-menu');
-
-    // Function to open the menu
-    function openMenu() {
-        menu.classList.remove('translate-x-full');
-        overlay.classList.add('active');
-        document.body.style.overflow = 'hidden'; // Disable scrolling
-    }
-
-    // Function to close the menu
-    function closeMenu() {
-        menu.classList.add('translate-x-full');
-        overlay.classList.remove('active');
-        document.body.style.overflow = ''; // Restore scrolling
-    }
-
-    // Toggle mobile menu visibility
-    mobileMenuButton.onclick = openMenu;
-    closeMenuButton.onclick = closeMenu;
-
-    // Close menu when clicking the overlay
-    overlay.onclick = closeMenu;
-    </script>
-</body>
-
-<!-- Hero Section -->
-<div class="container mx-auto flex flex-col md:flex-row items-center justify-between px-4 py-8 md:px-12 md:py-16 bg-white mt-20">
-
-    <!-- Text Section -->
-    <div class="w-full md:w-1/2 mb-8 md:mb-0">
-        <p class="text-lg font-semibold mb-6 text-center md:text-left">
-            ABOUT US
-        </p>
-        <h1 class="text-3xl md:text-3xl font-bold text-gray-800 mb-4 text-center md:text-left">
-            USING TECHNOLOGY TO CHANGE FINANCING AND BEYOND
-        </h1>
-        <p class="text-base md:text-lg text-gray-700 mb-6 text-center md:text-left">
-            Beal Offshore Ltd was founded as a subsidiary financial institution of Beal Bank LLC, with an 
-            understanding that technology can and will change financing.
-        </p>
-        <div class="flex justify-center md:justify-start">
-            <a href="sign-up.html">
-                <button class="bg-blue-900 hover:bg-blue-800 text-white font-semibold py-8 px-6 rounded">
-                    Open an Account
+    <!-- Hero Section -->
+    <div class="container mx-auto flex flex-col md:flex-row items-center justify-between px-4 py-8 md:px-12 md:py-16 bg-white mt-20">
+        <!-- Text Section -->
+        <div class="w-full md:w-1/2 mb-8 md:mb-0">
+            <p class="text-lg font-semibold mb-6 text-gray-800 flex items-center">
+                <i class="fas fa-info-circle mr-2"></i>ABOUT US
+            </p>
+            <h1 class="text-5xl font-bold text-gray-800 mb-4">USING TECHNOLOGY TO CHANGE FINANCING AND BEYOND</h1>
+            <p class="text-lg text-gray-600 mb-6">
+                Beal Offshore Ltd was founded as a subsidiary financial institution of Beal Bank LLC, with an 
+                understanding that technology can and will change financing.
+            </p>
+            <a href="sign-up.html" class="inline-block">
+                <button class="border-hover bg-white text-gray-800 font-semibold py-4 px-8 rounded-lg transition duration-300 flex items-center">
+                    <i class="fas fa-user-plus mr-2"></i>Open an Account
                 </button>
             </a>
         </div>
-    </div>
 
-    <!-- Image Section -->
-    <div class="w-full md:w-1/2 flex justify-center md:justify-end">
-        <div class="relative">
-            <img src="/assets/13-CHpTpPqk.png" alt="Hero Image" class="w-full max-w-sm md:max-w-full h-auto rounded-lg shadow-xl">
-        </div>
-    </div>
-</div>
-
-
-
-
-<!-- Services Section -->
-<div class="bg-white py-16 px-4 mt-24">
-    <div class="max-w-7xl mx-auto">
-        <!-- Header Section -->
-        <div class="text-center mb-12">
-            <h3 class="text-xl font-semibold text-gray-700 mb-2">Our Services</h3>
-            <h2 class="text-1xl md:text-1xl font-regular text-gray-800">We help you see the world differently, discover opportunities you may never have imagined and achieve results that bridge what is with what can be.</h2>
-        </div>
-
-        <!-- Services Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8">
-            <!-- Service Card -->
-            <div class="flex flex-col items-center text-center bg-white shadow rounded-lg p-4">
-                <img src="/assets/1-D-Fjh5xo.png" alt="Commercial Cleaning" class="w-full h-32 object-contain mb-4 rounded-md">
-                <h4 class="text-lg font-semibold text-gray-800 mb-2">Online Deposit</h4>
-                <p class="text-gray-600 text-sm">
-                    Explore the power of simpler and smarter banking. Bank online with over 250 services. Explore the power of simpler and smarter banking.
-                </p>
-            </div>
-
-            <!-- Service Card -->
-            <div class="flex flex-col items-center text-center bg-white shadow rounded-lg p-4">
-                <img src="/assets/2-Cy5ykBtc.png" alt="Residential Cleaning" class="w-full h-32 object-contain mb-4 rounded-md">
-                <h4 class="text-lg font-semibold text-gray-800 mb-2">Loans</h4>
-                <p class="text-gray-600 text-sm">
-                    Whether you want to do some home improvements, or turn existing debts into one easy monthly payment, a personal loan could be the boost you need.
-                </p>
-            </div>
-
-            <!-- Service Card -->
-            <div class="flex flex-col items-center text-center bg-white shadow rounded-lg p-4">
-                <img src="/assets/4-Bb1CZraK.png" alt="Steam Cleaning" class="w-full h-32 object-contain mb-4 rounded-md">
-                <h4 class="text-lg font-semibold text-gray-800 mb-2">Private financing</h4>
-                <p class="text-gray-600 text-sm">
-                    Every service you'd expect from a premium finance and more. Make the most of your finances with our range of instant access, ISA, and fixed-term deposits.
-                </p>
-            </div>
-
-            <!-- Service Card -->
-            <div class="flex flex-col items-center text-center bg-white shadow rounded-lg p-4">
-                <img src="/assets/3-CspTPAby.png" alt="Window Cleaning" class="w-full h-32 object-contain mb-4 rounded-md">
-                <h4 class="text-lg font-semibold text-gray-800 mb-2">Easy savings finance</h4>
-                <p class="text-gray-600 text-sm">
-                    Want to save but don't fancy locking your money away for a year or more? One of our easy access savings accounts could be just what you're after.
-                </p>
-            </div>
-
-            <!-- Service Card -->
-            <div class="flex flex-col items-center text-center bg-white shadow rounded-lg p-4">
-                <img src="/assets/5-9nUuizqz.png" alt="Janitorial Services" class="w-full h-32 object-contain mb-4 rounded-md">
-                <h4 class="text-lg font-semibold text-gray-800 mb-2">Investing made easy</h4>
-                <p class="text-gray-600 text-sm">
-                    We have a range of investment options to suit different levels of experience. Our specialists can manage your investment for you.
-                </p>
+        <!-- Image Section -->
+        <div class="w-full md:w-1/2 flex justify-center md:justify-end">
+            <div class="relative hover-scale">
+                <img src="/assets/13-CHpTpPqk.png" alt="Hero Image" class="w-full h-auto rounded-lg">
             </div>
         </div>
     </div>
-</div>
 
+    <!-- Services Section -->
+    <section class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Our Services</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                    We help you see the world differently, discover opportunities you may never have imagined and achieve results that bridge what is with what can be.
+                </p>
+            </div>
 
-<div class="container mx-auto px-4 py-10">
-    <div class="flex flex-wrap items-center justify-center bg-gray-50 p-10 rounded-lg">
-      <!-- Image Section -->
-      <div class="w-full lg:w-1/2">
-        <img src="/assets/21-sksb8W_V.png" alt="Office Building" class="w-full rounded-lg shadow-md">
-      </div>
-  
-      <!-- Text Section -->
-      <div class="w-full lg:w-1/2 p-8 text-center">
-        <p class="text-red-500 font-semibold uppercase text-sm">Get Notified for the Latest News</p>
-        <h2 class="text-3xl font-bold mb-4 px-1">Advancing a culture of belonging where everyone can thrive</h2>
-        <p class="text-gray-600 mb-6">
-            Business Resource Groups (BRGs) play a central role in advancing diversity, inclusion and belonging at Beal Offshore Ltd. They deepen our understanding of different cultures, people and experiences, and empower associates to expand their networks and accelerate their growth and development. 
-        </p>
-        <a href="login.html" class="inline-flex bg-blue-900 text-white hover:bg-blue-800 text-white font-medium py-4 px-4 rounded">
-          Internet Fianancing
-        </a>
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8">
+                <!-- Service Cards -->
+                <div class="border-hover rounded-lg p-6 card-hover">
+                    <div class="flex items-center mb-4">
+                        <img src="/assets/1-D-Fjh5xo.png" alt="Online Deposit" class="w-16 h-16 object-contain mr-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Online Deposit</h3>
+                    </div>
+                    <p class="text-gray-600 text-sm">
+                        Explore the power of simpler and smarter banking. Bank online with over 250 services.
+                    </p>
+                </div>
+
+                <div class="border-hover rounded-lg p-6 card-hover">
+                    <div class="flex items-center mb-4">
+                        <img src="/assets/2-Cy5ykBtc.png" alt="Loans" class="w-16 h-16 object-contain mr-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Loans</h3>
+                    </div>
+                    <p class="text-gray-600 text-sm">
+                        Whether you want to do some home improvements, or turn existing debts into one easy monthly payment.
+                    </p>
+                </div>
+
+                <div class="border-hover rounded-lg p-6 card-hover">
+                    <div class="flex items-center mb-4">
+                        <img src="/assets/4-Bb1CZraK.png" alt="Private financing" class="w-16 h-16 object-contain mr-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Private financing</h3>
+                    </div>
+                    <p class="text-gray-600 text-sm">
+                        Every service you'd expect from a premium finance and more. Make the most of your finances.
+                    </p>
+                </div>
+
+                <div class="border-hover rounded-lg p-6 card-hover">
+                    <div class="flex items-center mb-4">
+                        <img src="/assets/3-CspTPAby.png" alt="Easy savings finance" class="w-16 h-16 object-contain mr-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Easy savings finance</h3>
+                    </div>
+                    <p class="text-gray-600 text-sm">
+                        Want to save but don't fancy locking your money away? One of our easy access savings accounts could be just what you're after.
+                    </p>
+                </div>
+
+                <div class="border-hover rounded-lg p-6 card-hover">
+                    <div class="flex items-center mb-4">
+                        <img src="/assets/5-9nUuizqz.png" alt="Investing made easy" class="w-16 h-16 object-contain mr-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Investing made easy</h3>
+                    </div>
+                    <p class="text-gray-600 text-sm">
+                        We have a range of investment options to suit different levels of experience. Our specialists can manage your investment for you.
+                    </p>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </div>
-  
+    </section>
 
+    <!-- Culture Section -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-wrap items-center justify-center bg-gray-50 p-10 rounded-lg">
+                <!-- Image Section -->
+                <div class="w-full lg:w-1/2">
+                    <img src="/assets/21-sksb8W_V.png" alt="Office Building" class="w-full rounded-lg hover-scale">
+                </div>
 
-  <footer class="bg-black text-white py-10 mt-32">
-    <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
-      <!-- Company Info -->
-      <div>
-        <div class="flex items-center mb-4">
-          <img src="/assets/LOGO-DP4bRQMr.png" alt="Beal Offshore Ltd Logo" class="w-15 h-12 mr-1" />
-          <div>
-            <h1 class="text-lg font-semibold"></h1>
-            <p class="text-sm text-gray-400"></p>
-          </div>
+                <!-- Text Section -->
+                <div class="w-full lg:w-1/2 p-8">
+                    <p class="text-gray-800 font-semibold uppercase text-sm flex items-center mb-4">
+                        <i class="fas fa-bell mr-2"></i>Get Notified for the Latest News
+                    </p>
+                    <h2 class="text-3xl font-bold text-gray-800 mb-6">Advancing a culture of belonging where everyone can thrive</h2>
+                    <p class="text-gray-600 mb-8">
+                        Business Resource Groups (BRGs) play a central role in advancing diversity, inclusion and belonging at Beal Offshore Ltd. They deepen our understanding of different cultures, people and experiences, and empower associates to expand their networks and accelerate their growth and development.
+                    </p>
+                    <a href="login.html" class="inline-flex items-center border border-gray-200 text-gray-800 hover:bg-gray-50 font-medium py-4 px-8 rounded-lg transition duration-300">
+                        <i class="fas fa-lock mr-2"></i>Internet Financing
+                    </a>
+                </div>
+            </div>
         </div>
-        <p class="text-sm text-gray-400 leading-relaxed">
-            Being a member of Beal Offshore Ltd is not like opening an account at the usual bank. You have a voice in what and how the organization is run. 
-        </p>
-      </div>
-  
-      <!-- Quick Links -->
-      <div>
-        <h2 class="text-lg font-semibold mb-4">Quick Links</h2>
-        <ul class="text-sm text-gray-400 space-y-2">
-          <li><a href="about-us.html" class="hover:text-white">About</a></li>
-          <li><a href="personal.html" class="hover:text-white">Personal Offshore</a></li>
-          <li><a href="business.html" class="hover:text-white">Business Offshore</a></li>
-        </ul>
-      </div>
-  
-      <!-- Services -->
-      <div>
-        <h2 class="text-lg font-semibold mb-4">Services</h2>
-        <ul class="text-sm text-gray-400 space-y-2">
-        <li>Online banking</li>
-        <li>E-bank Statement</li>
-        </ul>
-      </div>
-  
-      <!-- Social and Review -->
-      <div>
-        <h2 class="text-lg font-semibold mb-4">HEAD OFFICE</h2>
-        <ul class="text-sm text-gray-400 space-y-2">
-          <li>Address: Forum Lane ,Camana Bay ,Grand Cayman</li>
-        </ul>
-        <div class="mt-6 max-w-7xl">
-          <div class="bg-gray-800 p-4 rounded-lg shadow-lg">
-            <p class="text-sm text-gray-400">
-                This year, we've been recognized as one of the top financing institutions, offering unparalleled financial solutions.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  
-    <div class="mt-10 border-t border-gray-700 pt-6 px-4 text-center text-xs text-gray-500">
-      © 2025 Beal Offshore Ltd. Powered by Menta Digital Marketing Inc.
-      <div class="flex justify-center mt-4 space-x-4">
-        <a href="#facebook" class="hover:text-white"><i class="fab fa-facebook"></i></a>
-        <a href="" class="hover:text-white" target="_blank" rel="noopener noreferrer">
-            <i class="fab fa-instagram"></i>
-        </a>
-      </div>
-    </div>
-  </footer>
+    </section>
 
-<!-- Email Button -->
-<a href="https://wa.me/13657758413" target="_blank" class="fixed bottom-16 right-6">
-    <img src="/assets/Chat%20bot-BXzxOU0N.png" alt="Chat with us on Telegram" class="w-16 h-18">
-</a>
+    <!-- Bank History & Security Section -->
+    <section class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Our Commitment to Excellence</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                    Since 2010, we have been providing secure and reliable offshore banking services to clients worldwide.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- History -->
+                <div class="border-hover rounded-lg p-6 card-hover">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-history text-2xl text-gray-800 mr-4"></i>
+                        <h3 class="text-lg font-semibold text-gray-800">Our History</h3>
+                    </div>
+                    <p class="text-gray-600 text-sm">
+                        Founded as a subsidiary of Beal Bank LLC, we have grown to become a trusted name in offshore banking, serving clients across multiple jurisdictions with integrity and professionalism.
+                    </p>
+                </div>
+
+                <!-- Regulatory Compliance -->
+                <div class="border-hover rounded-lg p-6 card-hover">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-shield-alt text-2xl text-gray-800 mr-4"></i>
+                        <h3 class="text-lg font-semibold text-gray-800">Regulatory Compliance</h3>
+                    </div>
+                    <p class="text-gray-600 text-sm">
+                        We maintain strict compliance with international banking regulations and anti-money laundering standards, ensuring the highest level of regulatory adherence.
+                    </p>
+                </div>
+
+                <!-- Security Measures -->
+                <div class="border-hover rounded-lg p-6 card-hover">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-lock text-2xl text-gray-800 mr-4"></i>
+                        <h3 class="text-lg font-semibold text-gray-800">Security Measures</h3>
+                    </div>
+                    <p class="text-gray-600 text-sm">
+                        Our multi-layered security protocols and advanced encryption technologies protect your assets and personal information at all times.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Additional Information -->
+            <div class="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Banking Licenses -->
+                <div class="border-hover rounded-lg p-6 card-hover">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-certificate text-2xl text-gray-800 mr-4"></i>
+                        <h3 class="text-lg font-semibold text-gray-800">Licensed & Regulated</h3>
+                    </div>
+                    <ul class="text-gray-600 text-sm space-y-2">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-gray-800 mr-2"></i>
+                            Licensed by Cayman Islands Monetary Authority
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-gray-800 mr-2"></i>
+                            Compliant with FATCA regulations
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-gray-800 mr-2"></i>
+                            Adheres to international banking standards
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Client Protection -->
+                <div class="border-hover rounded-lg p-6 card-hover">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-user-shield text-2xl text-gray-800 mr-4"></i>
+                        <h3 class="text-lg font-semibold text-gray-800">Client Protection</h3>
+                    </div>
+                    <ul class="text-gray-600 text-sm space-y-2">
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-gray-800 mr-2"></i>
+                            Strict confidentiality protocols
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-gray-800 mr-2"></i>
+                            Secure online banking platform
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-check text-gray-800 mr-2"></i>
+                            Dedicated relationship managers
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white text-gray-800 py-16 mt-32 border-t border-gray-200">
+        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-12">
+            <!-- Company Info -->
+            <div>
+                <div class="flex items-center mb-6">
+                    <img src="/assets/LOGO-DP4bRQMr.png" alt="Beal Offshore Ltd Logo" class="w-15 h-12 mr-3" />
+                </div>
+                <p class="text-gray-600 leading-relaxed">
+                    Being a member of Beal Offshore Ltd is not like opening an account at the usual bank. You have a voice in what and how the organization is run.
+                </p>
+            </div>
+
+            <!-- Quick Links -->
+            <div>
+                <h2 class="text-xl font-semibold mb-6 flex items-center">
+                    <i class="fas fa-link mr-2"></i>Quick Links
+                </h2>
+                <ul class="text-gray-600 space-y-4">
+                    <li><a href="about-us.html" class="hover:text-gray-800 transition duration-300 flex items-center">
+                        <i class="fas fa-chevron-right mr-2 text-sm"></i>About
+                    </a></li>
+                    <li><a href="personal.html" class="hover:text-gray-800 transition duration-300 flex items-center">
+                        <i class="fas fa-chevron-right mr-2 text-sm"></i>Personal Offshore
+                    </a></li>
+                    <li><a href="business.html" class="hover:text-gray-800 transition duration-300 flex items-center">
+                        <i class="fas fa-chevron-right mr-2 text-sm"></i>Business Offshore
+                    </a></li>
+                </ul>
+            </div>
+
+            <!-- Services -->
+            <div>
+                <h2 class="text-xl font-semibold mb-6 flex items-center">
+                    <i class="fas fa-cogs mr-2"></i>Services
+                </h2>
+                <ul class="text-gray-600 space-y-4">
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-gray-800 mr-2"></i>Online banking
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-gray-800 mr-2"></i>E-bank Statement
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Contact Info -->
+            <div>
+                <h2 class="text-xl font-semibold mb-6 flex items-center">
+                    <i class="fas fa-map-marker-alt mr-2"></i>HEAD OFFICE
+                </h2>
+                <ul class="text-gray-600 space-y-4">
+                    <li class="flex items-start">
+                        <i class="fas fa-building mt-1 mr-3"></i>
+                        <span>Forum Lane, Camana Bay, Grand Cayman</span>
+                    </li>
+                </ul>
+                <div class="mt-8 border border-gray-200 p-6 rounded-lg">
+                    <p class="text-gray-600 text-sm">
+                        This year, we've been recognized as one of the top financing institutions, offering unparalleled financial solutions.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-12 border-t border-gray-200 pt-8 px-4 text-center">
+            <p class="text-gray-600 text-sm">
+                © 2025 Beal Offshore Ltd. Powered by Menta Digital Marketing Inc.
+            </p>
+            <div class="flex justify-center mt-6 space-x-6">
+                <a href="#facebook" class="text-gray-600 hover:text-gray-800 transition duration-300">
+                    <i class="fab fa-facebook text-2xl"></i>
+                </a>
+                <a href="#" class="text-gray-600 hover:text-gray-800 transition duration-300">
+                    <i class="fab fa-instagram text-2xl"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Button -->
+    <a href="https://wa.me/13657758413" target="_blank" class="fixed bottom-16 right-6 hover-scale">
+        <img src="/assets/Chat%20bot-BXzxOU0N.png" alt="Chat with us on WhatsApp" class="w-16 h-18">
+    </a>
+
+    <!-- Include Font Awesome -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+    <!-- Add JavaScript for mobile menu and dropdowns -->
+    <script>
+        // Mobile menu functionality
+        const menu = document.getElementById('mobile-menu');
+        const overlay = document.getElementById('overlay');
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const closeMenuButton = document.getElementById('close-menu');
+
+        function openMenu() {
+            menu.classList.remove('translate-x-full');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMenu() {
+            menu.classList.add('translate-x-full');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        mobileMenuButton.onclick = openMenu;
+        closeMenuButton.onclick = closeMenu;
+        overlay.onclick = closeMenu;
+    </script>
 </body>
-</body>
-</html>
-
-<!-- Firebase Configuration -->
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-<script>
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyABYV12B7RM2ZCD2G1lFTLpgJwflJFwEXY",
-  authDomain: "beal-offshore.firebaseapp.com",
-  projectId: "beal-offshore",
-  storageBucket: "beal-offshore.firebasestorage.app",
-  messagingSenderId: "1091834410162",
-  appId: "1:1091834410162:web:56285433b5751e681745ab",
-  measurementId: "G-CT463F3T6J"
-};
-
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-
-    // Function to sign up a user
-    function signUp(email, password) {
-        auth.createUserWithEmailAndPassword(email, password)
-            .then((userCredential) => {
-                // Signed up successfully
-                const user = userCredential.user;
-                console.log('User signed up:', user);
-            })
-            .catch((error) => {
-                const errorCode = error.code;
-                const errorMessage = error.message;
-                console.error('Error during sign up:', errorCode, errorMessage);
-            });
-    }
-
-    // Function to log in a user
-    function logIn(email, password) {
-        auth.signInWithEmailAndPassword(email, password)
-            .then((userCredential) => {
-                // Logged in successfully
-                const user = userCredential.user;
-                console.log('User logged in:', user);
-            })
-            .catch((error) => {
-                const errorCode = error.code;
-                const errorMessage = error.message;
-                console.error('Error during login:', errorCode, errorMessage);
-            });
-    }
-</script>
-
 </html>
