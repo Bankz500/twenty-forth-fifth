@@ -113,7 +113,7 @@
                 <button id="close-menu" class="absolute top-4 right-4 text-2xl text-gray-600">
                     ✖
                 </button>
-    
+
                 <!-- Navigation Links -->
                 <nav class="w-full flex flex-col items-center space-y-6 mt-8">
                     <a href="/" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
@@ -138,15 +138,19 @@
                 </nav>
             </div>
         </div>
+        <!-- Mobile Menu Overlay -->
+        <div id="overlay" class="fixed inset-0 bg-black bg-opacity-40 hidden z-40"></div>
     </div>
 
     <script>
     window.onload = function () {
         const splashScreen = document.getElementById('splash-screen');
         setTimeout(() => {
-            splashScreen.style.display = 'none'; // Hide the splash screen
-            document.body.style.overflow = 'auto'; // Restore scroll
-        }, 4000); // Adjust time to match animation duration
+            if (splashScreen) {
+                splashScreen.style.display = 'none';
+            }
+            document.body.style.overflow = 'auto';
+        }, 4000);
     };
 
     const menu = document.getElementById('mobile-menu');
@@ -157,23 +161,23 @@
     // Function to open the menu
     function openMenu() {
         menu.classList.remove('translate-x-full');
-        overlay.classList.add('active');
-        document.body.style.overflow = 'hidden'; // Disable scrolling
+        if (overlay) overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
     }
 
     // Function to close the menu
     function closeMenu() {
         menu.classList.add('translate-x-full');
-        overlay.classList.remove('active');
-        document.body.style.overflow = ''; // Restore scrolling
+        if (overlay) overlay.classList.remove('active');
+        document.body.style.overflow = '';
     }
 
     // Toggle mobile menu visibility
-    mobileMenuButton.onclick = openMenu;
-    closeMenuButton.onclick = closeMenu;
+    if (mobileMenuButton) mobileMenuButton.onclick = openMenu;
+    if (closeMenuButton) closeMenuButton.onclick = closeMenu;
 
     // Close menu when clicking the overlay
-    overlay.onclick = closeMenu;
+    if (overlay) overlay.onclick = closeMenu;
     </script>
 
     <!-- Hero Section -->
@@ -351,6 +355,24 @@
                     <a href="https://invest-wise-inc.web.app/index.html" class="mt-6 block text-center bg-gray-900 text-white py-3 rounded-lg hover:bg-gray-800 transition duration-300">
                         Open Account
                     </a>
+                </div>
+
+                <!-- Joint Account -->
+                <div class="bg-white rounded-xl p-8 shadow-lg card-hover">
+                    <div class="flex justify-center mb-6">
+                        <div class="bg-gray-100 rounded-full p-4">
+                            <i class="fas fa-users text-3xl text-gray-800"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4 text-center">Joint Account</h3>
+                    <ul class="space-y-3 text-gray-600">
+                        <li class="flex items-center"><i class="fas fa-check text-green-600 mr-2"></i>2–3 account holders</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-600 mr-2"></i>Shared access and controls</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-600 mr-2"></i>Separate contact details</li>
+                    </ul>
+                    <button id="open-joint-modal-btn" class="mt-6 w-full text-center bg-gray-900 text-white py-3 rounded-lg hover:bg-gray-800 transition duration-300">
+                        Open Joint Account
+                    </button>
                 </div>
             </div>
         </div>
@@ -573,6 +595,245 @@
         </div>
     </div>
 
+<!-- Modern Joint Account Modal - Copy this into your index.html -->
+<div id="joint-modal" class="fixed inset-0 z-50 hidden">
+    <div id="joint-backdrop" class="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm"></div>
+            <div class="relative mx-auto my-4 md:my-8 max-w-[95vw] md:max-w-4xl bg-white rounded-2xl shadow-2xl p-0 overflow-hidden max-h-[95vh] md:max-h-[90vh]">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-gray-900 to-gray-800 text-white p-4 md:p-8">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center space-x-2 md:space-x-4">
+                        <div class="bg-white bg-opacity-20 rounded-full p-2 md:p-3">
+                            <i class="fas fa-users text-xl md:text-2xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg md:text-2xl font-bold">Open a Joint Account</h3>
+                            <p class="text-gray-300 text-xs md:text-sm mt-1">Create a shared financial future together</p>
+                        </div>
+                    </div>
+                    <button id="close-joint-modal-btn" class="text-white hover:text-gray-300 transition-colors duration-200 p-2 rounded-full hover:bg-white hover:bg-opacity-20">
+                        <i class="fas fa-times text-lg md:text-xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Form Container -->
+            <div class="p-4 md:p-8 overflow-y-auto max-h-[calc(95vh-120px)] md:max-h-[calc(90vh-140px)]">
+            <div class="mb-6 md:mb-8 p-4 md:p-6 bg-blue-50 border border-blue-200 rounded-xl">
+                <div class="flex items-start space-x-2 md:space-x-3">
+                    <i class="fas fa-info-circle text-blue-600 text-base md:text-lg mt-0.5"></i>
+                    <div class="text-blue-800">
+                        <p class="font-medium mb-1 text-sm md:text-base">Important Information</p>
+                        <p class="text-xs md:text-sm">Create a joint account with 2–3 holders. The principal holder's email will be used to create the secure login. Business information is optional unless you select a Business account type.</p>
+                    </div>
+                </div>
+            </div>
+
+            <form id="joint-account-form" class="space-y-6 md:space-y-8">
+                <!-- Account Holders Section -->
+                <div class="bg-gray-50 rounded-xl p-4 md:p-6">
+                    <div class="flex items-center space-x-2 md:space-x-3 mb-4 md:mb-6">
+                        <div class="bg-gray-800 rounded-full p-2">
+                            <i class="fas fa-user-friends text-white text-sm"></i>
+                        </div>
+                        <h4 class="text-base md:text-lg font-semibold text-gray-800">Account Holders</h4>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 gap-4 md:gap-6">
+                        <div>
+                            <label for="holders-count" class="block text-sm font-semibold text-gray-700 mb-2">Number of Account Holders</label>
+                            <select id="holders-count" class="w-full border-2 border-gray-200 rounded-xl p-3 md:p-4 text-gray-800 bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200">
+                                <option value="2" selected>2 Account Holders</option>
+                                <option value="3">3 Account Holders</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-4 md:gap-6 mt-4 md:mt-6">
+                        <div class="space-y-3 md:space-y-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Primary Holder Name</label>
+                                <div class="relative">
+                                    <input id="holder-name-1" type="text" required class="w-full border-2 border-gray-200 rounded-xl p-3 md:p-4 pl-10 md:pl-12 text-gray-800 bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200" placeholder="Enter primary holder name" />
+                                    <i class="fas fa-user absolute left-3 md:left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Primary Holder Email</label>
+                                <div class="relative">
+                                    <input id="principal-email" type="email" required class="w-full border-2 border-gray-200 rounded-xl p-3 md:p-4 pl-10 md:pl-12 text-gray-800 bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200" placeholder="primary@example.com" />
+                                    <i class="fas fa-envelope absolute left-3 md:left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Primary Holder Phone</label>
+                                <div class="relative">
+                                    <input id="principal-phone" type="tel" required class="w-full border-2 border-gray-200 rounded-xl p-3 md:p-4 pl-10 md:pl-12 text-gray-800 bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200" placeholder="+1 234 567 8900" />
+                                    <i class="fas fa-phone absolute left-3 md:left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3 md:space-y-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Secondary Holder Name</label>
+                                <div class="relative">
+                                    <input id="holder-name-2" type="text" required class="w-full border-2 border-gray-200 rounded-xl p-3 md:p-4 pl-10 md:pl-12 text-gray-800 bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200" placeholder="Enter secondary holder name" />
+                                    <i class="fas fa-user absolute left-3 md:left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Secondary Holder Email</label>
+                                <div class="relative">
+                                    <input id="secondary-email" type="email" required class="w-full border-2 border-gray-200 rounded-xl p-3 md:p-4 pl-10 md:pl-12 text-gray-800 bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200" placeholder="secondary@example.com" />
+                                    <i class="fas fa-envelope absolute left-3 md:left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Secondary Holder Phone</label>
+                                <div class="relative">
+                                    <input id="secondary-phone" type="tel" required class="w-full border-2 border-gray-200 rounded-xl p-3 md:p-4 pl-10 md:pl-12 text-gray-800 bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200" placeholder="+1 234 567 8901" />
+                                    <i class="fas fa-phone absolute left-3 md:left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Third Holder (Conditional) -->
+                    <div id="holder-3-group" class="hidden mt-4 md:mt-6">
+                        <div class="border-t border-gray-200 pt-4 md:pt-6">
+                            <div class="grid grid-cols-1 gap-4 md:gap-6">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Third Holder Name</label>
+                                    <div class="relative">
+                                        <input id="holder-name-3" type="text" class="w-full border-2 border-gray-200 rounded-xl p-3 md:p-4 pl-10 md:pl-12 text-gray-800 bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200" placeholder="Enter third holder name" />
+                                        <i class="fas fa-user absolute left-3 md:left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-2">Third Holder Email</label>
+                                    <div class="relative">
+                                        <input id="holder-name-3-email" type="email" class="w-full border-2 border-gray-200 rounded-xl p-3 md:p-4 pl-10 md:pl-12 text-gray-800 bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200" placeholder="third@example.com" />
+                                        <i class="fas fa-envelope absolute left-3 md:left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account Details Section -->
+                <div class="bg-gray-50 rounded-xl p-4 md:p-6">
+                    <div class="flex items-center space-x-2 md:space-x-3 mb-4 md:mb-6">
+                        <div class="bg-blue-600 rounded-full p-2">
+                            <i class="fas fa-cog text-white text-sm"></i>
+                        </div>
+                        <h4 class="text-base md:text-lg font-semibold text-gray-800">Account Details</h4>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 gap-4 md:gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Account Type</label>
+                            <select id="account-type" class="w-full border-2 border-gray-200 rounded-xl p-4 text-gray-800 bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200">
+                                <option value="personal">Personal Account</option>
+                                <option value="business">Business Account</option>
+                                <option value="investment">Investment Account</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Password</label>
+                            <div class="relative">
+                                <input id="password" type="password" required class="w-full border-2 border-gray-200 rounded-xl p-3 md:p-4 pl-10 md:pl-12 text-gray-800 bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200" placeholder="Enter a secure password" />
+                                <i class="fas fa-lock absolute left-3 md:left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Business Information Section -->
+                <div class="bg-gray-50 rounded-xl p-4 md:p-6">
+                    <div class="flex items-center space-x-2 md:space-x-3 mb-4 md:mb-6">
+                        <div class="bg-green-600 rounded-full p-2">
+                            <i class="fas fa-building text-white text-sm"></i>
+                        </div>
+                        <h4 class="text-base md:text-lg font-semibold text-gray-800">Business Information (Optional)</h4>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 gap-4 md:gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Business Name</label>
+                            <input id="business-name" type="text" class="w-full border-2 border-gray-200 rounded-xl p-4 text-gray-800 bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200" placeholder="Enter business name" />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Business Registration Number</label>
+                            <input id="business-reg" type="text" class="w-full border-2 border-gray-200 rounded-xl p-3 md:p-4 text-gray-800 bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200" placeholder="Enter registration number" />
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 md:mt-6">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Business Address</label>
+                        <textarea id="business-address" rows="3" class="w-full border-2 border-gray-200 rounded-xl p-3 md:p-4 text-gray-800 bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200" placeholder="Enter complete business address"></textarea>
+                    </div>
+                </div>
+
+                <!-- Terms and Conditions -->
+                <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4 md:p-6">
+                    <div class="flex items-start space-x-2 md:space-x-3">
+                        <i class="fas fa-exclamation-triangle text-yellow-600 text-base md:text-lg mt-0.5"></i>
+                        <div class="text-yellow-800">
+                            <p class="font-medium mb-2 text-sm md:text-base">Important Notice</p>
+                            <p class="text-xs md:text-sm mb-4">Joint accounts allow multiple holders to manage funds together. Each holder can access the account as permitted. Ensure all details are accurate and agreed upon by all parties.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Confirmation Checkbox -->
+                <div class="flex items-start space-x-3 md:space-x-4 p-4 md:p-6 bg-gray-50 rounded-xl">
+                    <input id="joint-confirm" type="checkbox" required class="mt-1 w-4 h-4 md:w-5 md:h-5 text-blue-600 border-2 border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" />
+                    <label for="joint-confirm" class="text-xs md:text-sm text-gray-700 leading-relaxed">
+                        I confirm that the information provided above is correct and all holders are in mutual understanding. I agree to the terms and conditions of opening a joint account.
+                    </label>
+                </div>
+
+                <!-- Submit Button -->
+                <button id="joint-submit-btn" type="submit" class="w-full bg-black text-white py-3 md:py-4 px-6 md:px-8 rounded-xl hover:from-blue-700 hover:to-green-700 transition-all duration-300 font-semibold text-base md:text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                    <i class="fas fa-user-plus mr-2 md:mr-3"></i>
+                    Create Joint Account
+                </button>
+
+                <!-- Status Message -->
+                <p id="joint-form-status" class="text-sm text-center text-gray-600"></p>
+            </form>
+        </div>
+    </div>
+</div> 
+
+    <!-- Joint Account Success Modal -->
+    <div id="joint-success-modal" class="fixed inset-0 z-50 hidden">
+        <div id="success-backdrop" class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="relative mx-auto my-12 max-w-md bg-white rounded-xl shadow-lg p-8">
+            <div class="text-center">
+                <!-- Success Icon -->
+                <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-6">
+                    <i class="fas fa-check-circle text-green-600 text-3xl"></i>
+                </div>
+                
+                <!-- Success Message -->
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Joint Account Registration in Progress</h3>
+                
+                <div class="space-y-3 text-gray-600 mb-6">
+                    <p>Please be informed that a verification link has been sent to both account holders to complete the registration process.</p>
+                    <p>We will review your application and get back to you within 2-3 business days regarding your registration status.</p>
+                </div>
+                
+                <!-- Close Button -->
+                <button id="close-success-modal-btn" class="w-full bg-black text-white py-3 px-6 rounded-lg hover:bg-green-700 transition duration-300 font-medium">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="bg-white text-gray-800 py-16 mt-32 border-t border-gray-200">
         <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-12">
@@ -678,9 +939,10 @@
     <!-- Install Button -->
     <button id="install-button" style="display: none;">Install App</button>
 
-    <!-- Firebase Configuration -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <!-- Firebase Configuration (compat) -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <script>
     // For Firebase JS SDK v7.20.0 and later, measurementId is optional
     const firebaseConfig = {
@@ -693,39 +955,38 @@
       measurementId: "G-CT463F3T6J"
     };
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
+    // Initialize Firebase (compat)
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
 
-        // Function to sign up a user
-        function signUp(email, password) {
-            auth.createUserWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    // Signed up successfully
-                    const user = userCredential.user;
-                    console.log('User signed up:', user);
-                })
-                .catch((error) => {
-                    const errorCode = error.code;
-                    const errorMessage = error.message;
-                    console.error('Error during sign up:', errorCode, errorMessage);
-                });
-        }
+    // Function to sign up a user (kept for compatibility if used elsewhere)
+    function signUp(email, password) {
+        return auth.createUserWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                console.log('User signed up:', user);
+                return user;
+            })
+            .catch((error) => {
+                console.error('Error during sign up:', error.code, error.message);
+                throw error;
+            });
+    }
 
-        // Function to log in a user
-        function logIn(email, password) {
-            auth.signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    // Logged in successfully
-                    const user = userCredential.user;
-                    console.log('User logged in:', user);
-                })
-                .catch((error) => {
-                    const errorCode = error.code;
-                    const errorMessage = error.message;
-                    console.error('Error during login:', errorCode, errorMessage);
-                });
-        }
+    // Function to log in a user (kept for compatibility if used elsewhere)
+    function logIn(email, password) {
+        return auth.signInWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                console.log('User logged in:', user);
+                return user;
+            })
+            .catch((error) => {
+                console.error('Error during login:', error.code, error.message);
+                throw error;
+            });
+    }
     </script>
 
     <!-- Include Font Awesome -->
@@ -740,6 +1001,141 @@
         content.classList.toggle('hidden');
         icon.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
     }
+    </script>
+
+    <!-- Joint Account Modal Script -->
+    <script>
+    (function () {
+        const jointModal = document.getElementById('joint-modal');
+        const openJointBtn = document.getElementById('open-joint-modal-btn');
+        const closeJointBtn = document.getElementById('close-joint-modal-btn');
+        const jointBackdrop = document.getElementById('joint-backdrop');
+        const form = document.getElementById('joint-account-form');
+        const holdersCountEl = document.getElementById('holders-count');
+        const holder3Group = document.getElementById('holder-3-group');
+        const statusEl = document.getElementById('joint-form-status');
+
+        function openJointModal() {
+            if (!jointModal) return;
+            jointModal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeJointModal() {
+            if (!jointModal) return;
+            jointModal.classList.add('hidden');
+            document.body.style.overflow = '';
+            if (statusEl) statusEl.textContent = '';
+        }
+
+        if (openJointBtn) openJointBtn.addEventListener('click', openJointModal);
+        if (closeJointBtn) closeJointBtn.addEventListener('click', closeJointModal);
+        if (jointBackdrop) jointBackdrop.addEventListener('click', closeJointModal);
+
+        // Success modal functionality
+        const successModal = document.getElementById('joint-success-modal');
+        const successBackdrop = document.getElementById('success-backdrop');
+        const closeSuccessBtn = document.getElementById('close-success-modal-btn');
+
+        function closeSuccessModal() {
+            if (successModal) {
+                successModal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        }
+
+        if (closeSuccessBtn) closeSuccessBtn.addEventListener('click', closeSuccessModal);
+        if (successBackdrop) successBackdrop.addEventListener('click', closeSuccessModal);
+
+        if (holdersCountEl && holder3Group) {
+            const toggleHolder3 = () => {
+                if (holdersCountEl.value === '3') {
+                    holder3Group.classList.remove('hidden');
+                    document.getElementById('holder-name-3').required = true;
+                } else {
+                    holder3Group.classList.add('hidden');
+                    document.getElementById('holder-name-3').required = false;
+                }
+            };
+            holdersCountEl.addEventListener('change', toggleHolder3);
+            toggleHolder3();
+        }
+
+        if (form) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (statusEl) statusEl.textContent = 'Submitting...';
+
+                try {
+                    const holdersCount = parseInt(document.getElementById('holders-count').value, 10);
+                    if (holdersCount < 2 || holdersCount > 3) throw new Error('Number of holders must be 2 or 3');
+
+                    const holderName1 = document.getElementById('holder-name-1').value.trim();
+                    const holderName2 = document.getElementById('holder-name-2').value.trim();
+                    const holderName3 = (holdersCount === 3 ? document.getElementById('holder-name-3').value.trim() : '');
+                    const holderEmail3 = (holdersCount === 3 ? document.getElementById('holder-name-3-email').value.trim() : '');
+
+                    const principalEmail = document.getElementById('principal-email').value.trim();
+                    const secondaryEmail = document.getElementById('secondary-email').value.trim();
+
+                    const principalPhone = document.getElementById('principal-phone').value.trim();
+                    const secondaryPhone = document.getElementById('secondary-phone').value.trim();
+
+                    const accountType = document.getElementById('account-type').value;
+                    const password = document.getElementById('password').value;
+
+                    const businessName = document.getElementById('business-name').value.trim();
+                    const businessAddress = document.getElementById('business-address').value.trim();
+                    const businessReg = document.getElementById('business-reg').value.trim();
+
+                    const confirmed = document.getElementById('joint-confirm').checked;
+                    if (!confirmed) throw new Error('Please confirm all information is correct.');
+
+                    // Create Auth user with principal email
+                    const userCredential = await auth.createUserWithEmailAndPassword(principalEmail, password);
+                    const user = userCredential.user;
+
+                    // Prepare Firestore payload
+                    const payload = {
+                        holdersCount,
+                        holderNames: holdersCount === 3 ? [holderName1, holderName2, holderName3] : [holderName1, holderName2],
+                        holderEmails: holdersCount === 3 ? [principalEmail, secondaryEmail, holderEmail3] : [principalEmail, secondaryEmail],
+                        principalEmail,
+                        secondaryEmail,
+                        principalPhone,
+                        secondaryPhone,
+                        accountType,
+                        business: {
+                            name: businessName,
+                            address: businessAddress,
+                            registrationNumber: businessReg
+                        },
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+
+                    // Save to Firestore under joint_accounts collection using principal user uid
+                    await db.collection('joint_accounts').doc(user.uid).set(payload);
+
+                    // Show success modal instead of inline message
+                    closeJointModal(); // Close the form modal first
+                    
+                    // Show the success modal
+                    const successModal = document.getElementById('joint-success-modal');
+                    if (successModal) {
+                        successModal.classList.remove('hidden');
+                        document.body.style.overflow = 'hidden';
+                    }
+                    
+                    // Reset the form
+                    form.reset();
+                    if (holder3Group) holder3Group.classList.add('hidden');
+                    if (statusEl) statusEl.textContent = ''; // Clear any status messages
+                } catch (err) {
+                    console.error(err);
+                    if (statusEl) statusEl.textContent = `Error: ${err.message}`;
+                }
+            });
+        }
+    })();
     </script>
 
     <!-- Update existing sections to use minimal design -->
@@ -763,6 +1159,9 @@
         .hover\:bg-gray-800:hover {
             background-color: #1a1a1a;
         }
+        /* Mobile menu overlay visibility */
+        #overlay { display: none; }
+        #overlay.active { display: block; }
     </style>
 </body>
 </html>

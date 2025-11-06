@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
     <title>Beal Offshore Transfer</title>
     <link rel="manifest" href="/assets/manifest-CU0lAEK-.json">
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/logo%20new-DPEJ_4oz.png">
@@ -60,10 +60,49 @@
             position: absolute;
         }
     </style>
+    <style>
+        /* Prevent mobile browsers from auto-zooming inputs */
+        @media (max-width: 768px) {
+            input, select, textarea {
+                font-size: 16px !important;
+            }
+            input:focus, select:focus, textarea:focus {
+                font-size: 16px !important;
+            }
+        }
+
+        /* iOS specific fix */
+        @supports (-webkit-touch-callout: none) {
+            input, select, textarea {
+                font-size: 16px !important;
+            }
+            input:focus, select:focus, textarea:focus {
+                font-size: 16px !important;
+            }
+        }
+
+        html, body {
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+    </style>
+    <style>
+        /* Ensure placeholders are also 16px to avoid iOS zoom */
+        @media (max-width: 768px) {
+            input::placeholder, textarea::placeholder {
+                font-size: 16px !important;
+            }
+        }
+        @supports (-webkit-touch-callout: none) {
+            input::placeholder, textarea::placeholder {
+                font-size: 16px !important;
+            }
+        }
+    </style>
   <script type="module" crossorigin src="/assets/transfer-DzSGXK-6.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
 </head>
-<body class="font-sans antialiased" style="background-image: url('/assets/background%202-Dn1co03N.png');">
+<body class="font-sans antialiased" style="background-image: url('/Users/circo-mac005/Documents/Beal Offshore Ltd/background 2.png');">
 
 <!-- Navbar -->
 <nav class="bg-white p-4 fixed top-0 w-full z-50">
