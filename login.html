@@ -560,32 +560,7 @@ overlay.onclick = closeMenu;
     </div>
 </div>
 
-<script>
-    // Demo functionality to show the OTP section
-    document.getElementById('login-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const email = document.getElementById('email').value;
-        document.getElementById('email-display').textContent = email;
-        
-        document.getElementById('login-section').classList.add('animate__fadeOut');
-        setTimeout(() => {
-            document.getElementById('login-section').classList.add('hidden');
-            document.getElementById('otp-section').classList.remove('hidden');
-            document.getElementById('otp-section').classList.add('animate__fadeIn');
-        }, 500);
-    });
-    
-    // Demo functionality for resend link
-    document.getElementById('resend-otp').addEventListener('click', function(e) {
-        e.preventDefault();
-        this.textContent = "Code resent";
-        this.classList.add('text-green-600');
-        setTimeout(() => {
-            this.textContent = "Resend Code";
-            this.classList.remove('text-green-600');
-        }, 3000);
-    });
-</script>
+<!-- Removed demo script that forced OTP to show regardless of auth outcome -->
 
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <script type="module">
@@ -656,7 +631,7 @@ overlay.onclick = closeMenu;
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             currentUser = userCredential.user;
 
-            // Generate and send OTP
+            // Generate and send OTP (only after successful auth)
             const otp = generateOtp();
             sessionStorage.setItem('loginOtp', otp);
 
@@ -665,7 +640,7 @@ overlay.onclick = closeMenu;
                 throw new Error('Failed to send OTP');
             }
 
-            // Update email display and show OTP section
+            // Update email display and show OTP section after success
             emailDisplay.textContent = email;
             loginSection.classList.add('hidden');
             otpSection.classList.remove('hidden');
@@ -680,6 +655,7 @@ overlay.onclick = closeMenu;
                 errorMessage = 'Too many failed attempts. Please try again later.';
             }
             
+            // Show specific error to the user without navigating to OTP
             alert(errorMessage);
             
         } finally {

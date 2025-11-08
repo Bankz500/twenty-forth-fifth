@@ -403,162 +403,173 @@
 
 <!-- Main Content -->
 <div class="flex-1 p-4 bg- pb-24 md:pb-0 mt-12"> 
-    <div class="flex-1 p-6 bg-white rounded pb-0 text-black mb-32">
-        <h1 class="text-xl font-semibold mb-6 text-black"></h1>
+    <div class="flex-1 p-6 bg-white rounded-2xl pb-0 text-black mb-32 shadow-xl ring-1 ring-gray-100/60">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h1 class="text-lg md:text-2xl font-semibold text-gray-900">Cash Transfer</h1>
+                <p class="text-xs text-gray-500 mt-1">Send money securely in seconds</p>
+            </div>
+            <div class="hidden md:flex items-center gap-2 text-xs text-gray-500">
+                <span class="inline-flex h-2 w-2 rounded-full bg-green-500"></span>
+                <span>Secure</span>
+            </div>
+        </div>
 
         <!-- Tabs for Cash Withdrawal -->
-        <div class="flex mb-6 gap-3">
-            <button 
-                onclick="toggleWithdrawal('cash')" 
-                id="cashButton" 
-                class="flex-1 text-center text-xs md:text-lg text-blue-800 bg-white rounded-full px-3 py-4 border border-blue-900"
-            >
-                Cash Transfer
-            </button>
+        <div class="flex mb-6">
+            <div class="inline-flex p-1 bg-gray-100 rounded-full">
+                <button 
+                    onclick="toggleWithdrawal('cash')" 
+                    id="cashButton" 
+                    class="text-center text-xs md:text-sm text-gray-700 bg-white rounded-full px-4 py-2 border border-gray-200 shadow-sm hover:shadow transition"
+                >
+                    Cash Transfer
+                </button>
+            </div>
         </div>
 
         <div id="cashWithdrawal" class="block">
-            <p class="mb-12 text-black text-xs text-center">
+            <p class="mb-8 text-gray-600 text-xs text-center">
                 Enter your details to complete your transfer.
             </p>
             <form id="withdrawalForm">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
 
                     <!-- Select Transfer Type -->
                     <div class="relative">
-                        <label class="block text-xs text-black mb-2">Select Transfer Type</label>
-                        <div class="flex gap-4">
+                        <label class="block text-[11px] uppercase tracking-wide text-gray-500 mb-2">Select Transfer Type</label>
+                        <div class="flex gap-2 md:gap-3">
                             <button type="button" id="internationalTransfer" onclick="selectTransferType('International')" 
-                                class="flex-1 flex items-center border rounded-full justify-left gap-2 text-xs md:text-xs text-black px-2 py-2">
-                                <span id="dotInternational" class=""></span>
-                                International Transfer
+                                class="flex-1 flex items-center border border-gray-200 rounded-full justify-center gap-2 text-[11px] md:text-xs text-gray-700 px-3 py-2 bg-white hover:bg-gray-50 shadow-sm">
+                                <span id="dotInternational" class="h-2 w-2 rounded-full border border-gray-300"></span>
+                                International
                             </button>
                             <button type="button" id="domesticTransfer" onclick="selectTransferType('Domestic')" 
-                                class="flex-1 flex items-center border rounded-full justify-center gap-2 text-xs md:text-xs text-black px-2 py-2">
-                                <span id="dotDomestic" class=""></span>
-                                Domestic Transfer
+                                class="flex-1 flex items-center border border-gray-200 rounded-full justify-center gap-2 text-[11px] md:text-xs text-gray-700 px-3 py-2 bg-white hover:bg-gray-50 shadow-sm">
+                                <span id="dotDomestic" class="h-2 w-2 rounded-full border border-gray-300"></span>
+                                Domestic
                             </button>
                         </div>
-                        <p id="transferTypeError" class="text-red-500 text-xs hidden mt-2">Transfer Type is required</p>
+                        <p id="transferTypeError" class="text-red-500 text-[11px] hidden mt-2">Transfer Type is required</p>
                     </div>
 
 
                     <div class="relative">
-                        <label for="bankName" class="block text-xs text-black mb-2">
+                        <label for="bankName" class="block text-[11px] uppercase tracking-wide text-gray-500 mb-2">
                             Beneficiary Bank Name
                         </label>
                         <input 
                             type="text" 
                             id="bankName" 
-                            class="w-full bg-white border border-gray-300 rounded px-4 py-3 text-gray-400 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-300 text-xs"
+                            class="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 text-sm shadow-sm"
                             placeholder="Enter your bank name"
                         />
-                        <p id="bankNameError" class="text-red-500 text-xs hidden mt-2">
+                        <p id="bankNameError" class="text-red-500 text-[11px] hidden mt-2">
                             Beneficiary Bank Name is required
                         </p>
                     </div>
                     
                     <!-- SWIFT Code field - will be shown/hidden based on transfer type -->
                     <div id="swiftCodeSection" class="relative hidden">
-                        <label for="swiftCode" class="block text-xs text-black mb-2">
+                        <label for="swiftCode" class="block text-[11px] uppercase tracking-wide text-gray-500 mb-2">
                             SWIFT/BIC Code
                         </label>
                         <input 
                             type="text" 
                             id="swiftCode" 
-                            class="w-full bg-white border border-gray-300 rounded px-4 py-3 text-gray-400 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-300 text-xs"
+                            class="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 text-sm shadow-sm"
                             placeholder="Enter SWIFT/BIC code"
                         />
-                        <p id="swiftCodeError" class="text-red-500 text-xs hidden mt-2">
+                        <p id="swiftCodeError" class="text-red-500 text-[11px] hidden mt-2">
                             SWIFT/BIC Code is required for international transfers
                         </p>
                     </div>
         
                     <div class="relative">
-                        <label for="accountNumber" class="block text-xs text-black mb-2">
+                        <label for="accountNumber" class="block text-[11px] uppercase tracking-wide text-gray-500 mb-2">
                             Beneficiary Account Number/IBAN
                         </label>
                         <input 
                             type="text" 
                             id="accountNumber" 
-                            class="w-full bg-white border border-gray-300 rounded px-4 py-3 text-gray-400 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-300 text-xs" 
+                            class="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 text-sm shadow-sm" 
                             placeholder="Enter account number"
                         />
-                        <p id="accountNumberError" class="text-red-500 text-xs hidden mt-2">
+                        <p id="accountNumberError" class="text-red-500 text-[11px] hidden mt-2">
                             Beneficiary Account Number is required
                         </p>
                     </div>
         
                     <div class="relative">
-                        <label for="accountName" class="block text-xs text-black mb-2">
+                        <label for="accountName" class="block text-[11px] uppercase tracking-wide text-gray-500 mb-2">
                             Beneficiary Account Name
                         </label>
                         <input 
                             type="text" 
                             id="accountName" 
-                            class="w-full bg-white border border-gray-300 rounded px-4 py-3 text-gray-400 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-300 text-xs" 
+                            class="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 text-sm shadow-sm" 
                             placeholder="Enter account name"
                         />
-                        <p id="accountNameError" class="text-red-500 text-xs hidden mt-2">
+                        <p id="accountNameError" class="text-red-500 text-[11px] hidden mt-2">
                             Beneficiary Account Name is required
                         </p>
                     </div>
         
                     <div class="relative">
-                        <label for="fundingSource" class="block text-xs text-black mb-2">
+                        <label for="fundingSource" class="block text-[11px] uppercase tracking-wide text-gray-500 mb-2">
                             Funding Source
                         </label>
                         <select
                             id="fundingSource"
-                            class="w-full bg-white border border-gray-300 rounded px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-300 text-xs appearance-none"
+                            class="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 text-sm shadow-sm appearance-none"
                         >
                             <option value="" disabled selected>Select funding source</option>
                             <option value="fixed_offshore">Checking Offshore</option>
                             <option value="savings_offshore">Savings Offshore</option>
                         </select>
-                        <p id="fundingSourceError" class="text-red-500 text-xs hidden mt-2">
+                        <p id="fundingSourceError" class="text-red-500 text-[11px] hidden mt-2">
                             Funding Source is required
                         </p>
                     </div>
                 </div>
         
                 <div class="mt-6">
-                    <label for="withdrawCash" class="block text-xs text-black mb-2">
+                    <label for="withdrawCash" class="block text-[11px] uppercase tracking-wide text-gray-500 mb-2">
                         Transfer Amount
                     </label>
                     <input 
                         type="text" 
                         id="withdrawCash" 
-                        class="w-full bg-white border border-gray-300 rounded px-4 py-3 text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-purple-300 focus:ring-purple-500 text-xs" 
+                        class="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 text-sm shadow-sm" 
                         placeholder="$ Enter amount"
                         oninput="formatAmount(this); checkBalance()"
                     />
-                    <p id="withdrawCashError" class="text-red-500 text-xs hidden mt-2">
+                    <p id="withdrawCashError" class="text-red-500 text-[11px] hidden mt-2">
                         Amount is required
                     </p>
-                    <p id="insufficientBalanceError" class="text-red-500 text-xs hidden mt-2">
+                    <p id="insufficientBalanceError" class="text-red-500 text-[11px] hidden mt-2">
                         Insufficient balance for the transfer.
                     </p>
                 </div>
 
                 <!-- Payment Description -->
                 <div class="mt-6">
-                    <label for="paymentDescription" class="block text-xs text-black mb-2">
+                    <label for="paymentDescription" class="block text-[11px] uppercase tracking-wide text-gray-500 mb-2">
                         Payment Description
                     </label>
                     <input 
                         type="text" 
                         id="paymentDescription" 
-                        class="w-full bg-white border border-gray-300 rounded px-4 py-3 text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-purple-300 text-xs" 
+                        class="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 text-sm shadow-sm" 
                         placeholder="Enter payment description"
                     />
-                    <p id="paymentDescriptionError" class="text-red-500 text-xs hidden mt-2">
+                    <p id="paymentDescriptionError" class="text-red-500 text-[11px] hidden mt-2">
                         Payment Description is required
                     </p>
                 </div>
         
                 <div class="pt-10">
-                    <div class="bg-gray-100 border-l-4 border-blue-900 text-blue-900 p-5 rounded mb-4 text-xs text-center">
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-600 text-blue-800 p-5 rounded-lg mb-4 text-xs text-center">
                         <p>
                             Please double-check all your details before submitting your transfer request to ensure prompt processing. If you encounter any issues, contact support for assistance.
                         </p>
@@ -569,13 +580,13 @@
                             <input 
                                 type="checkbox" 
                                 id="confirmDetails" 
-                                class="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500"
+                                class="w-4 h-4 text-blue-600 bg-white border-gray-300 rounded focus:ring-blue-500"
                             />
-                            <label for="confirmDetails" class="ml-2 text-xs text-black">
+                            <label for="confirmDetails" class="ml-2 text-xs text-gray-700">
                                 Do you confirm that your details have been filled correctly?
                             </label>
                         </div>
-                        <p id="confirmDetailsError" class="text-green-900 text-xs hidden mt-2">
+                        <p id="confirmDetailsError" class="text-blue-900 text-[11px] hidden mt-2">
                             Please confirm your details before proceeding.
                         </p>
                     </div>
@@ -729,9 +740,10 @@
             type="button" 
             onclick="showSecurityPinModal()" 
             id="cashWithdrawButton"
-            class="bg-white text-gray-400 text-xs border border-gray-900 font-semibold rounded-full px-16 py-3 w-full md:w-auto active:bg-blue-900 hover:bg-blue-900 hover:text-white transition-colors duration-300"
+            class="w-full md:w-auto inline-flex items-center justify-center gap-2 text-sm font-semibold px-16 py-3 rounded-full text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 shadow-lg hover:shadow-xl active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-300"
         >
-            Transfer
+            <span>Transfer</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M13.172 12l-4.95-4.95 1.414-1.414L16 12l-6.364 6.364-1.414-1.414z"/></svg>
         </button>
     </div>
 </div>

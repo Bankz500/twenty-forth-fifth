@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beal Offshore Ltd Deposit - Demo</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" sizes="180x180" href="logo new.png">
+    <link rel="icon" href="logo new.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="banking-details-demo.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
+            min-height: 100vh;
+        }
+        .loader {
+            border: 8px solid rgba(0, 0, 0, 0.1);
+            border-top: 8px solid #000000;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .smart-spinner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #3498db, #8e44ad);
+            animation: smart-spin 1.5s linear infinite;
+        }
+        @keyframes smart-spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .smart-spinner::before {
+            content: '';
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: white;
+            position: absolute;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+        .bottom-nav-item {
+            transition: all 0.2s ease;
+        }
+        .bottom-nav-item:hover {
+            transform: translateY(-5px);
+        }
+        .active-nav {
+            color: #3b82f6;
+            font-weight: 600;
+        }
+        .active-nav-icon {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .copy-btn {
+            transition: all 0.2s ease;
+        }
+        .copy-btn:hover {
+            transform: scale(1.2);
+        }
+        .field-container {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        .field-container:hover {
+            border-left-color: #1e40af;
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+        .demo-banner {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            text-align: center;
+            padding: 0.5rem;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+            z-index: 60;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-white">
+
+<!-- Demo Banner -->
+<div class="demo-banner">
+    🚀 DEMO VERSION - Banking details are generated locally for testing
+</div>
+
+<!-- Navbar -->
+<nav class="bg-white p-4 fixed top-12 w-full z-50 border-b">
+    <div class="container mx-auto flex items-center justify-between">
+        <!-- Left Logo -->
+        <a href="/" class="flex items-center">
+            <img src="Logo.png" alt="Beal Offshore Ltd Logo" class="h-14">
+        </a>
+
+        <!-- Right Logo (Email) -->
+        <a href="mailto:support@beal-offshore.com" class="flex items-center bg-blue-50 p-2 rounded-full hover:bg-blue-100 transition-all">
+            <img src="chat.png" alt="Contact" class="h-8 w-8">
+        </a>
+    </div>
+</nav>
+
+<!-- Spacer to prevent content overlap -->
+<div class="h-36"></div>
+
+<!-- Deposit Section -->
+<div class="container mx-auto px-4 py-8 mb-32 mt-10">
+    <!-- Section Header -->
+    <div class="text-center mb-12">
+      <h1 class="text-2xl md:text-3xl font-bold text-black mb-2">Deposit Portal</h1>
+      <p class="text-gray-600 text-sm md:text-base max-w-2xl mx-auto">
+        Manage your finances seamlessly with your secure, personalized banking details. Use the information below to make deposits to your account.
+      </p>
+    </div>
+  
+    <!-- Main Content -->
+    <div class="grid grid-cols-1 gap-8 lg:grid-cols-12">
+      <!-- Left Column: Account Details -->
+      <div class="lg:col-span-6">
+        <div class="glass-card p-6 md:p-8 rounded border bg-white/80 backdrop-blur">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-lg font-bold text-gray-800">Banking Details</h2>
+            <div class="flex items-center space-x-3">
+              <div class="bg-blue-500 text-white text-xs px-3 py-1 rounded-full">Personal Account</div>
+              <button id="refresh-banking-details" class="bg-green-100 p-2 rounded-full hover:bg-green-200 transition-all" title="Generate New Banking Details">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+              </button>
+            </div>
+          </div>
+  
+          <div class="space-y-6">
+            <!-- Account Number -->
+            <div class="field-container rounded">
+              <p class="text-xs text-gray-500 mb-1">Account Number</p>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                  <div id="account-number-loading" class="loader h-4 w-4"></div>
+                  <p id="account-number" class="text-sm font-semibold text-gray-800 hidden">Loading...</p>
+                </div>
+                <button onclick="copyToClipboard('account-number')" class="bg-blue-100 p-2 rounded-full hover:bg-blue-200 copy-btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+  
+            <!-- Swift Code -->
+            <div class="field-container rounded">
+              <p class="text-xs text-gray-500 mb-1">Swift Code</p>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                  <div id="swift-code-loading" class="loader h-4 w-4"></div>
+                  <p id="swift-code" class="text-sm font-semibold text-gray-800 hidden">Loading...</p>
+                </div>
+                <button onclick="copyToClipboard('swift-code')" class="bg-blue-100 p-2 rounded-full hover:bg-blue-200 copy-btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+  
+            <!-- Routing Number -->
+            <div class="field-container rounded">
+              <p class="text-xs text-gray-500 mb-1">Routing Number</p>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                  <div id="routing-number-loading" class="loader h-4 w-4"></div>
+                  <p id="routing-number" class="text-sm font-semibold text-gray-800 hidden">Loading...</p>
+                </div>
+                <button onclick="copyToClipboard('routing-number')" class="bg-blue-100 p-2 rounded-full hover:bg-blue-200 copy-btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Right Column: Deposit Instructions -->
+      <div class="lg:col-span-6">
+        <div class="glass-card p-6 md:p-8 rounded border bg-white/50">
+          <h2 class="text-lg font-bold text-gray-800 mb-4">Deposit Instructions</h2>
+          <ol class="space-y-5 text-gray-700 text-sm">
+            <li class="flex gap-3 items-start">
+              <div class="bg-blue-100 text-blue-600 rounded-full p-1 mt-1 flex-shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+              </div>
+              <p><span class="font-medium">Initiate Transfer:</span> Log into your bank's mobile or online banking portal.</p>
+            </li>
+            <li class="flex gap-3 items-start">
+              <div class="bg-blue-100 text-blue-600 rounded-full p-1 mt-1 flex-shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <p><span class="font-medium">Enter Details:</span> Add Beal Offshore Ltd as a recipient using the details provided.</p>
+            </li>
+            <li class="flex gap-3 items-start">
+              <div class="bg-blue-100 text-blue-600 rounded-full p-1 mt-1 flex-shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+              </div>
+              <p><span class="font-medium">Verify Information:</span> Double-check all details before confirming the transfer.</p>
+            </li>
+          </ol>
+  
+          <div class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-400">
+            <p class="text-xs text-gray-700">Funds typically appear in your account within 1–3 business days, depending on your bank's processing time.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Script -->
+<script type="module">
+    import BankingDetailsDemoGenerator from './banking-details-demo.js';
+    
+    // Initialize banking details generator
+    const bankingGenerator = new BankingDetailsDemoGenerator();
+    
+    // Function to copy text to clipboard
+    function copyToClipboard(elementId) {
+        const text = document.getElementById(elementId).innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            showNotification('Copied to clipboard!', 'success');
+        }).catch(err => {
+            console.error('Failed to copy: ', err);
+            showNotification('Failed to copy to clipboard', 'error');
+        });
+    }
+
+    // Function to display banking details
+    function displayBankingDetails(details) {
+        // Hide loading spinners
+        document.getElementById('account-number-loading').classList.add('hidden');
+        document.getElementById('swift-code-loading').classList.add('hidden');
+        document.getElementById('routing-number-loading').classList.add('hidden');
+        
+        // Show and populate the details
+        const accountNumberEl = document.getElementById('account-number');
+        const swiftCodeEl = document.getElementById('swift-code');
+        const routingNumberEl = document.getElementById('routing-number');
+        
+        accountNumberEl.textContent = details.accountNumber;
+        swiftCodeEl.textContent = details.swiftCode;
+        routingNumberEl.textContent = details.routingNumber;
+        
+        accountNumberEl.classList.remove('hidden');
+        swiftCodeEl.classList.remove('hidden');
+        routingNumberEl.classList.remove('hidden');
+        
+        // Enable copy buttons
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.disabled = false;
+            btn.classList.remove('opacity-50');
+        });
+    }
+
+    // Function to show loading state
+    function showLoadingState() {
+        // Show loading spinners
+        document.getElementById('account-number-loading').classList.remove('hidden');
+        document.getElementById('swift-code-loading').classList.remove('hidden');
+        document.getElementById('routing-number-loading').classList.remove('hidden');
+        
+        // Hide the details
+        document.getElementById('account-number').classList.add('hidden');
+        document.getElementById('swift-code').classList.add('hidden');
+        document.getElementById('routing-number').classList.add('hidden');
+        
+        // Disable copy buttons
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.disabled = true;
+            btn.classList.add('opacity-50');
+        });
+    }
+
+    // Function to show notifications
+    function showNotification(message, type = 'info') {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `fixed top-20 right-4 p-4 rounded-lg shadow-lg z-50 transition-all duration-300 ${
+            type === 'success' ? 'bg-green-500 text-white' : 
+            type === 'error' ? 'bg-red-500 text-white' : 
+            'bg-blue-500 text-white'
+        }`;
+        notification.textContent = message;
+        
+        // Add to page
+        document.body.appendChild(notification);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+
+    // Initialize banking details when page loads
+    document.addEventListener('DOMContentLoaded', async () => {
+        try {
+            // Simulate loading delay
+            setTimeout(() => {
+                const details = bankingGenerator.getBankingDetails();
+                displayBankingDetails(details);
+            }, 1000);
+        } catch (error) {
+            console.error('Error initializing banking details:', error);
+        }
+
+        // Add refresh button functionality
+        const refreshBtn = document.getElementById('refresh-banking-details');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', async () => {
+                try {
+                    // Show loading state
+                    showLoadingState();
+                    
+                    // Simulate processing delay
+                    setTimeout(() => {
+                        // Generate new banking details
+                        const newDetails = bankingGenerator.regenerateBankingDetails();
+                        displayBankingDetails(newDetails);
+                        
+                        // Show success message
+                        showNotification('New banking details generated successfully!', 'success');
+                    }, 800);
+                } catch (error) {
+                    console.error('Error generating new banking details:', error);
+                    showNotification('Failed to generate new banking details', 'error');
+                }
+            });
+        }
+    });
+
+    // Make functions globally available
+    window.copyToClipboard = copyToClipboard;
+</script>
+
+</body>
+</html> 

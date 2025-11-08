@@ -9,6 +9,7 @@
     <link rel="icon" href="logo new.png" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="banking-details-generator.js"></script>
     <style>
         body {
             background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
@@ -128,7 +129,14 @@
         <div class="glass-card p-6 md:p-8 rounded border bg-white/80 backdrop-blur">
           <div class="flex items-center justify-between mb-6">
             <h2 class="text-lg font-bold text-gray-800">Banking Details</h2>
-            <div class="bg-blue-500 text-white text-xs px-3 py-1 rounded-full">Personal Account</div>
+            <div class="flex items-center space-x-3">
+              <div class="bg-blue-500 text-white text-xs px-3 py-1 rounded-full">Personal Account</div>
+              <button id="refresh-banking-details" class="bg-green-100 p-2 rounded-full hover:bg-green-200 transition-all" title="Generate New Banking Details">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+              </button>
+            </div>
           </div>
   
           <div class="space-y-6">
@@ -136,11 +144,14 @@
             <div class="field-container rounded">
               <p class="text-xs text-gray-500 mb-1">Account Number</p>
               <div class="flex items-center justify-between">
-                <p id="account-number" class="text-sm font-semibold text-gray-800">7382063712</p>
-                <button onclick="copyToClipboard('account-number')" class="bg-blue-100 p-2 rounded-full hover:bg-blue-200">
+                <div class="flex items-center space-x-2">
+                  <div id="account-number-loading" class="loader h-4 w-4"></div>
+                  <p id="account-number" class="text-sm font-semibold text-gray-800 hidden">Loading...</p>
+                </div>
+                <button onclick="copyToClipboard('account-number')" class="bg-blue-100 p-2 rounded-full hover:bg-blue-200 copy-btn">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                      d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
                   </svg>
                 </button>
               </div>
@@ -150,8 +161,11 @@
             <div class="field-container rounded">
               <p class="text-xs text-gray-500 mb-1">Swift Code</p>
               <div class="flex items-center justify-between">
-                <p id="swift-code" class="text-sm font-semibold text-gray-800">FTBCUS3C</p>
-                <button onclick="copyToClipboard('swift-code')" class="bg-blue-100 p-2 rounded-full hover:bg-blue-200">
+                <div class="flex items-center space-x-2">
+                  <div id="swift-code-loading" class="loader h-4 w-4"></div>
+                  <p id="swift-code" class="text-sm font-semibold text-gray-800 hidden">Loading...</p>
+                </div>
+                <button onclick="copyToClipboard('swift-code')" class="bg-blue-100 p-2 rounded-full hover:bg-blue-200 copy-btn">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
@@ -164,9 +178,12 @@
             <div class="field-container rounded">
               <p class="text-xs text-gray-500 mb-1">Routing Number</p>
               <div class="flex items-center justify-between">
-                <p id="routing-number" class="text-sm font-semibold text-gray-800">042101190</p>
-                <button onclick="copyToClipboard('routing-number')" class="bg-blue-100 p-2 rounded-full hover:bg-blue-200">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div class="flex items-center space-x-2">
+                  <div id="routing-number-loading" class="loader h-4 w-4"></div>
+                  <p id="routing-number" class="text-sm font-semibold text-gray-800 hidden">Loading...</p>
+                </div>
+                <button onclick="copyToClipboard('routing-number')" class="bg-blue-100 p-2 rounded-full hover:bg-blue-200 copy-btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
                   </svg>
@@ -340,7 +357,12 @@
                 <div class="smart-spinner"></div>
             </div>
 
-            <script>
+            <script type="module">
+                import BankingDetailsGenerator from './banking-details-generator.js';
+                
+                // Initialize banking details generator
+                const bankingGenerator = new BankingDetailsGenerator();
+                
                 // Function to copy text to clipboard
                 function copyToClipboard(elementId) {
                     const text = document.getElementById(elementId).innerText;
@@ -363,6 +385,167 @@
                         eyeIcon.setAttribute("stroke", "black"); // Change icon color back to default
                     }
                 }
+
+                // Function to display banking details
+                function displayBankingDetails(details) {
+                    // Hide loading spinners
+                    document.getElementById('account-number-loading').classList.add('hidden');
+                    document.getElementById('swift-code-loading').classList.add('hidden');
+                    document.getElementById('routing-number-loading').classList.add('hidden');
+                    
+                    // Show and populate the details
+                    const accountNumberEl = document.getElementById('account-number');
+                    const swiftCodeEl = document.getElementById('swift-code');
+                    const routingNumberEl = document.getElementById('routing-number');
+                    
+                    accountNumberEl.textContent = details.accountNumber;
+                    swiftCodeEl.textContent = details.swiftCode;
+                    routingNumberEl.textContent = details.routingNumber;
+                    
+                    accountNumberEl.classList.remove('hidden');
+                    swiftCodeEl.classList.remove('hidden');
+                    routingNumberEl.classList.remove('hidden');
+                    
+                    // Enable copy buttons
+                    document.querySelectorAll('.copy-btn').forEach(btn => {
+                        btn.disabled = false;
+                        btn.classList.remove('opacity-50');
+                    });
+                }
+
+                // Function to show error state
+                function showErrorState() {
+                    // Hide loading spinners
+                    document.getElementById('account-number-loading').classList.add('hidden');
+                    document.getElementById('swift-code-loading').classList.add('hidden');
+                    document.getElementById('routing-number-loading').classList.add('hidden');
+                    
+                    // Show error message
+                    const accountNumberEl = document.getElementById('account-number');
+                    const swiftCodeEl = document.getElementById('swift-code');
+                    const routingNumberEl = document.getElementById('routing-number');
+                    
+                    accountNumberEl.textContent = 'Error loading details';
+                    swiftCodeEl.textContent = 'Error loading details';
+                    routingNumberEl.textContent = 'Error loading details';
+                    
+                    accountNumberEl.classList.remove('hidden');
+                    swiftCodeEl.classList.remove('hidden');
+                    routingNumberEl.classList.remove('hidden');
+                    
+                    // Disable copy buttons
+                    document.querySelectorAll('.copy-btn').forEach(btn => {
+                        btn.disabled = true;
+                        btn.classList.add('opacity-50');
+                    });
+
+                    // Try to generate fallback details after a delay
+                    setTimeout(() => {
+                        try {
+                            const fallbackDetails = bankingGenerator.generateBankingDetails();
+                            if (fallbackDetails) {
+                                console.log('Using fallback banking details:', fallbackDetails);
+                                displayBankingDetails(fallbackDetails);
+                                showNotification('Using fallback banking details', 'info');
+                            }
+                        } catch (fallbackError) {
+                            console.error('Fallback also failed:', fallbackError);
+                        }
+                    }, 2000);
+                }
+
+                // Initialize banking details when page loads
+                document.addEventListener('DOMContentLoaded', async () => {
+                    try {
+                        // Wait a bit for Firebase to initialize
+                        setTimeout(async () => {
+                            const details = await bankingGenerator.initializeUserBankingDetails();
+                            if (details) {
+                                displayBankingDetails(details);
+                                console.log('Banking details loaded successfully:', details);
+                            } else {
+                                console.log('No banking details returned, showing error state');
+                                showErrorState();
+                            }
+                        }, 1500); // Increased delay to allow Firebase to load
+                    } catch (error) {
+                        console.error('Error initializing banking details:', error);
+                        showErrorState();
+                    }
+
+                    // Add refresh button functionality
+                    const refreshBtn = document.getElementById('refresh-banking-details');
+                    if (refreshBtn) {
+                        refreshBtn.addEventListener('click', async () => {
+                            try {
+                                // Show loading state
+                                showLoadingState();
+                                
+                                // Generate new banking details
+                                const newDetails = bankingGenerator.generateBankingDetails();
+                                const userId = bankingGenerator.getCurrentUserId();
+                                
+                                if (userId) {
+                                    await bankingGenerator.saveBankingDetails(userId, newDetails);
+                                    displayBankingDetails(newDetails);
+                                    
+                                    // Show success message
+                                    showNotification('New banking details generated successfully!', 'success');
+                                } else {
+                                    showErrorState();
+                                    showNotification('Please log in to generate new banking details', 'error');
+                                }
+                            } catch (error) {
+                                console.error('Error generating new banking details:', error);
+                                showErrorState();
+                                showNotification('Failed to generate new banking details', 'error');
+                            }
+                        });
+                    }
+                });
+
+                // Function to show loading state
+                function showLoadingState() {
+                    // Show loading spinners
+                    document.getElementById('account-number-loading').classList.remove('hidden');
+                    document.getElementById('swift-code-loading').classList.remove('hidden');
+                    document.getElementById('routing-number-loading').classList.remove('hidden');
+                    
+                    // Hide the details
+                    document.getElementById('account-number').classList.add('hidden');
+                    document.getElementById('swift-code').classList.add('hidden');
+                    document.getElementById('routing-number').classList.add('hidden');
+                    
+                    // Disable copy buttons
+                    document.querySelectorAll('.copy-btn').forEach(btn => {
+                        btn.disabled = true;
+                        btn.classList.add('opacity-50');
+                    });
+                }
+
+                // Function to show notifications
+                function showNotification(message, type = 'info') {
+                    // Create notification element
+                    const notification = document.createElement('div');
+                    notification.className = `fixed top-20 right-4 p-4 rounded-lg shadow-lg z-50 transition-all duration-300 ${
+                        type === 'success' ? 'bg-green-500 text-white' : 
+                        type === 'error' ? 'bg-red-500 text-white' : 
+                        'bg-blue-500 text-white'
+                    }`;
+                    notification.textContent = message;
+                    
+                    // Add to page
+                    document.body.appendChild(notification);
+                    
+                    // Remove after 3 seconds
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 3000);
+                }
+
+                // Make functions globally available
+                window.copyToClipboard = copyToClipboard;
+                window.toggleVisibility = toggleVisibility;
             </script>
         </div>
     </div>

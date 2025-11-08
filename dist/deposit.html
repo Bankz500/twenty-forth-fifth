@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beal Offshore Ltd Deposit</title>
-    <link rel="manifest" href="/assets/manifest-CU0lAEK-.json">
+    <link rel="manifest" href="/assets/manifest-UKaFbwm3.json">
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/logo%20new-DPEJ_4oz.png">
     <link rel="icon" href="/assets/logo%20new-DPEJ_4oz.png" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -90,6 +90,8 @@
             background-color: rgba(59, 130, 246, 0.05);
         }
     </style>
+  <script type="module" crossorigin src="/assets/deposit-BZZWwYR5.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
 </head>
 <body class="font-sans antialiased bg-white">
 
@@ -128,7 +130,14 @@
         <div class="glass-card p-6 md:p-8 rounded border bg-white/80 backdrop-blur">
           <div class="flex items-center justify-between mb-6">
             <h2 class="text-lg font-bold text-gray-800">Banking Details</h2>
-            <div class="bg-blue-500 text-white text-xs px-3 py-1 rounded-full">Personal Account</div>
+            <div class="flex items-center space-x-3">
+              <div class="bg-blue-500 text-white text-xs px-3 py-1 rounded-full">Personal Account</div>
+              <button id="refresh-banking-details" class="bg-green-100 p-2 rounded-full hover:bg-green-200 transition-all" title="Generate New Banking Details">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+              </button>
+            </div>
           </div>
   
           <div class="space-y-6">
@@ -136,11 +145,14 @@
             <div class="field-container rounded">
               <p class="text-xs text-gray-500 mb-1">Account Number</p>
               <div class="flex items-center justify-between">
-                <p id="account-number" class="text-sm font-semibold text-gray-800">7382063712</p>
-                <button onclick="copyToClipboard('account-number')" class="bg-blue-100 p-2 rounded-full hover:bg-blue-200">
+                <div class="flex items-center space-x-2">
+                  <div id="account-number-loading" class="loader h-4 w-4"></div>
+                  <p id="account-number" class="text-sm font-semibold text-gray-800 hidden">Loading...</p>
+                </div>
+                <button onclick="copyToClipboard('account-number')" class="bg-blue-100 p-2 rounded-full hover:bg-blue-200 copy-btn">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                      d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
                   </svg>
                 </button>
               </div>
@@ -150,8 +162,11 @@
             <div class="field-container rounded">
               <p class="text-xs text-gray-500 mb-1">Swift Code</p>
               <div class="flex items-center justify-between">
-                <p id="swift-code" class="text-sm font-semibold text-gray-800">FTBCUS3C</p>
-                <button onclick="copyToClipboard('swift-code')" class="bg-blue-100 p-2 rounded-full hover:bg-blue-200">
+                <div class="flex items-center space-x-2">
+                  <div id="swift-code-loading" class="loader h-4 w-4"></div>
+                  <p id="swift-code" class="text-sm font-semibold text-gray-800 hidden">Loading...</p>
+                </div>
+                <button onclick="copyToClipboard('swift-code')" class="bg-blue-100 p-2 rounded-full hover:bg-blue-200 copy-btn">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
@@ -164,9 +179,12 @@
             <div class="field-container rounded">
               <p class="text-xs text-gray-500 mb-1">Routing Number</p>
               <div class="flex items-center justify-between">
-                <p id="routing-number" class="text-sm font-semibold text-gray-800">042101190</p>
-                <button onclick="copyToClipboard('routing-number')" class="bg-blue-100 p-2 rounded-full hover:bg-blue-200">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div class="flex items-center space-x-2">
+                  <div id="routing-number-loading" class="loader h-4 w-4"></div>
+                  <p id="routing-number" class="text-sm font-semibold text-gray-800 hidden">Loading...</p>
+                </div>
+                <button onclick="copyToClipboard('routing-number')" class="bg-blue-100 p-2 rounded-full hover:bg-blue-200 copy-btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
                   </svg>
@@ -340,29 +358,5 @@
                 <div class="smart-spinner"></div>
             </div>
 
-            <script>
-                // Function to copy text to clipboard
-                function copyToClipboard(elementId) {
-                    const text = document.getElementById(elementId).innerText;
-                    navigator.clipboard.writeText(text).then(() => {
-                        alert('Copied to clipboard!');
-                    }).catch(err => {
-                        console.error('Failed to copy: ', err);
-                    });
-                }
-
-                // Function to toggle visibility of sensitive information
-                function toggleVisibility(elementId, eyeIconId) {
-                    const element = document.getElementById(elementId);
-                    const eyeIcon = document.getElementById(eyeIconId);
-                    if (element.type === "password") {
-                        element.type = "text";
-                        eyeIcon.setAttribute("stroke", "green"); // Change icon color to indicate visibility
-                    } else {
-                        element.type = "password";
-                        eyeIcon.setAttribute("stroke", "black"); // Change icon color back to default
-                    }
-                }
-            </script>
         </div>
     </div>

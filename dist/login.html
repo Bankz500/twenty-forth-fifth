@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Beal Offshore Ltd Login</title>
-    <link rel="manifest" href="/assets/manifest-CU0lAEK-.json">
+    <link rel="manifest" href="/assets/manifest-UKaFbwm3.json">
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/logo%20new-DPEJ_4oz.png">
     <link rel="icon" href="/assets/logo%20new-DPEJ_4oz.png" type="image/png">
     <!-- Include Tailwind CSS -->
@@ -501,32 +501,7 @@ overlay.onclick = closeMenu;
     </div>
 </div>
 
-<script>
-    // Demo functionality to show the OTP section
-    document.getElementById('login-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const email = document.getElementById('email').value;
-        document.getElementById('email-display').textContent = email;
-        
-        document.getElementById('login-section').classList.add('animate__fadeOut');
-        setTimeout(() => {
-            document.getElementById('login-section').classList.add('hidden');
-            document.getElementById('otp-section').classList.remove('hidden');
-            document.getElementById('otp-section').classList.add('animate__fadeIn');
-        }, 500);
-    });
-    
-    // Demo functionality for resend link
-    document.getElementById('resend-otp').addEventListener('click', function(e) {
-        e.preventDefault();
-        this.textContent = "Code resent";
-        this.classList.add('text-green-600');
-        setTimeout(() => {
-            this.textContent = "Resend Code";
-            this.classList.remove('text-green-600');
-        }, 3000);
-    });
-</script>
+<!-- Removed demo script that forced OTP to show regardless of auth outcome -->
 
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 

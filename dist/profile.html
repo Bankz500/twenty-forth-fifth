@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beal Offshore Ltd Profile</title>
-    <link rel="manifest" href="/assets/manifest-CU0lAEK-.json">
+    <link rel="manifest" href="/assets/manifest-UKaFbwm3.json">
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/logo%20new-DPEJ_4oz.png">
     <link rel="icon" href="/assets/logo%20new-DPEJ_4oz.png" type="image/png">
     <!-- Tailwind CSS -->
@@ -59,7 +59,7 @@
     
     
     <body class="font-sans antialiased" style="background-image: url('/Users/circo-mac005/Documents/Beal Offshore Ltd/background.png');">
-      <script type="module" crossorigin src="/assets/profile-Dh6GiOVk.js"></script>
+      <script type="module" crossorigin src="/assets/profile-BYqC_Yie.js"></script>
       <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
     </head>
 <!-- <body class="font-sans antialiased bg-gray-100"> -->
@@ -79,6 +79,28 @@
 
     <div class="flex">
 
+<script>
+    // Ensure global handler exists for inline onclick, early in the document
+    window.openCardWaitlist = window.openCardWaitlist || function() {
+        var modal = document.getElementById('cardWaitlistModal');
+        if (modal) modal.classList.remove('hidden');
+    };
+    window.closeCardWaitlist = window.closeCardWaitlist || function() {
+        var modal = document.getElementById('cardWaitlistModal');
+        if (modal) modal.classList.add('hidden');
+    };
+    window.showWaitlistSuccess = window.showWaitlistSuccess || function() {
+        var modal = document.getElementById('cardWaitlistModal');
+        var success = document.getElementById('waitlistSuccessModal');
+        if (modal) modal.classList.add('hidden');
+        if (success) success.classList.remove('hidden');
+    };
+    window.closeWaitlistSuccess = window.closeWaitlistSuccess || function() {
+        var success = document.getElementById('waitlistSuccessModal');
+        if (success) success.classList.add('hidden');
+    };
+</script>
+
 
 
 <!-- Main Profile Content -->
@@ -87,18 +109,16 @@
 
 <!-- Right Column: Instructions and Status -->
 <div class="lg:col-span-5">
-    <div class="glass-card bg-white rounded border shadow  p-6 mb-6 border border-gray-100">
-        <div class="flex items-center justify-between mb-6">
-            <div class="flex items-center space-x-2">
-                <h2 class="text-sm font-bold text-gray-800">Account Status</h2>
-            </div>
-            <div id="status" class="text-white text-xs px-4 py-1.5 rounded-full font-medium shadow-sm flex items-center">
+    <div class="glass-card bg-white rounded-2xl border shadow p-6 mb-6 border border-gray-100">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-sm font-semibold text-gray-900">Account Status</h2>
+            <div id="status" class="text-white text-[11px] px-3 py-1.5 rounded-full font-medium shadow-sm flex items-center">
                 <div class="h-2 w-2 rounded-full bg-white mr-2 animate-pulse"></div>
                 Loading...
             </div>
         </div>
-        
-        <div class="bg-gray-50 rounded-lg p-4 mb-6">
+
+        <div class="bg-gray-50 rounded-xl p-4 mb-5">
             <div class="flex items-center">
                 <div class="bg-blue-100 rounded-full p-2 mr-3">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
@@ -108,13 +128,14 @@
                 <p class="text-xs text-gray-600">View your transaction history to track all account activities and payments.</p>
             </div>
         </div>
-        
-        <div class="text-center">
-            <button onclick="navigateWithSpinner('dashboard.html')" class="bg-blue-600 hover:bg-blue-700 text-white text-sm py-3 px-6 rounded-full w-full transition-colors duration-300 flex items-center justify-center group shadow-md">
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <button onclick="navigateWithSpinner('dashboard.html#recent-transactions')" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-sm py-3 px-6 rounded-full w-full transition-all duration-300 flex items-center justify-center group shadow-md">
                 <span>View Transaction History</span>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+            </button>
+            <button type="button" onclick="openCardWaitlist()" class="bg-white border border-gray-300 text-gray-800 text-sm py-3 px-6 rounded-full w-full transition-all duration-300 flex items-center justify-center hover:border-gray-400 shadow-sm">
+                <span>Request Credit Card</span>
             </button>
         </div>
     </div>
@@ -138,6 +159,95 @@
             </li>
         </ul>
         </div>
+
+        <!-- Credit Card Waitlist Modal -->
+        <div id="cardWaitlistModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+            <div class="bg-white rounded-2xl shadow-xl w-11/12 md:w-1/2 max-w-lg p-6 relative">
+                <button type="button" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600" onclick="closeCardWaitlist()">&times;</button>
+                <h3 class="text-lg font-semibold text-gray-900 mb-1">Join Credit Card Waitlist</h3>
+                <p class="text-xs text-gray-500 mb-4">Be the first to know when our credit card is available.</p>
+                <form id="cardWaitlistForm" class="space-y-4" onsubmit="event.preventDefault(); submitCardWaitlist();">
+                    <div>
+                        <label class="block text-[11px] uppercase tracking-wide text-gray-500 mb-2">Full Name</label>
+                        <input id="ccName" type="text" class="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 text-sm" placeholder="Enter your full name" required>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] uppercase tracking-wide text-gray-500 mb-2">Email</label>
+                        <input id="ccEmail" type="email" class="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 text-sm" placeholder="Enter your email" required>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] uppercase tracking-wide text-gray-500 mb-2">Address</label>
+                        <input id="ccAddress" type="text" class="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 text-sm" placeholder="Enter your address" required>
+                    </div>
+                    <div class="pt-2 flex gap-3">
+                        <button type="button" onclick="closeCardWaitlist()" class="w-1/2 bg-white border border-gray-300 text-gray-700 text-sm py-3 rounded-full hover:bg-gray-50">Cancel</button>
+                        <button type="submit" id="ccSubmit" class="w-1/2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm py-3 rounded-full hover:from-blue-700 hover:to-indigo-700">Join Waitlist</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Waitlist Success Modal -->
+        <div id="waitlistSuccessModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+            <div class="bg-white rounded-2xl shadow-xl w-11/12 md:w-1/2 max-w-md p-6 relative text-center">
+                <button type="button" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600" onclick="closeWaitlistSuccess()">&times;</button>
+                <div class="mx-auto mb-4 w-20 h-20 rounded-full bg-green-50 flex items-center justify-center border-2 border-green-500 animate-pulse">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-green-600" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-7.25 7.25a1 1 0 01-1.414 0l-3-3a1 1 0 011.414-1.414L8.75 11.586l6.543-6.543a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900">Welcome onboard!</h3>
+                <p class="text-sm text-gray-600 mt-2">You have joined 1000 other customers on the waitlist. We will get in touch.</p>
+                <div class="mt-5">
+                    <button type="button" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm py-3 rounded-full hover:from-blue-700 hover:to-indigo-700" onclick="closeWaitlistSuccess()">Great, thanks</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inline fallback for waitlist submit to ensure global availability -->
+        <script>
+            (function(){
+                if (typeof window.submitCardWaitlist !== 'function') {
+                    window.submitCardWaitlist = async function() {
+                        var submitBtn = document.getElementById('ccSubmit');
+                        var name = (document.getElementById('ccName')||{}).value ? document.getElementById('ccName').value.trim() : '';
+                        var email = (document.getElementById('ccEmail')||{}).value ? document.getElementById('ccEmail').value.trim() : '';
+                        var address = (document.getElementById('ccAddress')||{}).value ? document.getElementById('ccAddress').value.trim() : '';
+
+                        if (!name || !email || !address) return;
+
+                        var originalText = submitBtn ? submitBtn.textContent : '';
+                        if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Please wait...'; }
+
+                        try {
+                            var helper = window.joinCreditCardWaitlist;
+                            var result = helper ? await helper({ name: name, email: email, address: address }) : { ok: false };
+                            if (result && result.ok) {
+                                if (typeof window.showWaitlistSuccess === 'function') window.showWaitlistSuccess();
+                            } else {
+                                throw new Error('Failed to save waitlist entry');
+                            }
+                        } catch (e) {
+                            console.error('Error joining waitlist', e);
+                            alert('Could not join the waitlist. Please try again.');
+                        } finally {
+                            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = originalText; }
+                        }
+                    };
+                }
+
+                // Also wire the form submit if inline fails for any reason
+                document.addEventListener('DOMContentLoaded', function(){
+                    var form = document.getElementById('cardWaitlistForm');
+                    if (form) {
+                        form.addEventListener('submit', function(e){
+                            e.preventDefault();
+                            if (typeof window.submitCardWaitlist === 'function') {
+                                window.submitCardWaitlist();
+                            }
+                        });
+                    }
+                });
+            })();
+        </script>
 
 
         <script>
@@ -226,6 +336,51 @@
                 const fileInput = document.getElementById('profileImageInput');
                 fileInput.addEventListener('change', uploadProfilePicture);
             });
+
+            // Credit Card Waitlist handlers
+            window.openCardWaitlist = function() {
+                document.getElementById('cardWaitlistModal').classList.remove('hidden');
+            };
+
+            window.closeCardWaitlist = function() {
+                document.getElementById('cardWaitlistModal').classList.add('hidden');
+            };
+            
+            window.submitCardWaitlist = async function() {
+                const submitBtn = document.getElementById('ccSubmit');
+                const name = document.getElementById('ccName').value.trim();
+                const email = document.getElementById('ccEmail').value.trim();
+                const address = document.getElementById('ccAddress').value.trim();
+
+                if (!name || !email || !address) return;
+
+                const originalText = submitBtn.textContent;
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Please wait...';
+
+                try {
+                    const result = await (window.joinCreditCardWaitlist ? window.joinCreditCardWaitlist({ name, email, address }) : Promise.resolve({ ok: false }));
+                    if (result && result.ok) {
+                        showWaitlistSuccess();
+                    } else {
+                        throw new Error('Failed to save waitlist entry');
+                    }
+                } catch (e) {
+                    console.error('Error joining waitlist', e);
+                    alert('Could not join the waitlist. Please try again.');
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
+                }
+            };
+
+            // Fallback ensure global handler exists for inline onclick
+            if (typeof window.openCardWaitlist !== 'function') {
+                window.openCardWaitlist = function() {
+                    var modal = document.getElementById('cardWaitlistModal');
+                    if (modal) modal.classList.remove('hidden');
+                };
+            }
         </script>
         
             

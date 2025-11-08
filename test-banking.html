@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banking Details Generator Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="banking-details-generator.js"></script>
+    <style>
+        .test-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 10px 0;
+            background: white;
+        }
+        .success { border-color: #10b981; background-color: #f0fdf4; }
+        .error { border-color: #ef4444; background-color: #fef2f2; }
+        .info { border-color: #3b82f6; background-color: #eff6ff; }
+    </style>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-center mb-8">Banking Details Generator Test</h1>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Test Results -->
+            <div class="test-card info">
+                <h2 class="text-xl font-semibold mb-4">Test Results</h2>
+                <div id="test-results">
+                    <p>Click "Run Tests" to start testing...</p>
+                </div>
+            </div>
+
+            <!-- Generated Details -->
+            <div class="test-card success">
+                <h2 class="text-xl font-semibold mb-4">Generated Banking Details</h2>
+                <div id="generated-details">
+                    <p>No details generated yet...</p>
+                </div>
+                <button id="generate-btn" class="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    Generate New Details
+                </button>
+            </div>
+        </div>
+
+        <!-- Test Controls -->
+        <div class="test-card mt-6">
+            <h2 class="text-xl font-semibold mb-4">Test Controls</h2>
+            <div class="flex gap-4">
+                <button id="run-tests" class="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600">
+                    Run All Tests
+                </button>
+                <button id="clear-tests" class="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600">
+                    Clear Results
+                </button>
+                <button id="test-firebase" class="bg-purple-500 text-white px-6 py-2 rounded hover:bg-purple-600">
+                    Test Firebase Connection
+                </button>
+            </div>
+        </div>
+
+        <!-- Console Output -->
+        <div class="test-card mt-6">
+            <h2 class="text-xl font-semibold mb-4">Console Output</h2>
+            <div id="console-output" class="bg-black text-green-400 p-4 rounded font-mono text-sm h-64 overflow-y-auto">
+                <p>Console output will appear here...</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import BankingDetailsGenerator from './banking-details-generator.js';
+
+        // Initialize the generator
+        const bankingGenerator = new BankingDetailsGenerator();
+        let testResults = [];
+
+        // Console capture
+        const originalConsoleLog = console.log;
+        const originalConsoleError = console.error;
+        const consoleOutput = document.getElementById('console-output');
+
+        function captureConsole(type, ...args) {
+            const message = args.map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+            ).join(' ');
+            
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = type === 'error' ? 'text-red-400' : 'text-green-400';
+            logEntry.textContent = `[${timestamp}] ${type.toUpperCase()}: ${message}`;
+            consoleOutput.appendChild(logEntry);
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        }
+
+        console.log = (...args) => {
+            captureConsole('log', ...args);
+            originalConsoleLog.apply(console, args);
+        };
+
+        console.error = (...args) => {
+            captureConsole('error', ...args);
+            originalConsoleError.apply(console, args);
+        };
+
+        // Test functions
+        function addTestResult(testName, status, message) {
+            const result = { testName, status, message, timestamp: new Date() };
+            testResults.push(result);
+            updateTestResults();
+        }
+
+        function updateTestResults() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '';
+
+            testResults.forEach(result => {
+                const resultDiv = document.createElement('div');
+                resultDiv.className = `p-2 mb-2 rounded ${result.status === 'PASS' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`;
+                resultDiv.innerHTML = `
+                    <strong>${result.testName}:</strong> ${result.status}<br>
+                    <small>${result.message}</small><br>
+                    <small class="text-gray-500">${result.timestamp.toLocaleTimeString()}</small>
+                `;
+                resultsDiv.appendChild(resultDiv);
+            });
+        }
+
+        async function runTests() {
+            testResults = [];
+            console.log('Starting banking details generator tests...');
+
+            // Test 1: Basic generation
+            try {
+                const details = bankingGenerator.generateBankingDetails();
+                if (details && details.accountNumber && details.swiftCode && details.routingNumber) {
+                    addTestResult('Basic Generation', 'PASS', 'Successfully generated banking details');
+                    console.log('Generated details:', details);
+                } else {
+                    addTestResult('Basic Generation', 'FAIL', 'Generated details are incomplete');
+                }
+            } catch (error) {
+                addTestResult('Basic Generation', 'FAIL', `Error: ${error.message}`);
+            }
+
+            // Test 2: Account number format
+            try {
+                const accountNumber = bankingGenerator.generateAccountNumber();
+                if (accountNumber && accountNumber.length === 10 && /^\d+$/.test(accountNumber)) {
+                    addTestResult('Account Number Format', 'PASS', 'Account number is 10 digits');
+                } else {
+                    addTestResult('Account Number Format', 'FAIL', 'Account number format is incorrect');
+                }
+            } catch (error) {
+                addTestResult('Account Number Format', 'FAIL', `Error: ${error.message}`);
+            }
+
+            // Test 3: Swift code format
+            try {
+                const swiftCode = bankingGenerator.generateSwiftCode();
+                if (swiftCode && swiftCode.length >= 8 && swiftCode.length <= 11) {
+                    addTestResult('Swift Code Format', 'PASS', 'Swift code length is correct');
+                } else {
+                    addTestResult('Swift Code Format', 'FAIL', 'Swift code length is incorrect');
+                }
+            } catch (error) {
+                addTestResult('Swift Code Format', 'FAIL', `Error: ${error.message}`);
+            }
+
+            // Test 4: Routing number format
+            try {
+                const routingNumber = bankingGenerator.generateRoutingNumber();
+                if (routingNumber && routingNumber.length === 9 && /^\d+$/.test(routingNumber)) {
+                    addTestResult('Routing Number Format', 'PASS', 'Routing number is 9 digits');
+                } else {
+                    addTestResult('Routing Number Format', 'FAIL', 'Routing number format is incorrect');
+                }
+            } catch (error) {
+                addTestResult('Routing Number Format', 'FAIL', `Error: ${error.message}`);
+            }
+
+            // Test 5: User ID generation
+            try {
+                const userId = bankingGenerator.getCurrentUserId();
+                if (userId) {
+                    addTestResult('User ID Generation', 'PASS', `Generated user ID: ${userId}`);
+                } else {
+                    addTestResult('User ID Generation', 'FAIL', 'No user ID generated');
+                }
+            } catch (error) {
+                addTestResult('User ID Generation', 'FAIL', `Error: ${error.message}`);
+            }
+
+            console.log('All tests completed');
+        }
+
+        async function testFirebaseConnection() {
+            console.log('Testing Firebase connection...');
+            try {
+                // Wait a bit for Firebase to initialize
+                setTimeout(async () => {
+                    try {
+                        const details = await bankingGenerator.initializeUserBankingDetails();
+                        if (details) {
+                            addTestResult('Firebase Connection', 'PASS', 'Successfully connected and retrieved details');
+                            console.log('Firebase test successful:', details);
+                        } else {
+                            addTestResult('Firebase Connection', 'FAIL', 'No details returned from Firebase');
+                        }
+                    } catch (error) {
+                        addTestResult('Firebase Connection', 'FAIL', `Error: ${error.message}`);
+                        console.error('Firebase test failed:', error);
+                    }
+                }, 2000);
+            } catch (error) {
+                addTestResult('Firebase Connection', 'FAIL', `Error: ${error.message}`);
+            }
+        }
+
+        function clearTests() {
+            testResults = [];
+            updateTestResults();
+            consoleOutput.innerHTML = '<p>Console output cleared...</p>';
+        }
+
+        function updateGeneratedDetails(details) {
+            const detailsDiv = document.getElementById('generated-details');
+            detailsDiv.innerHTML = `
+                <div class="space-y-2">
+                    <p><strong>Account Number:</strong> <span class="font-mono">${details.accountNumber}</span></p>
+                    <p><strong>Swift Code:</strong> <span class="font-mono">${details.swiftCode}</span></p>
+                    <p><strong>Routing Number:</strong> <span class="font-mono">${details.routingNumber}</span></p>
+                    <p><strong>Bank Name:</strong> ${details.bankName}</p>
+                    <p><strong>Account Type:</strong> ${details.accountType}</p>
+                    <p><strong>Generated:</strong> ${new Date(details.generatedAt).toLocaleString()}</p>
+                </div>
+            `;
+        }
+
+        // Event listeners
+        document.getElementById('run-tests').addEventListener('click', runTests);
+        document.getElementById('clear-tests').addEventListener('click', clearTests);
+        document.getElementById('test-firebase').addEventListener('click', testFirebaseConnection);
+        document.getElementById('generate-btn').addEventListener('click', () => {
+            const details = bankingGenerator.generateBankingDetails();
+            updateGeneratedDetails(details);
+            console.log('Generated new details:', details);
+        });
+
+        // Initialize with some details
+        const initialDetails = bankingGenerator.generateBankingDetails();
+        updateGeneratedDetails(initialDetails);
+
+        console.log('Banking Details Generator Test Page loaded');
+        console.log('Initial details generated:', initialDetails);
+    </script>
+</body>
+</html> 

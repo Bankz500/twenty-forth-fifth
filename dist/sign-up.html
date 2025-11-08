@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Beal Offshore Ltd Sign Up</title>
-    <link rel="manifest" href="/assets/manifest-CU0lAEK-.json">
+    <link rel="manifest" href="/assets/manifest-UKaFbwm3.json">
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/logo%20new-DPEJ_4oz.png">
     <link rel="icon" href="/assets/logo%20new-DPEJ_4oz.png" type="image/png">
     <!-- Include Tailwind CSS -->
@@ -293,7 +293,7 @@
         .hover\:text-blue-700:hover { color: #4a4a4a; }
     </style>
     <!-- Add Firebase SDK -->
-  <script type="module" crossorigin src="/assets/account-DpCHGqZX.js"></script>
+  <script type="module" crossorigin src="/assets/account-DlIIZPkS.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
   <link rel="modulepreload" crossorigin href="/assets/index.esm-DdmE1zD_.js">
 </head>
@@ -454,28 +454,68 @@ overlay.onclick = closeMenu;
     
 
 <!-- Open Account Section -->
-<div class="flex items-center justify-center min-h-screen p-4 mt-24 animate__animated animate__fadeIn">
+<div class="flex items-center justify-center min-h-screen p-4 mt-8 md:mt-24 animate__animated animate__fadeIn">
     <div class="account-card flex flex-col md:flex-row overflow-hidden max-w-5xl w-full">
         <!-- Form Sections Container -->
         <div class="w-full md:w-3/5 p-8 relative">
             <!-- Progress Steps Indicator -->
-            <div class="step-indicator mb-8">
-                <div class="step active flex-1">
+            <div class="step-indicator mb-8" id="step-indicator">
+                <div class="step active flex-1" id="step-0-indicator">
                     <div class="step-circle">1</div>
+                    <span class="step-label">Account Type</span>
+                </div>
+                <div class="step flex-1" id="step-1-indicator">
+                    <div class="step-circle">2</div>
                     <span class="step-label">Personal Details</span>
                 </div>
-                <div class="step flex-1" id="step2-indicator">
-                    <div class="step-circle">2</div>
-                    <span class="step-label">Business Information</span>
+                <div class="step flex-1" id="step-2-indicator">
+                    <div class="step-circle">3</div>
+                    <span class="step-label" id="step-2-label">Additional Info</span>
                 </div>
             </div>
             
-            <!-- Form Section: Step 1 -->
-            <div id="step-1" class="animate-fade-in">
+            <!-- Form Section: Step 0 - Account Type Selection -->
+            <div id="step-0" class="animate-fade-in">
                 <div class="text-center mb-8">
-                    <h2 class="text-3xl font-bold text-gray-900 mb-3">Get Started with Your Account</h2>
+                    <h2 class="text-3xl font-bold text-gray-900 mb-3">Choose Your Account Type</h2>
                     <p class="text-gray-600 text-base max-w-lg mx-auto">
-                        Join thousands of businesses enjoying seamless account management with secure transactions and 24/7 support.
+                        Select whether you want to open a personal or business account.
+                    </p>
+                </div>
+                
+                <div class="space-y-4">
+                    <button type="button" id="account-type-personal" class="w-full border-2 border-gray-300 rounded-lg p-6 text-left hover:border-gray-500 transition duration-300 account-type-btn" data-type="personal">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mr-4">
+                                <i class="fas fa-user text-xl text-gray-600"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900">Personal Account</h3>
+                                <p class="text-sm text-gray-600">For individual banking needs</p>
+                            </div>
+                        </div>
+                    </button>
+                    
+                    <button type="button" id="account-type-business" class="w-full border-2 border-gray-300 rounded-lg p-6 text-left hover:border-gray-500 transition duration-300 account-type-btn" data-type="business">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mr-4">
+                                <i class="fas fa-building text-xl text-gray-600"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900">Business Account</h3>
+                                <p class="text-sm text-gray-600">For business banking needs</p>
+                            </div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Form Section: Step 1 - Personal Details -->
+            <div id="step-1" class="hidden">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-3">Personal Information</h2>
+                    <p class="text-gray-600 text-base max-w-lg mx-auto">
+                        Please provide your personal details to continue.
                     </p>
                 </div>
                 
@@ -520,7 +560,10 @@ overlay.onclick = closeMenu;
                                 <option value="current">Checking Offshore</option>
                             </select>
                         </div>
-                    </div>          
+                    </div>
+                    
+                    <!-- Hidden field to store user account type (personal/business) -->
+                    <input type="hidden" id="user-account-type" name="user-account-type" value="">
                     
                     <!-- Password -->
                     <div class="relative input-with-icon">
@@ -554,20 +597,67 @@ overlay.onclick = closeMenu;
                         </div>
                     </div>
 
-                    <div class="pt-4">
-                        <button type="button" id="continue-btn" class="w-full btn-gradient text-white py-4 rounded-lg font-medium text-base transition duration-300">
-                            <i class="fas fa-arrow-right mr-2"></i>Continue to Business Information
+                    <div class="pt-4 flex space-x-4">
+                        <button type="button" id="back-to-account-type" class="w-1/3 bg-gray-200 text-gray-800 py-4 rounded-lg font-medium text-base transition duration-300 hover:bg-gray-300">
+                            <i class="fas fa-arrow-left mr-2"></i>Back
+                        </button>
+                        <button type="button" id="continue-btn" class="w-2/3 btn-gradient text-white py-4 rounded-lg font-medium text-base transition duration-300">
+                            <i class="fas fa-arrow-right mr-2"></i>Continue
                         </button>
                     </div>
                 </form>
             </div>
 
-            <div class="mt-8 text-center">
-                <p class="text-gray-600">Already have an account? <a href="login.html" class="text-blue-600 font-medium hover:text-blue-800 transition duration-200 hover:underline">Log in</a></p>
+            <!-- Form Section: Step 2 - Personal Account Address & Phone -->
+            <div id="step-2-personal" class="hidden">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-3">Contact Information</h2>
+                    <p class="text-gray-600 text-base max-w-lg mx-auto">
+                        Please provide your address and phone number to complete your account setup.
+                    </p>
+                </div>
+                
+                <form id="personal-address-form" class="space-y-3">
+                    <div class="input-with-icon">
+                        <i class="fas fa-phone input-icon"></i>
+                        <div>
+                            <label for="phone-number" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                            <input type="tel" id="phone-number" name="phone-number" required placeholder="Enter your phone number" 
+                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent placeholder-gray-400">
+                        </div>
+                    </div>
+                    
+                    <div class="input-with-icon">
+                        <i class="fas fa-home input-icon"></i>
+                        <div>
+                            <label for="home-address" class="block text-sm font-medium text-gray-700 mb-1">Home Address</label>
+                            <input type="text" id="home-address" name="home-address" required placeholder="Enter your home address" 
+                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent placeholder-gray-400">
+                        </div>
+                    </div>
+                    
+                    <div class="input-with-icon">
+                        <i class="fas fa-map-marker-alt input-icon"></i>
+                        <div>
+                            <label for="billing-address" class="block text-sm font-medium text-gray-700 mb-1">Billing Address</label>
+                            <input type="text" id="billing-address" name="billing-address" required placeholder="Enter your billing address" 
+                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent placeholder-gray-400">
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-4 pt-4">
+                        <button type="button" id="back-to-personal-details" class="w-1/3 bg-gray-200 text-gray-800 py-4 rounded-lg font-medium text-base transition duration-300 hover:bg-gray-300">
+                            <i class="fas fa-arrow-left mr-2"></i>Back
+                        </button>
+                        <button type="submit" id="create-personal-account-btn" class="w-2/3 btn-gradient text-white py-4 rounded-lg font-medium text-base transition duration-300">
+                            Create Account
+                        </button>
+                    </div>
+                </form>
             </div>
 
-            <!-- Form Section: Step 2 (Hidden Initially) -->
-            <div id="step-2" class="hidden">
+            <!-- Form Section: Step 2 - Business Information -->
+            <div id="step-2-business" class="hidden">
                 <div class="text-center mb-8">
                     <h2 class="text-3xl font-bold text-gray-900 mb-3">Business Information</h2>
                     <p class="text-gray-600 text-base max-w-lg mx-auto">
@@ -613,14 +703,18 @@ overlay.onclick = closeMenu;
                     </div>
                     
                     <div class="flex space-x-4 pt-4">
-                        <a href="sign-up.html" id="back-btn" class="w-1/3 bg-gray-200 text-gray-800 py-4 rounded-lg font-medium text-base transition duration-300 hover:bg-gray-300">
-                            Back
-                        </a>
+                        <button type="button" id="back-to-personal-details-business" class="w-1/3 bg-gray-200 text-gray-800 py-4 rounded-lg font-medium text-base transition duration-300 hover:bg-gray-300">
+                            <i class="fas fa-arrow-left mr-2"></i>Back
+                        </button>
                         <button type="submit" id="create-account-btn" class="w-2/3 btn-gradient text-white py-4 rounded-lg font-medium text-base transition duration-300">
                             Create Account
                         </button>
                     </div>
                 </form>
+            </div>
+
+            <div class="mt-8 text-center">
+                <p class="text-gray-600">Already have an account? <a href="login.html" class="text-blue-600 font-medium hover:text-blue-800 transition duration-200 hover:underline">Log in</a></p>
             </div>
         </div>
 
@@ -690,6 +784,52 @@ overlay.onclick = closeMenu;
 </style>
 
 <script>
+    // Store selected account type globally
+    let selectedAccountType = '';
+
+    // Account type selection handlers
+    document.querySelectorAll('.account-type-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Remove active state from all buttons
+            document.querySelectorAll('.account-type-btn').forEach(b => {
+                b.classList.remove('border-gray-500', 'bg-gray-50');
+                b.classList.add('border-gray-300');
+            });
+            
+            // Add active state to clicked button
+            this.classList.remove('border-gray-300');
+            this.classList.add('border-gray-500', 'bg-gray-50');
+            
+            selectedAccountType = this.dataset.type;
+            document.getElementById('user-account-type').value = selectedAccountType;
+            
+            // Update step indicator
+            document.getElementById('step-0-indicator').classList.add('completed');
+            document.getElementById('step-0-indicator').classList.remove('active');
+            document.getElementById('step-1-indicator').classList.add('active');
+            
+            // Show step 1 after a short delay
+            setTimeout(() => {
+                document.getElementById("step-0").classList.add("hidden");
+                document.getElementById("step-1").classList.remove("hidden");
+                document.getElementById("step-1").classList.add("animate-fade-in");
+            }, 300);
+        });
+    });
+
+    // Back to account type selection
+    document.getElementById("back-to-account-type").addEventListener("click", function() {
+        document.getElementById("step-1").classList.add("hidden");
+        document.getElementById("step-0").classList.remove("hidden");
+        document.getElementById("step-0").classList.add("animate-fade-in");
+        
+        // Reset step indicator
+        document.getElementById('step-0-indicator').classList.remove('completed');
+        document.getElementById('step-0-indicator').classList.add('active');
+        document.getElementById('step-1-indicator').classList.remove('active');
+    });
+
+    // Continue button handler
     document.getElementById("continue-btn").addEventListener("click", function() {
         const formData = {
             firstName: document.getElementById("first-name").value.trim(),
@@ -717,16 +857,74 @@ overlay.onclick = closeMenu;
         // Show spinner
         document.getElementById('spinner').classList.remove('hidden');
 
+        // Update step indicator
+        document.getElementById('step-1-indicator').classList.add('completed');
+        document.getElementById('step-1-indicator').classList.remove('active');
+        document.getElementById('step-2-indicator').classList.add('active');
+        
+        // Update step 2 label based on account type
+        if (selectedAccountType === 'personal') {
+            document.getElementById('step-2-label').textContent = 'Contact Information';
+        } else {
+            document.getElementById('step-2-label').textContent = 'Business Information';
+        }
+
         // Simulate a delay for processing
         setTimeout(() => {
             // Hide spinner
             document.getElementById('spinner').classList.add('hidden');
 
-            // Proceed to the next step
+            // Proceed to the next step based on account type
             document.getElementById("step-1").classList.add("hidden");
-            document.getElementById("step-2").classList.remove("hidden");
-        }, 1000); // Adjust the delay as needed
+            if (selectedAccountType === 'personal') {
+                document.getElementById("step-2-personal").classList.remove("hidden");
+                document.getElementById("step-2-personal").classList.add("animate-fade-in");
+            } else {
+                document.getElementById("step-2-business").classList.remove("hidden");
+                document.getElementById("step-2-business").classList.add("animate-fade-in");
+            }
+        }, 500);
     });
+
+    // Back to personal details (from personal address form)
+    document.getElementById("back-to-personal-details").addEventListener("click", function() {
+        document.getElementById("step-2-personal").classList.add("hidden");
+        document.getElementById("step-1").classList.remove("hidden");
+        document.getElementById("step-1").classList.add("animate-fade-in");
+        
+        // Update step indicator
+        document.getElementById('step-2-indicator').classList.remove('active');
+        document.getElementById('step-1-indicator').classList.remove('completed');
+        document.getElementById('step-1-indicator').classList.add('active');
+    });
+
+    // Back to personal details (from business form)
+    document.getElementById("back-to-personal-details-business").addEventListener("click", function() {
+        document.getElementById("step-2-business").classList.add("hidden");
+        document.getElementById("step-1").classList.remove("hidden");
+        document.getElementById("step-1").classList.add("animate-fade-in");
+        
+        // Update step indicator
+        document.getElementById('step-2-indicator').classList.remove('active');
+        document.getElementById('step-1-indicator').classList.remove('completed');
+        document.getElementById('step-1-indicator').classList.add('active');
+    });
+
+    // Password visibility toggle function
+    function togglePasswordVisibility(inputId, iconId) {
+        const input = document.getElementById(inputId);
+        const icon = document.getElementById(iconId);
+        
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
 </script>
 
 
