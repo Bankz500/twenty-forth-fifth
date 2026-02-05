@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Beal Offshore Ltd Dashboard</title>
     <style>
         :root {
@@ -93,11 +93,11 @@
             background: linear-gradient(135deg, #0ea5e9 0%, #1e3a8a 100%); /* brand: blue sky to deep navy */
             border-radius: 16px;
             padding: 24px;
-            position: relative;
+            position: relative !important; /* Ensure parent is positioned for absolute children */
             transition: all 0.3s ease;
             /* box-shadow: 0 8px 32px rgba(2, 6, 23, 0.25); */
             border: 1px solid rgba(255, 255, 255, 0.15);
-            overflow: hidden;
+            overflow: visible; /* Changed from hidden to visible so button isn't clipped */
         }
         
         .account-card::before {
@@ -344,6 +344,310 @@
             color: #f39c12;
         }
         
+        /* Simplified Mobile Transaction List Styles */
+        .mobile-transaction-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            -webkit-tap-highlight-color: transparent;
+            will-change: background-color;
+            contain: layout style paint;
+        }
+        
+        .mobile-transaction-item:active {
+            background-color: #f9f9f9;
+        }
+        
+        /* Optimize mobile transaction container */
+        @media (max-width: 767px) {
+            .transaction-entry {
+                contain: layout style paint;
+            }
+            
+            .transaction-entry .hidden {
+                display: none !important;
+            }
+            
+            /* Hide desktop layout on mobile to reduce DOM complexity */
+            .transaction-entry > .hidden.md\:grid {
+                display: none !important;
+            }
+        }
+        
+        .mobile-transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-right: 12px;
+        }
+        
+        .mobile-transaction-content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .mobile-transaction-description {
+            font-size: 15px;
+            font-weight: 500;
+            color: #000;
+            margin-bottom: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .mobile-transaction-time {
+            font-size: 13px;
+            color: #999;
+        }
+        
+        .mobile-transaction-amount {
+            font-size: 15px;
+            font-weight: 600;
+            margin-left: 12px;
+            flex-shrink: 0;
+        }
+        
+        .mobile-transaction-amount.credit {
+            color: #10b981;
+        }
+        
+        .mobile-transaction-amount.debit {
+            color: #000;
+        }
+        
+        /* Transaction Detail Modal */
+        .transaction-detail-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
+            z-index: 1000;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .transaction-detail-modal.active {
+            display: block;
+        }
+        
+        .transaction-detail-header {
+            position: sticky;
+            top: 0;
+            background: white;
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 10;
+        }
+        
+        .transaction-detail-back {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: #7c3aed;
+            cursor: pointer;
+            padding: 8px;
+            margin-left: -8px;
+        }
+        
+        .transaction-detail-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #000;
+            flex: 1;
+            text-align: center;
+            margin: 0 16px;
+        }
+        
+        .transaction-detail-share {
+            background: #7c3aed;
+            color: white;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        .transaction-detail-body {
+            padding: 24px 16px;
+        }
+        
+        .transaction-detail-amount {
+            font-size: 32px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        
+        .transaction-detail-amount.credit {
+            color: #10b981;
+        }
+        
+        .transaction-detail-type {
+            font-size: 16px;
+            font-weight: 600;
+            color: #000;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        
+        .transaction-detail-date {
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        
+        .transaction-detail-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #d1fae5;
+            color: #065f46;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            margin: 0 auto 24px;
+        }
+        
+        .transaction-detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .transaction-detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        .transaction-detail-label {
+            font-size: 14px;
+            color: #999;
+        }
+        
+        .transaction-detail-value {
+            font-size: 15px;
+            font-weight: 600;
+            color: #000;
+            text-align: right;
+            flex: 1;
+            margin-left: 16px;
+        }
+        
+        .transaction-detail-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 12px;
+            flex-shrink: 0;
+        }
+        
+        .transaction-detail-copy {
+            background: #7c3aed;
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-left: 8px;
+        }
+        
+        .transaction-detail-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .transaction-detail-status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+        }
+        
+        .transaction-detail-status-text {
+            font-size: 15px;
+            font-weight: 600;
+            color: #7c3aed;
+        }
+        
+        .transaction-detail-actions {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid #f0f0f0;
+        }
+        
+        .transaction-detail-action-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 16px;
+        }
+        
+        .transaction-detail-report {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fef2f2;
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+        }
+        
+        .transaction-detail-report-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .transaction-detail-report-icon {
+            width: 24px;
+            height: 24px;
+            color: #dc2626;
+        }
+        
+        .transaction-detail-report-text {
+            text-align: left;
+        }
+        
+        .transaction-detail-report-title {
+            font-size: 15px;
+            font-weight: 500;
+            color: #dc2626;
+            margin-bottom: 2px;
+        }
+        
+        .transaction-detail-report-subtitle {
+            font-size: 13px;
+            color: #999;
+        }
+        
         .notifications-section {
             background-color: white;
             border-radius: 10px;
@@ -402,14 +706,51 @@
         .hide-balance {
             filter: blur(5px);
         }
+        
+        /* Balance toggle button styling */
+        .balance-toggle-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1.5px solid rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 5; /* Lower z-index to prevent overlay issues */
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            pointer-events: auto; /* Ensure button is clickable */
+        }
+        
+        .balance-toggle-btn:hover {
+            background: rgba(0, 0, 0, 0.5);
+            border-color: #ffffff;
+            transform: scale(1.1);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+        }
+        
+        .balance-toggle-btn i {
+            font-size: 14px !important;
+            color: #ffffff !important;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+            line-height: 1;
+        }
     </style>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" sizes="180x180" href="logo new.png">
     <link rel="icon" href="logo new.png" type="image/png">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Chart.js Library -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
         html, body {
             overflow: auto; /* Ensures scrolling is enabled */
@@ -456,59 +797,55 @@
     </style>
     <script type="module">
         // Firebase SDK imports
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js';
-        import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/9.1.3/firebase-auth.js';
-        import { getFirestore, doc, getDoc, collection, getDocs, query, where, updateDoc, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore.js';
-    
-        // Firebase configuration
-        const firebaseConfig = {
-        apiKey: "AIzaSyABYV12B7RM2ZCD2G1lFTLpgJwflJFwEXY",
-        authDomain: "beal-offshore.firebaseapp.com",
-        projectId: "beal-offshore",
-        storageBucket: "beal-offshore.firebasestorage.app",
-        messagingSenderId: "1091834410162",
-        appId: "1:1091834410162:web:56285433b5751e681745ab",
-        measurementId: "G-CT463F3T6J"
-        };
-
-    
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app); // Initialize Firestore
-        // Expose for non-module scripts
+        import { auth, db, cacheUserData, clearCachedUserData, getCachedUserData } from './firebase-client.js';
+        import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
+        import { doc, getDoc, collection, getDocs, query, where, updateDoc, addDoc, serverTimestamp, setDoc, deleteDoc } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
+        
+        // Make db available globally for banking details generator
         window.auth = auth;
         window.db = db;
-        window.firestoreHelpers = { addDoc, collection, serverTimestamp, doc, getDoc, updateDoc };
+        window.firestoreHelpers = { addDoc, collection, serverTimestamp, doc, getDoc, updateDoc, setDoc, deleteDoc };
+
+        // Surface Firebase connectivity/auth problems clearly instead of failing silently.
+        function showFirebaseBanner(message) {
+            try {
+                let el = document.getElementById('firebaseStatusBanner');
+                if (!el) {
+                    el = document.createElement('div');
+                    el.id = 'firebaseStatusBanner';
+                    el.className = 'fixed top-0 left-0 right-0 z-50 bg-red-600 text-white text-sm px-4 py-3 shadow-lg';
+                    document.body.appendChild(el);
+                }
+                el.textContent = message;
+            } catch {
+                // ignore
+            }
+        }
+
+        window.addEventListener('unhandledrejection', (event) => {
+            const msg = event?.reason?.message || String(event?.reason || '');
+            if (msg.includes('auth/internal-error') || msg.includes('Could not reach Cloud Firestore backend')) {
+                showFirebaseBanner('Connection issue: Firebase could not be reached (offline/VPN/adblock). Please check your internet connection and try again.');
+            }
+        });
+
+        // Speed up first paint: render cached user data (if available) as soon as DOM is ready.
+        // This does not change the UI; it just fills the same fields earlier, then Firestore refreshes it.
+        document.addEventListener('DOMContentLoaded', () => {
+            const cached = getCachedUserData();
+            const welcomeEl = document.getElementById('user-first-name');
+            // Only apply cache if the dashboard hasn't been populated yet.
+            if (cached && welcomeEl && !welcomeEl.textContent.trim()) {
+                try {
+                    loadUserDataFromCache(cached);
+                } catch {
+                    // ignore cache failures
+                }
+            }
+        }, { passive: true });
 
             // Add these at the top of your script section
-            let inactivityTimeout;
-            const TIMEOUT_DURATION = 200000; // 10 minutes in milliseconds
-
-            // Function to reset timer
-            function resetInactivityTimer() {
-                clearTimeout(inactivityTimeout);
-                inactivityTimeout = setTimeout(() => {
-                    // Sign out the user and redirect to login
-                    const auth = getAuth();
-                    signOut(auth).then(() => {
-                        window.location.href = 'login.html';
-                    }).catch((error) => {
-                        console.error('Error signing out:', error);
-                        window.location.href = 'login.html';
-                    });
-                }, TIMEOUT_DURATION);
-            }
-
-            // Add event listeners for user activity
-            document.addEventListener('mousemove', resetInactivityTimer);
-            document.addEventListener('keypress', resetInactivityTimer);
-            document.addEventListener('click', resetInactivityTimer);
-            document.addEventListener('scroll', resetInactivityTimer);
-            document.addEventListener('touchstart', resetInactivityTimer);
-
-            // Initialize timer when page loads
-            resetInactivityTimer();
+            // Inactivity timer removed for performance
     
         // Function to populate transaction data in the clean layout
         function populateTransactionData(element, historyText) {
@@ -523,7 +860,16 @@
             const reference = parts[5] || '';
             const notes = parts.slice(6).join('|') || '';
             
-            // Update the clean layout elements
+            // Store transaction data on element for modal
+            element.dataset.transactionType = type;
+            element.dataset.transactionRecipient = recipient;
+            element.dataset.transactionAmount = amount;
+            element.dataset.transactionTime = time;
+            element.dataset.transactionDate = date;
+            element.dataset.transactionReference = reference;
+            element.dataset.transactionNotes = notes;
+            
+            // Update the clean layout elements (desktop)
             const descriptionEl = element.querySelector('.transaction-description');
             const recipientEl = element.querySelector('.transaction-recipient');
             const typeEl = element.querySelector('.transaction-type');
@@ -541,6 +887,55 @@
             if (amountEl) amountEl.textContent = amount;
             if (dateEl) dateEl.textContent = date;
             if (referenceEl) referenceEl.textContent = reference;
+
+            // Update mobile-specific elements
+            const mobileItem = element.querySelector('.mobile-transaction-item');
+            if (mobileItem) {
+                const mobileDescription = mobileItem.querySelector('.mobile-transaction-description');
+                const mobileTime = mobileItem.querySelector('.mobile-transaction-time');
+                const mobileAmount = mobileItem.querySelector('.mobile-transaction-amount');
+                const mobileIcon = mobileItem.querySelector('.mobile-transaction-icon');
+                const mobileIconText = mobileItem.querySelector('.transaction-icon-text-mobile');
+                
+                if (mobileDescription) {
+                    mobileDescription.textContent = type || recipient || 'Transaction';
+                }
+                
+                if (mobileTime) {
+                    mobileTime.textContent = time || date || '-';
+                }
+                
+                if (mobileAmount) {
+                    mobileAmount.textContent = amount || '-';
+                    // Determine if credit or debit
+                    const isCredit = amount && (amount.startsWith('+') || amount.includes('credit') || amount.includes('deposit'));
+                    mobileAmount.className = 'mobile-transaction-amount transaction-amount-mobile ' + (isCredit ? 'credit' : 'debit');
+                }
+                
+                // Update icon based on transaction type
+                if (mobileIcon && mobileIconText) {
+                    const normalizedType = (type || '').toLowerCase();
+                    if (normalizedType.includes('cashback') || normalizedType.includes('refund')) {
+                        mobileIcon.style.backgroundColor = '#e0f2fe';
+                        mobileIconText.textContent = '₦';
+                        mobileIconText.style.color = '#0369a1';
+                    } else if (normalizedType.includes('mtn') || normalizedType.includes('data')) {
+                        mobileIcon.style.backgroundColor = '#fef3c7';
+                        mobileIconText.textContent = 'MTN';
+                        mobileIconText.style.fontSize = '10px';
+                        mobileIconText.style.color = '#1e40af';
+                    } else if (normalizedType.includes('savings') || normalizedType.includes('deposit')) {
+                        mobileIcon.style.backgroundColor = '#ede9fe';
+                        mobileIconText.textContent = 'K.';
+                        mobileIconText.style.fontSize = '12px';
+                        mobileIconText.style.color = '#7c3aed';
+                    } else {
+                        mobileIcon.style.backgroundColor = '#e0f2fe';
+                        mobileIconText.textContent = '₦';
+                        mobileIconText.style.color = '#0369a1';
+                    }
+                }
+            }
 
             // Hide meta row if no type/date
             if (metaRow) {
@@ -584,21 +979,212 @@
             }
         }
     
-        // Check if the user is authenticated
-                    onAuthStateChanged(auth, async (user) => {
-                if (user) {
-                    console.log("User is logged in:", user.uid);
-                    // Fetch user data from Firestore
-                    const userDocRef = doc(db, 'users', user.uid);
-                    const userDoc = await getDoc(userDocRef);
+        // Transaction detail modal functions
+        function openTransactionDetail(element) {
+            const modal = document.getElementById('transactionDetailModal');
+            if (!modal || !element) return;
+            
+            // Get transaction data from element dataset
+            const type = element.dataset.transactionType || '';
+            const recipient = element.dataset.transactionRecipient || '';
+            const amount = element.dataset.transactionAmount || '';
+            const time = element.dataset.transactionTime || '';
+            const date = element.dataset.transactionDate || '';
+            const reference = element.dataset.transactionReference || '';
+            const notes = element.dataset.transactionNotes || '';
+            
+            // Format date for display
+            let displayDate = date;
+            if (date && time) {
+                displayDate = `On ${date} at ${time}`;
+            } else if (date) {
+                displayDate = date;
+            } else if (time) {
+                displayDate = time;
+            }
+            
+            // Determine if credit
+            const isCredit = amount && (amount.startsWith('+') || amount.includes('credit') || amount.includes('deposit'));
+            
+            // Populate modal
+            document.getElementById('detail-amount').textContent = amount || '₦0.00';
+            document.getElementById('detail-amount').className = 'transaction-detail-amount' + (isCredit ? ' credit' : '');
+            document.getElementById('detail-type').textContent = (type || recipient || 'Transaction').toUpperCase();
+            document.getElementById('detail-date').textContent = displayDate || '-';
+            document.getElementById('detail-description').textContent = notes || type || recipient || '-';
+            document.getElementById('detail-method').textContent = type || '-';
+            document.getElementById('detail-reference').textContent = reference || '-';
+            document.getElementById('detail-from').textContent = recipient || 'Kuda';
+            
+            // Determine category
+            const normalizedType = (type || '').toLowerCase();
+            let category = 'Savings';
+            if (normalizedType.includes('cashback')) category = 'Cashback';
+            else if (normalizedType.includes('mtn') || normalizedType.includes('data')) category = 'Data';
+            else if (normalizedType.includes('savings')) category = 'Savings';
+            document.getElementById('detail-category').textContent = category;
+            
+            // Show modal (mobile only)
+            if (window.innerWidth < 768) {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        
+        function closeTransactionDetail() {
+            const modal = document.getElementById('transactionDetailModal');
+            if (modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+        
+        function shareTransaction() {
+            const reference = document.getElementById('detail-reference').textContent;
+            const amount = document.getElementById('detail-amount').textContent;
+            const type = document.getElementById('detail-type').textContent;
+            
+            const shareText = `Transaction Details:\nType: ${type}\nAmount: ${amount}\nReference: ${reference}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Transaction Details',
+                    text: shareText
+                }).catch(err => console.log('Error sharing:', err));
+            } else {
+                // Fallback: copy to clipboard
+                navigator.clipboard.writeText(shareText).then(() => {
+                    alert('Transaction details copied to clipboard');
+                });
+            }
+        }
+        
+        function copyTransactionReference() {
+            const reference = document.getElementById('detail-reference').textContent;
+            if (reference && reference !== '-') {
+                navigator.clipboard.writeText(reference).then(() => {
+                    alert('Reference copied to clipboard');
+                });
+            }
+        }
+        
+        function reportTransaction() {
+            alert('Transaction reporting feature coming soon');
+        }
+        
+        // Event delegation handler for mobile transactions (better performance)
+        function handleMobileTransactionClick(e) {
+            // Only handle on mobile
+            if (window.innerWidth >= 768) return;
+            
+            const mobileItem = e.target.closest('.mobile-transaction-item');
+            if (!mobileItem) return;
+            
+            const transactionId = mobileItem.dataset.transactionId;
+            if (!transactionId) return;
+            
+            const parentElement = document.getElementById(transactionId);
+            if (parentElement && parentElement.dataset.transactionType && parentElement.dataset.transactionType !== '') {
+                e.preventDefault();
+                e.stopPropagation();
+                openTransactionDetail(parentElement);
+            }
+        }
     
-                if (userDoc.exists()) {
-                    const userData = userDoc.data();
+        // Check if the user is authenticated (using cached state first)
+        let authCheckComplete = false;
+        let redirectTimeout = null;
+        
+        // Always use Firebase auth state (cached check was causing issues)
+        // The auth state will be stored automatically for other pages
+        onAuthStateChanged(auth, async (user) => {
+            // Clear any pending redirect timeout
+            if (redirectTimeout) {
+                clearTimeout(redirectTimeout);
+                redirectTimeout = null;
+            }
+            
+            if (user) {
+                authCheckComplete = true;
+                
+                console.log("User is logged in:", user.uid);
                     
-                    // Set the amounts directly from user data
-                    document.getElementById('Deposit-account').textContent = `${userData.deposit || '$0.00'}`;
+                    // Auth persistence is handled by Firebase; user data caching is handled below.
                     
-                    // Set history data for all 20 history fields
+                    // Show loading indicator for dashboard sections
+                    const loadingSections = document.querySelectorAll('.accounts-section, #history-container');
+                    loadingSections.forEach(section => {
+                        if (section) section.style.opacity = '0.6';
+                    });
+                    
+                    // Fetch user data from Firestore
+                    await loadUserDataFromFirestore(user);
+                    
+                    // Hide loading indicators after data is loaded
+                    loadingSections.forEach(section => {
+                        if (section) section.style.opacity = '1';
+                    });
+                } else {
+                    // User not authenticated
+                    if (!authCheckComplete) {
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                        authCheckComplete = true;
+                    }
+                    
+                    redirectTimeout = setTimeout(() => {
+                        const currentUser = auth.currentUser;
+                        if (!currentUser) {
+                            console.log('No user signed in. Redirecting to sign-in page.');
+                            clearCachedUserData();
+                            window.location.href = 'login.html';
+                        }
+                    }, 1000);
+                }
+        });
+        
+        // Function to load user data from Firestore
+        async function loadUserDataFromFirestore(user) {
+            const userDocRef = doc(db, 'users', user.uid);
+            const userDoc = await getDoc(userDocRef);
+    
+            if (userDoc.exists()) {
+                const userData = userDoc.data();
+                
+                // Store user data for other pages
+                cacheUserData(userData);
+                    
+                // Set the amounts directly from user data
+                document.getElementById('Deposit-account').textContent = `${userData.deposit || '$0.00'}`;
+                document.getElementById('savings').textContent = `${userData.savings || '$0.00'}`;
+                document.getElementById('fixed').textContent = `${userData.fixed || '$0.00'}`;
+                
+                // Update welcome message first to ensure it's visible immediately
+                const welcomeName = document.getElementById('user-first-name');
+                if (userData.firstName && userData.firstName.trim() !== '') {
+                    welcomeName.textContent = userData.firstName;
+                } else {
+                    welcomeName.textContent = '';
+                    console.log('User data does not contain a valid name field.');
+                }
+    
+                // Update cardholder name on the active card
+                const cardholderName = document.getElementById('cardholder-name');
+                const modalCardholderName = document.getElementById('modal-cardholder-name');
+                let fullName = '';
+                
+                if (userData.firstName && userData.lastName) {
+                    fullName = `${userData.firstName.toUpperCase()} ${userData.lastName.toUpperCase()}`;
+                } else if (userData.firstName) {
+                    fullName = userData.firstName.toUpperCase();
+                }
+                
+                if (fullName) {
+                    if (cardholderName) cardholderName.textContent = fullName;
+                    if (modalCardholderName) modalCardholderName.textContent = fullName;
+                }
+                
+                // Set history data for all 20 history fields
+                setTimeout(() => {
                     let hasMoreThan10 = false;
                     let visibleCount = 0;
                     
@@ -608,30 +1194,36 @@
                             const historyText = userData[`history${i}`] || '';
                             
                             if (historyText && historyText.trim() !== '') {
-                                // Parse and populate the transaction data
                                 populateTransactionData(historyElement, historyText);
                                 
-                                // Show the first 10 entries with data
                                 if (visibleCount < 10) {
                                     historyElement.style.display = 'block';
+                                    const mobileItem = historyElement.querySelector('.mobile-transaction-item');
+                                    if (mobileItem) {
+                                        mobileItem.style.display = 'flex';
+                                    }
                                     visibleCount++;
                                 } else {
-                                    // Hide entries beyond the first 10
                                     historyElement.style.display = 'none';
+                                    const mobileItem = historyElement.querySelector('.mobile-transaction-item');
+                                    if (mobileItem) {
+                                        mobileItem.style.display = 'none';
+                                    }
                                 }
                                 
-                                // Check if we have content beyond the first 10 entries
                                 if (i > 10) {
                                     hasMoreThan10 = true;
                                 }
                             } else {
-                                // Hide empty elements
                                 historyElement.style.display = 'none';
+                                const mobileItem = historyElement.querySelector('.mobile-transaction-item');
+                                if (mobileItem) {
+                                    mobileItem.style.display = 'none';
+                                }
                             }
                         }
                     }
                     
-                    // Show/hide the "See More" button based on whether we have more than 10 entries
                     const seeMoreButton = document.getElementById('see-more');
                     if (seeMoreButton) {
                         if (hasMoreThan10) {
@@ -641,16 +1233,20 @@
                         }
                     }
                     
-                    document.getElementById('savings').textContent = `${userData.savings || '$0.00'}`;
-                    document.getElementById('fixed').textContent = `${userData.fixed || '$0.00'}`;
-                    
-                    // Process pending transactions from user document
+                    const transactionContainer = document.getElementById('recent-transactions');
+                    if (transactionContainer) {
+                        transactionContainer.removeEventListener('click', handleMobileTransactionClick);
+                        transactionContainer.addEventListener('click', handleMobileTransactionClick, { passive: true });
+                    }
+                }, 100);
+                
+                // Process pending transactions
+                setTimeout(() => {
                     const pending1Element = document.getElementById('pending1');
                     const pending2Element = document.getElementById('pending2');
                     const pending3Element = document.getElementById('pending3');
                     const pendingList = document.getElementById('pending-list');
                     
-                    // Function to populate pending transaction data
                     function populatePendingData(element, pendingText) {
                         const parts = pendingText.split('|').map(part => part.trim());
                         const type = parts[0] || '';
@@ -674,133 +1270,217 @@
                         if (amountEl) amountEl.textContent = amount;
                         if (dateEl) dateEl.textContent = date;
 
-                        // Set PN avatar and colors for pending
                         if (avatarEl && avatarTextEl) {
                             avatarTextEl.textContent = 'PN';
                             avatarEl.className = 'w-12 h-12 rounded-full flex items-center justify-center pending-avatar font-semibold text-sm bg-orange-50 text-orange-700';
                         }
                     }
                     
-                    // Check for each pending transaction and display if available
-                    // Helper to append a PN card
                     function appendPendingCard(targetEl) {
                         if (!pendingList || !targetEl) return;
                         pendingList.appendChild(targetEl);
                     }
 
                     if (userData.pending1 && userData.pending1.trim() !== '') {
-                            pending1Element.classList.remove('hidden');
+                        pending1Element.classList.remove('hidden');
                         populatePendingData(pending1Element, userData.pending1);
                         appendPendingCard(pending1Element);
                     }
                     
                     if (userData.pending2 && userData.pending2.trim() !== '') {
-                            pending2Element.classList.remove('hidden');
+                        pending2Element.classList.remove('hidden');
                         populatePendingData(pending2Element, userData.pending2);
                         appendPendingCard(pending2Element);
                     }
                     
                     if (userData.pending3 && userData.pending3.trim() !== '') {
-                            pending3Element.classList.remove('hidden');
+                        pending3Element.classList.remove('hidden');
                         populatePendingData(pending3Element, userData.pending3);
                         appendPendingCard(pending3Element);
                     }
                     
-                    // Hide or show the limit notice based on all three slots being used
                     if (userData.pending1 && userData.pending2 && userData.pending3 &&
                         userData.pending1.trim() !== '' && userData.pending2.trim() !== '' && userData.pending3.trim() !== '') {
                         document.getElementById('pending-limit-notice').classList.remove('hidden');
                     } else {
                         document.getElementById('pending-limit-notice').classList.add('hidden');
                     }
-                    
-                    // Apply color formatting to the pending transactions
-                    setTimeout(colorPendingTransactions, 500);
-
-                    // Update welcome message first to ensure it's visible immediately
-                    const welcomeName = document.getElementById('user-first-name');
-                    if (userData.firstName && userData.name.trim() !== '') {
-                        welcomeName.textContent = userData.firstName;
-                    } else {
-                        welcomeName.textContent = ''; // Default name if not available
-                        console.log('User data does not contain a valid name field.');
-                    }
-    
-                    // Fetch transaction history from Firestore
-                    const historyRef = collection(db, 'history'); // Reference to history collection
-                    const historyQuery = query(historyRef, where('userId', '==', user.uid)); // Query for the authenticated user
-                    const historySnapshot = await getDocs(historyQuery); // Fetch history for the authenticated user
-    
-                    const historyContainer = document.getElementById('history-container');
-                    historyContainer.innerHTML = ''; // Clear existing content
-    
-                    if (!historySnapshot.empty) {
-                        historySnapshot.forEach(doc => {
-                            const historyData = doc.data();
-                            // Create a new history card for each transaction
-                            const historyCard = document.createElement('div');
-                            historyCard.className = 'bg-white p-4 rounded-lg shadow-md text-center h-16';
-                            historyCard.innerHTML = `
-                                <h3 class="font-semibold text-gray-800">${historyData.description || 'No description'}</h3>
-                                <p class="text-gray-600">ID: ${doc.id}</p>
-                                <p class="text-gray-600">$${historyData.amount || ''}</p>
-                            `;
-                            historyContainer.appendChild(historyCard); // Append to the history section
-                        });
-                    } else {
-                        console.log('No transaction history found for this user.'); // Debugging log
-                        // If no history is found, display a message
-                        const noHistoryCard = document.createElement('div');
-                        noHistoryCard.className = 'bg-white p-4 rounded-lg shadow-md text-center h-16';
-                        noHistoryCard.innerHTML = `
-                            <h3 class="font-semibold text-gray-800">No history</h3>
-                            <p class="text-gray-600">You have no transaction history.</p>
-                        `;
-                        historyContainer.appendChild(noHistoryCard); // Append the no history message
-                    }
-    
-                    // Fetch pending transactions from Firestore
-                    const pendingRef = collection(db, 'pending'); // Reference to pending collection
-                    const pendingQuery = query(pendingRef, where('userId', '==', user.uid)); // Query for the authenticated user
-                    const pendingSnapshot = await getDocs(pendingQuery); // Fetch pending transactions for the authenticated user
-    
-                    const pendingContainer = document.getElementById('pending-container');
-                    pendingContainer.innerHTML = ''; // Clear existing content
-    
-                    if (!pendingSnapshot.empty) {
-                        pendingSnapshot.forEach(doc => {
-                            const pendingData = doc.data();
-                            // Create a new pending transaction card
-                            const pendingCard = document.createElement('div');
-                            pendingCard.className = 'bg-white p-4 rounded-lg shadow-md text-center h-16';
-                            pendingCard.innerHTML = `
-                                <h3 class="font-semibold text-gray-800">${pendingData.description || 'No description'}</h3>
-                                <p class="text-gray-600">ID: ${doc.id}</p>
-                                <p class="text-gray-600">$${pendingData.amount || ''}</p>
-                            `;
-                            pendingContainer.appendChild(pendingCard); // Append to the pending section
-                        });
-                    } else {
-                        console.log('No pending transactions found for this user.'); // Debugging log
-                        // If no pending transactions are found, display a message
-                        const noPendingCard = document.createElement('div');
-                        noPendingCard.className = 'bg-white p-4 rounded-lg shadow-md text-center h-16';
-                        noPendingCard.innerHTML = `
-                            <h3 class="font-semibold text-gray-800">No pending transactions</h3>
-                            <p class="text-gray-600">You have no pending transactions.</p>
-                        `;
-                        pendingContainer.appendChild(noPendingCard); // Append the no pending message
-                    }
-                } else {
-                    console.log('No user document found in Firestore.');
-                    alert('No user data found.');
-                }
+                }, 200);
             } else {
-                // If user is not authenticated, redirect to the sign-in page
-                console.log('No user signed in, redirecting to sign-in page.');
-                window.location.href = 'login..html';
+                console.log('No user document found in Firestore.');
+                alert('No user data found.');
             }
-        });
+        }
+        
+        // Function to load user data from cache
+        function loadUserDataFromCache(userData) {
+            // Set the amounts directly from cached user data
+            document.getElementById('Deposit-account').textContent = `${userData.deposit || '$0.00'}`;
+            document.getElementById('savings').textContent = `${userData.savings || '$0.00'}`;
+            document.getElementById('fixed').textContent = `${userData.fixed || '$0.00'}`;
+            
+            // Load transaction history from cache
+            loadTransactionHistoryFromCache(userData);
+            
+            // Load pending transactions from cache
+            loadPendingTransactionsFromCache(userData);
+            
+            // Update welcome message
+            const welcomeName = document.getElementById('user-first-name');
+            if (userData.firstName && userData.firstName.trim() !== '') {
+                welcomeName.textContent = userData.firstName;
+            }
+            
+            // Update cardholder name
+            const cardholderName = document.getElementById('cardholder-name');
+            const modalCardholderName = document.getElementById('modal-cardholder-name');
+            let fullName = '';
+            if (userData.firstName && userData.lastName) {
+                fullName = `${userData.firstName.toUpperCase()} ${userData.lastName.toUpperCase()}`;
+            } else if (userData.firstName) {
+                fullName = userData.firstName.toUpperCase();
+            }
+            if (fullName) {
+                if (cardholderName) cardholderName.textContent = fullName;
+                if (modalCardholderName) modalCardholderName.textContent = fullName;
+            }
+        }
+        
+        // Function to load transaction history from cache
+        function loadTransactionHistoryFromCache(userData) {
+            let hasMoreThan10 = false;
+            let visibleCount = 0;
+            
+            for (let i = 1; i <= 20; i++) {
+                const historyElement = document.getElementById(`history${i}`);
+                if (historyElement) {
+                    const historyText = userData[`history${i}`] || '';
+                    
+                    if (historyText && historyText.trim() !== '') {
+                        populateTransactionData(historyElement, historyText);
+                        
+                        if (visibleCount < 10) {
+                            historyElement.style.display = 'block';
+                            const mobileItem = historyElement.querySelector('.mobile-transaction-item');
+                            if (mobileItem) {
+                                mobileItem.style.display = 'flex';
+                            }
+                            visibleCount++;
+                        } else {
+                            historyElement.style.display = 'none';
+                            const mobileItem = historyElement.querySelector('.mobile-transaction-item');
+                            if (mobileItem) {
+                                mobileItem.style.display = 'none';
+                            }
+                        }
+                        
+                        if (i > 10) {
+                            hasMoreThan10 = true;
+                        }
+                    } else {
+                        historyElement.style.display = 'none';
+                        const mobileItem = historyElement.querySelector('.mobile-transaction-item');
+                        if (mobileItem) {
+                            mobileItem.style.display = 'none';
+                        }
+                    }
+                }
+            }
+            
+            const seeMoreButton = document.getElementById('see-more');
+            if (seeMoreButton) {
+                if (hasMoreThan10) {
+                    seeMoreButton.classList.remove('hidden');
+                } else {
+                    seeMoreButton.classList.add('hidden');
+                }
+            }
+            
+            // Setup event delegation
+            const transactionContainer = document.getElementById('recent-transactions');
+            if (transactionContainer) {
+                transactionContainer.removeEventListener('click', handleMobileTransactionClick);
+                transactionContainer.addEventListener('click', handleMobileTransactionClick, { passive: true });
+            }
+        }
+        
+        // Function to load pending transactions from cache
+        function loadPendingTransactionsFromCache(userData) {
+            const pending1Element = document.getElementById('pending1');
+            const pending2Element = document.getElementById('pending2');
+            const pending3Element = document.getElementById('pending3');
+            const pendingList = document.getElementById('pending-list');
+            
+            function populatePendingData(element, pendingText) {
+                const parts = pendingText.split('|').map(part => part.trim());
+                const type = parts[0] || '';
+                const recipient = parts[1] || '';
+                const amount = parts[2] || '';
+                const time = parts[3] || '';
+                const date = parts[4] || '';
+                const reference = parts[5] || '';
+                
+                const descriptionEl = element.querySelector('.pending-description');
+                const recipientEl = element.querySelector('.pending-recipient');
+                const typeEl = element.querySelector('.pending-type');
+                const amountEl = element.querySelector('.pending-amount');
+                const dateEl = element.querySelector('.pending-date');
+                const avatarEl = element.querySelector('.pending-avatar');
+                const avatarTextEl = element.querySelector('.pending-avatar-text');
+                
+                if (descriptionEl) descriptionEl.textContent = type;
+                if (recipientEl) recipientEl.textContent = recipient;
+                if (typeEl) typeEl.textContent = type;
+                if (amountEl) amountEl.textContent = amount;
+                if (dateEl) dateEl.textContent = date;
+
+                if (avatarEl && avatarTextEl) {
+                    avatarTextEl.textContent = 'PN';
+                    avatarEl.className = 'w-12 h-12 rounded-full flex items-center justify-center pending-avatar font-semibold text-sm bg-orange-50 text-orange-700';
+                }
+            }
+            
+            if (userData.pending1 && userData.pending1.trim() !== '') {
+                pending1Element.classList.remove('hidden');
+                populatePendingData(pending1Element, userData.pending1);
+                if (pendingList) pendingList.appendChild(pending1Element);
+            }
+            
+            if (userData.pending2 && userData.pending2.trim() !== '') {
+                pending2Element.classList.remove('hidden');
+                populatePendingData(pending2Element, userData.pending2);
+                if (pendingList) pendingList.appendChild(pending2Element);
+            }
+            
+            if (userData.pending3 && userData.pending3.trim() !== '') {
+                pending3Element.classList.remove('hidden');
+                populatePendingData(pending3Element, userData.pending3);
+                if (pendingList) pendingList.appendChild(pending3Element);
+            }
+            
+            if (userData.pending1 && userData.pending2 && userData.pending3 &&
+                userData.pending1.trim() !== '' && userData.pending2.trim() !== '' && userData.pending3.trim() !== '') {
+                document.getElementById('pending-limit-notice').classList.remove('hidden');
+            } else {
+                document.getElementById('pending-limit-notice').classList.add('hidden');
+            }
+        }
+        
+        // Function to refresh user data from Firestore (background refresh)
+        async function refreshUserData(user) {
+            const userDocRef = doc(db, 'users', user.uid);
+            const userDoc = await getDoc(userDocRef);
+            
+                if (userDoc.exists()) {
+                const userData = userDoc.data();
+                cacheUserData(userData);
+                // Update welcome message if it changed
+                const welcomeName = document.getElementById('user-first-name');
+                if (welcomeName && userData.firstName && userData.firstName.trim() !== '') {
+                    welcomeName.textContent = userData.firstName;
+                }
+            }
+        }
     
         // Sign out function
         window.signOut = function() {
@@ -815,7 +1495,7 @@
     
 </head>
 <body class="font-sans antialiased" style="position: relative; overflow: hidden;">
-    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url('/Users/circo-mac005/Documents/Beal Offshore Ltd/background 5.png'); background-size: cover; opacity: 0.9; z-index: -1;"></div>
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url('background 5.png'); background-size: cover; opacity: 0.9; z-index: -1;"></div>
 
 
     <!-- Navbar -->
@@ -836,27 +1516,48 @@
     <!-- Spacer to prevent content overlap -->
     <div class="h-12"></div>
 
-    <div class="container">
+    <!-- <div class="container mt-16 mb-2">
         <header class="header">
             <div>
-                <i class="fas fa-bell" style="margin-right: 10px; color: var(--chase-blue);"></i>
+                <i class="fas fa-bell" style="margin-right: 6px; color: var(--chase-blue);"></i>
                 <i class="fas fa-user-circle" style="font-size: 18px; color: var(--chase-blue);"></i>
             </div>
-        </header>
+        </header> -->
         
         <!-- In your HTML section at the bottom -->
-        <div class="flex-1 p-2 bg-">
-            <h1 id="welcome-name" class="text-sm-xl font-semibold mb-6 mt-6 rounded-lg text-gray-900">
-                Welcome back, <span id="user-first-name"></span>            
-                <p class="date-text" id="date-time-text">Last login: Today at 8:45 AM</p>
+        <div class="flex-1 p-2 bg- mt-24" style="padding-bottom: 120px;">
+            <h1 id="welcome-name" class="text-sm-xl font-semibold mb-2 mt-2 rounded-lg text-gray-900">
+                Welcome back, <span id="user-first-name"></span>
+                <p class="date-text" id="date-time-text" style="margin-top: 0.5rem;">Logged in: 11/08/2025 7:11 am</p>
                 <script>
                     document.addEventListener('DOMContentLoaded', function() {
                         const dateTimeText = document.getElementById('date-time-text');
-                        const today = new Date();
-                        const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
-                        const date = today.toLocaleDateString(undefined, options);
-                        const time = today.getHours() + ":" + today.getMinutes() + " " + (today.getHours() >= 12 ? 'PM' : 'AM');
-                        dateTimeText.textContent = `Last login: ${date} at ${time}`;
+                        
+                        function updateDateTime() {
+                            const now = new Date();
+                            
+                            // Format date as MM/DD/YYYY
+                            const month = String(now.getMonth() + 1).padStart(2, '0');
+                            const day = String(now.getDate()).padStart(2, '0');
+                            const year = now.getFullYear();
+                            const date = `${month}/${day}/${year}`;
+                            
+                            // Format time with leading zeros and am/pm
+                            let hours = now.getHours();
+                            const minutes = String(now.getMinutes()).padStart(2, '0');
+                            const ampm = hours >= 12 ? 'pm' : 'am';
+                            hours = hours % 12;
+                            hours = hours ? hours : 12; // 0 should be 12
+                            const time = `${hours}:${minutes} ${ampm}`;
+                            
+                            dateTimeText.textContent = `Logged in: ${date} ${time}`;
+                        }
+                        
+                        // Update immediately
+                        updateDateTime();
+                        
+                        // Update every second for real-time updates
+                        setInterval(updateDateTime, 1000);
                     });
                 </script>
             </h1>
@@ -886,7 +1587,7 @@
                                 <i class="fas fa-file-invoice-dollar"></i> Statement
                             </a>
                         </div>
-                        <button id="toggle-checking" class="action-button" style="position: absolute; top: 15px; right: 15px; background: none; padding: 5px;">
+                        <button id="toggle-checking" class="balance-toggle-btn" title="Toggle balance visibility">
                             <i class="fas fa-eye"></i>
                         </button>
                     </div>
@@ -906,6 +1607,9 @@
                                 <i class="fas fa-file-invoice-dollar"></i> Statement
                             </a>
                         </div>
+                        <button id="toggle-savings" class="balance-toggle-btn" title="Toggle balance visibility">
+                            <i class="fas fa-eye"></i>
+                        </button>
                     </div>
                     
                         <!-- Fixed Account Card -->
@@ -923,15 +1627,19 @@
                                 <i class="fas fa-file-invoice-dollar"></i> Statement
                             </a>
                         </div>
+                        <button id="toggle-fixed" class="balance-toggle-btn" title="Toggle balance visibility">
+                            <i class="fas fa-eye"></i>
+                        </button>
                     </div>
                 </div>
             </section>
 
+
             <!-- ACH Transfer Modal (Subject to Approval) -->
-            <div id="achModal" class="hidden fixed inset-0 z-50 flex items-start md:items-center justify-center bg-black bg-opacity-50 p-3 md:p-6">
-                <div class="bg-white rounded-2xl shadow-2xl border border-gray-200 w-full max-w-md md:max-w-2xl mx-auto relative max-h-[85vh] overflow-y-auto">
-                    <button type="button" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600" aria-label="Close" onclick="closeAchModal()">&times;</button>
-                    <div class="p-6 md:p-8">
+            <div id="achModal" class="hidden fixed inset-0 z-50 flex items-start md:items-center justify-center bg-black bg-opacity-50 p-2 md:p-3" style="padding-bottom: 120px;">
+                <div class="bg-white rounded-xl md:rounded-2xl shadow-2xl border border-gray-200 w-full max-w-sm md:max-w-md mx-auto relative max-h-[80vh] md:max-h-[85vh] overflow-y-auto" style="margin: auto;">
+                    <button type="button" class="absolute top-2 right-2 md:top-3 md:right-3 text-gray-400 hover:text-gray-600 text-xl md:text-2xl font-bold" aria-label="Close" onclick="closeAchModal()">&times;</button>
+                    <div class="p-3 md:p-4">
                         <div class="flex items-start justify-between mb-4">
                             <div>
                                 <h3 class="text-lg md:text-xl font-semibold text-gray-900">Initiate ACH Transfer</h3>
@@ -1010,6 +1718,7 @@
                 </div>
             </div>
 
+
             <!-- ACH Submitted Modal -->
             <div id="achSubmittedModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-3">
                 <div class="bg-white rounded-2xl border border-gray-200 p-6 w-full max-w-sm mx-auto text-center">
@@ -1019,6 +1728,86 @@
                     <h3 class="text-lg font-semibold text-gray-900 mt-4">ACH Submitted for Approval</h3>
                     <p class="text-sm text-gray-600 mt-1">We'll notify you once it's approved and processing.</p>
                     <button type="button" class="mt-5 w-full bg-blue-600 hover:bg-blue-700 text-white rounded-full py-2 text-sm font-medium" onclick="closeAchSubmittedModal()">Done</button>
+                </div>
+            </div>
+
+            <!-- Transaction Detail Modal (Mobile Only) -->
+            <div id="transactionDetailModal" class="transaction-detail-modal">
+                <div class="transaction-detail-header">
+                    <button class="transaction-detail-back" onclick="closeTransactionDetail()">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <div class="transaction-detail-title">Transaction</div>
+                    <button class="transaction-detail-share" onclick="shareTransaction()">Share</button>
+                </div>
+                <div class="transaction-detail-body">
+                    <div class="transaction-detail-amount" id="detail-amount">+₦0.00</div>
+                    <div class="transaction-detail-type" id="detail-type">-</div>
+                    <div class="transaction-detail-date" id="detail-date">-</div>
+                    <div style="text-align: center;">
+                        <div class="transaction-detail-badge">
+                            <i class="fas fa-piggy-bank" style="font-size: 14px;"></i>
+                            <span id="detail-category">Savings</span>
+                        </div>
+                    </div>
+                    
+                    <div class="transaction-detail-row">
+                        <span class="transaction-detail-label">From</span>
+                        <div style="display: flex; align-items: center; flex: 1; justify-content: flex-end;">
+                            <span class="transaction-detail-value" id="detail-from">Kuda</span>
+                            <div class="transaction-detail-icon" id="detail-from-icon" style="background-color: #7c3aed;">
+                                <span style="color: white; font-weight: 600; font-size: 14px;">K.</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="transaction-detail-row">
+                        <span class="transaction-detail-label">Description</span>
+                        <span class="transaction-detail-value" id="detail-description">-</span>
+                    </div>
+                    
+                    <div class="transaction-detail-row">
+                        <div style="flex: 1;">
+                            <span class="transaction-detail-label">Payment Method</span>
+                            <div class="transaction-detail-value" style="text-align: left; margin-left: 0; margin-top: 4px;" id="detail-method">-</div>
+                        </div>
+                        <div style="flex: 1; text-align: right;">
+                            <span class="transaction-detail-label">Fees</span>
+                            <div class="transaction-detail-value" style="text-align: right; margin-top: 4px;" id="detail-fees">₦0.00</div>
+                        </div>
+                    </div>
+                    
+                    <div class="transaction-detail-row">
+                        <span class="transaction-detail-label">Transaction Reference</span>
+                        <div style="display: flex; align-items: center; flex: 1; justify-content: flex-end;">
+                            <span class="transaction-detail-value" id="detail-reference" style="font-family: monospace;">-</span>
+                            <button class="transaction-detail-copy" onclick="copyTransactionReference()">
+                                <i class="fas fa-copy" style="font-size: 10px;"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="transaction-detail-row">
+                        <span class="transaction-detail-label">Status</span>
+                        <div class="transaction-detail-status">
+                            <div class="transaction-detail-status-dot"></div>
+                            <span class="transaction-detail-status-text" id="detail-status">Successful</span>
+                        </div>
+                    </div>
+                    
+                    <div class="transaction-detail-actions">
+                        <div class="transaction-detail-action-title">More Actions</div>
+                        <button class="transaction-detail-report" onclick="reportTransaction()">
+                            <div class="transaction-detail-report-left">
+                                <i class="fas fa-exclamation-circle transaction-detail-report-icon"></i>
+                                <div class="transaction-detail-report-text">
+                                    <div class="transaction-detail-report-title">Report Transaction</div>
+                                    <div class="transaction-detail-report-subtitle">Report an issue with this payment</div>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-right" style="color: #999;"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -1056,7 +1845,7 @@
                     </button>
 
                     <!-- ACH -->
-                    <button type="button" class="group rounded-xl border border-gray-200 bg-white p-4 hover:shadow-md hover:border-blue-300 transition-colors duration-200 focus:outline-none" onclick="openAchModal()">
+                    <button type="button" class="group rounded-xl border border-gray-200 bg-white p-4 hover:shadow-md hover:border-blue-300 transition-colors duration-200 focus:outline-none" onclick="navigateWithSpinner('ach.html')">
                         <div class="flex flex-col items-center">
                             <div class="w-12 h-12 rounded-full bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center ring-1 ring-gray-200 group-hover:ring-blue-300 mb-3">
                                 <img src="deposit.png" alt="ACH Icon" class="h-6 w-6" />
@@ -1095,13 +1884,15 @@
                 <!-- Header Section -->
                 <div class="bg-white px-6 py-5 border-b border-gray-100">
                     <div class="flex items-center justify-between">
-                        <div>
-                            <h2 class="text-xl font-semibold text-gray-900">Recent Transactions</h2>
-                            <p class="text-gray-500 text-sm mt-1">Your latest account activity</p>
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                            <h2 class="text-xl font-semibold text-gray-900">Transactions</h2>
                         </div>
-                        <button id="toggle-filters" class="bg-gray-50 hover:bg-gray-100 text-gray-700 transition-all duration-200 px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium">
+                        <div class="flex items-center gap-4">
+                            <button id="toggle-filters" class="hidden md:block bg-gray-50 hover:bg-gray-100 text-gray-700 transition-all duration-200 px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium">
                             <i class="fas fa-filter mr-2"></i>Filter
                         </button>
+                        </div>
                     </div>
                 </div>
                 
@@ -1147,9 +1938,9 @@
                 </div>
                 
                 <!-- History Content -->
-                <div class="p-6">
+                <div class="p-4 md:p-6">
                     <!-- Transaction List -->
-                    <div class="space-y-3">
+                    <div class="space-y-0 md:space-y-3">
 
                     <!-- Transaction Entries -->
                     <div class="space-y-1">
@@ -1185,26 +1976,16 @@
                                 </div>
                     </div>
 
-                            <!-- Mobile Layout -->
-                            <div class="md:hidden">
-                                <div class="flex items-center justify-between mb-3">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
-                                            <i class="fas fa-exchange-alt text-gray-600 text-xs"></i>
+                            <!-- Mobile Layout - Simplified -->
+                            <div class="md:hidden mobile-transaction-item" data-transaction-id="history1" style="opacity: 0.5;">
+                                <div class="mobile-transaction-icon" style="background-color: #f3f4f6;">
+                                    <i class="fas fa-exchange-alt text-gray-400 text-sm"></i>
                                         </div>
-                                        <div>
-                                            <p class="font-semibold text-gray-900 text-sm">No history available</p>
-                                            <p class="text-gray-500 text-xs">-</p>
+                                <div class="mobile-transaction-content">
+                                    <div class="mobile-transaction-description">No history available</div>
+                                    <div class="mobile-transaction-time">-</div>
                                         </div>
-                                    </div>
-                                    <span class="w-2 h-2 bg-gray-300 rounded-full"></span>
-                                </div>
-                                <div class="flex justify-between items-center text-xs text-gray-600">
-                                    <span>Type: -</span>
-                                    <span>Amount: -</span>
-                                    <span>Date: -</span>
-                                </div>
-                                <div class="mt-2 text-xs text-gray-500 font-mono">Ref: -</div>
+                                <div class="mobile-transaction-amount">-</div>
                             </div>
                     </div>
 
@@ -1239,28 +2020,16 @@
                                 </div>
                     </div>
 
-                            <!-- Mobile Layout -->
-                            <div class="md:hidden">
-                                <div class="flex items-center justify-between mb-3">
-                                    <div class="flex items-center space-x-3 flex-1 min-w-0">
-                                        <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                            <i class="fas fa-exchange-alt text-gray-600 text-xs"></i>
+                            <!-- Mobile Layout - Simplified -->
+                            <div class="md:hidden mobile-transaction-item" data-transaction-id="history2">
+                                <div class="mobile-transaction-icon transaction-icon-mobile" style="background-color: #e0f2fe;">
+                                    <span class="transaction-icon-text-mobile" style="color: #0369a1; font-size: 18px;">₦</span>
                                         </div>
-                                        <div class="min-w-0 flex-1">
-                                            <p class="font-semibold text-gray-900 text-sm transaction-description truncate"></p>
-                                            <p class="text-gray-500 text-xs transaction-recipient truncate"></p>
+                                <div class="mobile-transaction-content">
+                                    <div class="mobile-transaction-description transaction-description"></div>
+                                    <div class="mobile-transaction-time transaction-time-mobile"></div>
                                         </div>
-                                    </div>
-                                    <div class="flex items-center space-x-2 flex-shrink-0">
-                                        <p class="font-semibold text-gray-900 text-sm transaction-amount"></p>
-                                        <span class="w-2 h-2 bg-green-500 rounded-full"></span>
-                                    </div>
-                                </div>
-                                <div class="flex justify-between items-center text-xs text-gray-600 mb-2">
-                                    <span class="transaction-type-label">Type: <span class="transaction-type"></span></span>
-                                    <span class="transaction-date-label">Date: <span class="transaction-date"></span></span>
-                                </div>
-                                <div class="text-xs text-gray-500 font-mono transaction-reference-label">Ref: <span class="transaction-reference"></span></div>
+                                <div class="mobile-transaction-amount transaction-amount-mobile"></div>
                             </div>
                     </div>
 
@@ -1295,28 +2064,16 @@
                                 </div>
                     </div>
 
-                            <!-- Mobile Layout -->
-                            <div class="md:hidden">
-                                <div class="flex items-center justify-between mb-3">
-                                    <div class="flex items-center space-x-3 flex-1 min-w-0">
-                                        <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
-                                            <i class="fas fa-exchange-alt text-gray-600 text-xs"></i>
+                            <!-- Mobile Layout - Simplified -->
+                            <div class="md:hidden mobile-transaction-item" data-transaction-id="history2">
+                                <div class="mobile-transaction-icon transaction-icon-mobile" style="background-color: #e0f2fe;">
+                                    <span class="transaction-icon-text-mobile" style="color: #0369a1; font-size: 18px;">₦</span>
                                         </div>
-                                        <div class="min-w-0 flex-1">
-                                            <p class="font-semibold text-gray-900 text-sm transaction-description truncate"></p>
-                                            <p class="text-gray-500 text-xs transaction-recipient truncate"></p>
+                                <div class="mobile-transaction-content">
+                                    <div class="mobile-transaction-description transaction-description"></div>
+                                    <div class="mobile-transaction-time transaction-time-mobile"></div>
                                         </div>
-                                    </div>
-                                    <div class="flex items-center space-x-2 flex-shrink-0">
-                                        <p class="font-semibold text-gray-900 text-sm transaction-amount"></p>
-                                        <span class="w-2 h-2 bg-green-500 rounded-full"></span>
-                                    </div>
-                                </div>
-                                <div class="flex justify-between items-center text-xs text-gray-600 mb-2">
-                                    <span class="transaction-type-label">Type: <span class="transaction-type"></span></span>
-                                    <span class="transaction-date-label">Date: <span class="transaction-date"></span></span>
-                                </div>
-                                <div class="text-xs text-gray-500 font-mono transaction-reference-label">Ref: <span class="transaction-reference"></span></div>
+                                <div class="mobile-transaction-amount transaction-amount-mobile"></div>
                             </div>
                     </div>
 
@@ -1853,12 +2610,15 @@
                     </div>
 
                     <!-- See More / See Less Controls -->
-                    <div class="flex items-center justify-center gap-3 mt-6">
-                        <button id="see-more" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-all duration-200 hidden">
-                            <i class="fas fa-chevron-down mr-2"></i>Load More
+                    <div class="flex items-center justify-center gap-3 mt-12 mb-6 pt-4">
+                        <button id="see-more" class="group relative inline-flex items-center justify-center px-8 py-3.5 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl shadow-lg hover:shadow-xl hover:from-blue-700 hover:to-blue-800 transform hover:-translate-y-0.5 transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 hidden">
+                            <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-700 to-blue-800 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                            <i class="fas fa-chevron-down mr-2 relative z-10 transform group-hover:translate-y-0.5 transition-transform duration-300"></i>
+                            <span class="relative z-10">Load More Transactions</span>
                         </button>
-                        <button id="see-less" class="bg-gray-100 text-gray-800 px-6 py-3 rounded-lg font-medium hover:bg-gray-200 transition-all duration-200 hidden">
-                            <i class="fas fa-chevron-up mr-2"></i>See Less
+                        <button id="see-less" class="group inline-flex items-center justify-center px-8 py-3.5 text-base font-semibold text-gray-700 bg-white border-2 border-gray-300 rounded-xl shadow-md hover:shadow-lg hover:border-gray-400 transform hover:-translate-y-0.5 transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 hidden">
+                            <i class="fas fa-chevron-up mr-2 transform group-hover:-translate-y-0.5 transition-transform duration-300"></i>
+                            <span>Show Less</span>
                         </button>
                     </div>
                 </div>
@@ -1868,7 +2628,7 @@
             <hr class="my-4 border-gray-400">
 
             <!-- Pending Transactions Card -->
-            <div class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden w-full mb-8">
+            <div class="bg-white rounded-2xl overflow-hidden w-full mb-8">
                 <!-- Header Section -->
                 <div class="bg-white px-6 py-5 border-b border-gray-100">
                     <div class="flex items-center justify-between">
@@ -2002,44 +2762,59 @@
 
             <script>
                 // Toggle balance visibility functions
-                document.getElementById('toggle-checking').addEventListener('click', function() {
+                document.addEventListener('DOMContentLoaded', function() {
+                    // Checking account toggle
+                    const toggleChecking = document.getElementById('toggle-checking');
+                    if (toggleChecking) {
+                        toggleChecking.addEventListener('click', function() {
                     const balance = document.getElementById('Deposit-account');
                     const icon = this.querySelector('i');
                     
-                    if (balance.classList.contains('hide-balance')) {
+                            if (balance && balance.classList.contains('hide-balance')) {
                         balance.classList.remove('hide-balance');
                         icon.className = 'fas fa-eye';
-                    } else {
+                            } else if (balance) {
                         balance.classList.add('hide-balance');
                         icon.className = 'fas fa-eye-slash';
+                    }
+                });
+                    }
+                    
+                    // Savings account toggle
+                    const toggleSavings = document.getElementById('toggle-savings');
+                    if (toggleSavings) {
+                        toggleSavings.addEventListener('click', function() {
+                            const balance = document.getElementById('fixed');
+                    const icon = this.querySelector('i');
+                    
+                            if (balance && balance.classList.contains('hide-balance')) {
+                        balance.classList.remove('hide-balance');
+                        icon.className = 'fas fa-eye';
+                            } else if (balance) {
+                        balance.classList.add('hide-balance');
+                        icon.className = 'fas fa-eye-slash';
+                    }
+                });
+                    }
+                    
+                    // Fixed account toggle
+                    const toggleFixed = document.getElementById('toggle-fixed');
+                    if (toggleFixed) {
+                        toggleFixed.addEventListener('click', function() {
+                            const balance = document.getElementById('savings');
+                    const icon = this.querySelector('i');
+                    
+                            if (balance && balance.classList.contains('hide-balance')) {
+                        balance.classList.remove('hide-balance');
+                        icon.className = 'fas fa-eye';
+                            } else if (balance) {
+                        balance.classList.add('hide-balance');
+                        icon.className = 'fas fa-eye-slash';
+                            }
+                        });
                     }
                 });
                 
-                document.getElementById('toggle-savings').addEventListener('click', function() {
-                    const balance = document.getElementById('bonus');
-                    const icon = this.querySelector('i');
-                    
-                    if (balance.classList.contains('hide-balance')) {
-                        balance.classList.remove('hide-balance');
-                        icon.className = 'fas fa-eye';
-                    } else {
-                        balance.classList.add('hide-balance');
-                        icon.className = 'fas fa-eye-slash';
-                    }
-                });
-                
-                document.getElementById('toggle-fixed').addEventListener('click', function() {
-                    const balance = document.getElementById('wallet');
-                    const icon = this.querySelector('i');
-                    
-                    if (balance.classList.contains('hide-balance')) {
-                        balance.classList.remove('hide-balance');
-                        icon.className = 'fas fa-eye';
-                    } else {
-                        balance.classList.add('hide-balance');
-                        icon.className = 'fas fa-eye-slash';
-                    }
-                });
                 
                 // Navigation with spinner function (placeholder)
                 function navigateWithSpinner(url) {
@@ -2230,446 +3005,98 @@
             </script>                    
 
             <script>
-                // Update the onAuthStateChanged function to correctly populate history items
-                document.addEventListener('DOMContentLoaded', function() {
-                    // Get Firestore instance and auth
-                    firebase.auth().onAuthStateChanged(async (user) => {
-                        if (user) {
-                            try {
-                                const db = firebase.firestore();
-                                
-                                // Fetch the history collection for the current user
-                                const historyRef = db.collection('history');
-                                const historySnapshot = await historyRef.where('userId', '==', user.uid).get();
-
-                                if (!historySnapshot.empty) {
-                                    let counter = 1;
-                                    
-                                    // Process each history item
-                                    historySnapshot.forEach(doc => {
-                                        if (counter <= 20) {
-                                            const historyData = doc.data();
-                                            const historyElement = document.getElementById('history' + counter);
-                                            
-                                            if (historyElement) {
-                                                // Format history text directly from Firebase fields
-                                                // Assuming your history data might have these fields
-                                                const type = historyData.type || '';
-                                                const recipient = historyData.recipient || '';
-                                                const amount = historyData.amount || '';
-                                                const time = historyData.time || '';
-                                                const date = historyData.date || '';
-                                                const reference = historyData.reference || '';
-                                                const notes = historyData.notes || '';
-                                                
-                                                // Construct the history text - will match your example format
-                                                let historyText = '';
-                                                if (type) historyText += type + ' ';
-                                                if (recipient) historyText += '| ' + recipient + ' ';
-                                                if (amount) historyText += '| ' + amount + ' ';
-                                                if (time) historyText += '| ' + time + ' ';
-                                                if (date) historyText += '| ' + date + ' ';
-                                                if (notes) historyText += '| ' + notes + ' ';
-                                                if (reference) historyText += '| ' + reference;
-                                                
-                                                // Update the history element
-                                                historyElement.innerHTML = `<h3 class="font-medium text-xs">${historyText}</h3>`;
-                                            }
-                                            counter++;
-                                        }
-                                    });
-                                    
-                                    // If we have more than 10 transactions, hide the rest and show the "See More" button
-                                    if (counter > 10) {
-                                        // Hide entries 11-20
-                                        for (let i = 11; i <= Math.min(counter - 1, 20); i++) {
-                                            document.getElementById('history' + i).classList.add('hidden');
-                                        }
-                                        // Show the See More button
-                                        document.getElementById('see-more').classList.remove('hidden');
-                                    } else {
-                                        // Hide the See More button if we have 10 or fewer transactions
-                                        document.getElementById('see-more').classList.add('hidden');
-                                    }
-                                    
-                                    // Run the color formatting after data is loaded
-                                    setTimeout(applyAllColorFormatting, 300);
-                                } else {
-                                    // No history found
-                                    document.getElementById('history1').innerHTML = 
-                                        `<h3 class="font-medium text-xs text-gray-700">No transaction history available</h3>`;
-                                }
-                            } catch (error) {
-                                console.error('Error fetching history data:', error);
-                            }
-                        }
-                    });
-                });
-                
-                // Enhanced function to color keywords in history items
-                function colorizeHistory() {
-                    console.log('Running colorizeHistory');
-                    // Process all history elements (1-20)
-                    for (let i = 1; i <= 20; i++) {
-                        const historyDiv = document.getElementById('history' + i);
-                        if (!historyDiv) continue;
-                        
-                        const text = historyDiv.textContent;
-                        
-                        // Skip empty history items
-                        if (!text || text.trim() === "" || text.includes("No history available")) continue;
-                        
-                        let html = historyDiv.innerHTML;
-                        
-                        // Color deposit-related terms (green)
-                        html = html.replace(/\b(Deposit|ACH deposit|deposit|incoming|received|credit)\b/gi, 
-                            '<span class="text-green-600 font-medium">$1</span>');
-                        
-                        // Color withdrawal-related terms (red)
-                        html = html.replace(/\b(Transfer|transfer|withdrawal|withdraw|sent|outgoing|Reversal|reversal)\b/gi, 
-                            '<span class="text-red-600 font-medium">$1</span>');
-                        
-                        // Color positive amounts (green)
-                        html = html.replace(/(\+\$[\d,.]+)/g, '<span class="text-green-600 font-semibold">$1</span>');
-                        
-                        // Color negative amounts (red)
-                        html = html.replace(/(-\$[\d,.]+)/g, '<span class="text-red-600 font-semibold">$1</span>');
-                        
-                        // Color dollar amounts (general)
-                        html = html.replace(/(\$[\d,.]+)/g, function(match) {
-                            // Skip if already inside a span
-                            if (html.indexOf('<span') !== -1 && 
-                                html.lastIndexOf('<span', html.indexOf(match)) > 
-                                html.lastIndexOf('</span>', html.indexOf(match))) {
-                                return match;
-                            }
-                            return '<span class="font-semibold">' + match + '</span>';
-                        });
-                        
-                        historyDiv.innerHTML = html;
-                    }
-                }
-
-                // Enhanced function to apply color formatting to pending transaction text
-                function colorPendingTransactions() {
-                    console.log('Running colorPendingTransactions');
-                    // Process all pending elements
-                    for (let i = 1; i <= 3; i++) {
-                        const pendingElement = document.getElementById('pending' + i);
-                        if (!pendingElement) continue;
-                        
-                        // Skip elements with no text content
-                        const titleElement = pendingElement.querySelector('h3');
-                        const detailElement = pendingElement.querySelector('p');
-                        
-                        if (!titleElement || !detailElement) continue;
-                        if (!titleElement.textContent) continue;
-                        if (titleElement.textContent === 'No Pending Transactions') continue;
-                        
-                        // Color title based on transaction type
-                        let titleText = titleElement.textContent;
-                        let titleHtml = titleText;
-                        
-                        // Check for transfer-related keywords (red)
-                        if (/\b(transfer|sent|outgoing|reversal|withdrawal)\b/i.test(titleText)) {
-                            titleHtml = titleText.replace(/\b(transfer|sent|outgoing|reversal|withdrawal)\b/gi, 
-                                match => `<span class="text-red-600 font-medium">${match}</span>`);
-                        }
-                        // Check for deposit-related keywords (green)
-                        else if (/\b(deposit|received|incoming|ach|credit)\b/i.test(titleText)) {
-                            titleHtml = titleText.replace(/\b(deposit|received|incoming|ach|credit)\b/gi, 
-                                match => `<span class="text-green-600 font-medium">${match}</span>`);
-                        }
-                        
-                        titleElement.innerHTML = titleHtml;
-                        
-                        // Color amount in details based on + or -
-                        let detailText = detailElement.textContent;
-                        if (!detailText) continue;
-                        
-                        let detailHtml = detailText;
-                        
-                        // Find amount pattern like "$xxxx" or "+$xxxx" or "-$xxxx"
-                        const amountMatch = detailText.match(/(\$[\d,\.]+)|\$?(\d[\d,\.]*)|Amount: ([\+\-]?\$[\d,\.]+)/);
-                        if (amountMatch) {
-                            let amount = amountMatch[0];
-                            
-                            // Color based on positive/negative
-                            if (amount.includes('-')) {
-                                // Negative amount (red)
-                                detailHtml = detailText.replace(amount, `<span class="text-red-600 font-medium">${amount}</span>`);
-                            } else {
-                                // Positive amount (green)
-                                detailHtml = detailText.replace(amount, `<span class="text-green-600 font-medium">${amount}</span>`);
-                            }
-                        }
-                        
-                        detailElement.innerHTML = detailHtml;
-                    }
-                }
-
-                // Add multiple trigger points for coloring functions
-                document.addEventListener('DOMContentLoaded', function() {
-                    // Initial run after a delay to allow data loading
-                    setTimeout(function() {
-                        colorizeHistory();
-                        colorPendingTransactions();
-                    }, 1000);
-                    
-                    // Run again after a longer delay for slower connections
-                    setTimeout(function() {
-                        colorizeHistory();
-                        colorPendingTransactions();
-                    }, 3000);
-                });
-                
-                // Create a function to run both coloring functions
-                function applyAllColorFormatting() {
-                    colorizeHistory();
-                    colorPendingTransactions();
-                }
-                
-                // Set up mutation observers for both history and pending sections
-                function setupMutationObservers() {
-                    // Create a single observer for all relevant elements
-                    const observer = new MutationObserver(function(mutations) {
-                        // Run the coloring after mutations are detected
-                        setTimeout(applyAllColorFormatting, 100);
-                    });
-                    
-                    // Observe changes to history items (1-20)
-                    for (let i = 1; i <= 20; i++) {
-                        const element = document.getElementById('history' + i);
-                        if (element) {
-                            observer.observe(element, { 
-                                childList: true, 
-                                subtree: true, 
-                                characterData: true,
-                                attributes: true
-                            });
-                        }
-                    }
-                    
-                    // Observe changes to pending items
-                    for (let i = 1; i <= 3; i++) {
-                        const element = document.getElementById('pending' + i);
-                        if (element) {
-                            observer.observe(element, { 
-                                childList: true, 
-                                subtree: true, 
-                                characterData: true,
-                                attributes: true
-                            });
-                        }
-                    }
-                }
-                
-                // Run setup after DOM is loaded
-                document.addEventListener('DOMContentLoaded', setupMutationObservers);
-                
-                // Add event listener for page visibility changes
-                document.addEventListener('visibilitychange', function() {
-                    if (!document.hidden) {
-                        // Page became visible again, reapply formatting
-                        setTimeout(applyAllColorFormatting, 500);
-                    }
-                });
-                
-                // Reapply on window resize (for mobile/desktop transitions)
-                window.addEventListener('resize', function() {
-                    clearTimeout(window.resizeTimer);
-                    window.resizeTimer = setTimeout(applyAllColorFormatting, 200);
-                });
+                // Colorization functions removed to prevent infinite loops and performance issues
+                // The MutationObserver was causing an infinite loop: it watched for DOM changes,
+                // the colorization functions modified the DOM, which triggered the observer again.
             </script>
 
             <script>
-                // Updated approach: Display all pending transactions separately
-                document.addEventListener('DOMContentLoaded', async () => {
-                    try {
-                        firebase.auth().onAuthStateChanged(async (user) => {
-                            if (user) {
-                                const db = firebase.firestore();
-                                
-                                // Reset pending display
-                                for (let i = 1; i <= 3; i++) {
-                                    const pendingElement = document.getElementById('pending' + i);
-                                    if (pendingElement) {
-                                        pendingElement.classList.add('hidden');
-                                        pendingElement.querySelector('h3').textContent = '';
-                                        pendingElement.querySelector('p').textContent = '';
-                                    }
-                                }
-                                
-                                // Hide the limit notice by default
-                                document.getElementById('pending-limit-notice').classList.add('hidden');
-                                
-                                // Get user data to check pending fields directly from user document
-                                const userDocRef = doc(db, 'users', user.uid);
-                                const userDoc = await getDoc(userDocRef);
-                                
-                                if (userDoc.exists()) {
-                                    const userData = userDoc.data();
-                                    
-                                    // Process each pending field from user document
-                                    let hasPendingTransactions = false;
-                                    
-                                    // Process pending1
-                                    if (userData.pending1 && userData.pending1.trim() !== '') {
-                                        const pending1Element = document.getElementById('pending1');
-                                        pending1Element.classList.remove('hidden');
-                                        hasPendingTransactions = true;
-                                        
-                                        const parts = userData.pending1.split('|');
-                                        if (parts.length >= 3) {
-                                            const titleEl = pending1Element.querySelector('h3');
-                                            const detailEl = pending1Element.querySelector('p');
-                                            
-                                            if (titleEl) titleEl.textContent = parts[0].trim() + ' | ' + parts[1].trim();
-                                            if (detailEl) detailEl.textContent = parts.slice(2).join('|').trim();
-                                        }
-                                    }
-                                    
-                                    // Process pending2
-                                    if (userData.pending2 && userData.pending2.trim() !== '') {
-                                        const pending2Element = document.getElementById('pending2');
-                                        pending2Element.classList.remove('hidden');
-                                        hasPendingTransactions = true;
-                                        
-                                        const parts = userData.pending2.split('|');
-                                        if (parts.length >= 3) {
-                                            const titleEl = pending2Element.querySelector('h3');
-                                            const detailEl = pending2Element.querySelector('p');
-                                            
-                                            if (titleEl) titleEl.textContent = parts[0].trim() + ' | ' + parts[1].trim();
-                                            if (detailEl) detailEl.textContent = parts.slice(2).join('|').trim();
-                                        }
-                                    }
-                                    
-                                    // Process pending3
-                                    if (userData.pending3 && userData.pending3.trim() !== '') {
-                                        const pending3Element = document.getElementById('pending3');
-                                        pending3Element.classList.remove('hidden');
-                                        hasPendingTransactions = true;
-                                        
-                                        const parts = userData.pending3.split('|');
-                                        if (parts.length >= 3) {
-                                            const titleEl = pending3Element.querySelector('h3');
-                                            const detailEl = pending3Element.querySelector('p');
-                                            
-                                            if (titleEl) titleEl.textContent = parts[0].trim() + ' | ' + parts[1].trim();
-                                            if (detailEl) detailEl.textContent = parts.slice(2).join('|').trim();
-                                        }
-                                    }
-                                    
-                                    // Check if all pending slots are used
-                                    if (userData.pending1 && userData.pending2 && userData.pending3 &&
-                                        userData.pending1.trim() !== '' && userData.pending2.trim() !== '' && userData.pending3.trim() !== '') {
-                                        document.getElementById('pending-limit-notice').classList.remove('hidden');
-                                    }
-                                    
-                                    // If no pending transactions are found at all, show the "no transactions" message
-                                    if (!hasPendingTransactions) {
-                                        const pending1Element = document.getElementById('pending1');
-                                        pending1Element.classList.remove('hidden');
-                                        const titleEl = pending1Element.querySelector('h3');
-                                        const detailEl = pending1Element.querySelector('p');
-                                        
-                                        if (titleEl) titleEl.textContent = 'No Pending Transactions';
-                                        if (detailEl) detailEl.textContent = 'You have no pending transactions at the moment.';
-                                    }
-                                    
-                                    // Apply color formatting to pending transactions
-                                    setTimeout(colorPendingTransactions, 500);
-                                }
-                            }
-                        });
-                    } catch (error) {
-                        console.error('Error loading pending transactions:', error);
-                    }
-                });
+                // REMOVED: Duplicate onAuthStateChanged listener for pending transactions
+                // Pending transactions are already loaded in the main onAuthStateChanged listener above
                 
                 // Fixed function to add a new pending transaction with a specific ID
                 window.addPendingTransaction = async function(transferDetails) {
                     return new Promise((resolve, reject) => {
-                        firebase.auth().onAuthStateChanged(async (user) => {
-                            if (user) {
-                                try {
-                                    const db = firebase.firestore();
-                                    
-                                    // Get current user data from Firestore to check pending fields
-                                    const userDocRef = doc(db, 'users', user.uid);
-                                    const userDoc = await getDoc(userDocRef);
-                                    
-                                    if (!userDoc.exists()) {
-                                        throw new Error("User account not found");
-                                    }
-                                    
-                                    const userData = userDoc.data();
-                                    
-                                    // Track which slots are already used
-                                    let usedSlots = {
-                                        pending1: !!userData.pending1 && userData.pending1.trim() !== '',
-                                        pending2: !!userData.pending2 && userData.pending2.trim() !== '',
-                                        pending3: !!userData.pending3 && userData.pending3.trim() !== ''
-                                    };
-                                    
-                                    // Find the first available slot
-                                    let nextPendingId = null;
-                                    if (!usedSlots.pending1) nextPendingId = 'pending1';
-                                    else if (!usedSlots.pending2) nextPendingId = 'pending2';
-                                    else if (!usedSlots.pending3) nextPendingId = 'pending3';
-                                    
-                                    // Check if all slots are used
-                                    if (!nextPendingId) {
-                                        // Show the limit notice
-                                        document.getElementById('pending-limit-notice').classList.remove('hidden');
-                                        
-                                        resolve({
-                                            success: false,
-                                            message: 'Maximum pending transactions reached. This transaction has been queued.'
-                                        });
-                                        return;
-                                    }
-                                    
-                                    // Format the transfer data with consistent formatting 
-                                    const transferString = `${transferDetails.description || 'Transfer'} | Transfer-${transferDetails.type || 'Intl'} | ${transferDetails.amount || '$0.00'} | ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} | ${new Date().toLocaleDateString()} | Pending`;
-                                    
-                                    // Create the update data object with the right pending field
-                                    const updateData = {};
-                                    updateData[nextPendingId] = transferString;
-                                    
-                                    // Update the user document with the new pending transaction in the right slot
-                                    await updateDoc(userDocRef, updateData);
-                                    
-                                    // Also add to pending collection with pendingId field to preserve the slot
-                                    await addDoc(collection(db, 'pending'), {
-                                        userId: user.uid,
-                                        pendingId: nextPendingId,
-                                        description: transferDetails.description || 'Transfer',
-                                        amount: transferDetails.amount || '',
-                                        date: new Date().toLocaleDateString(),
-                                        time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
-                                        reference: `Ref TRX${Math.floor(Math.random() * 10000000000)}`,
-                                        status: 'pending',
-                                        type: transferDetails.type || 'Intl',
-                                        createdAt: serverTimestamp()
-                                    });
-                                    
-                                    // Refresh the page to show the new pending transaction
-                                    location.reload();
+                        // Use the main auth instance instead of duplicate listener
+                        const user = auth.currentUser;
+                        if (!user) {
+                            reject(new Error('User not authenticated'));
+                            return;
+                        }
+                        
+                        (async () => {
+                            try {
+                                // Get current user data from Firestore to check pending fields
+                                const userDocRef = doc(window.db, 'users', user.uid);
+                                const userDoc = await getDoc(userDocRef);
+                                
+                                if (!userDoc.exists()) {
+                                    throw new Error("User account not found");
+                                }
+                                
+                                const userData = userDoc.data();
+                                
+                                // Track which slots are already used
+                                let usedSlots = {
+                                    pending1: !!userData.pending1 && userData.pending1.trim() !== '',
+                                    pending2: !!userData.pending2 && userData.pending2.trim() !== '',
+                                    pending3: !!userData.pending3 && userData.pending3.trim() !== ''
+                                };
+                                
+                                // Find the first available slot
+                                let nextPendingId = null;
+                                if (!usedSlots.pending1) nextPendingId = 'pending1';
+                                else if (!usedSlots.pending2) nextPendingId = 'pending2';
+                                else if (!usedSlots.pending3) nextPendingId = 'pending3';
+                                
+                                // Check if all slots are used
+                                if (!nextPendingId) {
+                                    // Show the limit notice
+                                    document.getElementById('pending-limit-notice').classList.remove('hidden');
                                     
                                     resolve({
-                                        success: true,
-                                        message: 'Pending transaction created successfully.'
+                                        success: false,
+                                        message: 'Maximum pending transactions reached. This transaction has been queued.'
                                     });
-                                } catch (error) {
-                                    console.error('Error adding pending transaction:', error);
-                                    reject(error);
+                                    return;
                                 }
-                            } else {
-                                reject(new Error('User not authenticated'));
+                                
+                                // Format the transfer data with consistent formatting 
+                                const transferString = `${transferDetails.description || 'Transfer'} | Transfer-${transferDetails.type || 'Intl'} | ${transferDetails.amount || '$0.00'} | ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} | ${new Date().toLocaleDateString()} | Pending`;
+                                
+                                // Create the update data object with the right pending field
+                                const updateData = {};
+                                updateData[nextPendingId] = transferString;
+                                
+                                // Update the user document with the new pending transaction in the right slot
+                                await updateDoc(userDocRef, updateData);
+                                
+                                // Also add to pending collection with pendingId field to preserve the slot
+                                await addDoc(collection(window.db, 'pending'), {
+                                    userId: user.uid,
+                                    pendingId: nextPendingId,
+                                    description: transferDetails.description || 'Transfer',
+                                    amount: transferDetails.amount || '',
+                                    date: new Date().toLocaleDateString(),
+                                    time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                                    reference: `Ref TRX${Math.floor(Math.random() * 10000000000)}`,
+                                    status: 'pending',
+                                    type: transferDetails.type || 'Intl',
+                                    createdAt: serverTimestamp()
+                                });
+                                
+                                // Refresh the page to show the new pending transaction
+                                location.reload();
+                                
+                                resolve({
+                                    success: true,
+                                    message: 'Pending transaction created successfully.'
+                                });
+                            } catch (error) {
+                                console.error('Error adding pending transaction:', error);
+                                reject(error);
                             }
-                        });
+                        })();
                     });
                 };
             </script>
@@ -2678,7 +3105,7 @@
 
 
             <!-- Bottom Navbar (Mobile Friendly) -->
-            <div class="mobile-nav fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t p-3" style="height: 100px;">
+            <div class="mobile-nav fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t p-3" style="height: 100px; z-index: 100;">
                 <div class="flex justify-around items-center h-full">
                     <!-- Wallet Icon -->
                     <a href="dashboard.html" class="nav-item flex flex-col items-center" onclick="setActive(this)">
@@ -2746,46 +3173,7 @@
             </script>
 
             <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    // Color keywords in history items
-                    function colorizeHistory() {
-                        // Process all history elements (1-20)
-                        for (let i = 1; i <= 20; i++) {
-                            const historyDiv = document.getElementById('history' + i);
-                            if (!historyDiv) continue;
-                            
-                            const text = historyDiv.textContent;
-                            
-                            // Skip empty history items
-                            if (!text || text.trim() === "" || text.includes("No history available")) continue;
-                            
-                            let html = historyDiv.innerHTML;
-                            
-                            // Color deposit-related terms (green)
-                            html = html.replace(/\b(Deposit|ACH deposit|deposit|incoming|received|credit)\b/gi, 
-                                '<span class="text-green-600 font-medium">$1</span>');
-                            
-                            // Color withdrawal-related terms (red)
-                            html = html.replace(/\b(Transfer|transfer|withdrawal|withdraw|sent|outgoing|Reversal|reversal)\b/gi, 
-                                '<span class="text-red-600 font-medium">$1</span>');
-                            
-                            // Color positive amounts (green)
-                            html = html.replace(/(\+\$[\d,.]+)/g, '<span class="text-green-600 font-semibold">$1</span>');
-                            
-                            // Color negative amounts (red)
-                            html = html.replace(/(-\$[\d,.]+)/g, '<span class="text-red-600 font-semibold">$1</span>');
-                            
-                            historyDiv.innerHTML = html;
-                        }
-                    }
-                    
-                    // Add event listener for "See More" button
-                    // See More/Less toggle logic is defined in the filtering script where
-                    // transaction arrays are available.
-                    
-                    // Call colorizeHistory after a short delay to ensure Firebase data has loaded
-                    setTimeout(colorizeHistory, 1000);
-                });
+                // Duplicate colorization function removed to prevent performance issues
             </script>
 
             <script>
@@ -3016,10 +3404,13 @@
                         });
                     });
                     
-                    // Initialize transaction data collection after a delay to ensure data is loaded
-                    setTimeout(() => {
-                        collectTransactionData();
-                    }, 2000);
+                    // Initialize transaction data collection when the browser is idle to avoid blocking first paint.
+                    // Keep a timeout so it still runs on busy devices.
+                    if ('requestIdleCallback' in window) {
+                        requestIdleCallback(() => collectTransactionData(), { timeout: 2500 });
+                    } else {
+                        setTimeout(() => collectTransactionData(), 2000);
+                    }
                     
                     // Toggle helpers
                     function currentSource() {
@@ -3135,5 +3526,7 @@
             </div>
         </div>
     </div>
+    <!-- Live Chat Widget -->
+    <script src="live-chat-widget.js"></script>
 </body>
 </html>

@@ -8,7 +8,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "deploy": "vite build && firebase deploy",
+    "deploy": "npm run build && firebase deploy",
     "generate-favicons": "node generate-favicons.js"
   },
   "devDependencies": {
@@ -27,6 +27,7 @@
     "emailjs-com": "^3.2.0",
     "express": "^4.21.1",
     "firebase": "^11.1.0",
+    "firebase-admin": "^13.0.2",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.15",
     "workbox-window": "^7.0.0",

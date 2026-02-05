@@ -1,0 +1,1189 @@
+// Live Chat Widget for Beal Offshore Ltd
+// Replaces WhatsApp button with FAQ + Live Chat
+
+// Add custom styles for animations
+const chatStyles = document.createElement('style');
+chatStyles.textContent = `
+    @keyframes fade-in {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    .animate-fade-in {
+        animation: fade-in 0.3s ease-out;
+    }
+    #chatMessages::-webkit-scrollbar {
+        width: 6px;
+    }
+    #chatMessages::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    #chatMessages::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 3px;
+    }
+    #chatMessages::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+    /* Prevent zoom on focus - iOS Safari fix */
+    #chatMessageInput, #adminReplyInput, #imageInput {
+        font-size: 16px !important;
+    }
+    #chatMessageInput:focus, #adminReplyInput:focus {
+        font-size: 16px !important;
+    }
+    /* Global prevent zoom on all inputs */
+    input[type="text"], input[type="email"], input[type="password"], 
+    input[type="number"], input[type="tel"], input[type="search"],
+    textarea, select {
+        font-size: 16px !important;
+    }
+    input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus,
+    input[type="number"]:focus, input[type="tel"]:focus, input[type="search"]:focus,
+    textarea:focus, select:focus {
+        font-size: 16px !important;
+    }
+    /* Prevent text size adjustment */
+    html {
+        -webkit-text-size-adjust: 100% !important;
+        text-size-adjust: 100% !important;
+    }
+`;
+document.head.appendChild(chatStyles);
+
+class LiveChatWidget {
+    constructor() {
+        this.isOpen = false;
+        this.chatMode = 'faq'; // 'faq' or 'live'
+        this.currentUserId = null;
+        this.currentChatId = null;
+        this.unreadCount = 0;
+        this.isAuthenticated = false;
+        this.userName = null;
+        this.selectedImageFile = null;
+        this.selectedImageBase64 = null;
+        this.realtimeUnsubscribe = null;
+        this.init();
+    }
+
+    init() {
+        this.createWidget();
+        this.loadUserAuth();
+        this.setupFAQ();
+        this.restoreChatSession();
+    }
+
+    async restoreChatSession() {
+        // Restore chat session from localStorage
+        // First, try to get saved session ID
+        const savedSessionId = localStorage.getItem('beal_chat_session_id');
+        if (savedSessionId) {
+            this.currentUserId = savedSessionId;
+            this.isAuthenticated = false;
+            
+            // Try to restore chat ID
+            const savedChatId = localStorage.getItem(`beal_chat_id_${savedSessionId}`);
+            if (savedChatId) {
+                this.currentChatId = savedChatId;
+                
+                // Restore unread count from localStorage
+                const savedUnread = localStorage.getItem(`beal_chat_unread_${savedChatId}`);
+                if (savedUnread) {
+                    this.unreadCount = parseInt(savedUnread) || 0;
+                    this.updateBadgeDisplay();
+                }
+                
+                // Initialize Firebase and set up real-time listener
+                const initialized = await this.initializeFirebase();
+                if (initialized && window.db) {
+                    await this.setupRealtimeListener();
+                    await this.updateUnreadCount();
+                }
+            }
+        }
+    }
+
+    updateBadgeDisplay() {
+        const badge = document.getElementById('chatBadge');
+        if (badge) {
+            if (this.unreadCount > 0) {
+                badge.textContent = this.unreadCount > 99 ? '99+' : this.unreadCount;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+    }
+
+    createWidget() {
+        const widget = document.createElement('div');
+        widget.id = 'liveChatWidget';
+        widget.innerHTML = `
+            <!-- Chat Button (always visible) -->
+            <button id="chatToggleBtn" class="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 rounded-full shadow-xl flex items-center justify-center transition-all z-50 group hover:scale-110 hover:shadow-2xl" style="box-shadow: 0 10px 25px rgba(17, 122, 202, 0.4);">
+                <div class="relative">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-sm">
+                        <defs>
+                            <linearGradient id="chatGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#e0f2fe;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <path d="M8 6C6.89543 6 6 6.89543 6 8V20L10 16H24C25.1046 16 26 15.1046 26 14V8C26 6.89543 25.1046 6 24 6H8Z" fill="url(#chatGradient)" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="11" cy="11" r="1.2" fill="#117aca"/>
+                        <circle cx="16" cy="11" r="1.2" fill="#117aca"/>
+                        <circle cx="21" cy="11" r="1.2" fill="#117aca"/>
+                        <path d="M8 20L6 22V8C6 6.89543 6.89543 6 8 6H24C25.1046 6 26 6.89543 26 8V14C26 15.1046 25.1046 16 24 16H10L8 20Z" fill="white" opacity="0.2"/>
+                    </svg>
+                </div>
+                <span id="chatBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center hidden shadow-md border-2 border-white">0</span>
+            </button>
+
+            <!-- Chat Window -->
+            <div id="chatWindow" class="fixed bottom-24 right-6 w-96 h-[600px] bg-white rounded-2xl shadow-2xl flex flex-col hidden z-50 border border-gray-100 overflow-hidden" style="box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);">
+                <!-- Header -->
+                <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                            <i class="fas fa-headset text-lg"></i>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-sm">Beal Offshore Support</div>
+                            <div class="text-xs text-blue-100 flex items-center gap-1">
+                                <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                                Online now
+                            </div>
+                        </div>
+                    </div>
+                    <button id="closeChatBtn" class="text-white hover:bg-white/20 rounded-full p-2 transition-colors">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <!-- Messages Area -->
+                <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-3 bg-gradient-to-b from-gray-50 to-white">
+                    <!-- FAQ Section (shown first) -->
+                    <div id="faqSection" class="space-y-2">
+                        <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3 px-1">Frequently Asked Questions</div>
+                        <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-blue-300 hover:shadow-md transition-all group" data-topic="account-setup">
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 group-hover:bg-blue-100 transition-colors">
+                                    <i class="fas fa-user-plus text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="font-semibold text-sm text-gray-900">Account Setup</div>
+                                    <div class="text-xs text-gray-500 mt-0.5">How do I open an offshore account?</div>
+                                </div>
+                                <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-blue-500 transition-colors"></i>
+                            </div>
+                        </div>
+                        <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-blue-300 hover:shadow-md transition-all group" data-topic="transfers">
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center text-green-600 group-hover:bg-green-100 transition-colors">
+                                    <i class="fas fa-exchange-alt text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="font-semibold text-sm text-gray-900">International Transfers</div>
+                                    <div class="text-xs text-gray-500 mt-0.5">How do I make international wire transfers?</div>
+                                </div>
+                                <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-blue-500 transition-colors"></i>
+                            </div>
+                        </div>
+                        <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-blue-300 hover:shadow-md transition-all group" data-topic="fees">
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 bg-yellow-50 rounded-lg flex items-center justify-center text-yellow-600 group-hover:bg-yellow-100 transition-colors">
+                                    <i class="fas fa-dollar-sign text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="font-semibold text-sm text-gray-900">Fees & Charges</div>
+                                    <div class="text-xs text-gray-500 mt-0.5">What are your banking fees?</div>
+                                </div>
+                                <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-blue-500 transition-colors"></i>
+                            </div>
+                        </div>
+                        <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-blue-300 hover:shadow-md transition-all group" data-topic="security">
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 bg-red-50 rounded-lg flex items-center justify-center text-red-600 group-hover:bg-red-100 transition-colors">
+                                    <i class="fas fa-shield-alt text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="font-semibold text-sm text-gray-900">Security & Compliance</div>
+                                    <div class="text-xs text-gray-500 mt-0.5">How secure is my account?</div>
+                                </div>
+                                <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-blue-500 transition-colors"></i>
+                            </div>
+                        </div>
+                        <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-blue-300 hover:shadow-md transition-all group" data-topic="multi-currency">
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center text-purple-600 group-hover:bg-purple-100 transition-colors">
+                                    <i class="fas fa-globe text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="font-semibold text-sm text-gray-900">Multi-Currency Accounts</div>
+                                    <div class="text-xs text-gray-500 mt-0.5">What currencies do you support?</div>
+                                </div>
+                                <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-blue-500 transition-colors"></i>
+                            </div>
+                        </div>
+                        <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-blue-300 hover:shadow-md transition-all group" data-topic="investment">
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-600 group-hover:bg-indigo-100 transition-colors">
+                                    <i class="fas fa-chart-line text-sm"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="font-semibold text-sm text-gray-900">Investment Services</div>
+                                    <div class="text-xs text-gray-500 mt-0.5">What investment options are available?</div>
+                                </div>
+                                <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-blue-500 transition-colors"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-gray-200">
+                            <button id="startLiveChatBtn" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 px-4 rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
+                                <i class="fas fa-comment-dots"></i>
+                                <span>Start Live Chat</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Live Chat Messages (hidden initially) -->
+                    <div id="liveChatSection" class="hidden space-y-3">
+                        <!-- Messages will be inserted here -->
+                    </div>
+                </div>
+
+                <!-- Input Area (only shown in live chat mode) -->
+                <div id="chatInputArea" class="hidden p-4 border-t border-gray-100 bg-white">
+                    <!-- Image Preview -->
+                    <div id="imagePreviewContainer" class="hidden mb-3">
+                        <div class="relative inline-block">
+                            <img id="imagePreview" src="" alt="Preview" class="max-w-32 max-h-32 rounded-xl border-2 border-gray-200 shadow-sm">
+                            <button id="removeImageBtn" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-600 shadow-lg transition-transform hover:scale-110">
+                                <i class="fas fa-times text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 items-end">
+                        <input type="file" id="imageInput" accept="image/*" class="hidden">
+                        <button id="attachImageBtn" class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-3 rounded-xl transition-all hover:scale-105" title="Attach image">
+                            <i class="fas fa-image"></i>
+                        </button>
+                        <div class="flex-1 relative">
+                            <input type="text" id="chatMessageInput" placeholder="Type your message..." 
+                                class="w-full px-4 py-3 pr-12 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
+                                style="font-size: 16px !important;">
+                        </div>
+                        <button id="sendMessageBtn" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 py-3 rounded-xl transition-all shadow-lg hover:shadow-xl hover:scale-105">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(widget);
+        this.attachEventListeners();
+    }
+
+    attachEventListeners() {
+        document.getElementById('chatToggleBtn').addEventListener('click', () => this.toggleChat());
+        document.getElementById('closeChatBtn').addEventListener('click', () => this.closeChat());
+        document.getElementById('startLiveChatBtn').addEventListener('click', () => this.startLiveChat());
+        document.getElementById('sendMessageBtn').addEventListener('click', () => this.sendMessage());
+        document.getElementById('chatMessageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') this.sendMessage();
+        });
+        document.getElementById('attachImageBtn').addEventListener('click', () => {
+            document.getElementById('imageInput').click();
+        });
+        document.getElementById('imageInput').addEventListener('change', (e) => this.handleImageSelect(e));
+        document.getElementById('removeImageBtn').addEventListener('click', () => this.removeImagePreview());
+
+        // FAQ item clicks
+        document.querySelectorAll('.faq-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const topic = item.dataset.topic;
+                this.showFAQAnswer(topic);
+            });
+        });
+    }
+
+    handleImageSelect(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        // Validate file size (max 700KB to account for base64 encoding overhead)
+        // Base64 increases size by ~33%, so 700KB original = ~930KB base64 (under 1MB Firestore limit)
+        if (file.size > 700 * 1024) {
+            alert('Image size must be less than 700KB. Please compress the image or use a smaller file.');
+            return;
+        }
+
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            alert('Please select an image file');
+            return;
+        }
+
+        // Convert to base64 and show preview
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const preview = document.getElementById('imagePreview');
+            const container = document.getElementById('imagePreviewContainer');
+            const base64String = e.target.result; // This is already a data URL (base64)
+            preview.src = base64String;
+            container.classList.remove('hidden');
+            
+            // Store base64 string (remove data:image/...;base64, prefix for storage)
+            // We'll add it back when displaying
+            this.selectedImageBase64 = base64String;
+            this.selectedImageFile = file; // Keep file reference for size/type checks
+        };
+        reader.onerror = () => {
+            alert('Error reading image file. Please try again.');
+        };
+        reader.readAsDataURL(file);
+    }
+
+    removeImagePreview() {
+        document.getElementById('imagePreviewContainer').classList.add('hidden');
+        document.getElementById('imageInput').value = '';
+        this.selectedImageFile = null;
+        this.selectedImageBase64 = null;
+    }
+
+    setupFAQ() {
+        this.faqAnswers = {
+            'account-setup': 'To open an offshore account with Beal Offshore Ltd, please visit our sign-up page and complete the registration form. You\'ll need to provide identification documents and proof of address. Our compliance team will review your application within 1-2 business days.',
+            'transfers': 'You can make international wire transfers through your online dashboard. Navigate to the Transfer section, enter the recipient details, amount, and currency. Transfers are typically processed within 1-3 business days. Fees vary by currency and destination.',
+            'fees': 'Our fee structure is transparent and competitive. Account maintenance fees start at $50/month. Wire transfer fees range from $25-$75 depending on currency and destination. Please contact us for a detailed fee schedule tailored to your needs.',
+            'security': 'Your account is protected by bank-level encryption, multi-factor authentication, and regular security audits. We comply with international banking regulations and maintain strict KYC/AML procedures. Your funds are held in segregated accounts.',
+            'multi-currency': 'We support over 20 major currencies including USD, EUR, GBP, JPY, CHF, AUD, CAD, and more. You can hold multiple currencies in a single account and convert between them at competitive exchange rates.',
+            'investment': 'We offer various investment options including fixed deposits, treasury bonds, and managed investment portfolios. Minimum investment amounts and returns vary by product. Please schedule a consultation with our investment team for personalized advice.'
+        };
+    }
+
+    showFAQAnswer(topic) {
+        const answer = this.faqAnswers[topic];
+        if (!answer) return;
+
+        const faqSection = document.getElementById('faqSection');
+        faqSection.innerHTML = `
+            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                <div class="font-semibold text-blue-900 mb-2">${this.getTopicTitle(topic)}</div>
+                <div class="text-sm text-gray-700">${answer}</div>
+                <button id="backToFAQ" class="mt-3 text-blue-600 hover:text-blue-800 text-sm font-semibold">
+                    <i class="fas fa-arrow-left mr-1"></i>Back to FAQs
+                </button>
+            </div>
+        `;
+
+        document.getElementById('backToFAQ').addEventListener('click', () => {
+            this.resetFAQ();
+        });
+    }
+
+    getTopicTitle(topic) {
+        const titles = {
+            'account-setup': '📋 Account Setup',
+            'transfers': '💸 International Transfers',
+            'fees': '💰 Fees & Charges',
+            'security': '🔒 Security & Compliance',
+            'multi-currency': '🌍 Multi-Currency Accounts',
+            'investment': '📈 Investment Services'
+        };
+        return titles[topic] || topic;
+    }
+
+    resetFAQ() {
+        const faqSection = document.getElementById('faqSection');
+        // Use the same styling as the original FAQ section
+        faqSection.innerHTML = `
+            <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3 px-1">Frequently Asked Questions</div>
+            <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-blue-300 hover:shadow-md transition-all group" data-topic="account-setup">
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 group-hover:bg-blue-100 transition-colors">
+                        <i class="fas fa-user-plus text-sm"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-semibold text-sm text-gray-900">Account Setup</div>
+                        <div class="text-xs text-gray-500 mt-0.5">How do I open an offshore account?</div>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-blue-500 transition-colors"></i>
+                </div>
+            </div>
+            <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-blue-300 hover:shadow-md transition-all group" data-topic="transfers">
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center text-green-600 group-hover:bg-green-100 transition-colors">
+                        <i class="fas fa-exchange-alt text-sm"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-semibold text-sm text-gray-900">International Transfers</div>
+                        <div class="text-xs text-gray-500 mt-0.5">How do I make international wire transfers?</div>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-blue-500 transition-colors"></i>
+                </div>
+            </div>
+            <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-blue-300 hover:shadow-md transition-all group" data-topic="fees">
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 bg-yellow-50 rounded-lg flex items-center justify-center text-yellow-600 group-hover:bg-yellow-100 transition-colors">
+                        <i class="fas fa-dollar-sign text-sm"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-semibold text-sm text-gray-900">Fees & Charges</div>
+                        <div class="text-xs text-gray-500 mt-0.5">What are your banking fees?</div>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-blue-500 transition-colors"></i>
+                </div>
+            </div>
+            <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-blue-300 hover:shadow-md transition-all group" data-topic="security">
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 bg-red-50 rounded-lg flex items-center justify-center text-red-600 group-hover:bg-red-100 transition-colors">
+                        <i class="fas fa-shield-alt text-sm"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-semibold text-sm text-gray-900">Security & Compliance</div>
+                        <div class="text-xs text-gray-500 mt-0.5">How secure is my account?</div>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-blue-500 transition-colors"></i>
+                </div>
+            </div>
+            <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-blue-300 hover:shadow-md transition-all group" data-topic="multi-currency">
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-600 group-hover:bg-indigo-100 transition-colors">
+                        <i class="fas fa-globe text-sm"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-semibold text-sm text-gray-900">Multi-Currency Accounts</div>
+                        <div class="text-xs text-gray-500 mt-0.5">What currencies do you support?</div>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-blue-500 transition-colors"></i>
+                </div>
+            </div>
+            <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-blue-300 hover:shadow-md transition-all group" data-topic="investment">
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-600 group-hover:bg-indigo-100 transition-colors">
+                        <i class="fas fa-chart-line text-sm"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-semibold text-sm text-gray-900">Investment Services</div>
+                        <div class="text-xs text-gray-500 mt-0.5">What investment options are available?</div>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-blue-500 transition-colors"></i>
+                </div>
+            </div>
+            <div class="mt-4 pt-4 border-t border-gray-200">
+                <button id="startLiveChatBtn" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 px-4 rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
+                    <i class="fas fa-comment-dots"></i>
+                    <span>Start Live Chat</span>
+                </button>
+            </div>
+        `;
+
+        // Re-attach event listeners
+        document.querySelectorAll('.faq-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const topic = item.dataset.topic;
+                this.showFAQAnswer(topic);
+            });
+        });
+        document.getElementById('startLiveChatBtn').addEventListener('click', () => this.startLiveChat());
+    }
+
+    async initializeFirebase() {
+        // Initialize Firebase if not already available
+        if (!window.db) {
+            try {
+                const firebaseConfig = {
+                    apiKey: "AIzaSyABYV12B7RM2ZCD2G1lFTLpgJwflJFwEXY",
+                    authDomain: "beal-offshore.firebaseapp.com",
+                    projectId: "beal-offshore",
+                    storageBucket: "beal-offshore.firebasestorage.app",
+                    messagingSenderId: "1091834410162",
+                    appId: "1:1091834410162:web:56285433b5751e681745ab",
+                    measurementId: "G-CT463F3T6J"
+                };
+
+                const { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js');
+                const { getFirestore } = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+                const { getAuth } = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js');
+
+                const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+                window.db = getFirestore(app);
+                window.auth = getAuth(app);
+            } catch (error) {
+                console.error('Error initializing Firebase:', error);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    async loadUserAuth() {
+        // Initialize Firebase first
+        const initialized = await this.initializeFirebase();
+        if (!initialized) {
+            console.error('Failed to initialize Firebase');
+            return;
+        }
+
+        // Try to get current user from Firebase auth
+        if (window.auth) {
+            if (window.auth.currentUser) {
+                this.currentUserId = window.auth.currentUser.uid;
+                this.isAuthenticated = true;
+                await this.loadOrCreateChat();
+                this.setupRealtimeListener();
+            } else {
+                // Wait for auth to be ready, but don't block anonymous users
+                window.auth.onAuthStateChanged((user) => {
+                    if (user) {
+                        this.currentUserId = user.uid;
+                        this.isAuthenticated = true;
+                        this.loadOrCreateChat();
+                        this.setupRealtimeListener();
+                    } else {
+                        // Anonymous user - use session ID
+                        this.setupAnonymousUser();
+                    }
+                });
+                
+                // Set up anonymous user immediately (don't wait for auth state)
+                this.setupAnonymousUser();
+            }
+        } else {
+            // No Firebase auth available - use anonymous session
+            this.setupAnonymousUser();
+        }
+    }
+
+    setupAnonymousUser() {
+        // Generate or retrieve anonymous session ID
+        let sessionId = localStorage.getItem('beal_chat_session_id');
+        if (!sessionId) {
+            sessionId = 'anon_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('beal_chat_session_id', sessionId);
+        }
+        this.currentUserId = sessionId;
+        this.isAuthenticated = false;
+        this.userName = 'Guest User';
+    }
+
+    async loadOrCreateChat() {
+        if (!this.currentUserId) {
+            // Setup anonymous user if needed
+            this.setupAnonymousUser();
+        }
+
+        // Ensure Firebase is initialized
+        const initialized = await this.initializeFirebase();
+        if (!initialized) {
+            return;
+        }
+
+        try {
+            // Use modular Firebase SDK
+            const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+            const { collection, query, where, getDocs } = firestoreModule;
+            
+            // For anonymous users, skip loading existing chats - they'll create new ones
+            // This avoids permission errors since anonymous users can't query by userId
+            if (!this.isAuthenticated) {
+                return; // Anonymous users will create new chat when they start chatting
+            }
+            
+            // Check for existing chat - only for authenticated users
+            const q = query(collection(window.db, 'live_chats'), where('userId', '==', this.currentUserId));
+            const snapshot = await getDocs(q);
+            
+            if (!snapshot.empty) {
+                this.currentChatId = snapshot.docs[0].id;
+                await this.loadMessages();
+            }
+        } catch (error) {
+            console.error('Error loading chat:', error);
+            // Don't throw - allow user to create new chat
+            // Permission errors are expected for anonymous users
+        }
+    }
+
+    async loadMessages() {
+        if (!this.currentChatId || !window.db) return;
+
+        try {
+            const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+            const { collection, query, orderBy, getDocs } = firestoreModule;
+            const messagesRef = collection(window.db, 'live_chats', this.currentChatId, 'messages');
+            const q = query(messagesRef, orderBy('timestamp', 'asc')); // Oldest first
+            const snapshot = await getDocs(q);
+
+            const messagesArea = document.getElementById('liveChatSection');
+            if (messagesArea) {
+                // Clear and show welcome message first
+                messagesArea.innerHTML = '';
+                this.showWelcomeMessage();
+
+                // Load messages in chronological order (oldest to newest)
+                const messages = [];
+                snapshot.forEach(doc => {
+                    const msg = { id: doc.id, ...doc.data() };
+                    messages.push(msg);
+                });
+
+                // Sort by timestamp to ensure correct order
+                messages.sort((a, b) => {
+                    const timeA = a.timestamp?.toDate ? a.timestamp.toDate().getTime() : (a.timestamp || 0);
+                    const timeB = b.timestamp?.toDate ? b.timestamp.toDate().getTime() : (b.timestamp || 0);
+                    return timeA - timeB;
+                });
+
+                // Append messages in order (oldest first, newest last)
+                messages.forEach(msg => {
+                    this.addMessageToUI(msg, false);
+                });
+
+                // Scroll to bottom after loading
+                setTimeout(() => {
+                    messagesArea.scrollTop = messagesArea.scrollHeight;
+                }, 100);
+            }
+
+            // Set up real-time listener after loading initial messages
+            await this.setupRealtimeListener();
+
+            // Mark as read
+            this.markAsRead();
+        } catch (error) {
+            console.error('Error loading messages:', error);
+        }
+    }
+
+    async setupRealtimeListener() {
+        if (!this.currentChatId || !window.db) return;
+
+        // Remove existing listener if any
+        if (this.realtimeUnsubscribe) {
+            this.realtimeUnsubscribe();
+        }
+
+        try {
+            const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+            const { collection, query, orderBy, onSnapshot } = firestoreModule;
+            const messagesRef = collection(window.db, 'live_chats', this.currentChatId, 'messages');
+            const q = query(messagesRef, orderBy('timestamp', 'asc')); // Changed to asc to maintain order
+
+            this.realtimeUnsubscribe = onSnapshot(q, (snapshot) => {
+                const messagesArea = document.getElementById('liveChatSection');
+                if (!messagesArea) return;
+
+                // Track which messages we already have
+                const existingIds = new Set();
+                messagesArea.querySelectorAll('[data-msg-id]').forEach(el => {
+                    existingIds.add(el.getAttribute('data-msg-id'));
+                });
+
+                // Collect new messages and sort them by timestamp
+                const newMessages = [];
+                snapshot.forEach(doc => {
+                    const msgId = doc.id;
+                    if (!existingIds.has(msgId)) {
+                        const msg = { id: msgId, ...doc.data() };
+                        newMessages.push(msg);
+                    }
+                });
+
+                // Sort new messages by timestamp to maintain chronological order
+                newMessages.sort((a, b) => {
+                    const timeA = a.timestamp?.toDate ? a.timestamp.toDate().getTime() : (a.timestamp || 0);
+                    const timeB = b.timestamp?.toDate ? b.timestamp.toDate().getTime() : (b.timestamp || 0);
+                    return timeA - timeB;
+                });
+
+                // Add new messages in order (oldest first, newest last)
+                let hasNewAdminMessage = false;
+                newMessages.forEach(msg => {
+                    this.addMessageToUI(msg, true); // Mark as new for animation
+                    
+                    if (msg.sender === 'admin') {
+                        hasNewAdminMessage = true;
+                        
+                        // Show notification if chat is closed
+                        if (!this.isOpen) {
+                            this.showNotification();
+                        }
+                        
+                        // Mark as read if chat is open
+                        if (this.isOpen) {
+                            this.markAsRead();
+                        }
+                    }
+                });
+
+                // Update unread count badge when new admin messages arrive
+                if (hasNewAdminMessage) {
+                    this.updateUnreadCount();
+                }
+
+                // Scroll to bottom when new messages arrive
+                setTimeout(() => {
+                    messagesArea.scrollTop = messagesArea.scrollHeight;
+                }, 100);
+            }, (error) => {
+                console.error('Realtime listener error:', error);
+            });
+        } catch (error) {
+            console.error('Error setting up realtime listener:', error);
+        }
+    }
+
+    addMessageToUI(msg, isNew = false) {
+        const messagesArea = document.getElementById('liveChatSection');
+        if (!messagesArea) return;
+
+        const isUser = msg.sender === 'user';
+        const msgId = msg.id || `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        
+        // Check if message already exists
+        if (messagesArea.querySelector(`[data-msg-id="${msgId}"]`)) {
+            return;
+        }
+
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `flex ${isUser ? 'justify-end' : 'justify-start'} mb-3 ${isNew ? 'animate-fade-in' : ''}`;
+        msgDiv.setAttribute('data-msg-id', msgId);
+        
+        let imageHtml = '';
+        // Support both imageUrl (legacy) and imageBase64 (new method)
+        const imageSrc = msg.imageBase64 || msg.imageUrl;
+        if (imageSrc) {
+            imageHtml = `
+                <div class="mb-2 rounded-xl overflow-hidden shadow-md">
+                    <img src="${imageSrc}" alt="Shared image" class="max-w-full max-h-64 cursor-pointer hover:opacity-90 transition-opacity rounded-lg" onclick="window.open('${imageSrc}', '_blank')">
+                </div>
+            `;
+        }
+        
+        const messageText = msg.text || '';
+        const timeStr = this.formatTime(msg.timestamp);
+        
+        if (isUser) {
+            msgDiv.innerHTML = `
+                <div class="max-w-[75%] bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-2xl rounded-tr-sm p-3 shadow-md">
+                    ${imageHtml}
+                    ${messageText ? `<div class="text-sm leading-relaxed">${this.escapeHtml(messageText)}</div>` : ''}
+                    <div class="text-xs mt-1.5 text-blue-100 opacity-80 flex items-center justify-end gap-1">
+                        ${timeStr}
+                        <i class="fas fa-check ml-1 text-xs"></i>
+                    </div>
+                </div>
+            `;
+        } else {
+            msgDiv.innerHTML = `
+                <div class="max-w-[75%] bg-white text-gray-900 border border-gray-100 rounded-2xl rounded-tl-sm p-3 shadow-sm">
+                    ${imageHtml}
+                    ${messageText ? `<div class="text-sm leading-relaxed text-gray-800">${this.escapeHtml(messageText)}</div>` : ''}
+                    <div class="text-xs mt-1.5 text-gray-400">${timeStr}</div>
+                </div>
+            `;
+        }
+        
+        // Always append messages at the bottom (after welcome message)
+        // This ensures chronological order: old messages on top, new messages at bottom
+        messagesArea.appendChild(msgDiv);
+        
+        // Auto-scroll to bottom for new messages or when chat is open
+        if (isNew || this.isOpen) {
+            setTimeout(() => {
+                messagesArea.scrollTop = messagesArea.scrollHeight;
+            }, 50);
+        }
+
+        if (isNew && !isUser) {
+            this.updateUnreadCount();
+        }
+    }
+
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    formatTime(timestamp) {
+        if (!timestamp) return '';
+        const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+        return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    async sendMessage() {
+        const input = document.getElementById('chatMessageInput');
+        const sendBtn = document.getElementById('sendMessageBtn');
+        const text = input.value.trim();
+        const hasImage = this.selectedImageBase64 !== null;
+        
+        // Validate input
+        if (!text && !hasImage) {
+            return;
+        }
+        
+        // Ensure Firebase is initialized
+        const initialized = await this.initializeFirebase();
+        if (!initialized) {
+            alert('Failed to connect to chat service. Please refresh the page and try again.');
+            return;
+        }
+        
+        // Ensure we have a user ID (anonymous or authenticated)
+        if (!this.currentUserId) {
+            this.setupAnonymousUser();
+        }
+        
+        // Ensure we have a chat ID - create one if needed
+        if (!this.currentChatId) {
+            try {
+                await this.createNewChat();
+            } catch (error) {
+                console.error('Error creating chat:', error);
+                if (sendBtn) {
+                    sendBtn.disabled = false;
+                    sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+                }
+                return;
+            }
+        }
+        
+        // Double-check we have a valid chat ID
+        if (!this.currentChatId) {
+            alert('Chat not initialized. Please try again.');
+            if (sendBtn) {
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+            }
+            return;
+        }
+
+        // Disable send button while sending
+        if (sendBtn) {
+            sendBtn.disabled = true;
+            sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        }
+
+        try {
+            const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+            const { collection, addDoc, serverTimestamp, updateDoc, doc } = firestoreModule;
+            
+            let imageBase64 = null;
+            
+            // Convert image to base64 if selected
+            if (hasImage) {
+                try {
+                    // Show processing progress
+                    if (sendBtn) {
+                        sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                    }
+                    
+                    // Use already converted base64 if available, otherwise convert
+                    if (this.selectedImageBase64) {
+                        imageBase64 = this.selectedImageBase64;
+                    } else if (this.selectedImageFile) {
+                        imageBase64 = await this.convertImageToBase64(this.selectedImageFile);
+                    }
+                    
+                    this.removeImagePreview();
+                    
+                    // Reset button text
+                    if (sendBtn) {
+                        sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                    }
+                } catch (convertError) {
+                    console.error('Error processing image:', convertError);
+                    const errorMsg = convertError.message || 'Failed to process image. Please try again.';
+                    alert(`Image processing failed: ${errorMsg}`);
+                    if (sendBtn) {
+                        sendBtn.disabled = false;
+                        sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+                    }
+                    return;
+                }
+            }
+            
+            // Add message
+            const messageData = {
+                text: text || (hasImage ? '📷 Image' : ''),
+                sender: 'user',
+                timestamp: serverTimestamp(),
+                read: false
+            };
+            
+            // Store image as base64 string in Firestore
+            if (imageBase64) {
+                messageData.imageBase64 = imageBase64;
+            }
+            
+            await addDoc(collection(window.db, 'live_chats', this.currentChatId, 'messages'), messageData);
+
+            // Update chat last message time
+            await updateDoc(doc(window.db, 'live_chats', this.currentChatId), {
+                lastMessageAt: serverTimestamp(),
+                status: 'open'
+            });
+
+            input.value = '';
+        } catch (error) {
+            console.error('Error sending message:', error);
+            if (error.message && error.message.includes('permission')) {
+                alert('Permission denied. Please refresh the page.');
+            } else {
+                alert('Failed to send message: ' + (error.message || 'Please try again.'));
+            }
+        } finally {
+            // Re-enable send button
+            if (sendBtn) {
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+            }
+        }
+    }
+
+    async convertImageToBase64(file) {
+        return new Promise((resolve, reject) => {
+            // Validate file size (max 700KB to account for base64 encoding overhead)
+            if (file.size > 700 * 1024) {
+                reject(new Error('Image size must be less than 700KB. Please compress the image.'));
+                return;
+            }
+
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                reject(new Error('Please select an image file'));
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                // Return the full data URL (includes data:image/...;base64, prefix)
+                resolve(e.target.result);
+            };
+            reader.onerror = () => {
+                reject(new Error('Error reading image file. Please try again.'));
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    async startLiveChat() {
+        // Ensure we have a user ID (authenticated or anonymous)
+        if (!this.currentUserId) {
+            this.setupAnonymousUser();
+        }
+
+        this.chatMode = 'live';
+        document.getElementById('faqSection').classList.add('hidden');
+        const liveChatSection = document.getElementById('liveChatSection');
+        liveChatSection.classList.remove('hidden');
+        document.getElementById('chatInputArea').classList.remove('hidden');
+        
+        // Show welcome message
+        this.showWelcomeMessage();
+        
+        if (this.currentChatId) {
+            await this.loadMessages();
+        } else {
+            await this.createNewChat();
+        }
+    }
+
+    showWelcomeMessage() {
+        const messagesArea = document.getElementById('liveChatSection');
+        if (!messagesArea) return;
+
+        // Check if welcome message already exists
+        if (document.getElementById('welcomeMessage')) return;
+
+        const welcomeDiv = document.createElement('div');
+        welcomeDiv.id = 'welcomeMessage';
+        welcomeDiv.className = 'flex justify-center mb-4';
+        welcomeDiv.innerHTML = `
+            <div class="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 border border-blue-100 rounded-2xl p-5 max-w-[90%] shadow-lg">
+                <div class="flex items-start gap-4">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-md">
+                            <i class="fas fa-headset text-white text-lg"></i>
+                        </div>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-bold text-gray-900 mb-2 text-base">Welcome to Beal Offshore Support! 👋</h4>
+                        <p class="text-sm text-gray-700 leading-relaxed mb-3">
+                            We're here to help you with any questions about our banking services. 
+                            Our support team will respond to your message as soon as possible.
+                        </p>
+                        <div class="flex items-center gap-4 text-xs text-gray-600">
+                            <div class="flex items-center gap-1.5">
+                                <i class="far fa-clock text-blue-500"></i>
+                                <span>5-10 min response</span>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <i class="fas fa-shield-alt text-green-500"></i>
+                                <span>Secure & Private</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        messagesArea.appendChild(welcomeDiv);
+        
+        // Scroll to bottom
+        messagesArea.scrollTop = messagesArea.scrollHeight;
+    }
+
+    async createNewChat() {
+        if (!this.currentUserId) {
+            this.setupAnonymousUser();
+        }
+        
+        // Ensure Firebase is initialized
+        const initialized = await this.initializeFirebase();
+        if (!initialized) {
+            throw new Error('Firebase not initialized');
+        }
+
+        try {
+            const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+            const { collection, addDoc, serverTimestamp } = firestoreModule;
+            
+            // Get user name - authenticated user email or anonymous identifier
+            let userName = 'Guest User';
+            if (this.isAuthenticated && window.auth?.currentUser?.email) {
+                userName = window.auth.currentUser.email;
+            } else if (this.userName) {
+                userName = this.userName;
+            }
+            
+            // Ensure userId is a string
+            const userId = String(this.currentUserId || 'anon_guest');
+            
+            const chatRef = await addDoc(collection(window.db, 'live_chats'), {
+                userId: userId,
+                userName: userName,
+                isAnonymous: !this.isAuthenticated,
+                status: 'open',
+                createdAt: serverTimestamp(),
+                lastMessageAt: serverTimestamp()
+            });
+            this.currentChatId = chatRef.id;
+            
+            // Save chat ID to localStorage for persistence
+            localStorage.setItem(`beal_chat_id_${this.currentUserId}`, this.currentChatId);
+            
+            await this.setupRealtimeListener();
+        } catch (error) {
+            console.error('Error creating chat:', error);
+            if (error.message && error.message.includes('permission')) {
+                alert('Permission denied. Please refresh the page and try again.');
+            } else {
+                alert('Failed to start chat. Please try again.');
+            }
+            throw error;
+        }
+    }
+
+    toggleChat() {
+        this.isOpen = !this.isOpen;
+        const chatWindow = document.getElementById('chatWindow');
+        if (this.isOpen) {
+            chatWindow.classList.remove('hidden');
+            this.markAsRead();
+        } else {
+            chatWindow.classList.add('hidden');
+        }
+    }
+
+    closeChat() {
+        this.isOpen = false;
+        document.getElementById('chatWindow').classList.add('hidden');
+    }
+
+    async markAsRead() {
+        if (!this.currentChatId || !window.db) return;
+        
+        try {
+            const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+            const { collection, query, where, getDocs, updateDoc, doc } = firestoreModule;
+            const messagesRef = collection(window.db, 'live_chats', this.currentChatId, 'messages');
+            const q = query(messagesRef, where('read', '==', false), where('sender', '==', 'admin'));
+            const snapshot = await getDocs(q);
+            
+            const updatePromises = [];
+            snapshot.forEach((msgDoc) => {
+                updatePromises.push(
+                    updateDoc(doc(window.db, 'live_chats', this.currentChatId, 'messages', msgDoc.id), {
+                        read: true
+                    })
+                );
+            });
+            
+            await Promise.all(updatePromises);
+            this.updateUnreadCount();
+        } catch (error) {
+            console.error('Error marking as read:', error);
+        }
+    }
+
+    async updateUnreadCount() {
+        if (!this.currentChatId || !window.db) return;
+
+        try {
+            const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+            const { collection, query, where, getDocs } = firestoreModule;
+            const messagesRef = collection(window.db, 'live_chats', this.currentChatId, 'messages');
+            const q = query(messagesRef, where('read', '==', false), where('sender', '==', 'admin'));
+            
+            const snapshot = await getDocs(q);
+            this.unreadCount = snapshot.size;
+            
+            // Save unread count to localStorage for persistence
+            if (this.currentChatId) {
+                localStorage.setItem(`beal_chat_unread_${this.currentChatId}`, this.unreadCount.toString());
+            }
+            
+            const badge = document.getElementById('chatBadge');
+            if (badge) {
+                if (this.unreadCount > 0) {
+                    badge.textContent = this.unreadCount > 99 ? '99+' : this.unreadCount;
+                    badge.classList.remove('hidden');
+                    // Add pulse animation for new messages
+                    badge.classList.add('animate-pulse');
+                    setTimeout(() => badge.classList.remove('animate-pulse'), 2000);
+                } else {
+                    badge.classList.add('hidden');
+                }
+            }
+        } catch (error) {
+            console.error('Error updating unread count:', error);
+        }
+    }
+
+    showNotification() {
+        // Show browser notification if permission granted
+        if ('Notification' in window && Notification.permission === 'granted') {
+            new Notification('New message from Beal Offshore', {
+                body: 'You have a new message in your chat',
+                icon: '/logo new.png'
+            });
+        }
+    }
+}
+
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        window.liveChatWidget = new LiveChatWidget();
+    });
+} else {
+    window.liveChatWidget = new LiveChatWidget();
+}
+

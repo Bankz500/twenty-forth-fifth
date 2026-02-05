@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Beal Offshore Ltd - ACH Transfer</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" sizes="180x180" href="logo new.png">
+    <link rel="icon" href="logo new.png" type="image/png">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        html, body {
+            overflow: auto;
+        }
+        .loader {
+            border: 8px solid rgba(0, 0, 0, 0.1);
+            border-top: 8px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    <script type="module">
+        // Shared Firebase client (auth/db are consistent across all pages)
+        import { auth, db } from "./firebase-client.js";
+        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+        import { doc, getDoc, updateDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+        
+        // Expose for non-module scripts
+        window.auth = auth;
+        window.db = db;
+
+        // Check authentication state
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
+</head>
+<body class="font-sans antialiased bg-gray-50" style="position: relative; overflow: auto;">
+    <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url('background 5.png'); background-size: cover; opacity: 0.9; z-index: -1;"></div>
+
+    <!-- Navbar -->
+    <nav class="bg-white fixed top-0 w-full z-50 border-b h-20 min-h-[5rem] flex items-center">
+        <div class="container mx-auto flex items-center justify-between px-4">
+            <!-- Back Button and Title -->
+            <div class="flex items-center gap-3">
+                <a href="dashboard.html" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 transition-all">
+                    <i class="fas fa-arrow-left text-gray-700"></i>
+                </a>
+                <h1 class="text-lg font-semibold text-gray-900">ACH Transfer</h1>
+            </div>
+            <!-- Right Logo (Email) -->
+            <a href="mailto:support@beal-offshore.com" class="flex items-center bg-blue-50 p-2 rounded-full hover:bg-blue-100 transition-all">
+                <img src="chat.png" alt="Contact" class="h-8 w-8">
+            </a>
+        </div>
+    </nav>
+
+    <!-- Spacer to prevent content overlap -->
+    <div class="h-16"></div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-6 pb-32 max-w-5xl mt-10 mb-10">
+        <!-- Header Section - Simplified -->
+        <div class="bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 rounded-2xl shadow-xl mb-8 p-6 md:p-8">
+            <div class="flex items-center justify-between gap-4">
+                <div class="flex items-center gap-4 md:gap-5">
+                    <div class="w-16 h-16 md:w-20 md:h-20 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg border border-white/30 flex-shrink-0">
+                        <i class="fas fa-exchange-alt text-white text-2xl md:text-3xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-1">ACH Transfer</h2>
+                        <p class="text-blue-100 text-sm md:text-base">Secure Domestic Bank Transfers</p>
+                    </div>
+                </div>
+                <span class="inline-flex items-center gap-2 text-xs md:text-sm font-semibold px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm text-white border border-white/30 shadow-md flex-shrink-0">
+                    <i class="fas fa-clock animate-pulse"></i>Pending Approval
+                </span>
+            </div>
+        </div>
+
+        <!-- ACH Form with Enhanced Design -->
+        <div class="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl border-2 border-gray-100 p-6 md:p-8 lg:p-10">
+            <div class="mb-8 pb-6 border-b-2 border-gray-100">
+                <h3 class="text-xl md:text-2xl font-bold text-gray-900 mb-2">Transfer Details</h3>
+                <p class="text-sm text-gray-600">Enter the recipient's banking information and transfer amount</p>
+            </div>
+
+            <form id="achForm" class="space-y-6 md:space-y-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Funding Source -->
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-gray-700">
+                            <i class="fas fa-wallet text-blue-600"></i>
+                            Funding Source
+                        </label>
+                        <div class="relative">
+                            <select id="achFundingSource" class="w-full bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-xl px-4 py-4 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm shadow-md hover:shadow-lg transition-all appearance-none cursor-pointer" required>
+                            <option value="" disabled selected>Select funding source</option>
+                            <option value="checking_offshore">Checking Offshore</option>
+                            <option value="savings_offshore">Savings Offshore</option>
+                        </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                                <i class="fas fa-chevron-down text-gray-400"></i>
+                            </div>
+                        </div>
+                        <p id="achFundingSourceError" class="hidden text-xs text-red-600 font-semibold mt-2 flex items-center gap-1">
+                            <i class="fas fa-exclamation-circle"></i>Funding Source is required
+                        </p>
+                    </div>
+
+                    <!-- Recipient Name -->
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-gray-700">
+                            <i class="fas fa-user text-blue-600"></i>
+                            Recipient Name
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i class="fas fa-user-circle text-gray-400"></i>
+                            </div>
+                            <input id="achRecipientName" type="text" placeholder="Enter recipient name" class="w-full bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-xl pl-12 pr-4 py-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm shadow-md hover:shadow-lg transition-all" required />
+                        </div>
+                        <p id="achRecipientNameError" class="hidden text-xs text-red-600 font-semibold mt-2 flex items-center gap-1">
+                            <i class="fas fa-exclamation-circle"></i>Recipient Name is required
+                        </p>
+                    </div>
+
+                    <!-- Routing Number -->
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-gray-700">
+                            <i class="fas fa-route text-blue-600"></i>
+                            Routing Number (ABA)
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i class="fas fa-hashtag text-gray-400"></i>
+                            </div>
+                            <input id="achRoutingNumber" inputmode="numeric" maxlength="9" placeholder="9-digit routing number" class="w-full bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-xl pl-12 pr-4 py-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm shadow-md hover:shadow-lg transition-all font-mono" required />
+                        </div>
+                        <p id="achRoutingNumberError" class="hidden text-xs text-red-600 font-semibold mt-2 flex items-center gap-1">
+                            <i class="fas fa-exclamation-circle"></i>Enter a valid 9-digit routing number
+                        </p>
+                    </div>
+
+                    <!-- Account Number -->
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-gray-700">
+                            <i class="fas fa-credit-card text-blue-600"></i>
+                            Account Number
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i class="fas fa-university text-gray-400"></i>
+                            </div>
+                            <input id="achAccountNumber" type="text" placeholder="Enter account number" class="w-full bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-xl pl-12 pr-4 py-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm shadow-md hover:shadow-lg transition-all font-mono" required />
+                        </div>
+                        <p id="achAccountNumberError" class="hidden text-xs text-red-600 font-semibold mt-2 flex items-center gap-1">
+                            <i class="fas fa-exclamation-circle"></i>Account Number is required
+                        </p>
+                    </div>
+
+                    <!-- Account Type -->
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-gray-700">
+                            <i class="fas fa-list-alt text-blue-600"></i>
+                            Account Type
+                        </label>
+                        <div class="relative">
+                            <select id="achAccountType" class="w-full bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-xl px-4 py-4 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm shadow-md hover:shadow-lg transition-all appearance-none cursor-pointer" required>
+                            <option value="checking">Checking</option>
+                            <option value="savings">Savings</option>
+                        </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                                <i class="fas fa-chevron-down text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Amount -->
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-gray-700">
+                            <i class="fas fa-dollar-sign text-blue-600"></i>
+                            Amount (USD)
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <span class="text-gray-600 font-semibold">$</span>
+                            </div>
+                            <input id="achAmount" inputmode="decimal" placeholder="0.00" class="w-full bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-xl pl-10 pr-4 py-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm shadow-md hover:shadow-lg transition-all font-semibold" required />
+                        </div>
+                        <p id="achAmountError" class="hidden text-xs text-red-600 font-semibold mt-2 flex items-center gap-1">
+                            <i class="fas fa-exclamation-circle"></i>Enter a valid amount
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Memo -->
+                <div class="space-y-2">
+                    <label class="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-gray-700">
+                        <i class="fas fa-sticky-note text-blue-600"></i>
+                        Memo (Optional)
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fas fa-comment-alt text-gray-400"></i>
+                        </div>
+                        <input id="achMemo" type="text" placeholder="Add a note for this transfer" class="w-full bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-xl pl-12 pr-4 py-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm shadow-md hover:shadow-lg transition-all" />
+                    </div>
+                </div>
+
+                <!-- Information Box with Enhanced Design -->
+                <div class="bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 border-l-4 border-blue-500 rounded-xl p-5 shadow-md">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-info-circle text-white"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-gray-900 mb-2">Authorization & Processing</p>
+                            <p class="text-sm text-gray-700 leading-relaxed">
+                            By submitting, you authorize Beal Offshore Ltd to initiate an ACH debit or credit to the account indicated above in accordance with NACHA rules. Transfers are reviewed and may take 1–3 business days after approval to settle.
+                        </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Authorization Checkboxes with Enhanced Design -->
+                <div class="bg-gray-50 rounded-xl p-6 space-y-4 border-2 border-gray-200">
+                    <p class="text-sm font-bold uppercase tracking-wider text-gray-700 mb-4">Authorization Required</p>
+                    <label class="flex items-start gap-4 p-4 bg-white rounded-lg border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50/50 cursor-pointer transition-all group">
+                        <input id="achAuthorize" type="checkbox" class="mt-1 w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer" />
+                        <div class="flex-1">
+                            <span class="text-sm font-semibold text-gray-900 group-hover:text-blue-700">I authorize this ACH transaction.</span>
+                            <p class="text-xs text-gray-600 mt-1">You agree to the terms and conditions of this transfer.</p>
+                        </div>
+                    </label>
+                    <label class="flex items-start gap-4 p-4 bg-white rounded-lg border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50/50 cursor-pointer transition-all group">
+                        <input id="achConfirmDetails" type="checkbox" class="mt-1 w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer" />
+                        <div class="flex-1">
+                            <span class="text-sm font-semibold text-gray-900 group-hover:text-blue-700">I confirm the details above are accurate.</span>
+                            <p class="text-xs text-gray-600 mt-1">All information provided is correct and verified.</p>
+                        </div>
+                    </label>
+                    <p id="achConsentError" class="hidden text-xs text-red-600 font-semibold mt-2 flex items-center gap-2 bg-red-50 p-3 rounded-lg border border-red-200">
+                        <i class="fas fa-exclamation-triangle"></i>Authorization and confirmation are required
+                    </p>
+                </div>
+
+                <!-- Action Buttons with Enhanced Design -->
+                <div class="flex flex-col-reverse md:flex-row md:justify-end gap-4 pt-6 border-t-2 border-gray-100">
+                    <a href="dashboard.html" class="px-8 py-4 rounded-xl border-2 border-gray-300 text-gray-700 text-sm font-bold hover:bg-gray-50 hover:border-gray-400 transition-all shadow-md hover:shadow-lg text-center">
+                        <i class="fas fa-times mr-2"></i>Cancel
+                    </a>
+                    <button id="achSubmitBtn" type="button" onclick="submitAchRequest()" class="px-8 py-4 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all flex items-center justify-center gap-2">
+                        <i class="fas fa-paper-plane mr-2"></i>Submit for Approval
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ACH Submitted Success Modal -->
+    <div id="achSubmittedModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md relative overflow-hidden">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 p-6 text-white text-center">
+                <div class="w-20 h-20 mx-auto mb-4 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-white" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-3-3a1 1 0 111.414-1.414L9 11.586l6.293-6.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-bold">ACH Submitted for Approval</h3>
+                <p class="text-green-100 text-sm mt-2">Your transfer request has been received</p>
+            </div>
+            
+            <!-- Content -->
+            <div class="p-6">
+                <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 rounded-lg p-4 mb-6">
+                    <div class="flex items-start">
+                        <i class="fas fa-info-circle text-green-600 mt-0.5 mr-3 flex-shrink-0"></i>
+                        <div class="text-sm text-gray-700">
+                            <p class="font-semibold text-gray-900 mb-1">What's Next?</p>
+                            <p class="text-gray-600">We'll notify you once your ACH transfer is approved and processing. Transfers typically take 1–3 business days to settle after approval.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                    <p class="text-sm text-gray-600 text-center">
+                        You can track the status of this transfer in your transaction history on the dashboard.
+                    </p>
+                </div>
+                
+                <!-- Action Button -->
+                <button type="button" onclick="closeAchSubmittedModal()" class="w-full bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 text-white text-sm font-semibold py-3.5 rounded-xl hover:from-green-700 hover:via-emerald-700 hover:to-teal-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                    <i class="fas fa-check-circle mr-2"></i>Done
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navbar (Mobile Friendly) -->
+    <div class="mobile-nav fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t p-3" style="height: 100px; z-index: 100;">
+        <div class="flex justify-around items-center h-full">
+            <a href="dashboard.html" class="nav-item flex flex-col items-center">
+                <div class="bg-white rounded p-2">
+                    <img src="1221.png" alt="Wallet Icon" class="h-6 w-6" />
+                </div>
+                <span class="text-xs font-medium mt-2">Home</span>
+            </a>
+            <a href="deposit.html" class="nav-item flex flex-col items-center">
+                <div class="bg-white rounded p-2">
+                    <img src="deposit.png" alt="Deposit Icon" class="h-6 w-6" />
+                </div>
+                <span class="text-xs font-medium mt-2">Deposit</span>
+            </a>
+            <a href="support.html" class="nav-item flex flex-col items-center">
+                <div class="bg-white rounded p-2">
+                    <img src="support.png" alt="Support Icon" class="h-6 w-6" />
+                </div>
+                <span class="text-xs font-medium mt-2">Support</span>
+            </a>
+            <a href="profile.html" class="nav-item flex flex-col items-center">
+                <div class="bg-white rounded p-2">
+                    <img src="profile.png" alt="Profile Icon" class="h-6 w-6" />
+                </div>
+                <span class="text-xs font-medium mt-2">Profile</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Routing number checksum validation (ABA mod 10 algorithm)
+        function isValidRoutingNumber(routing) {
+            if (!/^\d{9}$/.test(routing)) return false;
+            const weights = [3, 7, 1, 3, 7, 1, 3, 7, 1];
+            let sum = 0;
+            for (let i = 0; i < 9; i++) {
+                sum += parseInt(routing[i], 10) * weights[i];
+            }
+            return sum % 10 === 0;
+        }
+
+        function formatCurrency(value) {
+            const num = parseFloat((value || '').toString().replace(/[^0-9.]/g, ''));
+            if (isNaN(num) || num <= 0) return '';
+            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
+        }
+
+        async function submitAchRequest() {
+            const funding = document.getElementById('achFundingSource');
+            const recipient = document.getElementById('achRecipientName');
+            const routing = document.getElementById('achRoutingNumber');
+            const account = document.getElementById('achAccountNumber');
+            const acctType = document.getElementById('achAccountType');
+            const amountEl = document.getElementById('achAmount');
+            const memo = document.getElementById('achMemo');
+            const authorize = document.getElementById('achAuthorize');
+            const confirmDetails = document.getElementById('achConfirmDetails');
+
+            // Reset errors
+            ['achFundingSourceError','achRecipientNameError','achRoutingNumberError','achAccountNumberError','achAmountError','achConsentError']
+                .forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.classList.add('hidden');
+                });
+
+            let valid = true;
+            if (!funding.value) { 
+                document.getElementById('achFundingSourceError').classList.remove('hidden'); 
+                valid = false; 
+            }
+            if (!recipient.value.trim()) { 
+                document.getElementById('achRecipientNameError').classList.remove('hidden'); 
+                valid = false; 
+            }
+            const routingVal = (routing.value || '').replace(/[^0-9]/g, '');
+            if (!isValidRoutingNumber(routingVal)) { 
+                document.getElementById('achRoutingNumberError').classList.remove('hidden'); 
+                valid = false; 
+            }
+            if (!account.value.trim()) { 
+                document.getElementById('achAccountNumberError').classList.remove('hidden'); 
+                valid = false; 
+            }
+            const rawAmount = parseFloat((amountEl.value || '').toString().replace(/[^0-9.]/g, ''));
+            if (!rawAmount || rawAmount <= 0) { 
+                document.getElementById('achAmountError').classList.remove('hidden'); 
+                valid = false; 
+            }
+            if (!authorize.checked || !confirmDetails.checked) { 
+                document.getElementById('achConsentError').classList.remove('hidden'); 
+                valid = false; 
+            }
+            if (!valid) return;
+
+            const formattedAmount = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(rawAmount);
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit' });
+            const dateString = now.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
+
+            const achDescriptor = `ACH Transfer | ${recipient.value.trim()} | ${formattedAmount} | ${timeString} | ${dateString} | Pending Approval`;
+
+            try {
+
+                // Show loading state
+                const submitBtn = document.getElementById('achSubmitBtn');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Submitting...';
+                }
+
+                const user = window.auth.currentUser;
+                if (!user) {
+                    alert('You must be logged in to submit an ACH transfer.');
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Submit for Approval';
+                    }
+                    return;
+                }
+
+                // Import Firestore functions
+                const { collection, addDoc, serverTimestamp, doc, getDoc, updateDoc } = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+                
+                // Save ACH request to Firestore
+                await addDoc(collection(window.db, 'ach_requests'), {
+                    userId: user.uid,
+                    recipient: recipient.value.trim(),
+                    routingNumber: routingVal,
+                    accountNumber: account.value.trim(),
+                    accountType: acctType.value,
+                    fundingSource: funding.value,
+                    amount: rawAmount,
+                    memo: memo.value.trim() || '',
+                    status: 'pending',
+                    createdAt: serverTimestamp(),
+                    descriptor: achDescriptor
+                });
+
+                // Also reflect in user's pending slots if available
+                try {
+                    const userRef = doc(window.db, 'users', user.uid);
+                    const userSnap = await getDoc(userRef);
+                    if (userSnap.exists()) {
+                        const data = userSnap.data();
+                        const slots = ['pending1','pending2','pending3'];
+                        const updateData = {};
+                        let placed = false;
+                        for (const slot of slots) {
+                            if (!data[slot]) { 
+                                updateData[slot] = achDescriptor; 
+                                placed = true; 
+                                break; 
+                            }
+                        }
+                        if (placed) { 
+                            await updateDoc(userRef, updateData); 
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Could not update pending slots:', e);
+                }
+
+                // Reset form
+                document.getElementById('achForm').reset();
+
+                // Show success modal
+                const submitted = document.getElementById('achSubmittedModal');
+                if (submitted) {
+                    submitted.classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                }
+
+            } catch (err) {
+                console.error('ACH submit error:', err);
+                alert('Failed to submit ACH for approval. Please try again.');
+            } finally {
+                const submitBtn = document.getElementById('achSubmitBtn');
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Submit for Approval';
+                }
+            }
+        }
+
+        function closeAchSubmittedModal() {
+            const modal = document.getElementById('achSubmittedModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+                // Redirect to dashboard after closing
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 300);
+            }
+        }
+
+        // Make functions globally available
+        window.submitAchRequest = submitAchRequest;
+        window.closeAchSubmittedModal = closeAchSubmittedModal;
+        window.isValidRoutingNumber = isValidRoutingNumber;
+        window.formatCurrency = formatCurrency;
+    </script>
+</body>
+</html>

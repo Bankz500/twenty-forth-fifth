@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Admin Login - Beal Offshore Ltd</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" sizes="180x180" href="logo new.png">
+    <link rel="icon" href="logo new.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .login-card {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        
+        .btn-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(102, 126, 234, 0.5);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="w-full max-w-md">
+        <div class="login-card rounded-2xl p-8">
+            <!-- Logo -->
+            <div class="text-center mb-8">
+                <img src="Logo.png" alt="Beal Offshore Ltd" class="h-16 mx-auto mb-4">
+                <h1 class="text-2xl font-bold text-gray-900">Admin Portal</h1>
+                <p class="text-sm text-gray-600 mt-2" id="subtitleText">Sign in to manage testimonials</p>
+            </div>
+
+            <!-- Toggle between Login and Sign Up -->
+            <div class="flex gap-2 mb-6 bg-gray-100 p-1 rounded-lg">
+                <button 
+                    type="button" 
+                    id="loginTab" 
+                    class="flex-1 py-2 px-4 rounded-md font-semibold text-sm transition-all bg-white text-purple-600 shadow-sm"
+                    onclick="switchToLogin()"
+                >
+                    <i class="fas fa-sign-in-alt mr-2"></i>Sign In
+                </button>
+                <button 
+                    type="button" 
+                    id="signupTab" 
+                    class="flex-1 py-2 px-4 rounded-md font-semibold text-sm transition-all text-gray-600 hover:text-gray-900"
+                    onclick="switchToSignup()"
+                >
+                    <i class="fas fa-user-plus mr-2"></i>Sign Up
+                </button>
+            </div>
+
+            <!-- Success Message -->
+            <div id="successMessage" class="hidden bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg mb-4">
+                <i class="fas fa-check-circle mr-2"></i>
+                <span id="successText"></span>
+            </div>
+
+            <!-- Error Message -->
+            <div id="errorMessage" class="hidden bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg mb-4">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                <span id="errorText"></span>
+            </div>
+
+            <!-- Login Form -->
+            <form id="adminLoginForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-envelope mr-2 text-gray-500"></i>Email Address
+                    </label>
+                    <input 
+                        type="email" 
+                        id="adminEmail" 
+                        required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        placeholder="admin@example.com"
+                    >
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-lock mr-2 text-gray-500"></i>Password
+                    </label>
+                    <div class="relative">
+                        <input 
+                            type="password" 
+                            id="adminPassword" 
+                            required
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent pr-12"
+                            placeholder="Enter your password"
+                        >
+                        <button 
+                            type="button"
+                            onclick="togglePasswordVisibility()"
+                            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                        >
+                            <i id="passwordEyeIcon" class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button 
+                    type="submit" 
+                    id="loginBtn"
+                    class="w-full btn-gradient text-white font-semibold py-3 px-4 rounded-lg transition-all"
+                >
+                    <i class="fas fa-sign-in-alt mr-2"></i>Sign In to Admin Dashboard
+                </button>
+            </form>
+
+            <!-- Sign Up Form -->
+            <form id="adminSignupForm" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-envelope mr-2 text-gray-500"></i>Email Address
+                    </label>
+                    <input 
+                        type="email" 
+                        id="signupEmail" 
+                        required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        placeholder="admin@example.com"
+                    >
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-lock mr-2 text-gray-500"></i>Password
+                    </label>
+                    <div class="relative">
+                        <input 
+                            type="password" 
+                            id="signupPassword" 
+                            required
+                            minlength="6"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent pr-12"
+                            placeholder="Minimum 6 characters"
+                        >
+                        <button 
+                            type="button"
+                            onclick="toggleSignupPasswordVisibility()"
+                            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                        >
+                            <i id="signupPasswordEyeIcon" class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">Password must be at least 6 characters</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-lock mr-2 text-gray-500"></i>Confirm Password
+                    </label>
+                    <div class="relative">
+                        <input 
+                            type="password" 
+                            id="signupConfirmPassword" 
+                            required
+                            minlength="6"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent pr-12"
+                            placeholder="Confirm your password"
+                        >
+                        <button 
+                            type="button"
+                            onclick="toggleSignupConfirmPasswordVisibility()"
+                            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                        >
+                            <i id="signupConfirmPasswordEyeIcon" class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button 
+                    type="submit" 
+                    id="signupBtn"
+                    class="w-full btn-gradient text-white font-semibold py-3 px-4 rounded-lg transition-all"
+                >
+                    <i class="fas fa-user-plus mr-2"></i>Create Admin Account
+                </button>
+            </form>
+
+            <div class="mt-6 text-center">
+                <a href="login.html" class="text-sm text-gray-600 hover:text-purple-600">
+                    <i class="fas fa-arrow-left mr-1"></i>Back to User Login
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyABYV12B7RM2ZCD2G1lFTLpgJwflJFwEXY",
+            authDomain: "beal-offshore.firebaseapp.com",
+            projectId: "beal-offshore",
+            storageBucket: "beal-offshore.firebasestorage.app",
+            messagingSenderId: "1091834410162",
+            appId: "1:1091834410162:web:56285433b5751e681745ab",
+            measurementId: "G-CT463F3T6J"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Switch between login and signup forms
+        window.switchToLogin = function() {
+            document.getElementById('loginTab').classList.add('bg-white', 'text-purple-600', 'shadow-sm');
+            document.getElementById('loginTab').classList.remove('text-gray-600', 'hover:text-gray-900');
+            document.getElementById('signupTab').classList.remove('bg-white', 'text-purple-600', 'shadow-sm');
+            document.getElementById('signupTab').classList.add('text-gray-600', 'hover:text-gray-900');
+            
+            document.getElementById('adminLoginForm').classList.remove('hidden');
+            document.getElementById('adminSignupForm').classList.add('hidden');
+            document.getElementById('subtitleText').textContent = 'Sign in to manage testimonials';
+            document.getElementById('errorMessage').classList.add('hidden');
+            document.getElementById('successMessage').classList.add('hidden');
+        };
+
+        window.switchToSignup = function() {
+            document.getElementById('signupTab').classList.add('bg-white', 'text-purple-600', 'shadow-sm');
+            document.getElementById('signupTab').classList.remove('text-gray-600', 'hover:text-gray-900');
+            document.getElementById('loginTab').classList.remove('bg-white', 'text-purple-600', 'shadow-sm');
+            document.getElementById('loginTab').classList.add('text-gray-600', 'hover:text-gray-900');
+            
+            document.getElementById('adminSignupForm').classList.remove('hidden');
+            document.getElementById('adminLoginForm').classList.add('hidden');
+            document.getElementById('subtitleText').textContent = 'Create a new admin account';
+            document.getElementById('errorMessage').classList.add('hidden');
+            document.getElementById('successMessage').classList.add('hidden');
+        };
+
+        // Toggle password visibility for login
+        window.togglePasswordVisibility = function() {
+            const passwordInput = document.getElementById('adminPassword');
+            const passwordEyeIcon = document.getElementById('passwordEyeIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordEyeIcon.classList.remove('fa-eye');
+                passwordEyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                passwordEyeIcon.classList.remove('fa-eye-slash');
+                passwordEyeIcon.classList.add('fa-eye');
+            }
+        };
+
+        // Toggle password visibility for signup password
+        window.toggleSignupPasswordVisibility = function() {
+            const passwordInput = document.getElementById('signupPassword');
+            const passwordEyeIcon = document.getElementById('signupPasswordEyeIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordEyeIcon.classList.remove('fa-eye');
+                passwordEyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                passwordEyeIcon.classList.remove('fa-eye-slash');
+                passwordEyeIcon.classList.add('fa-eye');
+            }
+        };
+
+        // Toggle password visibility for signup confirm password
+        window.toggleSignupConfirmPasswordVisibility = function() {
+            const passwordInput = document.getElementById('signupConfirmPassword');
+            const passwordEyeIcon = document.getElementById('signupConfirmPasswordEyeIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordEyeIcon.classList.remove('fa-eye');
+                passwordEyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                passwordEyeIcon.classList.remove('fa-eye-slash');
+                passwordEyeIcon.classList.add('fa-eye');
+            }
+        };
+
+        // Handle login form submission
+        document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('adminEmail').value.trim();
+            const password = document.getElementById('adminPassword').value;
+            const loginBtn = document.getElementById('loginBtn');
+            const errorMessage = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+
+            // Hide error message
+            errorMessage.classList.add('hidden');
+
+            try {
+                loginBtn.disabled = true;
+                loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Signing in...';
+
+                // Sign in with Firebase
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                
+                // Success - redirect to admin dashboard
+                window.location.href = 'admin.html';
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                let errorMessageText = 'An error occurred during login.';
+                
+                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                    errorMessageText = 'Invalid email or password.';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessageText = 'Invalid email address.';
+                } else if (error.code === 'auth/too-many-requests') {
+                    errorMessageText = 'Too many failed attempts. Please try again later.';
+                } else if (error.code === 'auth/network-request-failed') {
+                    errorMessageText = 'Network error. Please check your connection.';
+                }
+                
+                errorText.textContent = errorMessageText;
+                errorMessage.classList.remove('hidden');
+                
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Sign In to Admin Dashboard';
+            }
+        });
+
+        // Handle signup form submission
+        document.getElementById('adminSignupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('signupEmail').value.trim();
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+            const signupBtn = document.getElementById('signupBtn');
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+            const errorText = document.getElementById('errorText');
+            const successText = document.getElementById('successText');
+
+            // Hide messages
+            errorMessage.classList.add('hidden');
+            successMessage.classList.add('hidden');
+
+            // Validate passwords match
+            if (password !== confirmPassword) {
+                errorText.textContent = 'Passwords do not match.';
+                errorMessage.classList.remove('hidden');
+                return;
+            }
+
+            // Validate password length
+            if (password.length < 6) {
+                errorText.textContent = 'Password must be at least 6 characters long.';
+                errorMessage.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                signupBtn.disabled = true;
+                signupBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Creating account...';
+
+                // Create user with Firebase
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                
+                // Success - show success message and redirect
+                successText.textContent = 'Admin account created successfully! Redirecting...';
+                successMessage.classList.remove('hidden');
+                
+                // Redirect to admin dashboard after 1.5 seconds
+                setTimeout(() => {
+                    window.location.href = 'admin.html';
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Signup error:', error);
+                let errorMessageText = 'An error occurred during signup.';
+                
+                if (error.code === 'auth/email-already-in-use') {
+                    errorMessageText = 'This email is already registered. Please sign in instead.';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessageText = 'Invalid email address.';
+                } else if (error.code === 'auth/weak-password') {
+                    errorMessageText = 'Password is too weak. Please use a stronger password.';
+                } else if (error.code === 'auth/network-request-failed') {
+                    errorMessageText = 'Network error. Please check your connection.';
+                }
+                
+                errorText.textContent = errorMessageText;
+                errorMessage.classList.remove('hidden');
+                
+            } finally {
+                signupBtn.disabled = false;
+                signupBtn.innerHTML = '<i class="fas fa-user-plus mr-2"></i>Create Admin Account';
+            }
+        });
+    </script>
+</body>
+</html>
+

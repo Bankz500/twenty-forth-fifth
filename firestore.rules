@@ -1,0 +1,95 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users collection - users can read/write their own data
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // ACH requests collection - authenticated users can create and read their own requests
+    match /ach_requests/{requestId} {
+      allow create: if request.auth != null && 
+                      request.resource.data.userId == request.auth.uid;
+      allow read: if request.auth != null && 
+                    resource.data.userId == request.auth.uid;
+      allow update, delete: if request.auth != null && 
+                              resource.data.userId == request.auth.uid;
+    }
+    
+    // Allow authenticated users to read their own pending transactions
+    match /pending_transactions/{transactionId} {
+      allow read, write: if request.auth != null && 
+                           resource.data.userId == request.auth.uid;
+    }
+    
+    // Testimonials collection
+    // - Public can read published testimonials (for queries and individual reads)
+    // - Authenticated users can read all testimonials
+    // - Authenticated users can create, update, and delete
+    match /testimonials/{docId} {
+      // Allow public read for published testimonials OR authenticated users can read all
+      allow read: if resource.data.published == true || request.auth != null;
+      // Allow authenticated users to write
+      allow create, update, delete: if request.auth != null;
+    }
+    
+    // Live Chat collection
+    // - Anyone can create chats (anonymous users allowed)
+    // - Users can read their own chats (by userId match)
+    // - Admins can read all chats
+    match /live_chats/{chatId} {
+      function isAdmin() {
+        return request.auth != null
+          && request.auth.token.email != null
+          // TODO: replace/add your real admin emails here
+          && request.auth.token.email in ['bealoffshore@gmail.com', 'admin123@gmail.com'];
+      }
+
+      // Allow anyone to create chats (anonymous users included)
+      allow create: if true;
+      
+      // Allow read if:
+      // - User is authenticated and it's their chat (userId matches)
+      // - OR user is admin (email allowlist)
+      // - OR it's an anonymous chat (userId starts with 'anon_')
+      allow read: if isAdmin()
+                  || (request.auth != null && resource.data.userId == request.auth.uid)
+                  || (resource.data.userId != null && resource.data.userId.matches('anon_.*'));
+      
+      // Allow update/delete:
+      // - Admin can update/delete any chat
+      // - Owner can update their own chat (signed-in)
+      // - Anonymous chats can be updated (needed for lastMessageAt), but NOT deleted unless admin
+      allow update: if isAdmin()
+                    || (request.auth != null && resource.data.userId == request.auth.uid)
+                    || (resource.data.userId != null && resource.data.userId.matches('anon_.*'));
+
+      allow delete: if isAdmin();
+      
+      // Messages subcollection
+      match /messages/{messageId} {
+        function parentIsAnonymous() {
+          return get(/databases/$(database)/documents/live_chats/$(chatId)).data.userId.matches('anon_.*');
+        }
+        function parentOwner() {
+          return request.auth != null
+            && get(/databases/$(database)/documents/live_chats/$(chatId)).data.userId == request.auth.uid;
+        }
+
+        // Allow anyone to create messages (anonymous users included)
+        allow create: if true;
+
+        // Allow read if admin, owner, or anonymous chat
+        allow read: if isAdmin() || parentOwner() || parentIsAnonymous();
+
+        // Allow update/delete only for admin (admin marks read / moderation)
+        allow update, delete: if isAdmin();
+      }
+    }
+    
+    // Default deny all other access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

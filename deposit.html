@@ -2,14 +2,36 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Beal Offshore Ltd Deposit</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" sizes="180x180" href="logo new.png">
     <link rel="icon" href="logo new.png" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script type="module" src="banking-details-generator.js"></script>
+    <script type="module">
+        // Shared Firebase client (auth/db are consistent across all pages)
+        import { auth, db } from "./firebase-client.js";
+        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+        
+        // Expose for non-module scripts (including banking-details-generator.js)
+        window.auth = auth;
+        window.db = db;
+
+        // Check authentication state - use signed-in user from dashboard.html
+        // Don't redirect, just use the current user if available
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                console.log('✅ User authenticated:', user.uid);
+                // User is authenticated, banking details generator can now access window.auth
+            } else {
+                console.log('No user authenticated, but continuing to allow viewing');
+            }
+        });
+    </script>
     <style>
         body {
             background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
@@ -54,11 +76,6 @@
             backdrop-filter: blur(10px);
             border-radius: 1rem;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-        .glass-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
         }
         .bottom-nav-item {
             transition: all 0.2s ease;
@@ -84,11 +101,6 @@
             border-left: 4px solid #3b82f6;
             padding-left: 1rem;
             margin-bottom: 1rem;
-            transition: all 0.3s ease;
-        }
-        .field-container:hover {
-            border-left-color: #1e40af;
-            background-color: rgba(59, 130, 246, 0.05);
         }
     </style>
 </head>
@@ -131,8 +143,8 @@
             <h2 class="text-lg font-bold text-gray-800">Banking Details</h2>
             <div class="flex items-center space-x-3">
               <div class="bg-blue-500 text-white text-xs px-3 py-1 rounded-full">Personal Account</div>
-              <button id="refresh-banking-details" class="bg-green-100 p-2 rounded-full hover:bg-green-200 transition-all" title="Generate New Banking Details">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <button id="refresh-banking-details" class="bg-green-500 hover:bg-green-600 p-2.5 rounded-full transition-all shadow-md hover:shadow-lg text-white animate-pulse" title="Generate Banking Details - Click to create and save your banking details">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
               </button>
@@ -230,6 +242,223 @@
   
           <div class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-400">
             <p class="text-xs text-gray-700">Funds typically appear in your account within 1–3 business days, depending on your bank's processing time.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Crypto Deposit Section -->
+    <div class="mt-8">
+      <div class="glass-card p-6 md:p-8 rounded-lg border-2 border-gray-200 bg-white/90 backdrop-blur shadow-xl">
+        <!-- Header Section -->
+        <div class="flex items-center justify-between mb-8 pb-6 border-b-2 border-gray-200">
+          <div class="flex items-center gap-4">
+            <div class="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
+              <i class="fab fa-bitcoin text-white text-2xl"></i>
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Cryptocurrency Deposit</h2>
+              <p class="text-sm text-gray-600 mt-1">Secure digital asset deposits</p>
+            </div>
+          </div>
+          <div class="bg-gradient-to-r from-amber-500 to-orange-600 text-white text-xs font-bold px-4 py-2 rounded-full shadow-md uppercase tracking-wider">
+            Digital Assets
+          </div>
+        </div>
+
+        <!-- Deposit Method Selector -->
+        <div class="mb-6 md:mb-8">
+          <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-3 md:mb-4">Select Deposit Method</label>
+          <div class="grid grid-cols-2 gap-3 md:gap-4">
+            <button id="bank-deposit-btn" onclick="selectDepositMethod('bank')" class="group relative px-3 md:px-6 py-3 md:py-4 rounded-xl border-2 border-blue-500 bg-gradient-to-br from-blue-50 to-blue-100 text-blue-700 font-semibold text-xs md:text-sm transition-all duration-300 shadow-md hover:shadow-xl hover:scale-105">
+              <div class="flex flex-col sm:flex-row items-center justify-center gap-2 md:gap-3">
+                <div class="w-8 h-8 md:w-10 md:h-10 bg-blue-500 rounded-lg flex items-center justify-center group-hover:bg-blue-600 transition-colors flex-shrink-0">
+                  <i class="fas fa-university text-white text-sm md:text-lg"></i>
+                </div>
+                <span class="text-center sm:text-left">Bank Transfer</span>
+              </div>
+              <div class="absolute top-2 right-2 w-2 h-2 md:w-3 md:h-3 bg-blue-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            </button>
+            <button id="crypto-deposit-btn" onclick="selectDepositMethod('crypto')" class="group relative px-3 md:px-6 py-3 md:py-4 rounded-xl border-2 border-gray-200 bg-white text-gray-700 font-semibold text-xs md:text-sm hover:border-amber-500 hover:bg-gradient-to-br hover:from-amber-50 hover:to-orange-50 transition-all duration-300 shadow-md hover:shadow-xl hover:scale-105">
+              <div class="flex flex-col sm:flex-row items-center justify-center gap-2 md:gap-3">
+                <div class="w-8 h-8 md:w-10 md:h-10 bg-gray-200 rounded-lg flex items-center justify-center group-hover:bg-amber-500 transition-colors flex-shrink-0">
+                  <i class="fab fa-bitcoin text-gray-600 group-hover:text-white text-sm md:text-lg transition-colors"></i>
+                </div>
+                <span class="text-center sm:text-left">Cryptocurrency</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Bank Deposit Section (Default) -->
+        <div id="bank-deposit-section" class="space-y-4">
+          <div class="bg-gradient-to-r from-blue-50 to-blue-100 border-l-4 border-blue-500 rounded-lg p-5 shadow-sm">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-info-circle text-white"></i>
+              </div>
+              <div>
+                <p class="text-sm font-semibold text-blue-900 mb-1">Bank Transfer Instructions</p>
+                <p class="text-sm text-blue-800">Use the banking details displayed above to make your deposit via traditional bank transfer.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Crypto Deposit Section (Hidden by default) -->
+        <div id="crypto-deposit-section" class="hidden">
+          <!-- Crypto Type Selector -->
+          <div class="mb-6 md:mb-8">
+            <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-3 md:mb-4">Select Cryptocurrency</label>
+            <div class="grid grid-cols-2 gap-3 md:gap-4">
+              <button id="btc-btn" onclick="selectCryptoType('btc')" class="group relative px-3 md:px-6 py-4 md:py-5 rounded-xl border-2 border-amber-500 bg-gradient-to-br from-amber-50 to-orange-50 text-amber-700 font-bold text-xs md:text-sm transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-105">
+                <div class="flex flex-col items-center gap-2 md:gap-3">
+                  <div class="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-all">
+                    <i class="fab fa-bitcoin text-white text-2xl md:text-3xl"></i>
+                  </div>
+                  <div class="text-center">
+                    <div class="font-bold text-sm md:text-base">Bitcoin</div>
+                    <div class="text-[10px] md:text-xs text-amber-600 font-semibold">BTC</div>
+                  </div>
+                </div>
+                <div class="absolute top-2 right-2 md:top-3 md:right-3 w-3 h-3 md:w-4 md:h-4 bg-amber-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              </button>
+              <button id="usdt-btn" onclick="selectCryptoType('usdt')" class="group relative px-3 md:px-6 py-4 md:py-5 rounded-xl border-2 border-gray-200 bg-white text-gray-700 font-bold text-xs md:text-sm hover:border-teal-500 hover:bg-gradient-to-br hover:from-teal-50 hover:to-cyan-50 transition-all duration-300 shadow-md hover:shadow-2xl hover:scale-105">
+                <div class="flex flex-col items-center gap-2 md:gap-3">
+                  <div class="w-12 h-12 md:w-16 md:h-16 bg-gray-200 rounded-xl flex items-center justify-center shadow-md group-hover:bg-gradient-to-br group-hover:from-teal-500 group-hover:to-cyan-600 transition-all">
+                    <i class="fas fa-coins text-gray-600 group-hover:text-white text-2xl md:text-3xl transition-colors"></i>
+                  </div>
+                  <div class="text-center">
+                    <div class="font-bold text-sm md:text-base">Tether</div>
+                    <div class="text-[10px] md:text-xs text-gray-600 group-hover:text-teal-600 font-semibold">USDT</div>
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- BTC Wallet Section -->
+          <div id="btc-wallet-section" class="hidden">
+            <div class="bg-gradient-to-br from-white via-amber-50/30 to-orange-50/30 border-2 border-amber-200 rounded-2xl p-4 md:p-8 shadow-xl">
+              <!-- Wallet Header -->
+              <div class="flex items-center mb-6 md:mb-8 pb-4 md:pb-6 border-b-2 border-amber-200">
+                <div class="flex items-center gap-3 md:gap-5">
+                  <div class="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
+                    <i class="fab fa-bitcoin text-white text-2xl md:text-3xl"></i>
+                  </div>
+                  <div class="min-w-0">
+                    <h3 class="text-lg md:text-xl font-bold text-gray-900 mb-1">Bitcoin (BTC) Deposit Wallet</h3>
+                    <p class="text-xs md:text-sm text-gray-600 font-medium">Legacy Address Format</p>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Wallet Address Card -->
+              <div class="bg-white rounded-xl p-4 md:p-6 border-2 border-amber-200 shadow-lg mb-4 md:mb-6">
+                <div class="flex items-center gap-2 mb-3 md:mb-4">
+                  <div class="w-7 h-7 md:w-8 md:h-8 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-wallet text-amber-600 text-xs md:text-sm"></i>
+                  </div>
+                  <label class="text-[10px] md:text-xs font-bold uppercase tracking-wider text-gray-700">BTC Wallet Address</label>
+                </div>
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-gray-50 rounded-lg p-3 md:p-4 border border-gray-200">
+                  <div class="flex-1 min-w-0">
+                    <div id="btc-wallet-loading" class="flex items-center gap-2">
+                      <div class="loader h-4 w-4 md:h-5 md:w-5"></div>
+                      <span class="text-xs md:text-sm text-gray-600">Generating wallet address...</span>
+                    </div>
+                    <p id="btc-wallet-address" class="text-xs md:text-sm font-mono text-gray-900 break-all hidden bg-white p-2 md:p-3 rounded border border-gray-200"></p>
+                  </div>
+                  <button onclick="copyToClipboard('btc-wallet-address')" class="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white p-2.5 md:p-3 rounded-lg copy-btn flex-shrink-0 shadow-md hover:shadow-lg transition-all transform hover:scale-110 w-full sm:w-auto justify-center sm:justify-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                    </svg>
+                  </button>
+                </div>
+                <p class="text-[10px] md:text-xs text-gray-500 mt-3 flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                  <i class="fas fa-shield-alt text-amber-600 flex-shrink-0"></i>
+                  <span>Send only Bitcoin (BTC) to this address. Sending other cryptocurrencies may result in permanent loss.</span>
+                </p>
+              </div>
+              
+              <!-- Important Notice -->
+              <div class="bg-gradient-to-r from-yellow-50 to-amber-50 border-l-4 border-amber-500 rounded-lg p-4 md:p-5 shadow-sm">
+                <div class="flex items-start gap-2 md:gap-3">
+                  <div class="w-8 h-8 md:w-10 md:h-10 bg-amber-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-exclamation-triangle text-white text-sm md:text-base"></i>
+                  </div>
+                  <div class="min-w-0">
+                    <p class="text-xs md:text-sm font-bold text-amber-900 mb-1 md:mb-2">Important Security Notice</p>
+                    <p class="text-[10px] md:text-xs text-amber-800 leading-relaxed">
+                      This wallet address is generated specifically for your deposit transaction and may change on every deposit. 
+                      Always verify the address before sending funds. Double-check the complete address to ensure accuracy and prevent loss of funds.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- USDT Wallet Section -->
+          <div id="usdt-wallet-section" class="hidden">
+            <div class="bg-gradient-to-br from-white via-teal-50/30 to-cyan-50/30 border-2 border-teal-200 rounded-2xl p-4 md:p-8 shadow-xl">
+              <!-- Wallet Header -->
+              <div class="flex items-center mb-6 md:mb-8 pb-4 md:pb-6 border-b-2 border-teal-200">
+                <div class="flex items-center gap-3 md:gap-5">
+                  <div class="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
+                    <i class="fas fa-coins text-white text-2xl md:text-3xl"></i>
+                  </div>
+                  <div class="min-w-0">
+                    <h3 class="text-lg md:text-xl font-bold text-gray-900 mb-1">Tether (USDT) Deposit Wallet</h3>
+                    <p class="text-xs md:text-sm text-gray-600 font-medium">ERC-20 Token Standard</p>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Wallet Address Card -->
+              <div class="bg-white rounded-xl p-4 md:p-6 border-2 border-teal-200 shadow-lg mb-4 md:mb-6">
+                <div class="flex items-center gap-2 mb-3 md:mb-4">
+                  <div class="w-7 h-7 md:w-8 md:h-8 bg-teal-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-wallet text-teal-600 text-xs md:text-sm"></i>
+                  </div>
+                  <label class="text-[10px] md:text-xs font-bold uppercase tracking-wider text-gray-700">USDT Wallet Address</label>
+                </div>
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-gray-50 rounded-lg p-3 md:p-4 border border-gray-200">
+                  <div class="flex-1 min-w-0">
+                    <div id="usdt-wallet-loading" class="flex items-center gap-2">
+                      <div class="loader h-4 w-4 md:h-5 md:w-5"></div>
+                      <span class="text-xs md:text-sm text-gray-600">Generating wallet address...</span>
+                    </div>
+                    <p id="usdt-wallet-address" class="text-xs md:text-sm font-mono text-gray-900 break-all hidden bg-white p-2 md:p-3 rounded border border-gray-200"></p>
+                  </div>
+                  <button onclick="copyToClipboard('usdt-wallet-address')" class="bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white p-2.5 md:p-3 rounded-lg copy-btn flex-shrink-0 shadow-md hover:shadow-lg transition-all transform hover:scale-110 w-full sm:w-auto justify-center sm:justify-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                    </svg>
+                  </button>
+                </div>
+                <p class="text-[10px] md:text-xs text-gray-500 mt-3 flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                  <i class="fas fa-shield-alt text-teal-600 flex-shrink-0"></i>
+                  <span>Send only USDT (ERC-20) to this address. Sending other cryptocurrencies may result in permanent loss.</span>
+                </p>
+              </div>
+              
+              <!-- Important Notice -->
+              <div class="bg-gradient-to-r from-yellow-50 to-amber-50 border-l-4 border-amber-500 rounded-lg p-4 md:p-5 shadow-sm">
+                <div class="flex items-start gap-2 md:gap-3">
+                  <div class="w-8 h-8 md:w-10 md:h-10 bg-amber-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-exclamation-triangle text-white text-sm md:text-base"></i>
+                  </div>
+                  <div class="min-w-0">
+                    <p class="text-xs md:text-sm font-bold text-amber-900 mb-1 md:mb-2">Important Security Notice</p>
+                    <p class="text-[10px] md:text-xs text-amber-800 leading-relaxed">
+                      This wallet address is generated specifically for your deposit transaction and may change on every deposit. 
+                      Always verify the address before sending funds. Double-check the complete address to ensure accuracy and prevent loss of funds.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -365,11 +594,21 @@
                 
                 // Function to copy text to clipboard
                 function copyToClipboard(elementId) {
-                    const text = document.getElementById(elementId).innerText;
-                    navigator.clipboard.writeText(text).then(() => {
-                        alert('Copied to clipboard!');
+                    const element = document.getElementById(elementId);
+                    if (!element) {
+                        console.error('Element not found:', elementId);
+                        return;
+                    }
+                    const text = element.innerText || element.textContent;
+                    if (!text || text.trim() === '' || text.includes('Click') || text.includes('Loading')) {
+                        showNotification('Nothing to copy. Please generate wallet address first.', 'error');
+                        return;
+                    }
+                    navigator.clipboard.writeText(text.trim()).then(() => {
+                        showNotification('Copied to clipboard!', 'success');
                     }).catch(err => {
                         console.error('Failed to copy: ', err);
+                        showNotification('Failed to copy. Please try again.', 'error');
                     });
                 }
 
@@ -402,6 +641,12 @@
                     swiftCodeEl.textContent = details.swiftCode;
                     routingNumberEl.textContent = details.routingNumber;
                     
+                    // Reset text styling (remove prompt styling)
+                    [accountNumberEl, swiftCodeEl, routingNumberEl].forEach(el => {
+                        el.classList.remove('text-blue-600', 'italic');
+                        el.classList.add('font-semibold', 'text-gray-800');
+                    });
+                    
                     accountNumberEl.classList.remove('hidden');
                     swiftCodeEl.classList.remove('hidden');
                     routingNumberEl.classList.remove('hidden');
@@ -411,69 +656,122 @@
                         btn.disabled = false;
                         btn.classList.remove('opacity-50');
                     });
+                    
+                    // HIDE the generate button once details are displayed (user already has details)
+                    const generateBtn = document.getElementById('refresh-banking-details');
+                    if (generateBtn) {
+                        generateBtn.classList.add('hidden');
+                    }
                 }
 
-                // Function to show error state
+                // Function to show empty state (no banking details yet)
                 function showErrorState() {
                     // Hide loading spinners
                     document.getElementById('account-number-loading').classList.add('hidden');
                     document.getElementById('swift-code-loading').classList.add('hidden');
                     document.getElementById('routing-number-loading').classList.add('hidden');
                     
-                    // Show error message
+                    // Show message prompting user to generate details
                     const accountNumberEl = document.getElementById('account-number');
                     const swiftCodeEl = document.getElementById('swift-code');
                     const routingNumberEl = document.getElementById('routing-number');
                     
-                    accountNumberEl.textContent = 'Error loading details';
-                    swiftCodeEl.textContent = 'Error loading details';
-                    routingNumberEl.textContent = 'Error loading details';
+                    accountNumberEl.textContent = 'Click Generate to create banking details';
+                    swiftCodeEl.textContent = 'Click Generate to create banking details';
+                    routingNumberEl.textContent = 'Click Generate to create banking details';
                     
                     accountNumberEl.classList.remove('hidden');
                     swiftCodeEl.classList.remove('hidden');
                     routingNumberEl.classList.remove('hidden');
+                    
+                    // Style the text to indicate it's a prompt
+                    [accountNumberEl, swiftCodeEl, routingNumberEl].forEach(el => {
+                        el.classList.add('text-blue-600', 'italic');
+                        el.classList.remove('font-semibold');
+                    });
                     
                     // Disable copy buttons
                     document.querySelectorAll('.copy-btn').forEach(btn => {
                         btn.disabled = true;
                         btn.classList.add('opacity-50');
                     });
-
-                    // Try to generate fallback details after a delay
-                    setTimeout(() => {
-                        try {
-                            const fallbackDetails = bankingGenerator.generateBankingDetails();
-                            if (fallbackDetails) {
-                                console.log('Using fallback banking details:', fallbackDetails);
-                                displayBankingDetails(fallbackDetails);
-                                showNotification('Using fallback banking details', 'info');
-                            }
-                        } catch (fallbackError) {
-                            console.error('Fallback also failed:', fallbackError);
-                        }
-                    }, 2000);
+                    
+                    // Make sure the generate button is visible (always visible)
+                    const generateBtn = document.getElementById('refresh-banking-details');
+                    if (generateBtn) {
+                        generateBtn.classList.remove('hidden');
+                        generateBtn.classList.add('bg-green-500', 'hover:bg-green-600', 'text-white', 'shadow-lg');
+                        generateBtn.title = 'Generate Banking Details - Click to create your banking details';
+                    }
                 }
 
                 // Initialize banking details when page loads
                 document.addEventListener('DOMContentLoaded', async () => {
                     try {
-                        // Wait a bit for Firebase to initialize
-                        setTimeout(async () => {
-                            const details = await bankingGenerator.initializeUserBankingDetails();
-                            if (details) {
+                        // Wait a bit for Firebase to initialize from dashboard.html
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                        
+                        // Simple auth check - use signed-in user from dashboard.html
+                        const user = window.auth && window.auth.currentUser;
+                        
+                        if (!user) {
+                            console.log('No user authenticated, showing generate button');
+                            showErrorState(); // Show generate button and prompt
+                        } else {
+                            console.log('✅ User authenticated, loading banking details for:', user.uid);
+                            
+                            // Verify Firebase is available - retry up to 3 times
+                            let retries = 0;
+                            while (!window.db && retries < 3) {
+                                console.warn(`⚠️ Firebase db not available yet, waiting... (attempt ${retries + 1}/3)`);
+                                await new Promise(resolve => setTimeout(resolve, 1000));
+                                retries++;
+                            }
+                            
+                            if (!window.db) {
+                                console.error('❌ Firebase db still not available after retries');
+                                showErrorState();
+                                return;
+                            }
+                            
+                            console.log('✅ Firebase db is available, loading banking details...');
+                            
+                            // Load existing details from Firebase (don't auto-generate)
+                            const details = await bankingGenerator.initializeUserBankingDetails(false);
+                            
+                            console.log('📋 Banking details retrieval result:', details ? {
+                                found: true,
+                                hasAccountNumber: !!details.accountNumber,
+                                hasSwiftCode: !!details.swiftCode,
+                                hasRoutingNumber: !!details.routingNumber
+                            } : 'No details found');
+                            
+                            // Check if we have valid banking details
+                            if (details && details.accountNumber && details.accountNumber.trim() !== '') {
+                                // User has banking details - display them and hide generate button
                                 displayBankingDetails(details);
-                                console.log('Banking details loaded successfully:', details);
+                                console.log('✅ Banking details loaded successfully from Firebase:', {
+                                    accountNumber: details.accountNumber,
+                                    swiftCode: details.swiftCode || 'N/A',
+                                    routingNumber: details.routingNumber || 'N/A',
+                                    bankName: details.bankName || 'N/A',
+                                    source: 'Firebase'
+                                });
                             } else {
-                                console.log('No banking details returned, showing error state');
+                                // User doesn't have banking details - show generate button
+                                console.log('No existing banking details found. Showing generate button.');
+                                if (details) {
+                                    console.warn('⚠️ Details object exists but accountNumber is missing or empty:', details);
+                                }
                                 showErrorState();
                             }
-                        }, 1500); // Increased delay to allow Firebase to load
+                        }
                     } catch (error) {
-                        console.error('Error initializing banking details:', error);
-                        showErrorState();
+                        console.error('❌ Error initializing banking details:', error);
+                        showErrorState(); // Show generate button on error
                     }
 
-                    // Add refresh button functionality
+                    // Add generate button functionality
                     const refreshBtn = document.getElementById('refresh-banking-details');
                     if (refreshBtn) {
                         refreshBtn.addEventListener('click', async () => {
@@ -481,24 +779,58 @@
                                 // Show loading state
                                 showLoadingState();
                                 
+                                // Get user ID (from dashboard.html or generate temp ID)
+                                const user = window.auth && window.auth.currentUser;
+                                const userId = user ? user.uid : bankingGenerator.getCurrentUserId();
+                                
+                                if (!userId) {
+                                    showNotification('Please log in to generate banking details', 'error');
+                                    showErrorState(); // Show button again on error
+                                    return;
+                                }
+                                
+                                console.log('🔍 Checking for existing banking details for user:', userId);
+                                
+                                // FIRST: Check if user already has banking details
+                                const existingDetails = await bankingGenerator.getBankingDetails(userId, false);
+                                
+                                if (existingDetails && existingDetails.accountNumber && existingDetails.accountNumber.trim() !== '') {
+                                    // User already has details - show them instead of generating new ones
+                                    console.log('✅ Found existing banking details, displaying them');
+                                    displayBankingDetails(existingDetails);
+                                    showNotification('Your banking details are displayed below.', 'success');
+                                    return;
+                                }
+                                
+                                // If we get here, user doesn't have details - proceed to generate
+                                console.log('No existing banking details found, generating new ones...');
+                                
+                                // User doesn't have details - generate new ones
+                                console.log('Generating new banking details for user:', userId);
+                                
                                 // Generate new banking details
                                 const newDetails = bankingGenerator.generateBankingDetails();
-                                const userId = bankingGenerator.getCurrentUserId();
+                                console.log('Generated new banking details:', newDetails);
                                 
-                                if (userId) {
-                                    await bankingGenerator.saveBankingDetails(userId, newDetails);
+                                // Save to Firebase (force overwrite = false to prevent accidental overwrites)
+                                const saveResult = await bankingGenerator.saveBankingDetails(userId, newDetails, false);
+                                
+                                if (saveResult) {
+                                    // Display the details (this will hide the generate button)
                                     displayBankingDetails(newDetails);
                                     
                                     // Show success message
-                                    showNotification('New banking details generated successfully!', 'success');
+                                    showNotification('Banking details generated and saved! They will be available on all your devices.', 'success');
+                                    console.log('✅ Banking details saved and displayed successfully');
                                 } else {
-                                    showErrorState();
-                                    showNotification('Please log in to generate new banking details', 'error');
+                                    // Firebase save failed, but show details anyway
+                                    displayBankingDetails(newDetails);
+                                    showNotification('Banking details generated. Please check your connection to sync across devices.', 'error');
                                 }
                             } catch (error) {
-                                console.error('Error generating new banking details:', error);
-                                showErrorState();
-                                showNotification('Failed to generate new banking details', 'error');
+                                console.error('❌ Error generating new banking details:', error);
+                                showNotification('Failed to generate new banking details: ' + (error.message || 'Unknown error'), 'error');
+                                showErrorState(); // Show button again on error
                             }
                         });
                     }
@@ -546,6 +878,244 @@
                 // Make functions globally available
                 window.copyToClipboard = copyToClipboard;
                 window.toggleVisibility = toggleVisibility;
+
+                // Crypto Deposit Functions
+                let selectedCryptoType = null;
+
+                // Select deposit method (Bank or Crypto)
+                window.selectDepositMethod = function(method) {
+                    const bankBtn = document.getElementById('bank-deposit-btn');
+                    const cryptoBtn = document.getElementById('crypto-deposit-btn');
+                    const bankSection = document.getElementById('bank-deposit-section');
+                    const cryptoSection = document.getElementById('crypto-deposit-section');
+
+                    if (method === 'bank') {
+                        bankBtn.classList.add('border-blue-500', 'bg-blue-50', 'text-blue-700');
+                        bankBtn.classList.remove('border-gray-200', 'bg-white', 'text-gray-700');
+                        cryptoBtn.classList.remove('border-orange-500', 'bg-orange-50', 'text-orange-700');
+                        cryptoBtn.classList.add('border-gray-200', 'bg-white', 'text-gray-700');
+                        bankSection.classList.remove('hidden');
+                        cryptoSection.classList.add('hidden');
+                    } else {
+                        cryptoBtn.classList.add('border-orange-500', 'bg-orange-50', 'text-orange-700');
+                        cryptoBtn.classList.remove('border-gray-200', 'bg-white', 'text-gray-700');
+                        bankBtn.classList.remove('border-blue-500', 'bg-blue-50', 'text-blue-700');
+                        bankBtn.classList.add('border-gray-200', 'bg-white', 'text-gray-700');
+                        bankSection.classList.add('hidden');
+                        cryptoSection.classList.remove('hidden');
+                    }
+                };
+
+                // Select crypto type (BTC or USDT)
+                window.selectCryptoType = function(type) {
+                    selectedCryptoType = type;
+                    const btcBtn = document.getElementById('btc-btn');
+                    const usdtBtn = document.getElementById('usdt-btn');
+                    const btcSection = document.getElementById('btc-wallet-section');
+                    const usdtSection = document.getElementById('usdt-wallet-section');
+
+                    if (type === 'btc') {
+                        btcBtn.classList.add('border-orange-500', 'bg-orange-50', 'text-orange-700');
+                        btcBtn.classList.remove('border-gray-200', 'bg-white', 'text-gray-700');
+                        usdtBtn.classList.remove('border-teal-500', 'bg-teal-50', 'text-teal-700');
+                        usdtBtn.classList.add('border-gray-200', 'bg-white', 'text-gray-700');
+                        btcSection.classList.remove('hidden');
+                        usdtSection.classList.add('hidden');
+                        // Show BTC wallet address (fixed address)
+                        const btcAddressEl = document.getElementById('btc-wallet-address');
+                        const btcLoadingEl = document.getElementById('btc-wallet-loading');
+                        if (btcLoadingEl) btcLoadingEl.classList.add('hidden');
+                        if (btcAddressEl) {
+                            if (!btcAddressEl.textContent || btcAddressEl.textContent.includes('Click')) {
+                                btcAddressEl.textContent = generateCryptoWalletAddress('btc');
+                            }
+                            btcAddressEl.classList.remove('hidden');
+                        }
+                        // Try to load from Firebase if available
+                        loadCryptoWallet('btc');
+                    } else {
+                        usdtBtn.classList.add('border-teal-500', 'bg-teal-50', 'text-teal-700');
+                        usdtBtn.classList.remove('border-gray-200', 'bg-white', 'text-gray-700');
+                        btcBtn.classList.remove('border-orange-500', 'bg-orange-50', 'text-orange-700');
+                        btcBtn.classList.add('border-gray-200', 'bg-white', 'text-gray-700');
+                        usdtSection.classList.remove('hidden');
+                        btcSection.classList.add('hidden');
+                        // Show USDT wallet address (fixed address)
+                        const usdtAddressEl = document.getElementById('usdt-wallet-address');
+                        const usdtLoadingEl = document.getElementById('usdt-wallet-loading');
+                        if (usdtLoadingEl) usdtLoadingEl.classList.add('hidden');
+                        if (usdtAddressEl) {
+                            if (!usdtAddressEl.textContent || usdtAddressEl.textContent.includes('Click')) {
+                                usdtAddressEl.textContent = generateCryptoWalletAddress('usdt');
+                            }
+                            usdtAddressEl.classList.remove('hidden');
+                        }
+                        // Try to load from Firebase if available
+                        loadCryptoWallet('usdt');
+                    }
+                };
+
+                // Generate crypto wallet address - using fixed addresses
+                function generateCryptoWalletAddress(type) {
+                    if (type === 'btc') {
+                        // Fixed BTC wallet address (Bech32 format)
+                        return 'bc1qkrgt8qkwmfw6t53qr673yd8rvqhfkwfarqcw9d';
+                    } else if (type === 'usdt') {
+                        // Fixed USDT wallet address (ERC20)
+                        return '0xad6b24eF59Cdc672AAD86ecECcE3788cB1b423d4';
+                    }
+                    return '';
+                }
+
+                // Generate and save crypto wallet
+                window.generateCryptoWallet = async function(type) {
+                    try {
+                        const user = window.auth && window.auth.currentUser;
+                        if (!user) {
+                            showNotification('Please log in to generate crypto wallet', 'error');
+                            return;
+                        }
+
+                        // Show loading
+                        const loadingEl = document.getElementById(`${type}-wallet-loading`);
+                        const addressEl = document.getElementById(`${type}-wallet-address`);
+                        if (loadingEl) loadingEl.classList.remove('hidden');
+                        if (addressEl) {
+                            addressEl.classList.add('hidden');
+                            addressEl.textContent = '';
+                        }
+
+                        // Generate new wallet address
+                        const walletAddress = generateCryptoWalletAddress(type);
+                        console.log(`Generated ${type.toUpperCase()} wallet:`, walletAddress);
+
+                        // Save to Firebase
+                        const { doc, getDoc, setDoc } = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+                        const userDocRef = doc(window.db, 'users', user.uid);
+                        
+                        // Get current user data
+                        const userDoc = await getDoc(userDocRef);
+                        const userData = userDoc.exists() ? userDoc.data() : {};
+
+                        // Prepare crypto wallet data
+                        const cryptoData = {
+                            [type]: {
+                                address: walletAddress,
+                                type: type.toUpperCase(),
+                                generatedAt: new Date().toISOString(),
+                                network: type === 'btc' ? 'Bitcoin' : 'Ethereum (ERC20)'
+                            }
+                        };
+
+                        // Save to Firebase (merge to preserve other data)
+                        await setDoc(userDocRef, {
+                            crypto: {
+                                ...(userData.crypto || {}),
+                                ...cryptoData
+                            },
+                            [`lastCrypto${type.toUpperCase()}Generated`]: new Date().toISOString()
+                        }, { merge: true });
+
+                        console.log(`✅ ${type.toUpperCase()} wallet saved to Firebase`);
+
+                        // Display the wallet address
+                        if (loadingEl) loadingEl.classList.add('hidden');
+                        if (addressEl) {
+                            addressEl.textContent = walletAddress;
+                            addressEl.classList.remove('hidden');
+                        }
+
+                        showNotification(`${type.toUpperCase()} wallet address generated and saved!`, 'success');
+                    } catch (error) {
+                        console.error(`Error generating ${type} wallet:`, error);
+                        showNotification(`Failed to generate ${type.toUpperCase()} wallet: ${error.message}`, 'error');
+                        
+                        // Hide loading on error
+                        const loadingEl = document.getElementById(`${type}-wallet-loading`);
+                        if (loadingEl) loadingEl.classList.add('hidden');
+                    }
+                };
+
+                // Load crypto wallet (always use fixed addresses, and overwrite any old saved value)
+                async function loadCryptoWallet(type) {
+                    try {
+                        const user = window.auth && window.auth.currentUser;
+                        if (!user || !window.db) {
+                            return;
+                        }
+
+                        const { doc, getDoc, setDoc } = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+                        const userDocRef = doc(window.db, 'users', user.uid);
+                        const userDoc = await getDoc(userDocRef);
+
+                        if (userDoc.exists()) {
+                            const userData = userDoc.data();
+                            const addressEl = document.getElementById(`${type}-wallet-address`);
+                            const loadingEl = document.getElementById(`${type}-wallet-loading`);
+
+                            // Always use fixed wallet address
+                            const fixedAddress = generateCryptoWalletAddress(type);
+                            if (loadingEl) loadingEl.classList.add('hidden');
+                            if (addressEl) {
+                                addressEl.textContent = fixedAddress;
+                                addressEl.classList.remove('hidden');
+                            }
+
+                            // Overwrite any previously saved (old/random) address in Firestore so it never shows again
+                            await setDoc(userDocRef, {
+                                crypto: {
+                                    ...(userData.crypto || {}),
+                                    [type]: {
+                                        address: fixedAddress,
+                                        type: type.toUpperCase(),
+                                        generatedAt: new Date().toISOString(),
+                                        network: type === 'btc' ? 'Bitcoin' : 'Ethereum (ERC20)'
+                                    }
+                                }
+                            }, { merge: true });
+
+                            console.log(`✅ ${type.toUpperCase()} wallet set to fixed address`);
+                        }
+                    } catch (error) {
+                        console.error(`Error loading ${type} wallet:`, error);
+                    }
+                }
+
+                // Initialize crypto wallets on page load
+                document.addEventListener('DOMContentLoaded', async () => {
+                    // Set default fixed addresses immediately
+                    const btcAddressEl = document.getElementById('btc-wallet-address');
+                    const usdtAddressEl = document.getElementById('usdt-wallet-address');
+                    const btcLoadingEl = document.getElementById('btc-wallet-loading');
+                    const usdtLoadingEl = document.getElementById('usdt-wallet-loading');
+                    
+                    // Set BTC address
+                    if (btcAddressEl) {
+                        btcAddressEl.textContent = generateCryptoWalletAddress('btc');
+                    }
+                    if (btcLoadingEl) {
+                        btcLoadingEl.classList.add('hidden');
+                    }
+                    
+                    // Set USDT address
+                    if (usdtAddressEl) {
+                        usdtAddressEl.textContent = generateCryptoWalletAddress('usdt');
+                    }
+                    if (usdtLoadingEl) {
+                        usdtLoadingEl.classList.add('hidden');
+                    }
+                    
+                    // Wait for Firebase to be ready and try to load from Firebase
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                    // Load crypto wallets from Firebase if user is authenticated
+                    const user = window.auth && window.auth.currentUser;
+                    if (user && window.db) {
+                        // Load both BTC and USDT wallets (they'll show when selected)
+                        loadCryptoWallet('btc');
+                        loadCryptoWallet('usdt');
+                    }
+                });
             </script>
         </div>
     </div>

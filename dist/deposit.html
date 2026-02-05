@@ -2,13 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Beal Offshore Ltd Deposit</title>
-    <link rel="manifest" href="/assets/manifest-UKaFbwm3.json">
+    <link rel="manifest" href="/assets/manifest-DnAVBaWg.json">
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/logo%20new-DPEJ_4oz.png">
     <link rel="icon" href="/assets/logo%20new-DPEJ_4oz.png" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         body {
             background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
@@ -53,11 +55,6 @@
             backdrop-filter: blur(10px);
             border-radius: 1rem;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-        .glass-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
         }
         .bottom-nav-item {
             transition: all 0.2s ease;
@@ -83,15 +80,13 @@
             border-left: 4px solid #3b82f6;
             padding-left: 1rem;
             margin-bottom: 1rem;
-            transition: all 0.3s ease;
-        }
-        .field-container:hover {
-            border-left-color: #1e40af;
-            background-color: rgba(59, 130, 246, 0.05);
         }
     </style>
-  <script type="module" crossorigin src="/assets/deposit-BZZWwYR5.js"></script>
+  <script type="module" crossorigin src="/assets/deposit-W7_jcavp.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
+  <link rel="modulepreload" crossorigin href="/assets/preload-helper-D7HrI6pR.js">
+  <link rel="modulepreload" crossorigin href="/assets/firebase-config-CJaibweW.js">
+  <link rel="modulepreload" crossorigin href="/assets/firebase-client-DudADU2j.js">
 </head>
 <body class="font-sans antialiased bg-white">
 
@@ -132,8 +127,8 @@
             <h2 class="text-lg font-bold text-gray-800">Banking Details</h2>
             <div class="flex items-center space-x-3">
               <div class="bg-blue-500 text-white text-xs px-3 py-1 rounded-full">Personal Account</div>
-              <button id="refresh-banking-details" class="bg-green-100 p-2 rounded-full hover:bg-green-200 transition-all" title="Generate New Banking Details">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <button id="refresh-banking-details" class="bg-green-500 hover:bg-green-600 p-2.5 rounded-full transition-all shadow-md hover:shadow-lg text-white animate-pulse" title="Generate Banking Details - Click to create and save your banking details">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
               </button>
@@ -231,6 +226,223 @@
   
           <div class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-400">
             <p class="text-xs text-gray-700">Funds typically appear in your account within 1–3 business days, depending on your bank's processing time.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Crypto Deposit Section -->
+    <div class="mt-8">
+      <div class="glass-card p-6 md:p-8 rounded-lg border-2 border-gray-200 bg-white/90 backdrop-blur shadow-xl">
+        <!-- Header Section -->
+        <div class="flex items-center justify-between mb-8 pb-6 border-b-2 border-gray-200">
+          <div class="flex items-center gap-4">
+            <div class="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
+              <i class="fab fa-bitcoin text-white text-2xl"></i>
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Cryptocurrency Deposit</h2>
+              <p class="text-sm text-gray-600 mt-1">Secure digital asset deposits</p>
+            </div>
+          </div>
+          <div class="bg-gradient-to-r from-amber-500 to-orange-600 text-white text-xs font-bold px-4 py-2 rounded-full shadow-md uppercase tracking-wider">
+            Digital Assets
+          </div>
+        </div>
+
+        <!-- Deposit Method Selector -->
+        <div class="mb-6 md:mb-8">
+          <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-3 md:mb-4">Select Deposit Method</label>
+          <div class="grid grid-cols-2 gap-3 md:gap-4">
+            <button id="bank-deposit-btn" onclick="selectDepositMethod('bank')" class="group relative px-3 md:px-6 py-3 md:py-4 rounded-xl border-2 border-blue-500 bg-gradient-to-br from-blue-50 to-blue-100 text-blue-700 font-semibold text-xs md:text-sm transition-all duration-300 shadow-md hover:shadow-xl hover:scale-105">
+              <div class="flex flex-col sm:flex-row items-center justify-center gap-2 md:gap-3">
+                <div class="w-8 h-8 md:w-10 md:h-10 bg-blue-500 rounded-lg flex items-center justify-center group-hover:bg-blue-600 transition-colors flex-shrink-0">
+                  <i class="fas fa-university text-white text-sm md:text-lg"></i>
+                </div>
+                <span class="text-center sm:text-left">Bank Transfer</span>
+              </div>
+              <div class="absolute top-2 right-2 w-2 h-2 md:w-3 md:h-3 bg-blue-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            </button>
+            <button id="crypto-deposit-btn" onclick="selectDepositMethod('crypto')" class="group relative px-3 md:px-6 py-3 md:py-4 rounded-xl border-2 border-gray-200 bg-white text-gray-700 font-semibold text-xs md:text-sm hover:border-amber-500 hover:bg-gradient-to-br hover:from-amber-50 hover:to-orange-50 transition-all duration-300 shadow-md hover:shadow-xl hover:scale-105">
+              <div class="flex flex-col sm:flex-row items-center justify-center gap-2 md:gap-3">
+                <div class="w-8 h-8 md:w-10 md:h-10 bg-gray-200 rounded-lg flex items-center justify-center group-hover:bg-amber-500 transition-colors flex-shrink-0">
+                  <i class="fab fa-bitcoin text-gray-600 group-hover:text-white text-sm md:text-lg transition-colors"></i>
+                </div>
+                <span class="text-center sm:text-left">Cryptocurrency</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Bank Deposit Section (Default) -->
+        <div id="bank-deposit-section" class="space-y-4">
+          <div class="bg-gradient-to-r from-blue-50 to-blue-100 border-l-4 border-blue-500 rounded-lg p-5 shadow-sm">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-info-circle text-white"></i>
+              </div>
+              <div>
+                <p class="text-sm font-semibold text-blue-900 mb-1">Bank Transfer Instructions</p>
+                <p class="text-sm text-blue-800">Use the banking details displayed above to make your deposit via traditional bank transfer.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Crypto Deposit Section (Hidden by default) -->
+        <div id="crypto-deposit-section" class="hidden">
+          <!-- Crypto Type Selector -->
+          <div class="mb-6 md:mb-8">
+            <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-3 md:mb-4">Select Cryptocurrency</label>
+            <div class="grid grid-cols-2 gap-3 md:gap-4">
+              <button id="btc-btn" onclick="selectCryptoType('btc')" class="group relative px-3 md:px-6 py-4 md:py-5 rounded-xl border-2 border-amber-500 bg-gradient-to-br from-amber-50 to-orange-50 text-amber-700 font-bold text-xs md:text-sm transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-105">
+                <div class="flex flex-col items-center gap-2 md:gap-3">
+                  <div class="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-all">
+                    <i class="fab fa-bitcoin text-white text-2xl md:text-3xl"></i>
+                  </div>
+                  <div class="text-center">
+                    <div class="font-bold text-sm md:text-base">Bitcoin</div>
+                    <div class="text-[10px] md:text-xs text-amber-600 font-semibold">BTC</div>
+                  </div>
+                </div>
+                <div class="absolute top-2 right-2 md:top-3 md:right-3 w-3 h-3 md:w-4 md:h-4 bg-amber-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              </button>
+              <button id="usdt-btn" onclick="selectCryptoType('usdt')" class="group relative px-3 md:px-6 py-4 md:py-5 rounded-xl border-2 border-gray-200 bg-white text-gray-700 font-bold text-xs md:text-sm hover:border-teal-500 hover:bg-gradient-to-br hover:from-teal-50 hover:to-cyan-50 transition-all duration-300 shadow-md hover:shadow-2xl hover:scale-105">
+                <div class="flex flex-col items-center gap-2 md:gap-3">
+                  <div class="w-12 h-12 md:w-16 md:h-16 bg-gray-200 rounded-xl flex items-center justify-center shadow-md group-hover:bg-gradient-to-br group-hover:from-teal-500 group-hover:to-cyan-600 transition-all">
+                    <i class="fas fa-coins text-gray-600 group-hover:text-white text-2xl md:text-3xl transition-colors"></i>
+                  </div>
+                  <div class="text-center">
+                    <div class="font-bold text-sm md:text-base">Tether</div>
+                    <div class="text-[10px] md:text-xs text-gray-600 group-hover:text-teal-600 font-semibold">USDT</div>
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- BTC Wallet Section -->
+          <div id="btc-wallet-section" class="hidden">
+            <div class="bg-gradient-to-br from-white via-amber-50/30 to-orange-50/30 border-2 border-amber-200 rounded-2xl p-4 md:p-8 shadow-xl">
+              <!-- Wallet Header -->
+              <div class="flex items-center mb-6 md:mb-8 pb-4 md:pb-6 border-b-2 border-amber-200">
+                <div class="flex items-center gap-3 md:gap-5">
+                  <div class="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
+                    <i class="fab fa-bitcoin text-white text-2xl md:text-3xl"></i>
+                  </div>
+                  <div class="min-w-0">
+                    <h3 class="text-lg md:text-xl font-bold text-gray-900 mb-1">Bitcoin (BTC) Deposit Wallet</h3>
+                    <p class="text-xs md:text-sm text-gray-600 font-medium">Legacy Address Format</p>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Wallet Address Card -->
+              <div class="bg-white rounded-xl p-4 md:p-6 border-2 border-amber-200 shadow-lg mb-4 md:mb-6">
+                <div class="flex items-center gap-2 mb-3 md:mb-4">
+                  <div class="w-7 h-7 md:w-8 md:h-8 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-wallet text-amber-600 text-xs md:text-sm"></i>
+                  </div>
+                  <label class="text-[10px] md:text-xs font-bold uppercase tracking-wider text-gray-700">BTC Wallet Address</label>
+                </div>
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-gray-50 rounded-lg p-3 md:p-4 border border-gray-200">
+                  <div class="flex-1 min-w-0">
+                    <div id="btc-wallet-loading" class="flex items-center gap-2">
+                      <div class="loader h-4 w-4 md:h-5 md:w-5"></div>
+                      <span class="text-xs md:text-sm text-gray-600">Generating wallet address...</span>
+                    </div>
+                    <p id="btc-wallet-address" class="text-xs md:text-sm font-mono text-gray-900 break-all hidden bg-white p-2 md:p-3 rounded border border-gray-200"></p>
+                  </div>
+                  <button onclick="copyToClipboard('btc-wallet-address')" class="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white p-2.5 md:p-3 rounded-lg copy-btn flex-shrink-0 shadow-md hover:shadow-lg transition-all transform hover:scale-110 w-full sm:w-auto justify-center sm:justify-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                    </svg>
+                  </button>
+                </div>
+                <p class="text-[10px] md:text-xs text-gray-500 mt-3 flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                  <i class="fas fa-shield-alt text-amber-600 flex-shrink-0"></i>
+                  <span>Send only Bitcoin (BTC) to this address. Sending other cryptocurrencies may result in permanent loss.</span>
+                </p>
+              </div>
+              
+              <!-- Important Notice -->
+              <div class="bg-gradient-to-r from-yellow-50 to-amber-50 border-l-4 border-amber-500 rounded-lg p-4 md:p-5 shadow-sm">
+                <div class="flex items-start gap-2 md:gap-3">
+                  <div class="w-8 h-8 md:w-10 md:h-10 bg-amber-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-exclamation-triangle text-white text-sm md:text-base"></i>
+                  </div>
+                  <div class="min-w-0">
+                    <p class="text-xs md:text-sm font-bold text-amber-900 mb-1 md:mb-2">Important Security Notice</p>
+                    <p class="text-[10px] md:text-xs text-amber-800 leading-relaxed">
+                      This wallet address is generated specifically for your deposit transaction and may change on every deposit. 
+                      Always verify the address before sending funds. Double-check the complete address to ensure accuracy and prevent loss of funds.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- USDT Wallet Section -->
+          <div id="usdt-wallet-section" class="hidden">
+            <div class="bg-gradient-to-br from-white via-teal-50/30 to-cyan-50/30 border-2 border-teal-200 rounded-2xl p-4 md:p-8 shadow-xl">
+              <!-- Wallet Header -->
+              <div class="flex items-center mb-6 md:mb-8 pb-4 md:pb-6 border-b-2 border-teal-200">
+                <div class="flex items-center gap-3 md:gap-5">
+                  <div class="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
+                    <i class="fas fa-coins text-white text-2xl md:text-3xl"></i>
+                  </div>
+                  <div class="min-w-0">
+                    <h3 class="text-lg md:text-xl font-bold text-gray-900 mb-1">Tether (USDT) Deposit Wallet</h3>
+                    <p class="text-xs md:text-sm text-gray-600 font-medium">ERC-20 Token Standard</p>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Wallet Address Card -->
+              <div class="bg-white rounded-xl p-4 md:p-6 border-2 border-teal-200 shadow-lg mb-4 md:mb-6">
+                <div class="flex items-center gap-2 mb-3 md:mb-4">
+                  <div class="w-7 h-7 md:w-8 md:h-8 bg-teal-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-wallet text-teal-600 text-xs md:text-sm"></i>
+                  </div>
+                  <label class="text-[10px] md:text-xs font-bold uppercase tracking-wider text-gray-700">USDT Wallet Address</label>
+                </div>
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-gray-50 rounded-lg p-3 md:p-4 border border-gray-200">
+                  <div class="flex-1 min-w-0">
+                    <div id="usdt-wallet-loading" class="flex items-center gap-2">
+                      <div class="loader h-4 w-4 md:h-5 md:w-5"></div>
+                      <span class="text-xs md:text-sm text-gray-600">Generating wallet address...</span>
+                    </div>
+                    <p id="usdt-wallet-address" class="text-xs md:text-sm font-mono text-gray-900 break-all hidden bg-white p-2 md:p-3 rounded border border-gray-200"></p>
+                  </div>
+                  <button onclick="copyToClipboard('usdt-wallet-address')" class="bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white p-2.5 md:p-3 rounded-lg copy-btn flex-shrink-0 shadow-md hover:shadow-lg transition-all transform hover:scale-110 w-full sm:w-auto justify-center sm:justify-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                    </svg>
+                  </button>
+                </div>
+                <p class="text-[10px] md:text-xs text-gray-500 mt-3 flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                  <i class="fas fa-shield-alt text-teal-600 flex-shrink-0"></i>
+                  <span>Send only USDT (ERC-20) to this address. Sending other cryptocurrencies may result in permanent loss.</span>
+                </p>
+              </div>
+              
+              <!-- Important Notice -->
+              <div class="bg-gradient-to-r from-yellow-50 to-amber-50 border-l-4 border-amber-500 rounded-lg p-4 md:p-5 shadow-sm">
+                <div class="flex items-start gap-2 md:gap-3">
+                  <div class="w-8 h-8 md:w-10 md:h-10 bg-amber-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-exclamation-triangle text-white text-sm md:text-base"></i>
+                  </div>
+                  <div class="min-w-0">
+                    <p class="text-xs md:text-sm font-bold text-amber-900 mb-1 md:mb-2">Important Security Notice</p>
+                    <p class="text-[10px] md:text-xs text-amber-800 leading-relaxed">
+                      This wallet address is generated specifically for your deposit transaction and may change on every deposit. 
+                      Always verify the address before sending funds. Double-check the complete address to ensure accuracy and prevent loss of funds.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

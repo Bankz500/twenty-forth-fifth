@@ -2,18 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Beal Offshore Ltd Login</title>
-    <link rel="manifest" href="/assets/manifest-UKaFbwm3.json">
+    <link rel="manifest" href="/assets/manifest-DnAVBaWg.json">
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/logo%20new-DPEJ_4oz.png">
     <link rel="icon" href="/assets/logo%20new-DPEJ_4oz.png" type="image/png">
     <!-- Include Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Include Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js"></script>
-    <!-- Add Firebase SDK -->
     <!-- Include Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -222,11 +218,11 @@
             position: absolute;
         }
     </style>
-  <script type="module" crossorigin src="/assets/login-CHeeo-L9.js"></script>
+  <script type="module" crossorigin src="/assets/login-CszFGaOf.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
-  <link rel="modulepreload" crossorigin href="/assets/index.esm-DdmE1zD_.js">
+  <link rel="modulepreload" crossorigin href="/assets/firebase-config-CJaibweW.js">
 </head>
-<body class="font-sans antialiased" style="background-image: url('/Users/circo-mac005/Documents/Beal Offshore Ltd/background 2.png'), linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));">
+<body class="font-sans antialiased" style="background-image: url('/assets/background%202-Dn1co03N.png'), linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));">
 
     <!-- Navbar -->
     <nav class="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 p-4 z-50">
@@ -312,14 +308,7 @@
     </div>
 
 <script>
-window.onload = function () {
-    const splashScreen = document.getElementById('splash-screen');
-    setTimeout(() => {
-        splashScreen.style.display = 'none'; // Hide the splash screen
-        document.body.style.overflow = 'auto'; // Restore scroll
-    }, 4000); // Adjust time to match animation duration
-};
-
+// Mobile menu functionality
 const menu = document.getElementById('mobile-menu');
 const overlay = document.getElementById('overlay');
 const mobileMenuButton = document.getElementById('mobile-menu-button');
@@ -340,21 +329,39 @@ function closeMenu() {
 }
 
 // Toggle mobile menu visibility
-mobileMenuButton.onclick = openMenu;
-closeMenuButton.onclick = closeMenu;
+if (mobileMenuButton) {
+    mobileMenuButton.onclick = openMenu;
+}
+if (closeMenuButton) {
+    closeMenuButton.onclick = closeMenu;
+}
 
 // Close menu when clicking the overlay
-overlay.onclick = closeMenu;
-</script>
-</body>
-</html>
+if (overlay) {
+    overlay.onclick = closeMenu;
+}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-</head>
-<body>
+// Password visibility toggle
+function togglePasswordVisibility() {
+    const passwordInput = document.getElementById('password');
+    const passwordEyeIcon = document.getElementById('passwordEyeIcon');
+    
+    if (passwordInput && passwordEyeIcon) {
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            passwordEyeIcon.classList.remove('fa-eye');
+            passwordEyeIcon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            passwordEyeIcon.classList.remove('fa-eye-slash');
+            passwordEyeIcon.classList.add('fa-eye');
+        }
+    }
+}
+
+// Make togglePasswordVisibility globally available
+window.togglePasswordVisibility = togglePasswordVisibility;
+</script>
 
 <!-- Login Section -->
 <div id="login-section" class="flex items-center justify-center min-h-screen p-4 animate__animated animate__fadeIn">

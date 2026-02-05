@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Beal Offshore Transfer</title>
-    <link rel="manifest" href="/assets/manifest-UKaFbwm3.json">
+    <link rel="manifest" href="/assets/manifest-DnAVBaWg.json">
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/logo%20new-DPEJ_4oz.png">
     <link rel="icon" href="/assets/logo%20new-DPEJ_4oz.png" type="image/png">
     <!-- Tailwind CSS -->
@@ -15,7 +15,7 @@
         // Initialize Email.js with your user ID
         emailjs.init("your_user_id"); // Ensure this is your actual Email.js user ID
     </script>
-    <link rel="stylesheet" href="main.css">
+
     <style>
         html, body {
             overflow: auto; /* Ensures scrolling is enabled */
@@ -99,10 +99,12 @@
             }
         }
     </style>
-  <script type="module" crossorigin src="/assets/transfer-DzSGXK-6.js"></script>
+  <script type="module" crossorigin src="/assets/transfer-B1UmsZag.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
+  <link rel="modulepreload" crossorigin href="/assets/firebase-config-CJaibweW.js">
+  <link rel="modulepreload" crossorigin href="/assets/firebase-client-DudADU2j.js">
 </head>
-<body class="font-sans antialiased" style="background-image: url('/Users/circo-mac005/Documents/Beal Offshore Ltd/background 2.png');">
+<body class="font-sans antialiased" style="background-image: url('/assets/background%202-Dn1co03N.png');">
 
 <!-- Navbar -->
 <nav class="bg-white p-4 fixed top-0 w-full z-50">
@@ -251,6 +253,7 @@
                         <select
                             id="fundingSource"
                             class="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 text-sm shadow-sm appearance-none"
+                            onchange="checkBalance()"
                         >
                             <option value="" disabled selected>Select funding source</option>
                             <option value="fixed_offshore">Checking Offshore</option>
@@ -271,13 +274,14 @@
                         id="withdrawCash" 
                         class="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 text-sm shadow-sm" 
                         placeholder="$ Enter amount"
-                        oninput="formatAmount(this); checkBalance()"
+                        oninput="formatAmount(this)"
                     />
                     <p id="withdrawCashError" class="text-red-500 text-[11px] hidden mt-2">
                         Amount is required
                     </p>
-                    <p id="insufficientBalanceError" class="text-red-500 text-[11px] hidden mt-2">
-                        Insufficient balance for the transfer.
+                    <p id="insufficientBalanceError" class="text-red-600 text-xs font-semibold hidden mt-2 flex items-center gap-2 bg-red-50 border border-red-200 rounded-lg p-2">
+                        <i class="fas fa-exclamation-triangle text-red-600"></i>
+                        <span>Insufficient funds available</span>
                     </p>
                 </div>
 
@@ -469,10 +473,16 @@
             type="button" 
             onclick="showSecurityPinModal()" 
             id="cashWithdrawButton"
-            class="w-full md:w-auto inline-flex items-center justify-center gap-2 text-sm font-semibold px-16 py-3 rounded-full text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 shadow-lg hover:shadow-xl active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-300"
+            class="w-full md:w-auto inline-flex items-center justify-center gap-2 text-sm font-semibold px-16 py-3 rounded-full text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 shadow-lg hover:shadow-xl active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-300 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-            <span>Transfer</span>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M13.172 12l-4.95-4.95 1.414-1.414L16 12l-6.364 6.364-1.414-1.414z"/></svg>
+            <span id="transferButtonText">Transfer</span>
+            <span id="transferButtonSpinner" class="hidden">
+                <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            </span>
+            <svg id="transferButtonArrow" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M13.172 12l-4.95-4.95 1.414-1.414L16 12l-6.364 6.364-1.414-1.414z"/></svg>
         </button>
     </div>
 </div>
@@ -515,17 +525,104 @@ function updateDepositUI() {
     }
 }
 
-// Check if entered amount exceeds deposit balance
-function checkBalance() {
+// Check if entered amount exceeds account balance from Firebase
+async function checkBalance() {
     const amountInput = document.getElementById('withdrawCash');
+    const fundingSourceSelect = document.getElementById('fundingSource');
     const insufficientBalanceError = document.getElementById('insufficientBalanceError');
-
-    const enteredAmount = parseFloat(amountInput.value.replace(/[^0-9.]/g, '')) || 0;
-
-    if (enteredAmount > depositBalance) {
-        insufficientBalanceError.classList.remove('hidden');
-    } else {
+    
+    // Hide error initially
+    if (insufficientBalanceError) {
         insufficientBalanceError.classList.add('hidden');
+    }
+    
+    // Get entered amount
+    const enteredAmount = parseFloat(amountInput.value.replace(/[^0-9.]/g, '')) || 0;
+    
+    // Check if funding source is selected
+    const fundingSource = fundingSourceSelect ? fundingSourceSelect.value : '';
+    if (!fundingSource) {
+        // If no funding source selected, hide error and return
+        if (insufficientBalanceError) {
+            insufficientBalanceError.classList.add('hidden');
+        }
+        return;
+    }
+    
+    // If no amount entered, don't show error yet
+    if (enteredAmount === 0) {
+        if (insufficientBalanceError) {
+            insufficientBalanceError.classList.add('hidden');
+        }
+        return;
+    }
+    
+    try {
+        // Get current user
+        const user = window.auth && window.auth.currentUser;
+        if (!user || !window.db) {
+            console.warn('Cannot check balance: User not authenticated or Firebase not available');
+            return; // Can't check balance if not authenticated
+        }
+        
+        // Import Firestore functions
+        const { doc, getDoc } = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+        const userDocRef = doc(window.db, 'users', user.uid);
+        const userDoc = await getDoc(userDocRef);
+        
+        if (!userDoc.exists()) {
+            console.warn('User document does not exist');
+            return; // User document doesn't exist
+        }
+        
+        const userData = userDoc.data();
+        let accountBalance = 0;
+        let accountType = '';
+        
+        // Get balance based on selected funding source
+        if (fundingSource === 'fixed_offshore') {
+            // Checking Offshore - check for 'checking', 'fixed_offshore', 'wallet', or 'deposit' balance
+            accountBalance = parseFloat(userData.checking || userData.fixed_offshore || userData.wallet || userData.deposit || 0);
+            accountType = 'Checking Offshore';
+        } else if (fundingSource === 'savings_offshore') {
+            // Savings Offshore - check for 'savings', 'savings_offshore', or 'profit' balance
+            accountBalance = parseFloat(userData.savings || userData.savings_offshore || userData.profit || 0);
+            accountType = 'Savings Offshore';
+        }
+        
+        console.log('Balance check:', {
+            fundingSource,
+            accountType,
+            enteredAmount,
+            accountBalance,
+            userData: {
+                checking: userData.checking,
+                savings: userData.savings,
+                wallet: userData.wallet,
+                deposit: userData.deposit,
+                profit: userData.profit,
+                fixed_offshore: userData.fixed_offshore,
+                savings_offshore: userData.savings_offshore
+            }
+        });
+        
+        // Check if entered amount exceeds available balance
+        if (enteredAmount > accountBalance) {
+            if (insufficientBalanceError) {
+                insufficientBalanceError.innerHTML = `
+                    <i class="fas fa-exclamation-triangle text-red-600"></i>
+                    <span>Insufficient funds available in ${accountType}</span>
+                `;
+                insufficientBalanceError.classList.remove('hidden');
+            }
+        } else {
+            if (insufficientBalanceError) {
+                insufficientBalanceError.classList.add('hidden');
+            }
+        }
+    } catch (error) {
+        console.error('Error checking balance:', error);
+        // Don't show error to user if Firebase check fails
     }
 }
 
@@ -584,21 +681,171 @@ function sendTransferDetails(transferData) {
     }
 }
 
-// Function to show the security PIN modal
-function showSecurityPinModal() {
-    if (validateForm()) {
-        const withdrawCash = parseFloat(document.getElementById('withdrawCash').value.replace(/[^0-9.]/g, '')) || 0;
-
-        if (withdrawCash > depositBalance) {
-            document.getElementById('insufficientBalanceError').classList.remove('hidden');
-        } else {
-            document.getElementById('spinner').classList.remove('hidden');
-
-            setTimeout(() => {
-                document.getElementById('spinner').classList.add('hidden');
-                document.getElementById('securityPinModal').classList.remove('hidden');
-            }, 3000);
+// Function to show the security PIN modal - with balance check first
+async function showSecurityPinModal() {
+    // Get button elements
+    const transferButton = document.getElementById('cashWithdrawButton');
+    const transferButtonText = document.getElementById('transferButtonText');
+    const transferButtonSpinner = document.getElementById('transferButtonSpinner');
+    const transferButtonArrow = document.getElementById('transferButtonArrow');
+    
+    // Show processing state on button
+    transferButton.disabled = true;
+    transferButtonText.textContent = 'Processing...';
+    transferButtonSpinner.classList.remove('hidden');
+    transferButtonArrow.classList.add('hidden');
+    
+    try {
+        // First validate the form
+        if (!validateForm()) {
+            // Reset button state
+            transferButton.disabled = false;
+            transferButtonText.textContent = 'Transfer';
+            transferButtonSpinner.classList.add('hidden');
+            transferButtonArrow.classList.remove('hidden');
+            return;
         }
+        
+        // Hide insufficient balance error initially
+        const insufficientBalanceError = document.getElementById('insufficientBalanceError');
+        if (insufficientBalanceError) {
+            insufficientBalanceError.classList.add('hidden');
+        }
+        
+        // Get form values
+        const withdrawCash = parseFloat(document.getElementById('withdrawCash').value.replace(/[^0-9.]/g, '')) || 0;
+        const fundingSourceSelect = document.getElementById('fundingSource');
+        const fundingSource = fundingSourceSelect ? fundingSourceSelect.value : '';
+        
+        // Check if funding source is selected
+        if (!fundingSource) {
+            document.getElementById('fundingSourceError').classList.remove('hidden');
+            // Reset button state
+            transferButton.disabled = false;
+            transferButtonText.textContent = 'Transfer';
+            transferButtonSpinner.classList.add('hidden');
+            transferButtonArrow.classList.remove('hidden');
+            return;
+        }
+        
+        // Check balance from Firebase BEFORE showing PIN modal
+        const user = window.auth && window.auth.currentUser;
+        if (!user || !window.db) {
+            alert('Please log in to continue.');
+            // Reset button state
+            transferButton.disabled = false;
+            transferButtonText.textContent = 'Transfer';
+            transferButtonSpinner.classList.add('hidden');
+            transferButtonArrow.classList.remove('hidden');
+            return;
+        }
+        
+        // Import Firestore functions
+        const { doc, getDoc } = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+        const userDocRef = doc(window.db, 'users', user.uid);
+        const userDoc = await getDoc(userDocRef);
+        
+        if (!userDoc.exists()) {
+            alert('User account not found.');
+            // Reset button state
+            transferButton.disabled = false;
+            transferButtonText.textContent = 'Transfer';
+            transferButtonSpinner.classList.add('hidden');
+            transferButtonArrow.classList.remove('hidden');
+            return;
+        }
+        
+        const userData = userDoc.data();
+        let accountBalance = 0;
+        let accountType = '';
+        
+        // Get balance based on selected funding source (per Firestore schema):
+        // - Checking = deposit
+        // - Savings  = fixed
+        // Handle both string and number formats.
+        if (fundingSource === 'fixed_offshore') {
+            // Checking Offshore -> Firestore field: deposit
+            const checkingValue = userData.deposit ?? 0;
+            accountBalance = typeof checkingValue === 'string'
+                ? parseFloat(checkingValue.replace(/[^0-9.-]/g, '')) || 0
+                : parseFloat(checkingValue) || 0;
+            accountType = 'Checking Offshore';
+        } else if (fundingSource === 'savings_offshore') {
+            // Savings Offshore -> Firestore field: fixed
+            const savingsValue = userData.fixed ?? 0;
+            accountBalance = typeof savingsValue === 'string'
+                ? parseFloat(savingsValue.replace(/[^0-9.-]/g, '')) || 0
+                : parseFloat(savingsValue) || 0;
+            accountType = 'Savings Offshore';
+        }
+        
+        // Ensure accountBalance is a valid number
+        if (isNaN(accountBalance) || accountBalance < 0) {
+            accountBalance = 0;
+        }
+        
+        console.log('Balance check on transfer:', {
+            fundingSource,
+            accountType,
+            enteredAmount: withdrawCash,
+            accountBalance,
+            rawUserData: {
+                deposit: userData.deposit,
+                fixed: userData.fixed,
+                // legacy/extra fields (kept only for debugging)
+                savings: userData.savings,
+                checking: userData.checking,
+                wallet: userData.wallet,
+                profit: userData.profit,
+                fixed_offshore: userData.fixed_offshore,
+                savings_offshore: userData.savings_offshore
+            }
+        });
+        
+        // Check if entered amount exceeds available balance (use >= to be safe)
+        if (withdrawCash > accountBalance || withdrawCash <= 0) {
+            // Show insufficient balance error and STOP - don't show PIN modal
+            if (insufficientBalanceError) {
+                insufficientBalanceError.innerHTML = `
+                    <i class="fas fa-exclamation-triangle text-red-600"></i>
+                    <span>Insufficient funds available in ${accountType}</span>
+                `;
+                insufficientBalanceError.classList.remove('hidden');
+            }
+            // Scroll to error message
+            insufficientBalanceError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Reset button state
+            transferButton.disabled = false;
+            transferButtonText.textContent = 'Transfer';
+            transferButtonSpinner.classList.add('hidden');
+            transferButtonArrow.classList.remove('hidden');
+            return; // Stop here - don't show PIN modal
+        }
+        
+        // If balance is sufficient, proceed to show PIN modal
+        // Keep button in processing state while showing PIN modal
+        transferButtonText.textContent = 'Verifying...';
+        
+        // Small delay for UX, then show PIN modal
+        setTimeout(() => {
+            document.getElementById('securityPinModal').classList.remove('hidden');
+            // Reset button state after showing PIN modal
+            transferButton.disabled = false;
+            transferButtonText.textContent = 'Transfer';
+            transferButtonSpinner.classList.add('hidden');
+            transferButtonArrow.classList.remove('hidden');
+        }, 500);
+        
+    } catch (error) {
+        console.error('Error checking balance:', error);
+        alert('Error checking account balance. Please try again.');
+        
+        // Reset button state on error
+        transferButton.disabled = false;
+        transferButtonText.textContent = 'Transfer';
+        transferButtonSpinner.classList.add('hidden');
+        transferButtonArrow.classList.remove('hidden');
     }
 }
 

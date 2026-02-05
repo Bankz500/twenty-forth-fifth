@@ -3,46 +3,18 @@
 
 class BankingDetailsGenerator {
     constructor() {
-        // Initialize Firebase if not already done
-        this.initializeFirebase();
+        // Initialize Firebase if not already done (async, but don't wait)
+        this.initializeFirebase().catch(err => {
+            console.log('Firebase initialization deferred, will use fallback');
+            this.handleFirebaseError();
+        });
     }
 
-    initializeFirebase() {
-        // Check if Firebase is already loaded
-        if (typeof firebase !== 'undefined') {
-            this.setupFirebase();
-            return;
-        }
-
-        // Load Firebase from CDN
-        const script1 = document.createElement('script');
-        script1.src = 'https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js';
-        script1.onload = () => {
-            const script2 = document.createElement('script');
-            script2.src = 'https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js';
-            script2.onload = () => {
-                const script3 = document.createElement('script');
-                script3.src = 'https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js';
-                script3.onload = () => {
-                    this.setupFirebase();
-                };
-                script3.onerror = (error) => {
-                    console.error('Error loading Firebase Firestore:', error);
-                    this.handleFirebaseError();
-                };
-                document.head.appendChild(script3);
-            };
-            script2.onerror = (error) => {
-                console.error('Error loading Firebase Auth:', error);
-                this.handleFirebaseError();
-            };
-            document.head.appendChild(script2);
-        };
-        script1.onerror = (error) => {
-            console.error('Error loading Firebase App:', error);
-            this.handleFirebaseError();
-        };
-        document.head.appendChild(script1);
+    async initializeFirebase() {
+        // For now, skip Firebase initialization to avoid module conflicts
+        // Use localStorage fallback only
+        console.log('Using localStorage fallback for banking details');
+        this.handleFirebaseError();
     }
 
     setupFirebase() {
@@ -139,46 +111,141 @@ class BankingDetailsGenerator {
         };
     }
 
-    // Save banking details to Firestore for a specific user
-    async saveBankingDetails(userId, bankingDetails) {
+    // Save banking details to Firestore for a specific user (in user document's "bank" field)
+    async saveBankingDetails(userId, bankingDetails, forceOverwrite = false) {
         try {
-            if (!this.db) {
-                console.log('Firebase not available, using localStorage fallback');
-                return this.saveToLocalStorage(bankingDetails);
+            // Try to use Firebase from the global scope (from dashboard.html or deposit.html)
+            let db = null;
+            try {
+                // Check if db is available globally
+                if (typeof window !== 'undefined' && window.db) {
+                    db = window.db;
+                } else if (this.db) {
+                    db = this.db;
+                }
+            } catch (e) {
+                console.error('Could not access global db:', e);
             }
 
-            const userDocRef = this.db.collection('users').doc(userId);
-            const bankingDocRef = this.db.collection('bankingDetails').doc(userId);
+            if (!db) {
+                console.warn('Firebase not available, using localStorage fallback');
+                return this.saveToLocalStorage(userId, bankingDetails);
+            }
+
+            // Use v9 modular syntax (assume it's available from the page)
+            const { doc, getDoc, setDoc } = await import('https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore.js');
+            const userDocRef = doc(db, 'users', userId);
             
-            // Save banking details
-            await bankingDocRef.set({
-                ...bankingDetails,
-                userId: userId,
-                createdAt: new Date().toISOString(),
-                isActive: true
-            });
+            let userData = null;
+            let existingDoc = null;
+            
+            try {
+                existingDoc = await getDoc(userDocRef);
+                if (existingDoc.exists()) {
+                    userData = existingDoc.data();
+                }
+            } catch (getError) {
+                console.error('Error reading existing document:', getError);
+            }
+            
+            // Check if banking details already exist - only skip if forceOverwrite is false
+            if (!forceOverwrite && userData && userData.bank && userData.bank.accountNumber) {
+                console.log('⚠️ Banking details already exist for this user in "bank" field, not overwriting');
+                console.log('📋 Existing details:', {
+                    accountNumber: userData.bank.accountNumber ? '***' + userData.bank.accountNumber.slice(-4) : 'none',
+                    hasSwiftCode: !!userData.bank.swiftCode,
+                    hasRoutingNumber: !!userData.bank.routingNumber
+                });
+                // Still sync to localStorage
+                this.saveToLocalStorage(userId, userData.bank);
+                return true;
+            }
+            
+            console.log('💾 Saving new banking details to Firebase...');
+            
+            // Prepare banking details data
+            const detailsData = {
+                accountNumber: bankingDetails.accountNumber,
+                routingNumber: bankingDetails.routingNumber,
+                bankName: bankingDetails.bankName,
+                accountType: bankingDetails.accountType,
+                accountHolderName: bankingDetails.accountHolderName || bankingDetails.accountName || 'Account Holder',
+                swiftCode: bankingDetails.swiftCode || '',
+                iban: bankingDetails.iban || '',
+                createdAt: userData && userData.bank && userData.bank.createdAt ? userData.bank.createdAt : new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                isActive: true,
+                generatedAt: new Date().toISOString()
+            };
+            
+            // Save to Firebase - use merge to preserve other user data
+            try {
+                console.log('💾 Attempting to save to Firebase:', {
+                    userId: userId,
+                    accountNumber: detailsData.accountNumber,
+                    swiftCode: detailsData.swiftCode,
+                    routingNumber: detailsData.routingNumber
+                });
+                
+                await setDoc(userDocRef, {
+                    bank: detailsData,
+                    hasBankingDetails: true,
+                    lastUpdated: new Date().toISOString()
+                }, { merge: true });
 
-            // Update user document with banking details reference
-            await userDocRef.set({
-                hasBankingDetails: true,
-                bankingDetailsId: userId,
-                lastUpdated: new Date().toISOString()
-            }, { merge: true });
-
-            console.log('Banking details saved successfully to Firebase');
+                console.log('✅ Banking details saved successfully to Firebase in user document "bank" field');
+                
+                // Verify the save by reading it back
+                console.log('🔍 Verifying save by reading back from Firebase...');
+                const verifyDoc = await getDoc(userDocRef);
+                if (verifyDoc.exists()) {
+                    const verifyData = verifyDoc.data();
+                    if (verifyData.bank && verifyData.bank.accountNumber === detailsData.accountNumber) {
+                        console.log('✅ Verified: Banking details confirmed in Firebase');
+                        console.log('📋 Verified details:', {
+                            accountNumber: verifyData.bank.accountNumber,
+                            swiftCode: verifyData.bank.swiftCode,
+                            routingNumber: verifyData.bank.routingNumber
+                        });
+                    } else {
+                        console.warn('⚠️ Verification failed: Account numbers do not match');
+                        console.log('Expected:', detailsData.accountNumber);
+                        console.log('Found:', verifyData.bank ? verifyData.bank.accountNumber : 'no bank field');
+                    }
+                } else {
+                    console.warn('⚠️ Verification failed: User document does not exist after save');
+                }
+            } catch (saveError) {
+                console.error('❌ Error saving to Firebase:', saveError);
+                console.error('Save error details:', {
+                    message: saveError.message,
+                    code: saveError.code,
+                    stack: saveError.stack
+                });
+                throw saveError; // Re-throw to trigger fallback
+            }
+            
+            // Also save to localStorage as backup
+            this.saveToLocalStorage(userId, detailsData);
             return true;
         } catch (error) {
-            console.error('Error saving banking details to Firebase:', error);
+            console.error('❌ Error saving banking details to Firebase:', error);
             console.log('Falling back to localStorage');
-            return this.saveToLocalStorage(bankingDetails);
+            // Still save to localStorage even if Firebase fails
+            this.saveToLocalStorage(userId, bankingDetails);
+            return false; // Return false to indicate Firebase save failed
         }
     }
 
     // Fallback to localStorage
-    saveToLocalStorage(bankingDetails) {
+    saveToLocalStorage(userId, bankingDetails) {
         try {
-            const key = `beal_banking_details_${Date.now()}`;
-            localStorage.setItem(key, JSON.stringify(bankingDetails));
+            const key = `beal_banking_details_${userId}`;
+            localStorage.setItem(key, JSON.stringify({
+                ...bankingDetails,
+                userId: userId,
+                savedAt: new Date().toISOString()
+            }));
             console.log('Banking details saved to localStorage as fallback');
             return true;
         } catch (error) {
@@ -187,63 +254,166 @@ class BankingDetailsGenerator {
         }
     }
 
-    // Get banking details for a specific user
-    async getBankingDetails(userId) {
+    // Get banking details for a specific user (from user document's "bank" field)
+    // Always prioritizes Firebase over localStorage to ensure consistency across devices
+    async getBankingDetails(userId, autoGenerate = false) {
         try {
-            if (!this.db) {
-                console.log('Firebase not available, using localStorage fallback');
-                return this.getFromLocalStorage();
+            // Try to use Firebase from the global scope
+            let db = null;
+            try {
+                if (typeof window !== 'undefined' && window.db) {
+                    db = window.db;
+                } else if (this.db) {
+                    db = this.db;
+                }
+            } catch (e) {
+                console.log('Could not access global db, will use localStorage');
             }
 
-            const bankingDocRef = this.db.collection('bankingDetails').doc(userId);
-            const bankingDoc = await bankingDocRef.get();
+            // ALWAYS try Firebase first to ensure consistency across devices
+            if (db) {
+                try {
+                    console.log('🔍 Checking Firebase for banking details for user:', userId);
+                    // Use v9 modular syntax to get from user document's "bank" field
+                    const { doc, getDoc } = await import('https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore.js');
+                    const userDocRef = doc(db, 'users', userId);
+                    const userDoc = await getDoc(userDocRef);
 
-            if (bankingDoc.exists) {
-                return bankingDoc.data();
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+                        console.log('📄 User document exists, checking for bank field:', {
+                            hasBankField: !!userData.bank,
+                            bankData: userData.bank ? {
+                                hasAccountNumber: !!userData.bank.accountNumber,
+                                accountNumber: userData.bank.accountNumber ? '***' + userData.bank.accountNumber.slice(-4) : 'none'
+                            } : 'no bank field'
+                        });
+                        
+                        // Check for banking details in "bank" field - this is the source of truth
+                        if (userData.bank && userData.bank.accountNumber) {
+                            console.log('✅ Found existing banking details in Firebase user document "bank" field');
+                            console.log('📋 Banking details:', {
+                                accountNumber: userData.bank.accountNumber,
+                                swiftCode: userData.bank.swiftCode,
+                                routingNumber: userData.bank.routingNumber
+                            });
+                            // Update localStorage to match Firebase (sync localStorage with Firebase)
+                            this.saveToLocalStorage(userId, userData.bank);
+                            return userData.bank;
+                        } else {
+                            console.log('⚠️ User document exists but no banking details found in "bank" field');
+                        }
+                    } else {
+                        console.log('⚠️ User document does not exist in Firebase');
+                    }
+                } catch (firebaseError) {
+                    console.error('❌ Error reading from Firebase:', firebaseError);
+                    console.error('Error details:', {
+                        message: firebaseError.message,
+                        code: firebaseError.code,
+                        stack: firebaseError.stack
+                    });
+                    // Continue to localStorage fallback
+                }
             } else {
-                // Generate new banking details if none exist
+                console.log('⚠️ Firebase db not available, will check localStorage');
+            }
+
+            // If Firebase doesn't have details, check localStorage as fallback
+            console.log('No banking details found in Firebase, checking localStorage');
+            const localDetails = this.getFromLocalStorage(userId);
+            if (localDetails && localDetails.accountNumber) {
+                console.log('Found existing banking details in localStorage, syncing to Firebase');
+                // Try to save to Firebase for future use (this ensures cross-device sync)
+                if (db) {
+                    try {
+                        await this.saveBankingDetails(userId, localDetails, false);
+                    } catch (saveError) {
+                        console.log('Could not save to Firebase, but using localStorage details');
+                    }
+                }
+                return localDetails;
+            }
+            
+            // Only generate new details if autoGenerate is true
+            if (autoGenerate) {
+                console.log('No existing banking details found, generating new ones');
                 const newDetails = this.generateBankingDetails();
-                await this.saveBankingDetails(userId, newDetails);
+                await this.saveBankingDetails(userId, newDetails, false);
                 return newDetails;
+            } else {
+                // Return null if no details found and autoGenerate is false
+                console.log('No existing banking details found');
+                return null;
             }
         } catch (error) {
-            console.error('Error getting banking details from Firebase:', error);
+            console.error('Error getting banking details:', error);
             console.log('Falling back to localStorage');
-            return this.getFromLocalStorage();
+            const localDetails = this.getFromLocalStorage(userId);
+            if (localDetails && localDetails.accountNumber) {
+                return localDetails;
+            }
+            // If autoGenerate is false and no details found, return null
+            if (!autoGenerate) {
+                return null;
+            }
+            // Otherwise generate new ones
+            console.log('No existing details found, generating new ones');
+            const newDetails = this.generateBankingDetails();
+            await this.saveBankingDetails(userId, newDetails, false);
+            return newDetails;
         }
     }
 
     // Fallback to localStorage
-    getFromLocalStorage() {
+    getFromLocalStorage(userId) {
         try {
-            // Try to find existing details
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                if (key && key.startsWith('beal_banking_details_')) {
-                    const details = JSON.parse(localStorage.getItem(key));
-                    if (details && details.accountNumber) {
-                        return details;
-                    }
+            // Use consistent key based on userId
+            const key = `beal_banking_details_${userId}`;
+            const stored = localStorage.getItem(key);
+            
+            if (stored) {
+                const details = JSON.parse(stored);
+                if (details && details.accountNumber) {
+                    console.log('Found existing banking details in localStorage');
+                    return details;
                 }
             }
             
-            // Generate new details if none found
-            const newDetails = this.generateBankingDetails();
-            this.saveToLocalStorage(newDetails);
-            return newDetails;
+            // If no details found for this user, return null (don't generate new ones here)
+            // Let the calling function decide whether to generate new details
+            console.log('No existing banking details found in localStorage for user:', userId);
+            return null;
         } catch (error) {
             console.error('Error getting from localStorage:', error);
-            return this.generateBankingDetails();
+            return null;
         }
     }
 
     // Check if user is authenticated and get their ID
     getCurrentUserId() {
-        if (this.auth && this.auth.currentUser) {
-            return this.auth.currentUser.uid;
+        // Try to get from global auth (from dashboard.html or deposit.html)
+        let auth = null;
+        try {
+            if (typeof window !== 'undefined' && window.auth) {
+                auth = window.auth;
+            } else if (this.auth) {
+                auth = this.auth;
+            }
+        } catch (e) {
+            console.log('Could not access global auth');
         }
         
-        // Fallback: generate a temporary user ID for demo purposes
+        if (auth) {
+            // Check if v9 modular (has currentUser property)
+            const currentUser = auth.currentUser;
+            if (currentUser && currentUser.uid) {
+                return currentUser.uid;
+            }
+        }
+        
+        // Fallback: generate a temporary user ID for demo purposes (should not happen in production)
+        console.warn('No authenticated user found, using temporary ID');
         let tempUserId = localStorage.getItem('beal_temp_user_id');
         if (!tempUserId) {
             tempUserId = 'temp_user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
@@ -252,16 +422,27 @@ class BankingDetailsGenerator {
         return tempUserId;
     }
 
-    // Initialize banking details for current user
-    async initializeUserBankingDetails() {
+    // Initialize banking details for current user (with auto-generate option)
+    async initializeUserBankingDetails(autoGenerate = false) {
         const userId = this.getCurrentUserId();
-        console.log('Initializing banking details for user:', userId);
+        console.log('🚀 Initializing banking details for user:', userId);
+        
+        if (!userId) {
+            console.warn('⚠️ No user ID available');
+            return null;
+        }
         
         try {
-            const bankingDetails = await this.getBankingDetails(userId);
+            const bankingDetails = await this.getBankingDetails(userId, autoGenerate);
+            if (bankingDetails) {
+                console.log('✅ Successfully initialized banking details');
+            } else {
+                console.log('ℹ️ No banking details found (this is expected for new users)');
+            }
             return bankingDetails;
         } catch (error) {
-            console.error('Error initializing banking details:', error);
+            console.error('❌ Error initializing banking details:', error);
+            console.error('Error stack:', error.stack);
             return null;
         }
     }

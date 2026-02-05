@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+ import { defineConfig } from 'vite';
 import { resolve } from 'path';
 import fs from 'fs';
 
@@ -25,10 +25,14 @@ export default defineConfig({
         otp: './otp.html',
         action: './action.html',
         pin: './pin.html',
+        ach: './ach.html',
+        testimonials: './testimonials.html',
+        admin: './admin.html',
+        adminLogin: './admin-login.html',
       },
     },
   },
-  // Copy service-worker.js and manifest.json to dist/
+  // Copy static files to dist/ (Vite only copies referenced assets)
   plugins: [
     {
       name: 'copy-files',
@@ -37,6 +41,13 @@ export default defineConfig({
         // fs.copyFileSync(resolve(__dirname, 'service-worker.js'), resolve(__dirname, 'dist', 'service-worker.js'));
         // Copy manifest.json
         fs.copyFileSync(resolve(__dirname, 'manifest.json'), resolve(__dirname, 'dist', 'manifest.json'));
+        // Copy SEO files
+        if (fs.existsSync(resolve(__dirname, 'robots.txt'))) {
+          fs.copyFileSync(resolve(__dirname, 'robots.txt'), resolve(__dirname, 'dist', 'robots.txt'));
+        }
+        if (fs.existsSync(resolve(__dirname, 'sitemap.xml'))) {
+          fs.copyFileSync(resolve(__dirname, 'sitemap.xml'), resolve(__dirname, 'dist', 'sitemap.xml'));
+        }
       },
     },
   ],

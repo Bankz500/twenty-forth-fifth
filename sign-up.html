@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Beal Offshore Ltd Sign Up</title>
     <link rel="manifest" href="manifest.json">
@@ -284,7 +284,7 @@
         import firebaseConfig from './firebase-config.js';
     </script>
 </head>
-<body class="font-sans antialiased" style="background-image: url('/Users/circo-mac005/Documents/Beal Offshore Ltd/7.png'); background-repeat: no-repeat; background-size: cover;">
+<body class="font-sans antialiased" style="background-image: url('7.png'); background-repeat: no-repeat; background-size: cover;">
 
     <!-- Navbar -->
 <nav class="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 p-4 z-50">
@@ -444,7 +444,7 @@ overlay.onclick = closeMenu;
 <div class="flex items-center justify-center min-h-screen p-4 mt-8 md:mt-24 animate__animated animate__fadeIn">
     <div class="account-card flex flex-col md:flex-row overflow-hidden max-w-5xl w-full">
         <!-- Form Sections Container -->
-        <div class="w-full md:w-3/5 p-8 relative">
+        <div class="w-full md:w-3/5 p-8 relative pt-16 md:pt-8">
             <!-- Progress Steps Indicator -->
             <div class="step-indicator mb-8" id="step-indicator">
                 <div class="step active flex-1" id="step-0-indicator">
@@ -531,6 +531,15 @@ overlay.onclick = closeMenu;
                         <div>
                             <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
                             <input type="email" id="email" name="email" required placeholder="Enter your email" 
+                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent placeholder-gray-400">
+                        </div>
+                    </div>
+                    
+                    <div class="input-with-icon">
+                        <i class="fas fa-phone input-icon"></i>
+                        <div>
+                            <label for="phone-number" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                            <input type="tel" id="phone-number" name="phone-number" required placeholder="Enter your phone number" 
                                 class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent placeholder-gray-400">
                         </div>
                     </div>
@@ -689,6 +698,15 @@ overlay.onclick = closeMenu;
                         </div>
                     </div>
                     
+                    <div class="input-with-icon">
+                        <i class="fas fa-phone input-icon"></i>
+                        <div>
+                            <label for="business-phone-number" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                            <input type="tel" id="business-phone-number" name="business-phone-number" required placeholder="Enter your phone number" 
+                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent placeholder-gray-400">
+                        </div>
+                    </div>
+                    
                     <div class="flex space-x-4 pt-4">
                         <button type="button" id="back-to-personal-details-business" class="w-1/3 bg-gray-200 text-gray-800 py-4 rounded-lg font-medium text-base transition duration-300 hover:bg-gray-300">
                             <i class="fas fa-arrow-left mr-2"></i>Back
@@ -800,6 +818,8 @@ overlay.onclick = closeMenu;
                 document.getElementById("step-0").classList.add("hidden");
                 document.getElementById("step-1").classList.remove("hidden");
                 document.getElementById("step-1").classList.add("animate-fade-in");
+                // Scroll to top of form on mobile
+                document.querySelector('.account-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 300);
         });
     });
@@ -863,13 +883,26 @@ overlay.onclick = closeMenu;
 
             // Proceed to the next step based on account type
             document.getElementById("step-1").classList.add("hidden");
+            
+            // Hide both step 2 forms first
+            document.getElementById("step-2-personal").classList.add("hidden");
+            document.getElementById("step-2-business").classList.add("hidden");
+            
+            // Show the appropriate step 2 form
             if (selectedAccountType === 'personal') {
                 document.getElementById("step-2-personal").classList.remove("hidden");
                 document.getElementById("step-2-personal").classList.add("animate-fade-in");
-            } else {
+            } else if (selectedAccountType === 'business') {
                 document.getElementById("step-2-business").classList.remove("hidden");
                 document.getElementById("step-2-business").classList.add("animate-fade-in");
+            } else {
+                console.error("Unknown account type:", selectedAccountType);
             }
+            
+            // Scroll to top of form on mobile
+            setTimeout(() => {
+                document.querySelector('.account-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
         }, 500);
     });
 
@@ -977,6 +1010,7 @@ overlay.onclick = closeMenu;
                 userData.businessType = document.getElementById("business-type").value.trim();
                 userData.businessEin = document.getElementById("business-ein").value.trim();
                 userData.businessCert = document.getElementById("business-cert").value.trim();
+                userData.phoneNumber = document.getElementById("business-phone-number").value.trim();
             }
 
             // Save user data to Firestore
@@ -1075,8 +1109,9 @@ overlay.onclick = closeMenu;
         const businessType = document.getElementById("business-type").value.trim();
         const businessEin = document.getElementById("business-ein").value.trim();
         const businessCert = document.getElementById("business-cert").value.trim();
+        const businessPhoneNumber = document.getElementById("business-phone-number").value.trim();
 
-        if (!businessName || !businessType || !businessEin || !businessCert) {
+        if (!businessName || !businessType || !businessEin || !businessCert || !businessPhoneNumber) {
             alert("All business fields are required.");
             return;
         }
@@ -1199,21 +1234,11 @@ overlay.onclick = closeMenu;
             <p class="text-gray-600 text-sm">
                 © 2025 Beal Offshore Ltd. Powered by Menta Digital Marketing Inc.
             </p>
-            <div class="flex justify-center mt-6 space-x-6">
-                <a href="#facebook" class="text-gray-600 hover:text-gray-800 transition duration-300">
-                    <i class="fab fa-facebook text-2xl"></i>
-                </a>
-                <a href="#" class="text-gray-600 hover:text-gray-800 transition duration-300">
-                    <i class="fab fa-instagram text-2xl"></i>
-                </a>
-            </div>
         </div>
     </footer>
 
-<!-- Email Button -->
-<a href="https://wa.me/13657758413" target="_blank" class="fixed bottom-16 right-6">
-    <img src="Chat bot.png" alt="Chat with us on Telegram" class="w-16 h-18">
-</a>
+<!-- Live Chat Widget -->
+<script src="live-chat-widget.js"></script>
 
 <!-- Spinner -->
 <div id="spinner" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
