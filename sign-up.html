@@ -531,20 +531,21 @@ window.onload = function () {
 
             <!-- Form Section: Step 2 - Personal Account Address & Phone -->
             <div id="step-2-personal" class="hidden">
-                <div class="text-center mb-8">
-                    <h2 class="text-3xl font-bold text-blue-950 mb-3">Contact Information</h2>
-                    <p class="text-blue-800 text-base max-w-lg mx-auto">
-                        Please provide your address and phone number to complete your account setup.
-                    </p>
+                <div class="mb-6">
+                    <div class="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 rounded-full px-4 py-2 shadow-sm mb-4">
+                        <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+                        <span class="text-blue-800 text-xs font-semibold uppercase tracking-wider">Account Setup</span>
+                    </div>
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-blue-950 mb-2">account setup.</h2>
                 </div>
                 
-                <form id="personal-address-form" class="space-y-3">
+                <form id="personal-address-form" class="space-y-4">
                     <div class="input-with-icon">
                         <i class="fas fa-phone input-icon"></i>
                         <div>
                             <label for="phone-number" class="block text-sm font-medium text-blue-950 mb-1">Phone Number</label>
                             <input type="tel" id="phone-number" name="phone-number" required placeholder="Enter your phone number" 
-                                class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400">
+                                class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400 text-blue-950">
                         </div>
                     </div>
                     
@@ -553,7 +554,7 @@ window.onload = function () {
                         <div>
                             <label for="home-address" class="block text-sm font-medium text-blue-950 mb-1">Home Address</label>
                             <input type="text" id="home-address" name="home-address" required placeholder="Enter your home address" 
-                                class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400">
+                                class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400 text-blue-950">
                         </div>
                     </div>
                     
@@ -562,17 +563,28 @@ window.onload = function () {
                         <div>
                             <label for="billing-address" class="block text-sm font-medium text-blue-950 mb-1">Billing Address</label>
                             <input type="text" id="billing-address" name="billing-address" required placeholder="Enter your billing address" 
-                                class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400">
+                                class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400 text-blue-950">
                         </div>
+                    </div>
+                    
+                    <div class="flex items-start space-x-3 pt-2">
+                        <input type="checkbox" id="personal-terms-confirm" required class="mt-1 w-5 h-5 text-blue-950 border-2 border-blue-200 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer">
+                        <label for="personal-terms-confirm" class="text-sm text-blue-950 leading-relaxed cursor-pointer">
+                            I confirm that the information provided above is correct and all holders are in mutual understanding. I agree to the <a href="terms.html" class="text-blue-600 font-medium underline hover:text-blue-800">terms and conditions</a> of opening a joint account.
+                        </label>
                     </div>
                     
                     <div class="flex space-x-4 pt-4">
                         <button type="button" id="back-to-personal-details" class="w-1/3 bg-blue-100 text-blue-950 py-4 rounded-xl font-medium text-base transition duration-300 hover:bg-blue-200">
-                            <i class="fas fa-arrow-left mr-2"></i>Back
+                            <i class="fas fa-arrow-left mr-2"></i>← Back
                         </button>
                         <button type="submit" id="create-personal-account-btn" data-no-loading="true" class="w-2/3 btn-gradient text-white py-4 rounded-xl font-medium text-base transition duration-300">
                             Create Account
                         </button>
+                    </div>
+                    
+                    <div class="text-center pt-2">
+                        <p class="text-blue-800 text-sm">Already have an account? <a href="login.html" class="text-blue-600 font-medium hover:text-blue-800 transition duration-200 hover:underline">Log in</a></p>
                     </div>
                 </form>
             </div>
@@ -643,39 +655,42 @@ window.onload = function () {
                 </form>
             </div>
 
-            <div class="mt-8 text-center">
-                <p class="text-blue-800">Already have an account? <a href="login.html" class="text-blue-600 font-medium hover:text-blue-800 transition duration-200 hover:underline">Log in</a></p>
-            </div>
         </div>
 
-        <!-- Visual Section (no image) -->
-        <div class="hidden sm:block w-full sm:w-1/2 bg-gradient-to-br from-blue-700 to-blue-900 relative overflow-hidden">
+        <!-- Visual Section - Account Protection Panel -->
+        <div class="hidden md:block w-full md:w-2/5 bg-gradient-to-br from-blue-700 to-blue-900 relative overflow-hidden">
             <div class="absolute -inset-10 bg-gradient-to-tr from-blue-300/25 via-transparent to-indigo-400/40 opacity-70"></div>
-            <div class="absolute inset-0 flex flex-col justify-center p-10 text-white">
-                <div class="max-w-sm space-y-6">
+            <div class="relative h-full flex flex-col justify-center p-8 md:p-10 text-white">
+                <div class="space-y-6">
                     <div class="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-2 shadow-sm">
                         <span class="w-2 h-2 rounded-full bg-emerald-300"></span>
-                        <span class="text-xs font-semibold tracking-widest uppercase">Account protection</span>
+                        <span class="text-xs font-semibold tracking-widest uppercase">ACCOUNT PROTECTION</span>
                     </div>
 
                     <div>
-                        <h3 class="text-2xl font-bold mb-2">Built‑in verification</h3>
-                        <p class="text-sm text-blue-100/90">
+                        <h3 class="text-2xl font-bold mb-2">Built-in verification</h3>
+                        <p class="text-sm text-blue-100/90 leading-relaxed">
                             Extra checks and secure flows help protect new accounts and support ongoing access to your Twenty Third & Forth profile.
                         </p>
                     </div>
 
-                    <ul class="space-y-2 text-sm text-blue-50">
-                        <li class="flex items-center gap-2">
-                            <i class="fas fa-shield-alt text-emerald-300"></i>
-                            <span>Verification steps during sign‑up</span>
+                    <ul class="space-y-3 text-sm text-blue-50">
+                        <li class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-shield-alt text-emerald-300"></i>
+                            </div>
+                            <span>Verification steps during sign-up</span>
                         </li>
-                        <li class="flex items-center gap-2">
-                            <i class="fas fa-lock text-emerald-300"></i>
+                        <li class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-lock text-emerald-300"></i>
+                            </div>
                             <span>Secure password requirements and checks</span>
                         </li>
-                        <li class="flex items-center gap-2">
-                            <i class="fas fa-user-check text-emerald-300"></i>
+                        <li class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-user-check text-emerald-300"></i>
+                            </div>
                             <span>Support for KYC and compliance reviews</span>
                         </li>
                     </ul>
@@ -924,14 +939,14 @@ window.onload = function () {
     import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
     // Firebase configuration
-        const firebaseConfig = {
-    apiKey: "AIzaSyBb9sVH4fMb-a5mQgcDjAfYT9RZHTb3sKE",
-    authDomain: "twenty-third-forth.firebaseapp.com",
-    projectId: "twenty-third-forth",
-    storageBucket: "twenty-third-forth.firebasestorage.app",
-    messagingSenderId: "835548579831",
-    appId: "1:835548579831:web:5259f071b50341af28d0f2",
-    measurementId: "G-KEMCE9679Y"
+    const firebaseConfig = {
+        apiKey: "AIzaSyDk8K22XfrsAQAX7WarxSq_BnwO1YQLDSc",
+        authDomain: "twenty-third-forth-ee57c.firebaseapp.com",
+        projectId: "twenty-third-forth-ee57c",
+        storageBucket: "twenty-third-forth-ee57c.firebasestorage.app",
+        messagingSenderId: "47210898997",
+        appId: "1:47210898997:web:d25c23eee45a7660cef37c",
+        measurementId: "G-ESYD665GWG"
     };
 
 
@@ -1355,13 +1370,13 @@ window.onload = function () {
 <script>
     // Initialize Firebase Compat for Joint Account
     const firebaseCompatConfig = {
-        apiKey: "AIzaSyBb9sVH4fMb-a5mQgcDjAfYT9RZHTb3sKE",
-        authDomain: "twenty-third-forth.firebaseapp.com",
-        projectId: "twenty-third-forth",
-        storageBucket: "twenty-third-forth.firebasestorage.app",
-        messagingSenderId: "835548579831",
-        appId: "1:835548579831:web:5259f071b50341af28d0f2",
-        measurementId: "G-KEMCE9679Y"
+        apiKey: "AIzaSyDk8K22XfrsAQAX7WarxSq_BnwO1YQLDSc",
+        authDomain: "twenty-third-forth-ee57c.firebaseapp.com",
+        projectId: "twenty-third-forth-ee57c",
+        storageBucket: "twenty-third-forth-ee57c.firebasestorage.app",
+        messagingSenderId: "47210898997",
+        appId: "1:47210898997:web:d25c23eee45a7660cef37c",
+        measurementId: "G-ESYD665GWG"
     };
     if (!firebase.apps.length) {
         firebase.initializeApp(firebaseCompatConfig);
@@ -1725,62 +1740,6 @@ window.onload = function () {
                     </div>
                     
                     <div class="flex items-start space-x-3">
-                        <input id="joint-confirm" type="checkbox" required class="mt-1 w-5 h-5 text-blue-950 border-2 border-blue-200 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer" />
-                        <label for="joint-confirm" class="text-sm text-blue-950 leading-relaxed cursor-pointer">
-                            <span class="font-semibold text-blue-950">I confirm</span> that the information provided above is correct and all holders are in mutual understanding. I agree to the <span class="text-blue-950 font-medium underline">terms and conditions</span> of opening a joint account.
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Submit and Cancel Buttons -->
-                <div class="pt-4 flex gap-4">
-                    <button type="button" id="cancel-joint-modal-btn" class="flex-1 bg-white border-2 border-blue-200 hover:border-gray-400 text-blue-950 hover:text-blue-950 py-4 px-6 rounded-xl transition-all duration-200 font-semibold text-base shadow-sm hover:shadow-md">
-                        Cancel
-                    </button>
-                    <button id="joint-submit-btn" type="submit" class="flex-1 bg-gray-900 hover:bg-gray-800 text-white py-4 px-6 rounded-xl transition-all duration-200 font-semibold text-base shadow-md hover:shadow-lg flex items-center justify-center space-x-2">
-                        <span>Create Joint Account</span>
-                        <i class="fas fa-arrow-right"></i>
-                    </button>
-                </div>
-
-                <!-- Status Message -->
-                <p id="joint-form-status" class="text-sm text-center text-blue-800"></p>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Joint Account Success Modal -->
-<div id="joint-success-modal" class="fixed inset-0 z-50 hidden">
-    <div id="success-backdrop" class="absolute inset-0 bg-black bg-opacity-50"></div>
-    <div class="relative mx-auto my-12 max-w-md bg-white rounded-xl shadow-lg p-8">
-        <div class="text-center">
-            <!-- Success Icon -->
-            <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-50 mb-6">
-                <i class="fas fa-check-circle text-blue-950 text-3xl"></i>
-            </div>
-            
-            <!-- Success Message -->
-            <h3 class="text-xl font-semibold text-blue-950 mb-4">Joint Account Registration in Progress</h3>
-            
-            <div class="space-y-3 text-blue-800 mb-6">
-                <p>Please be informed that a verification link has been sent to both account holders to complete the registration process.</p>
-                <p>We will review your application and get back to you within 2-3 business days regarding your registration status.</p>
-            </div>
-            
-            <!-- Close Button -->
-            <button id="close-success-modal-btn" class="w-full bg-gray-900 hover:bg-gray-800 text-white py-3 px-6 rounded-xl transition duration-300 font-medium">
-                Close
-            </button>
-        </div>
-    </div>
-</div>
-  <script src="./components/site-shell.js"></script>
-  <!-- Include Font Awesome -->
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-  <div data-include="components/cookie-consent.html"></div>
-</body>
-</html>
                         <input id="joint-confirm" type="checkbox" required class="mt-1 w-5 h-5 text-blue-950 border-2 border-blue-200 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer" />
                         <label for="joint-confirm" class="text-sm text-blue-950 leading-relaxed cursor-pointer">
                             <span class="font-semibold text-blue-950">I confirm</span> that the information provided above is correct and all holders are in mutual understanding. I agree to the <span class="text-blue-950 font-medium underline">terms and conditions</span> of opening a joint account.
