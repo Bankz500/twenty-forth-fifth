@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" fill="none">
+  <title>FCCU onboarding welcome illustration</title>
+  <desc>Monochrome human line illustration: person with laptop and bank building, offshore theme.</desc>
+  <g stroke="#111827" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Bank building -->
+    <path d="M610 150l190 90v22H420v-22l190-90z"/>
+    <path d="M450 262v170m70-170v170m70-170v170m70-170v170"/>
+    <path d="M420 432h380"/>
+    <path d="M520 200h180"/>
+    <path d="M540 200v-34h140v34"/>
+    <!-- Waves -->
+    <path d="M90 448c56-52 110-52 166 0s110 52 166 0 110-52 166 0"/>
+    <path d="M70 476c70-34 130-30 180 12 54 46 114 46 180 0 52-36 102-42 150-18"/>
+    <!-- Person -->
+    <path d="M220 212c0-34 26-60 60-60s60 26 60 60-26 60-60 60-60-26-60-60z"/>
+    <path d="M240 318c24-24 54-36 90-36s66 12 90 36"/>
+    <path d="M276 306l-24 120"/>
+    <path d="M384 306l24 120"/>
+    <path d="M252 426h126"/>
+    <!-- Laptop -->
+    <path d="M300 344h118l18 54H282l18-54z"/>
+    <path d="M298 344v-58h122v58"/>
+    <!-- Card / document -->
+    <path d="M118 308h78c14 0 26 12 26 26v54c0 14-12 26-26 26h-78c-14 0-26-12-26-26v-54c0-14 12-26 26-26z"/>
+    <path d="M112 346h104"/>
+    <path d="M126 368h44"/>
+    <path d="M126 388h30"/>
+    <!-- Small compass/offshore mark -->
+    <path d="M520 92c22 0 40 18 40 40s-18 40-40 40-40-18-40-40 18-40 40-40z"/>
+    <path d="M520 112l10 20-10 20-10-20 10-20z"/>
+  </g>
+</svg>
+
+
+

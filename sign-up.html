@@ -4,31 +4,80 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Beal Offshore Ltd Sign Up</title>
+    <title>Twenty Third & Forth Sign Up</title>
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" sizes="180x180" href="logo new.png">
-    <link rel="icon" href="logo new.png" type="image/png">
+    <link rel="apple-touch-icon" sizes="180x180" href="app-icon.svg">
+    <link rel="icon" href="app-icon.svg" type="image/svg+xml">
     <!-- Include Tailwind CSS -->
+    <script src="./tailwind-mono.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Include Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js"></script>
     <!-- Include Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Shared site theme -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./site.css">
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        
-        body {
+        :root {
+            --bg: #f6f9ff;
+            --surface: #ffffff;
+            --ink: #09090b;
+            --muted: #3f3f46;
+            --subtle: #71717a;
+            --border: #e4e4e7;
+            --brand: #1f66e5;
+            --brand-hover: #1c4fb8;
+        }
+
+        html { scroll-behavior: smooth; }
+        body { 
+            background: var(--bg); 
+            color: var(--ink); 
+            letter-spacing: -0.01em;
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        /* Text-based Logo */
+        .text-logo {
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", sans-serif;
+            font-weight: 650;
+            font-size: 1.25rem;
+            letter-spacing: -0.02em;
+            color: var(--ink);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+        .text-logo .first { color: var(--ink); }
+        .text-logo .citizens { color: var(--ink); font-weight: 650; }
+        .text-logo .inc {
+            font-size: 0.75rem;
+            color: var(--subtle);
+            font-weight: 600;
+            margin-left: 2px;
+            vertical-align: super;
+        }
+        
+        /* Primary button */
+        .btn-blue {
+            background: var(--brand);
+            color: white;
+            border: 1px solid rgba(16, 43, 99, 0.18);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+        }
+        .btn-blue:hover {
+            background: var(--brand-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 18px 50px rgba(0,0,0,0.12);
         }
         
         .account-card {
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
         }
         
         .form-input-focus {
@@ -38,16 +87,18 @@
         .form-input-focus:focus {
             transform: translateY(-2px);
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            border-color: var(--brand);
         }
         
         .btn-gradient {
-            background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
+            background: var(--brand);
             transition: all 0.3s ease;
         }
         
         .btn-gradient:hover {
+            background: var(--brand-hover);
             transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(26, 26, 26, 0.5);
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.12);
         }
         
         .progress-container {
@@ -61,7 +112,7 @@
         
         .progress-bar {
             height: 100%;
-            background: linear-gradient(90deg, #1a1a1a, #333333);
+            background: linear-gradient(90deg, #1f66e5, #1c4fb8);
             border-radius: 4px;
             transition: width 0.5s ease;
         }
@@ -99,7 +150,7 @@
         }
         
         .step.active:not(:last-child)::after {
-            background: #1a1a1a;
+            background: var(--brand);
         }
         
         .step-circle {
@@ -112,14 +163,14 @@
             justify-content: center;
             font-weight: 600;
             font-size: 14px;
-            color: #6b7280;
+            color: var(--subtle);
             margin-bottom: 8px;
             border: 2px solid transparent;
             transition: all 0.3s ease;
         }
         
         .step.active .step-circle {
-            background: #1a1a1a;
+            background: var(--brand);
             color: white;
             border-color: white;
         }
@@ -132,11 +183,11 @@
         .step-label {
             font-size: 12px;
             font-weight: 500;
-            color: #6b7280;
+            color: var(--subtle);
         }
         
         .step.active .step-label {
-            color: #1a1a1a;
+            color: var(--ink);
             font-weight: 600;
         }
         
@@ -149,7 +200,7 @@
             left: 12px;
             top: 50%;
             transform: translateY(-50%);
-            color: #6b7280;
+            color: var(--subtle);
         }
         
         .input-with-icon input,
@@ -279,172 +330,30 @@
         .hover\:text-blue-700:hover { color: #4a4a4a; }
     </style>
     <!-- Add Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from 'firebase/app';
-        import firebaseConfig from './firebase-config.js';
-    </script>
+    <!-- Firebase config import removed - using inline config in main script -->
 </head>
-<body class="font-sans antialiased" style="background-image: url('7.png'); background-repeat: no-repeat; background-size: cover;">
+<body class="font-sans antialiased bg-blue-50">
 
-    <!-- Navbar -->
-<nav class="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 p-4 z-50">
-    <div class="container mx-auto flex items-center justify-between">
-        <div class="flex items-center justify-center w-full md:w-auto">
-            <a href="index.html" class="hover-scale">
-                <img src="Logo.png" alt="Beal Offshore Ltd Logo" class="h-14 w-68">
-            </a>
-
-            <!-- Mobile Menu Button -->
-            <div class="md:hidden ml-auto">
-                <button id="mobile-menu-button" class="text-gray-800 focus:outline-none">
-                    <i class="fas fa-bars text-2xl"></i>
-                </button>
-            </div>
-        </div>
-
-        <!-- Navigation links -->
-        <div class="hidden md:flex items-center space-x-8 ml-auto">
-            <a href="/" class="text-gray-800 text-sm hover:text-gray-600 font-medium flex items-center transition duration-300">
-                <i class="fas fa-home mr-2"></i>Home
-            </a>
-            <a href="about-us.html" class="text-gray-800 text-sm hover:text-gray-600 font-medium flex items-center transition duration-300">
-                <i class="fas fa-info-circle mr-2"></i>About us
-            </a>
-
-            <!-- Personal Offers Link -->
-            <a href="personal.html" class="text-gray-800 text-sm hover:text-gray-600 font-medium flex items-center transition duration-300">
-                <i class="fas fa-user mr-2"></i>Personal Offers
-            </a>
-
-            <!-- Business Offers Link -->
-            <a href="business.html" class="text-gray-800 text-sm hover:text-gray-600 font-medium flex items-center transition duration-300">
-                <i class="fas fa-building mr-2"></i>Business Offers
-            </a>
-
-            <a href="contact.html" class="text-gray-800 text-sm hover:text-gray-600 font-medium flex items-center transition duration-300">
-                <i class="fas fa-envelope mr-2"></i>Contact
-            </a>
-            
-            <!-- Login Button -->
-            <a href="login.html" class="border border-gray-200 text-gray-800 text-sm hover:bg-gray-50 px-6 py-3 rounded-lg font-medium transition duration-300 flex items-center">
-                <i class="fas fa-sign-in-alt mr-2"></i>Login
-            </a>
-        </div>
-    </div>
-</nav>
-
-<!-- JavaScript for Dropdown -->
-<script>
-    // Personal Banking Dropdown
-    const personalBankingDropdownButton = document.getElementById("personalBankingDropdownButton");
-    const personalBankingDropdownMenu = document.getElementById("personalBankingDropdownMenu");
-
-    personalBankingDropdownButton.addEventListener("click", (event) => {
-        event.stopPropagation();
-        personalBankingDropdownMenu.classList.toggle("hidden");
-    });
-
-    // Business Banking Dropdown
-    const businessBankingDropdownButton = document.getElementById("businessBankingDropdownButton");
-    const businessBankingDropdownMenu = document.getElementById("businessBankingDropdownMenu");
-
-    businessBankingDropdownButton.addEventListener("click", (event) => {
-        event.stopPropagation();
-        businessBankingDropdownMenu.classList.toggle("hidden");
-    });
-
-    // Close dropdowns if clicking outside
-    window.addEventListener("click", (event) => {
-        if (!personalBankingDropdownMenu.contains(event.target) && !personalBankingDropdownButton.contains(event.target)) {
-            personalBankingDropdownMenu.classList.add("hidden");
-        }
-        if (!businessBankingDropdownMenu.contains(event.target) && !businessBankingDropdownButton.contains(event.target)) {
-            businessBankingDropdownMenu.classList.add("hidden");
-        }
-    });
-</script>
-
-
-
-<!-- Overlay -->
-<div id="overlay" class="fixed inset-0 bg-gray-900 opacity-90 hidden z-40"></div>
-
-<!-- Mobile Menu -->
-<div id="mobile-menu" class="fixed inset-0 bg-white shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out md:hidden z-50">
-    <div class="p-6">
-        <!-- Close Button -->
-        <button id="close-menu" class="absolute top-4 right-4 text-2xl text-gray-600">
-            ✖
-        </button>
-
-        <!-- Navigation Links -->
-        <nav class="w-full flex flex-col items-center space-y-6 mt-8">
-            <a href="/" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
-                Home
-            </a>
-            <a href="personal.html" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
-                Personal Offshore
-            </a>
-            <a href="business.html" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
-                Business offshore
-            </a>
-            <a href="about-us.html" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
-                About us
-            </a>
-            <a href="contact.html" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
-                Contact
-            </a>
-            <!-- Login Button -->
-            <a href="login.html" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
-                Login
-            </a>
-        </nav>
-    </div>
-</div>
+    <div data-include="components/site-header.html"></div>
 
 <script>
 window.onload = function () {
     const splashScreen = document.getElementById('splash-screen');
     setTimeout(() => {
-        splashScreen.style.display = 'none'; // Hide the splash screen
-        document.body.style.overflow = 'auto'; // Restore scroll
+        if (splashScreen) splashScreen.style.display = 'none'; // Hide the splash screen
+        if (document.body) document.body.style.overflow = 'auto'; // Restore scroll
     }, 4000); // Adjust time to match animation duration
 };
-
-const menu = document.getElementById('mobile-menu');
-const overlay = document.getElementById('overlay');
-const mobileMenuButton = document.getElementById('mobile-menu-button');
-const closeMenuButton = document.getElementById('close-menu');
-
-// Function to open the menu
-function openMenu() {
-    menu.classList.remove('translate-x-full');
-    overlay.classList.add('active');
-    document.body.style.overflow = 'hidden'; // Disable scrolling
-}
-
-// Function to close the menu
-function closeMenu() {
-    menu.classList.add('translate-x-full');
-    overlay.classList.remove('active');
-    document.body.style.overflow = ''; // Restore scrolling
-}
-
-// Toggle mobile menu visibility
-mobileMenuButton.onclick = openMenu;
-closeMenuButton.onclick = closeMenu;
-
-// Close menu when clicking the overlay
-overlay.onclick = closeMenu;
 </script>
-</body>
     
 
 <!-- Open Account Section -->
-<div class="flex items-center justify-center min-h-screen p-4 mt-8 md:mt-24 animate__animated animate__fadeIn">
-    <div class="account-card flex flex-col md:flex-row overflow-hidden max-w-5xl w-full">
-        <!-- Form Sections Container -->
-        <div class="w-full md:w-3/5 p-8 relative pt-16 md:pt-8">
+<section class="pt-24 md:pt-32 pb-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <div class="flex items-center justify-center">
+            <div class="account-card flex flex-col md:flex-row overflow-hidden max-w-5xl w-full shadow-lg">
+                <!-- Form Sections Container -->
+                <div class="w-full md:w-3/5 p-8 md:p-12 relative pt-16 md:pt-8 bg-white">
             <!-- Progress Steps Indicator -->
             <div class="step-indicator mb-8" id="step-indicator">
                 <div class="step active flex-1" id="step-0-indicator">
@@ -464,33 +373,49 @@ overlay.onclick = closeMenu;
             <!-- Form Section: Step 0 - Account Type Selection -->
             <div id="step-0" class="animate-fade-in">
                 <div class="text-center mb-8">
-                    <h2 class="text-3xl font-bold text-gray-900 mb-3">Choose Your Account Type</h2>
-                    <p class="text-gray-600 text-base max-w-lg mx-auto">
-                        Select whether you want to open a personal or business account.
+                    <div class="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 rounded-full px-4 py-2 shadow-sm mb-4">
+                        <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+                        <span class="text-blue-800 text-xs font-semibold uppercase tracking-wider">Account Setup</span>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-blue-950 mb-3">Choose Your Account Type</h2>
+                    <p class="text-blue-800 text-base max-w-lg mx-auto">
+                        Select whether you want to open a personal, business, or joint account.
                     </p>
                 </div>
                 
                 <div class="space-y-4">
-                    <button type="button" id="account-type-personal" class="w-full border-2 border-gray-300 rounded-lg p-6 text-left hover:border-gray-500 transition duration-300 account-type-btn" data-type="personal">
+                    <button type="button" id="account-type-personal" class="w-full border-2 border-blue-200 rounded-xl p-6 text-left hover:border-blue-500 hover:bg-blue-50 transition duration-300 account-type-btn bg-white" data-type="personal">
                         <div class="flex items-center">
-                            <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mr-4">
-                                <i class="fas fa-user text-xl text-gray-600"></i>
+                            <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center mr-4">
+                                <i class="fas fa-user text-xl text-blue-700"></i>
                             </div>
                             <div>
-                                <h3 class="text-lg font-semibold text-gray-900">Personal Account</h3>
-                                <p class="text-sm text-gray-600">For individual banking needs</p>
+                                <h3 class="text-lg font-bold text-blue-950">Personal Account</h3>
+                                <p class="text-sm text-blue-800">For individual banking needs</p>
                             </div>
                         </div>
                     </button>
                     
-                    <button type="button" id="account-type-business" class="w-full border-2 border-gray-300 rounded-lg p-6 text-left hover:border-gray-500 transition duration-300 account-type-btn" data-type="business">
+                    <button type="button" id="account-type-business" class="w-full border-2 border-blue-200 rounded-xl p-6 text-left hover:border-blue-500 hover:bg-blue-50 transition duration-300 account-type-btn bg-white" data-type="business">
                         <div class="flex items-center">
-                            <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mr-4">
-                                <i class="fas fa-building text-xl text-gray-600"></i>
+                            <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center mr-4">
+                                <i class="fas fa-building text-xl text-blue-700"></i>
                             </div>
                             <div>
-                                <h3 class="text-lg font-semibold text-gray-900">Business Account</h3>
-                                <p class="text-sm text-gray-600">For business banking needs</p>
+                                <h3 class="text-lg font-bold text-blue-950">Business Account</h3>
+                                <p class="text-sm text-blue-800">For business banking needs</p>
+                            </div>
+                        </div>
+                    </button>
+                    
+                    <button type="button" id="account-type-joint" class="w-full border-2 border-blue-200 rounded-xl p-6 text-left hover:border-blue-500 hover:bg-blue-50 transition duration-300 account-type-btn bg-white" data-type="joint">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center mr-4">
+                                <i class="fas fa-users text-xl text-blue-700"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-blue-950">Joint Account</h3>
+                                <p class="text-sm text-blue-800">For shared banking with 2-3 account holders</p>
                             </div>
                         </div>
                     </button>
@@ -500,8 +425,8 @@ overlay.onclick = closeMenu;
             <!-- Form Section: Step 1 - Personal Details -->
             <div id="step-1" class="hidden">
                 <div class="text-center mb-8">
-                    <h2 class="text-3xl font-bold text-gray-900 mb-3">Personal Information</h2>
-                    <p class="text-gray-600 text-base max-w-lg mx-auto">
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-blue-950 mb-3">Personal Information</h2>
+                    <p class="text-blue-800 text-base max-w-lg mx-auto">
                         Please provide your personal details to continue.
                     </p>
                 </div>
@@ -511,17 +436,17 @@ overlay.onclick = closeMenu;
                         <div class="input-with-icon">
                             <i class="fas fa-user input-icon"></i>
                             <div>
-                                <label for="first-name" class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                                <label for="first-name" class="block text-sm font-semibold text-blue-950 mb-2">First Name</label>
                                 <input type="text" id="first-name" name="first-name" required placeholder="Enter your first name" 
-                                    class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent placeholder-gray-400">
+                                    class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400 text-blue-950">
                             </div>
                         </div>
                         <div class="input-with-icon">
                             <i class="fas fa-user input-icon"></i>
                             <div>
-                                <label for="last-name" class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                                <label for="last-name" class="block text-sm font-medium text-blue-950 mb-1">Last Name</label>
                                 <input type="text" id="last-name" name="last-name" required placeholder="Enter your last name" 
-                                    class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent placeholder-gray-400">
+                                    class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400">
                             </div>
                         </div>
                     </div>
@@ -529,31 +454,31 @@ overlay.onclick = closeMenu;
                     <div class="input-with-icon">
                         <i class="fas fa-envelope input-icon"></i>
                         <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                            <label for="email" class="block text-sm font-medium text-blue-950 mb-1">Email Address</label>
                             <input type="email" id="email" name="email" required placeholder="Enter your email" 
-                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent placeholder-gray-400">
+                                class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400">
                         </div>
                     </div>
                     
                     <div class="input-with-icon">
                         <i class="fas fa-phone input-icon"></i>
                         <div>
-                            <label for="phone-number" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                            <label for="phone-number" class="block text-sm font-medium text-blue-950 mb-1">Phone Number</label>
                             <input type="tel" id="phone-number" name="phone-number" required placeholder="Enter your phone number" 
-                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent placeholder-gray-400">
+                                class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400">
                         </div>
                     </div>
                     
                     <div class="input-with-icon">
                         <i class="fas fa-building input-icon"></i>
                         <div>
-                            <label for="account-type" class="block text-sm font-medium text-gray-700 mb-1">Account Type</label>
+                            <label for="account-type" class="block text-sm font-medium text-blue-950 mb-1">Account Type</label>
                             <select id="account-type" name="account-type" required 
-                                class="form-input-focus custom-select w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent appearance-none">
+                                class="form-input-focus custom-select w-full border border-blue-200 rounded-xl p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none">
                                 <option value="">Select Account Type</option>
-                                <option value="checking">Fixed Offshore</option>
-                                <option value="savings">Savings Offshore</option>
-                                <option value="current">Checking Offshore</option>
+                                <option value="checking">Fixed Deposit</option>
+                                <option value="savings">Savings Account</option>
+                                <option value="current">Checking Account</option>
                             </select>
                         </div>
                     </div>
@@ -565,12 +490,12 @@ overlay.onclick = closeMenu;
                     <div class="relative input-with-icon">
                         <i class="fas fa-lock input-icon"></i>
                         <div>
-                            <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Create Password</label>
+                            <label for="password" class="block text-sm font-medium text-blue-950 mb-1">Create Password</label>
                             <div class="relative">
                                 <input type="password" id="password" name="password" required placeholder="Create a password"
-                                    class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent placeholder-gray-400">
+                                    class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400">
                                 <button type="button" onclick="togglePasswordVisibility('password', 'eyeIcon1')" 
-                                    class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                                    class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-blue-950">
                                     <i class="fas fa-eye" id="eyeIcon1"></i>
                                 </button>
                             </div>
@@ -581,12 +506,12 @@ overlay.onclick = closeMenu;
                     <div class="relative input-with-icon">
                         <i class="fas fa-lock input-icon"></i>
                         <div>
-                            <label for="confirm-password" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                            <label for="confirm-password" class="block text-sm font-medium text-blue-950 mb-1">Confirm Password</label>
                             <div class="relative">
                                 <input type="password" id="confirm-password" name="confirm-password" required placeholder="Confirm your password"
-                                    class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent placeholder-gray-400">
+                                    class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400">
                                 <button type="button" onclick="togglePasswordVisibility('confirm-password', 'eyeIcon2')" 
-                                    class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                                    class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-blue-950">
                                     <i class="fas fa-eye" id="eyeIcon2"></i>
                                 </button>
                             </div>
@@ -594,10 +519,10 @@ overlay.onclick = closeMenu;
                     </div>
 
                     <div class="pt-4 flex space-x-4">
-                        <button type="button" id="back-to-account-type" class="w-1/3 bg-gray-200 text-gray-800 py-4 rounded-lg font-medium text-base transition duration-300 hover:bg-gray-300">
+                        <button type="button" id="back-to-account-type" class="w-1/3 bg-blue-100 text-blue-950 py-4 rounded-xl font-medium text-base transition duration-300 hover:bg-blue-200">
                             <i class="fas fa-arrow-left mr-2"></i>Back
                         </button>
-                        <button type="button" id="continue-btn" class="w-2/3 btn-gradient text-white py-4 rounded-lg font-medium text-base transition duration-300">
+                        <button type="button" id="continue-btn" class="w-2/3 btn-gradient text-white py-4 rounded-xl font-medium text-base transition duration-300">
                             <i class="fas fa-arrow-right mr-2"></i>Continue
                         </button>
                     </div>
@@ -607,8 +532,8 @@ overlay.onclick = closeMenu;
             <!-- Form Section: Step 2 - Personal Account Address & Phone -->
             <div id="step-2-personal" class="hidden">
                 <div class="text-center mb-8">
-                    <h2 class="text-3xl font-bold text-gray-900 mb-3">Contact Information</h2>
-                    <p class="text-gray-600 text-base max-w-lg mx-auto">
+                    <h2 class="text-3xl font-bold text-blue-950 mb-3">Contact Information</h2>
+                    <p class="text-blue-800 text-base max-w-lg mx-auto">
                         Please provide your address and phone number to complete your account setup.
                     </p>
                 </div>
@@ -617,35 +542,35 @@ overlay.onclick = closeMenu;
                     <div class="input-with-icon">
                         <i class="fas fa-phone input-icon"></i>
                         <div>
-                            <label for="phone-number" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                            <label for="phone-number" class="block text-sm font-medium text-blue-950 mb-1">Phone Number</label>
                             <input type="tel" id="phone-number" name="phone-number" required placeholder="Enter your phone number" 
-                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent placeholder-gray-400">
+                                class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400">
                         </div>
                     </div>
                     
                     <div class="input-with-icon">
                         <i class="fas fa-home input-icon"></i>
                         <div>
-                            <label for="home-address" class="block text-sm font-medium text-gray-700 mb-1">Home Address</label>
+                            <label for="home-address" class="block text-sm font-medium text-blue-950 mb-1">Home Address</label>
                             <input type="text" id="home-address" name="home-address" required placeholder="Enter your home address" 
-                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent placeholder-gray-400">
+                                class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400">
                         </div>
                     </div>
                     
                     <div class="input-with-icon">
                         <i class="fas fa-map-marker-alt input-icon"></i>
                         <div>
-                            <label for="billing-address" class="block text-sm font-medium text-gray-700 mb-1">Billing Address</label>
+                            <label for="billing-address" class="block text-sm font-medium text-blue-950 mb-1">Billing Address</label>
                             <input type="text" id="billing-address" name="billing-address" required placeholder="Enter your billing address" 
-                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent placeholder-gray-400">
+                                class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400">
                         </div>
                     </div>
                     
                     <div class="flex space-x-4 pt-4">
-                        <button type="button" id="back-to-personal-details" class="w-1/3 bg-gray-200 text-gray-800 py-4 rounded-lg font-medium text-base transition duration-300 hover:bg-gray-300">
+                        <button type="button" id="back-to-personal-details" class="w-1/3 bg-blue-100 text-blue-950 py-4 rounded-xl font-medium text-base transition duration-300 hover:bg-blue-200">
                             <i class="fas fa-arrow-left mr-2"></i>Back
                         </button>
-                        <button type="submit" id="create-personal-account-btn" class="w-2/3 btn-gradient text-white py-4 rounded-lg font-medium text-base transition duration-300">
+                        <button type="submit" id="create-personal-account-btn" data-no-loading="true" class="w-2/3 btn-gradient text-white py-4 rounded-xl font-medium text-base transition duration-300">
                             Create Account
                         </button>
                     </div>
@@ -655,8 +580,8 @@ overlay.onclick = closeMenu;
             <!-- Form Section: Step 2 - Business Information -->
             <div id="step-2-business" class="hidden">
                 <div class="text-center mb-8">
-                    <h2 class="text-3xl font-bold text-gray-900 mb-3">Business Information</h2>
-                    <p class="text-gray-600 text-base max-w-lg mx-auto">
+                    <h2 class="text-3xl font-bold text-blue-950 mb-3">Business Information</h2>
+                    <p class="text-blue-800 text-base max-w-lg mx-auto">
                         Provide your business details to complete your account setup.
                     </p>
                 </div>
@@ -665,53 +590,53 @@ overlay.onclick = closeMenu;
                     <div class="input-with-icon">
                         <i class="fas fa-building input-icon"></i>
                         <div>
-                            <label for="business-name" class="block text-sm font-medium text-gray-700 mb-1">Business Name</label>
+                            <label for="business-name" class="block text-sm font-medium text-blue-950 mb-1">Business Name</label>
                             <input type="text" id="business-name" name="business-name" required placeholder="Enter your business name" 
-                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent placeholder-gray-400">
+                                class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400">
                         </div>
                     </div>
                     
                     <div class="input-with-icon">
                         <i class="fas fa-building input-icon"></i>
                         <div>
-                            <label for="business-type" class="block text-sm font-medium text-gray-700 mb-1">Business Type</label>
+                            <label for="business-type" class="block text-sm font-medium text-blue-950 mb-1">Business Type</label>
                             <input type="text" id="business-type" name="business-type" required placeholder="Enter your business type" 
-                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent placeholder-gray-400">
+                                class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400">
                         </div>
                     </div>
                     
                     <div class="input-with-icon">
                         <i class="fas fa-hashtag input-icon"></i>
                         <div>
-                            <label for="business-ein" class="block text-sm font-medium text-gray-700 mb-1">Business EIN</label>
+                            <label for="business-ein" class="block text-sm font-medium text-blue-950 mb-1">Business EIN</label>
                             <input type="text" id="business-ein" name="business-ein" required placeholder="Enter your business EIN" 
-                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent placeholder-gray-400">
+                                class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400">
                         </div>
                     </div>
                     
                     <div class="input-with-icon">
                         <i class="fas fa-file-signature input-icon"></i>
                         <div>
-                            <label for="business-cert" class="block text-sm font-medium text-gray-700 mb-1">Business Certificate</label>
+                            <label for="business-cert" class="block text-sm font-medium text-blue-950 mb-1">Business Certificate</label>
                             <input type="text" id="business-cert" name="business-cert" required placeholder="Enter your business certificate" 
-                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent placeholder-gray-400">
+                                class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400">
                         </div>
                     </div>
                     
                     <div class="input-with-icon">
                         <i class="fas fa-phone input-icon"></i>
                         <div>
-                            <label for="business-phone-number" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                            <label for="business-phone-number" class="block text-sm font-medium text-blue-950 mb-1">Phone Number</label>
                             <input type="tel" id="business-phone-number" name="business-phone-number" required placeholder="Enter your phone number" 
-                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent placeholder-gray-400">
+                                class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400">
                         </div>
                     </div>
                     
                     <div class="flex space-x-4 pt-4">
-                        <button type="button" id="back-to-personal-details-business" class="w-1/3 bg-gray-200 text-gray-800 py-4 rounded-lg font-medium text-base transition duration-300 hover:bg-gray-300">
+                        <button type="button" id="back-to-personal-details-business" class="w-1/3 bg-blue-100 text-blue-950 py-4 rounded-xl font-medium text-base transition duration-300 hover:bg-blue-200">
                             <i class="fas fa-arrow-left mr-2"></i>Back
                         </button>
-                        <button type="submit" id="create-account-btn" class="w-2/3 btn-gradient text-white py-4 rounded-lg font-medium text-base transition duration-300">
+                        <button type="submit" id="create-account-btn" data-no-loading="true" class="w-2/3 btn-gradient text-white py-4 rounded-xl font-medium text-base transition duration-300">
                             Create Account
                         </button>
                     </div>
@@ -719,24 +644,41 @@ overlay.onclick = closeMenu;
             </div>
 
             <div class="mt-8 text-center">
-                <p class="text-gray-600">Already have an account? <a href="login.html" class="text-blue-600 font-medium hover:text-blue-800 transition duration-200 hover:underline">Log in</a></p>
+                <p class="text-blue-800">Already have an account? <a href="login.html" class="text-blue-600 font-medium hover:text-blue-800 transition duration-200 hover:underline">Log in</a></p>
             </div>
         </div>
 
-        <!-- Image Section -->
-        <div class="hidden sm:block w-full sm:w-1/2 bg-cover bg-center relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-br from-blue-900/90 to-blue-600/80 mix-blend-multiply"></div>
-            <img src="happy-woman-writing-notepad.jpg" alt="OTP verification background" class="object-cover h-full w-full" />
-            <div class="absolute inset-0 flex flex-col items-center justify-center p-10 text-white">
-                <div class="w-20 h-20 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center mb-6">
-                    <i class="fas fa-check text-2xl text-white"></i>
-                </div>
-                <h3 class="text-2xl font-bold mb-2">Two-Step Verification</h3>
-                <p class="text-sm text-center text-white/80 mb-6">For your security, we require two-factor authentication</p>
-                <div class="flex space-x-2">
-                    <span class="w-2 h-2 rounded-full bg-white/30"></span>
-                    <span class="w-2 h-2 rounded-full bg-white/60"></span>
-                    <span class="w-2 h-2 rounded-full bg-white"></span>
+        <!-- Visual Section (no image) -->
+        <div class="hidden sm:block w-full sm:w-1/2 bg-gradient-to-br from-blue-700 to-blue-900 relative overflow-hidden">
+            <div class="absolute -inset-10 bg-gradient-to-tr from-blue-300/25 via-transparent to-indigo-400/40 opacity-70"></div>
+            <div class="absolute inset-0 flex flex-col justify-center p-10 text-white">
+                <div class="max-w-sm space-y-6">
+                    <div class="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-2 shadow-sm">
+                        <span class="w-2 h-2 rounded-full bg-emerald-300"></span>
+                        <span class="text-xs font-semibold tracking-widest uppercase">Account protection</span>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2">Built‑in verification</h3>
+                        <p class="text-sm text-blue-100/90">
+                            Extra checks and secure flows help protect new accounts and support ongoing access to your Twenty Third & Forth profile.
+                        </p>
+                    </div>
+
+                    <ul class="space-y-2 text-sm text-blue-50">
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-shield-alt text-emerald-300"></i>
+                            <span>Verification steps during sign‑up</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-lock text-emerald-300"></i>
+                            <span>Secure password requirements and checks</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="fas fa-user-check text-emerald-300"></i>
+                            <span>Support for KYC and compliance reviews</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -795,17 +737,40 @@ overlay.onclick = closeMenu;
     // Account type selection handlers
     document.querySelectorAll('.account-type-btn').forEach(btn => {
         btn.addEventListener('click', function() {
+            const accountType = this.dataset.type;
+            
+            // If joint account, open the modal instead
+            if (accountType === 'joint') {
+                // Remove active state from all buttons
+                document.querySelectorAll('.account-type-btn').forEach(b => {
+                    b.classList.remove('border-gray-500', 'bg-gray-50');
+                    b.classList.add('border-blue-200');
+                });
+                
+                // Add active state to clicked button
+                this.classList.remove('border-blue-200');
+                this.classList.add('border-gray-500', 'bg-gray-50');
+                
+                // Open joint account modal
+                const jointModal = document.getElementById('joint-modal');
+                if (jointModal) {
+                    jointModal.classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                }
+                return;
+            }
+            
             // Remove active state from all buttons
             document.querySelectorAll('.account-type-btn').forEach(b => {
                 b.classList.remove('border-gray-500', 'bg-gray-50');
-                b.classList.add('border-gray-300');
+                b.classList.add('border-blue-200');
             });
             
             // Add active state to clicked button
-            this.classList.remove('border-gray-300');
+            this.classList.remove('border-blue-200');
             this.classList.add('border-gray-500', 'bg-gray-50');
             
-            selectedAccountType = this.dataset.type;
+            selectedAccountType = accountType;
             document.getElementById('user-account-type').value = selectedAccountType;
             
             // Update step indicator
@@ -956,39 +921,97 @@ overlay.onclick = closeMenu;
         sendEmailVerification, 
         onAuthStateChanged 
     } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
     // Firebase configuration
         const firebaseConfig = {
-    apiKey: "AIzaSyABYV12B7RM2ZCD2G1lFTLpgJwflJFwEXY",
-    authDomain: "beal-offshore.firebaseapp.com",
-    projectId: "beal-offshore",
-    storageBucket: "beal-offshore.firebasestorage.app",
-    messagingSenderId: "1091834410162",
-    appId: "1:1091834410162:web:56285433b5751e681745ab",
-    measurementId: "G-CT463F3T6J"
+    apiKey: "AIzaSyBb9sVH4fMb-a5mQgcDjAfYT9RZHTb3sKE",
+    authDomain: "twenty-third-forth.firebaseapp.com",
+    projectId: "twenty-third-forth",
+    storageBucket: "twenty-third-forth.firebasestorage.app",
+    messagingSenderId: "835548579831",
+    appId: "1:835548579831:web:5259f071b50341af28d0f2",
+    measurementId: "G-KEMCE9679Y"
     };
 
 
     // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    console.log("Initializing Firebase with config:", firebaseConfig);
+    let app, auth, db;
+    try {
+        app = initializeApp(firebaseConfig);
+        auth = getAuth(app);
+        db = getFirestore(app);
+        console.log("Firebase initialized successfully:", { app, auth, db });
+    } catch (initError) {
+        console.error("Firebase initialization error:", initError);
+        alert("Failed to initialize Firebase. Please refresh the page and try again.");
+    }
 
     // Sign-Up Function
     const signUp = async (formData, accountType) => {
         const createAccountBtn = document.getElementById(accountType === 'personal' ? "create-personal-account-btn" : "create-account-btn");
         const spinner = document.getElementById("spinner");
 
+        // Store original button content
+        const originalButtonText = createAccountBtn ? createAccountBtn.textContent : "Create Account";
+
+        if (!createAccountBtn) {
+            console.error("Create account button not found!");
+            alert("Error: Create account button not found. Please refresh the page.");
+            return;
+        }
+
+        if (!auth) {
+            console.error("Firebase Auth not initialized!");
+            alert("Error: Firebase Authentication is not initialized. Please refresh the page.");
+            return;
+        }
+
+        if (!db) {
+            console.error("Firestore not initialized!");
+            alert("Error: Firestore is not initialized. Please refresh the page.");
+            return;
+        }
+
         try {
+            // Clear any site-shell.js loading state first
+            if (createAccountBtn.dataset.loading === "true") {
+                createAccountBtn.dataset.loading = "false";
+                createAccountBtn.classList.remove("btn-loading");
+            }
+            
             // Show loading state
             createAccountBtn.disabled = true;
-            createAccountBtn.textContent = "Creating Account...";
-            spinner.classList.remove("hidden");
+            createAccountBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Creating Account...';
+            if (spinner) spinner.classList.remove("hidden");
+
+            console.log("Starting sign-up process for:", formData.email);
+            console.log("Form data:", { email: formData.email, accountType });
+
+            // Validate email and password
+            if (!formData.email || !formData.email.includes('@')) {
+                throw new Error("Please enter a valid email address.");
+            }
+            if (!formData.password || formData.password.length < 6) {
+                throw new Error("Password must be at least 6 characters long.");
+            }
 
             // Create user in Firebase Authentication
+            console.log("Calling createUserWithEmailAndPassword...");
+            console.log("Auth object before signup:", auth);
             const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
             const user = userCredential.user;
+            console.log("User created successfully:", user.uid, user.email);
+            console.log("Current auth user:", auth.currentUser?.uid);
+
+            // Wait a brief moment to ensure auth state is fully propagated
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+            // Verify user is authenticated
+            if (!auth.currentUser || auth.currentUser.uid !== user.uid) {
+                console.warn("Auth state not immediately available, but continuing...");
+            }
 
             // Prepare user data object
             const userData = {
@@ -997,30 +1020,111 @@ overlay.onclick = closeMenu;
                 email: formData.email,
                 accountType: formData.accountType,
                 userAccountType: accountType, // 'personal' or 'business'
-                createdAt: new Date().toISOString()
+                // New accounts must be approved by admin before dashboard access
+                approvalStatus: 'pending',
+                isApproved: false,
+                approvalRequestedAt: serverTimestamp(),
+                approvedAt: null,
+                approvedBy: null,
+                onboardingStatus: 'not_started',
+                onboarding: {
+                    depositMethod: null,
+                    depositMethods: [],
+                    residency: null
+                },
+                onboardingCompletedAt: null,
+                // Keep both timestamp + ISO string for backward compatibility / simple display
+                createdAt: serverTimestamp(),
+                createdAtIso: new Date().toISOString()
             };
 
             // Add account type specific data
             if (accountType === 'personal') {
-                userData.phoneNumber = document.getElementById("phone-number").value.trim();
-                userData.homeAddress = document.getElementById("home-address").value.trim();
-                userData.billingAddress = document.getElementById("billing-address").value.trim();
+                const phoneNumberEl = document.getElementById("phone-number");
+                const homeAddressEl = document.getElementById("home-address");
+                const billingAddressEl = document.getElementById("billing-address");
+                
+                if (phoneNumberEl) userData.phoneNumber = phoneNumberEl.value.trim();
+                if (homeAddressEl) userData.homeAddress = homeAddressEl.value.trim();
+                if (billingAddressEl) userData.billingAddress = billingAddressEl.value.trim();
             } else {
-                userData.businessName = document.getElementById("business-name").value.trim();
-                userData.businessType = document.getElementById("business-type").value.trim();
-                userData.businessEin = document.getElementById("business-ein").value.trim();
-                userData.businessCert = document.getElementById("business-cert").value.trim();
-                userData.phoneNumber = document.getElementById("business-phone-number").value.trim();
+                const businessNameEl = document.getElementById("business-name");
+                const businessTypeEl = document.getElementById("business-type");
+                const businessEinEl = document.getElementById("business-ein");
+                const businessCertEl = document.getElementById("business-cert");
+                const businessPhoneEl = document.getElementById("business-phone-number");
+                
+                if (businessNameEl) userData.businessName = businessNameEl.value.trim();
+                if (businessTypeEl) userData.businessType = businessTypeEl.value.trim();
+                if (businessEinEl) userData.businessEin = businessEinEl.value.trim();
+                if (businessCertEl) userData.businessCert = businessCertEl.value.trim();
+                if (businessPhoneEl) userData.phoneNumber = businessPhoneEl.value.trim();
             }
 
             // Save user data to Firestore
-            await setDoc(doc(db, "users", user.uid), userData);
+            console.log("Saving user data to Firestore...");
+            console.log("User UID:", user.uid);
+            console.log("User data to save:", userData);
+            try {
+                // Add timeout to prevent hanging
+                const firestorePromise = setDoc(doc(db, "users", user.uid), userData);
+                const timeoutPromise = new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error("Firestore write timed out after 10 seconds")), 10000)
+                );
+                
+                await Promise.race([firestorePromise, timeoutPromise]);
+                console.log("User data saved to Firestore successfully");
+            } catch (firestoreError) {
+                console.error("Firestore write error:", firestoreError);
+                console.error("Error code:", firestoreError?.code);
+                console.error("Error message:", firestoreError?.message);
+                
+                // If Firestore write fails, we should still consider the user created
+                // but log the error for debugging
+                // Don't throw - allow the flow to continue since user is already created in Auth
+                console.warn("Firestore write failed, but user is created in Auth. Continuing...");
+                // Show a warning but don't block the success flow
+                if (firestoreError?.code === 'permission-denied') {
+                    console.error("Firestore permission denied - check Firestore security rules");
+                }
+            }
 
             // Send email verification
-            await sendEmailVerification(user);
+            try {
+                await sendEmailVerification(user);
+            } catch (emailError) {
+                console.warn("Email verification send failed:", emailError);
+                // Continue even if email verification fails
+            }
 
+            // Reset button state and clear site-shell.js loading state
+            if (createAccountBtn) {
+                // Clear site-shell.js loading state
+                createAccountBtn.dataset.loading = "false";
+                createAccountBtn.classList.remove("btn-loading");
+                
+                // Dispatch reset event for site-shell.js
+                createAccountBtn.dispatchEvent(new CustomEvent("site:button-reset"));
+                
+                // Set success state
+                createAccountBtn.disabled = false;
+                createAccountBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Account Created!';
+                createAccountBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+            }
+            
             // Show success modal
-            document.getElementById("success-modal").classList.remove("hidden");
+            console.log("Showing success modal...");
+            const successModal = document.getElementById("success-modal");
+            if (successModal) {
+                successModal.classList.remove("hidden");
+                console.log("Success modal shown");
+            } else {
+                console.error("Success modal not found! Modal ID: success-modal");
+            }
+            
+            try {
+                sessionStorage.setItem('firstcitizens_onboarding_after_signup', '1');
+            } catch {}
 
             // Add listener to check email verification state
             onAuthStateChanged(auth, (user) => {
@@ -1035,207 +1139,398 @@ overlay.onclick = closeMenu;
 
         } catch (error) {
             console.error("Error during sign-up:", error);
+            console.error("Error details:", {
+                code: error?.code,
+                message: error?.message,
+                stack: error?.stack
+            });
             
             // Show error in a more user-friendly way
-            const errorMessage = getCustomErrorMessage(error.code);
+            const errorCode = error?.code || error?.message || 'unknown';
+            const errorMessage = getCustomErrorMessage(errorCode);
+            
+            // Show alert for immediate feedback
+            alert(`Sign-up failed: ${errorMessage}`);
+            
             const errorDiv = document.createElement("div");
-            errorDiv.className = "fixed top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded z-50";
+            errorDiv.className = "fixed top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded z-50 shadow-lg max-w-md";
             errorDiv.innerHTML = `
                 <strong class="font-bold">Error!</strong>
                 <span class="block sm:inline">${errorMessage}</span>
+                <button onclick="this.parentElement.remove()" class="mt-2 text-red-800 underline text-sm">Dismiss</button>
             `;
             document.body.appendChild(errorDiv);
             
-            // Remove error message after 5 seconds
+            // Remove error message after 10 seconds
             setTimeout(() => {
-                errorDiv.remove();
-            }, 5000);
+                if (errorDiv.parentNode) {
+                    errorDiv.remove();
+                }
+            }, 10000);
         } finally {
-            // Reset the button state
-            createAccountBtn.disabled = false;
-            createAccountBtn.textContent = "Create Account";
-            spinner.classList.add("hidden");
+            // Only reset button if there was an error (success case already handled above)
+            const successModal = document.getElementById("success-modal");
+            const isSuccess = successModal && !successModal.classList.contains('hidden');
+            
+            if (createAccountBtn && isSuccess) {
+                // Success case - button already updated above, don't reset
+                console.log("Sign-up successful, keeping success state");
+            } else if (createAccountBtn) {
+                // Error case - reset to original state and clear site-shell.js loading state
+                console.log("Resetting button after error");
+                
+                // Clear site-shell.js loading state
+                createAccountBtn.dataset.loading = "false";
+                createAccountBtn.classList.remove("btn-loading");
+                createAccountBtn.dispatchEvent(new CustomEvent("site:button-reset"));
+                
+                // Reset button
+                createAccountBtn.disabled = false;
+                createAccountBtn.innerHTML = originalButtonText;
+                createAccountBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
+            }
+            if (spinner) {
+                spinner.classList.add("hidden");
+            }
         }
     };
 
     // Customize error messages
     const getCustomErrorMessage = (errorCode) => {
-        switch (errorCode) {
-            case "auth/email-already-in-use":
-                return "This email is already registered. Please use a different email or try logging in.";
-            case "auth/weak-password":
-                return "Password is too weak. Please use at least 8 characters with a mix of letters, numbers, and symbols.";
-            case "auth/invalid-email":
-                return "Please enter a valid email address.";
-            case "auth/network-request-failed":
-                return "Network error. Please check your internet connection and try again.";
-            case "auth/too-many-requests":
-                return "Too many attempts. Please try again later.";
-            default:
-                return "An unexpected error occurred. Please try again or contact support.";
+        if (!errorCode) {
+            return "An unexpected error occurred. Please try again or contact support.";
         }
+        
+        const errorCodeStr = String(errorCode).toLowerCase();
+        
+        if (errorCodeStr.includes("email-already-in-use") || errorCodeStr === "auth/email-already-in-use") {
+            return "This email is already registered. Please use a different email or try logging in.";
+        }
+        if (errorCodeStr.includes("weak-password") || errorCodeStr === "auth/weak-password") {
+            return "Password is too weak. Please use at least 8 characters with a mix of letters, numbers, and symbols.";
+        }
+        if (errorCodeStr.includes("invalid-email") || errorCodeStr === "auth/invalid-email") {
+            return "Please enter a valid email address.";
+        }
+        if (errorCodeStr.includes("network-request-failed") || errorCodeStr === "auth/network-request-failed") {
+            return "Network error. Please check your internet connection and try again.";
+        }
+        if (errorCodeStr.includes("too-many-requests") || errorCodeStr === "auth/too-many-requests") {
+            return "Too many attempts. Please try again later.";
+        }
+        if (errorCodeStr.includes("operation-not-allowed") || errorCodeStr === "auth/operation-not-allowed") {
+            return "Email/password authentication is not enabled. Please contact support.";
+        }
+        
+        return `An error occurred: ${errorCode}. Please try again or contact support.`;
     };
 
-    // Attach sign-up function to the business form
-    document.querySelector("#business-info-form").addEventListener("submit", (event) => {
-        event.preventDefault(); // Prevent default form submission
+    // Make signUp function globally accessible for debugging
+    window.signUp = signUp;
 
-        // Collect form data
-        const formData = {
-            firstName: document.getElementById("first-name").value.trim(),
-            lastName: document.getElementById("last-name").value.trim(),
-            email: document.getElementById("email").value.trim(),
-            accountType: document.getElementById("account-type").value,
-            password: document.getElementById("password").value,
-            confirmPassword: document.getElementById("confirm-password").value,
-        };
+    // Wait for DOM to be ready before attaching event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log("DOM loaded, setting up form handlers...");
+        
+        // Attach sign-up function to the business form
+        const businessForm = document.querySelector("#business-info-form");
+        if (businessForm) {
+            console.log("Business form found, attaching handler");
+            businessForm.addEventListener("submit", async (event) => {
+                event.preventDefault(); // Prevent default form submission
+                console.log("Business form submitted");
 
-        // Validate form data
-        if (!formData.firstName || !formData.lastName || !formData.email || !formData.password || !formData.accountType) {
-            alert("All fields are required.");
-            return;
-        }
-        if (formData.password !== formData.confirmPassword) {
-            alert("Passwords do not match.");
-            return;
-        }
-        if (formData.password.length < 8) {
-            alert("Password must be at least 8 characters long.");
-            return;
-        }
+                // Collect form data
+                const formData = {
+                    firstName: document.getElementById("first-name").value.trim(),
+                    lastName: document.getElementById("last-name").value.trim(),
+                    email: document.getElementById("email").value.trim(),
+                    accountType: document.getElementById("account-type").value,
+                    password: document.getElementById("password").value,
+                    confirmPassword: document.getElementById("confirm-password").value,
+                };
 
-        // Validate business fields
-        const businessName = document.getElementById("business-name").value.trim();
-        const businessType = document.getElementById("business-type").value.trim();
-        const businessEin = document.getElementById("business-ein").value.trim();
-        const businessCert = document.getElementById("business-cert").value.trim();
-        const businessPhoneNumber = document.getElementById("business-phone-number").value.trim();
+                console.log("Form data collected:", { ...formData, password: "***" });
 
-        if (!businessName || !businessType || !businessEin || !businessCert || !businessPhoneNumber) {
-            alert("All business fields are required.");
-            return;
-        }
+                // Validate form data
+                if (!formData.firstName || !formData.lastName || !formData.email || !formData.password || !formData.accountType) {
+                    alert("All fields are required.");
+                    return;
+                }
+                if (formData.password !== formData.confirmPassword) {
+                    alert("Passwords do not match.");
+                    return;
+                }
+                if (formData.password.length < 8) {
+                    alert("Password must be at least 8 characters long.");
+                    return;
+                }
 
-        // Call sign-up function for business account
-        signUp(formData, 'business');
-    });
+                // Validate business fields
+                const businessName = document.getElementById("business-name").value.trim();
+                const businessType = document.getElementById("business-type").value.trim();
+                const businessEin = document.getElementById("business-ein").value.trim();
+                const businessCert = document.getElementById("business-cert").value.trim();
+                const businessPhoneNumber = document.getElementById("business-phone-number").value.trim();
 
-    // Attach sign-up function to the personal address form
-    document.querySelector("#personal-address-form").addEventListener("submit", (event) => {
-        event.preventDefault(); // Prevent default form submission
+                if (!businessName || !businessType || !businessEin || !businessCert || !businessPhoneNumber) {
+                    alert("All business fields are required.");
+                    return;
+                }
 
-        // Collect form data
-        const formData = {
-            firstName: document.getElementById("first-name").value.trim(),
-            lastName: document.getElementById("last-name").value.trim(),
-            email: document.getElementById("email").value.trim(),
-            accountType: document.getElementById("account-type").value,
-            password: document.getElementById("password").value,
-            confirmPassword: document.getElementById("confirm-password").value,
-        };
-
-        // Validate form data
-        if (!formData.firstName || !formData.lastName || !formData.email || !formData.password || !formData.accountType) {
-            alert("All fields are required.");
-            return;
-        }
-        if (formData.password !== formData.confirmPassword) {
-            alert("Passwords do not match.");
-            return;
-        }
-        if (formData.password.length < 8) {
-            alert("Password must be at least 8 characters long.");
-            return;
+                // Call sign-up function for business account
+                try {
+                    await signUp(formData, 'business');
+                } catch (err) {
+                    console.error("Sign-up error caught in handler:", err);
+                    alert(`Sign-up failed: ${err.message || 'Unknown error'}`);
+                }
+            });
+        } else {
+            console.warn("Business form not found!");
         }
 
-        // Validate personal address fields
-        const phoneNumber = document.getElementById("phone-number").value.trim();
-        const homeAddress = document.getElementById("home-address").value.trim();
-        const billingAddress = document.getElementById("billing-address").value.trim();
+        // Attach sign-up function to the personal address form
+        const personalForm = document.querySelector("#personal-address-form");
+        if (personalForm) {
+            console.log("Personal form found, attaching handler");
+            personalForm.addEventListener("submit", async (event) => {
+                event.preventDefault(); // Prevent default form submission
+                console.log("Personal form submitted");
 
-        if (!phoneNumber || !homeAddress || !billingAddress) {
-            alert("All contact information fields are required.");
-            return;
+                // Collect form data
+                const formData = {
+                    firstName: document.getElementById("first-name").value.trim(),
+                    lastName: document.getElementById("last-name").value.trim(),
+                    email: document.getElementById("email").value.trim(),
+                    accountType: document.getElementById("account-type").value,
+                    password: document.getElementById("password").value,
+                    confirmPassword: document.getElementById("confirm-password").value,
+                };
+
+                console.log("Form data collected:", { ...formData, password: "***" });
+
+                // Validate form data
+                if (!formData.firstName || !formData.lastName || !formData.email || !formData.password || !formData.accountType) {
+                    alert("All fields are required.");
+                    return;
+                }
+                if (formData.password !== formData.confirmPassword) {
+                    alert("Passwords do not match.");
+                    return;
+                }
+                if (formData.password.length < 8) {
+                    alert("Password must be at least 8 characters long.");
+                    return;
+                }
+
+                // Validate personal address fields
+                const phoneNumber = document.getElementById("phone-number").value.trim();
+                const homeAddress = document.getElementById("home-address").value.trim();
+                const billingAddress = document.getElementById("billing-address").value.trim();
+
+                if (!phoneNumber || !homeAddress || !billingAddress) {
+                    alert("All contact information fields are required.");
+                    return;
+                }
+
+                // Call sign-up function for personal account
+                try {
+                    await signUp(formData, 'personal');
+                } catch (err) {
+                    console.error("Sign-up error caught in handler:", err);
+                    alert(`Sign-up failed: ${err.message || 'Unknown error'}`);
+                }
+            });
+        } else {
+            console.warn("Personal form not found!");
         }
-
-        // Call sign-up function for personal account
-        signUp(formData, 'personal');
-    });
+    }); // End of DOMContentLoaded
 </script>
 
+<!-- Firebase Compat SDK for Joint Account -->
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+<script>
+    // Initialize Firebase Compat for Joint Account
+    const firebaseCompatConfig = {
+        apiKey: "AIzaSyBb9sVH4fMb-a5mQgcDjAfYT9RZHTb3sKE",
+        authDomain: "twenty-third-forth.firebaseapp.com",
+        projectId: "twenty-third-forth",
+        storageBucket: "twenty-third-forth.firebasestorage.app",
+        messagingSenderId: "835548579831",
+        appId: "1:835548579831:web:5259f071b50341af28d0f2",
+        measurementId: "G-KEMCE9679Y"
+    };
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseCompatConfig);
+    }
+    const authCompat = firebase.auth();
+    const dbCompat = firebase.firestore();
+</script>
 
+<!-- Joint Account Modal Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const jointModal = document.getElementById('joint-modal');
+        const closeJointBtn = document.getElementById('close-joint-modal-btn');
+        const cancelJointBtn = document.getElementById('cancel-joint-modal-btn');
+        const jointBackdrop = document.getElementById('joint-backdrop');
+        const form = document.getElementById('joint-account-form');
+        const holdersCountEl = document.getElementById('holders-count');
+        const holder3Group = document.getElementById('holder-3-group');
+        const statusEl = document.getElementById('joint-form-status');
 
-    <!-- Footer -->
-    <footer class="bg-white text-gray-800 py-16 mt-32 border-t border-gray-200">
-        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-12">
-            <!-- Company Info -->
-            <div>
-                <div class="flex items-center mb-6">
-                    <img src="Logo.png" alt="Beal Offshore Ltd Logo" class="w-15 h-12 mr-3" />
-                </div>
-                <p class="text-gray-600 leading-relaxed">
-                    Being a member of Beal Offshore Ltd is not like opening an account at the usual bank. You have a voice in what and how the organization is run.
-                </p>
-            </div>
-      
-            <!-- Quick Links -->
-            <div>
-                <h2 class="text-xl font-semibold mb-6 flex items-center">
-                    <i class="fas fa-link mr-2"></i>Quick Links
-                </h2>
-                <ul class="text-gray-600 space-y-4">
-                    <li><a href="about-us.html" class="hover:text-gray-800 transition duration-300 flex items-center">
-                        <i class="fas fa-chevron-right mr-2 text-sm"></i>About
-                    </a></li>
-                    <li><a href="personal.html" class="hover:text-gray-800 transition duration-300 flex items-center">
-                        <i class="fas fa-chevron-right mr-2 text-sm"></i>Personal Offshore
-                    </a></li>
-                    <li><a href="business.html" class="hover:text-gray-800 transition duration-300 flex items-center">
-                        <i class="fas fa-chevron-right mr-2 text-sm"></i>Business Offshore
-                    </a></li>
-                </ul>
-            </div>
-      
-            <!-- Services -->
-            <div>
-                <h2 class="text-xl font-semibold mb-6 flex items-center">
-                    <i class="fas fa-cogs mr-2"></i>Services
-                </h2>
-                <ul class="text-gray-600 space-y-4">
-                    <li class="flex items-center">
-                        <i class="fas fa-check text-gray-800 mr-2"></i>Online banking
-                    </li>
-                    <li class="flex items-center">
-                        <i class="fas fa-check text-gray-800 mr-2"></i>E-bank Statement
-                    </li>
-                </ul>
-            </div>
-      
-            <!-- Contact Info -->
-            <div>
-                <h2 class="text-xl font-semibold mb-6 flex items-center">
-                    <i class="fas fa-map-marker-alt mr-2"></i>HEAD OFFICE
-                </h2>
-                <ul class="text-gray-600 space-y-4">
-                    <li class="flex items-start">
-                        <i class="fas fa-building mt-1 mr-3"></i>
-                        <span>Forum Lane, Camana Bay, Grand Cayman</span>
-                    </li>
-                </ul>
-                <div class="mt-8 border border-gray-200 p-6 rounded-lg">
-                    <p class="text-gray-600 text-sm">
-                        This year, we've been recognized as one of the top financing institutions, offering unparalleled financial solutions.
-                    </p>
-                </div>
-            </div>
-        </div>
-      
-        <div class="mt-12 border-t border-gray-200 pt-8 px-4 text-center">
-            <p class="text-gray-600 text-sm">
-                © 2025 Beal Offshore Ltd. Powered by Menta Digital Marketing Inc.
-            </p>
-        </div>
-    </footer>
+        function closeJointModal(e) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            if (!jointModal) return;
+
+            // Hide the modal
+            jointModal.classList.add('hidden');
+            if (document.body) document.body.style.overflow = '';
+
+            // Clear status message
+            if (statusEl) statusEl.textContent = '';
+
+            // Reset the form
+            if (form) {
+                form.reset();
+                // Reset holder 3 group visibility
+                if (holder3Group) {
+                    holder3Group.classList.add('hidden');
+                    const holder3Name = document.getElementById('holder-name-3');
+                    const holder3Email = document.getElementById('holder-name-3-email');
+                    if (holder3Name) holder3Name.required = false;
+                    if (holder3Email) holder3Email.required = false;
+                }
+                // Reset holders count to default
+                if (holdersCountEl) holdersCountEl.value = '2';
+            }
+        }
+
+        if (closeJointBtn) closeJointBtn.addEventListener('click', closeJointModal);
+        if (cancelJointBtn) cancelJointBtn.addEventListener('click', closeJointModal);
+        if (jointBackdrop) jointBackdrop.addEventListener('click', closeJointModal);
+
+        // Also close on Escape key
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && jointModal && !jointModal.classList.contains('hidden')) {
+                closeJointModal(e);
+            }
+        });
+
+        // Success modal functionality
+        const successModal = document.getElementById('joint-success-modal');
+        const successBackdrop = document.getElementById('success-backdrop');
+        const closeSuccessBtn = document.getElementById('close-success-modal-btn');
+
+        function closeSuccessModal(e) {
+            if (e) e.preventDefault();
+            if (successModal) {
+                successModal.classList.add('hidden');
+                if (document.body) document.body.style.overflow = '';
+            }
+        }
+
+        if (closeSuccessBtn) closeSuccessBtn.addEventListener('click', closeSuccessModal);
+        if (successBackdrop) successBackdrop.addEventListener('click', closeSuccessModal);
+
+        if (holdersCountEl && holder3Group) {
+            const toggleHolder3 = () => {
+                if (holdersCountEl.value === '3') {
+                    holder3Group.classList.remove('hidden');
+                    const holder3Name = document.getElementById('holder-name-3');
+                    if (holder3Name) holder3Name.required = true;
+                } else {
+                    holder3Group.classList.add('hidden');
+                    const holder3Name = document.getElementById('holder-name-3');
+                    if (holder3Name) holder3Name.required = false;
+                }
+            };
+            holdersCountEl.addEventListener('change', toggleHolder3);
+            toggleHolder3();
+        }
+
+        if (form) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (statusEl) statusEl.textContent = 'Submitting...';
+
+                try {
+                    const holdersCount = parseInt(document.getElementById('holders-count').value, 10);
+                    if (holdersCount < 2 || holdersCount > 3) throw new Error('Number of holders must be 2 or 3');
+
+                    const holderName1 = document.getElementById('holder-name-1').value.trim();
+                    const holderName2 = document.getElementById('holder-name-2').value.trim();
+                    const holderName3 = (holdersCount === 3 ? document.getElementById('holder-name-3').value.trim() : '');
+                    const holderEmail3 = (holdersCount === 3 ? document.getElementById('holder-name-3-email').value.trim() : '');
+
+                    const principalEmail = document.getElementById('principal-email').value.trim();
+                    const secondaryEmail = document.getElementById('secondary-email').value.trim();
+
+                    const principalPhone = document.getElementById('principal-phone').value.trim();
+                    const secondaryPhone = document.getElementById('secondary-phone').value.trim();
+
+                    const accountType = document.getElementById('account-type').value;
+                    const password = document.getElementById('password').value;
+
+                    const businessName = document.getElementById('business-name').value.trim();
+                    const businessAddress = document.getElementById('business-address').value.trim();
+                    const businessReg = document.getElementById('business-reg').value.trim();
+
+                    const confirmed = document.getElementById('joint-confirm').checked;
+                    if (!confirmed) throw new Error('Please confirm all information is correct.');
+
+                    // Create Auth user with principal email
+                    const userCredential = await authCompat.createUserWithEmailAndPassword(principalEmail, password);
+                    const user = userCredential.user;
+
+                    // Prepare Firestore payload
+                    const payload = {
+                        holdersCount,
+                        holderNames: holdersCount === 3 ? [holderName1, holderName2, holderName3] : [holderName1, holderName2],
+                        holderEmails: holdersCount === 3 ? [principalEmail, secondaryEmail, holderEmail3] : [principalEmail, secondaryEmail],
+                        principalEmail,
+                        secondaryEmail,
+                        principalPhone,
+                        secondaryPhone,
+                        accountType,
+                        business: {
+                            name: businessName,
+                            address: businessAddress,
+                            registrationNumber: businessReg
+                        },
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+
+                    // Save to Firestore under joint_accounts collection using principal user uid
+                    await dbCompat.collection('joint_accounts').doc(user.uid).set(payload);
+
+                    // Show success modal instead of inline message
+                    closeJointModal(); // Close the form modal first
+
+                    // Show the success modal
+                    if (successModal) {
+                        successModal.classList.remove('hidden');
+                        if (document.body) document.body.style.overflow = 'hidden';
+                    }
+
+                    // Reset the form
+                    form.reset();
+                    if (holder3Group) holder3Group.classList.add('hidden');
+                    if (statusEl) statusEl.textContent = ''; // Clear any status messages
+                } catch (err) {
+                    console.error(err);
+                    if (statusEl) statusEl.textContent = `Error: ${err.message}`;
+                }
+            });
+        }
+    });
+</script>
 
 <!-- Live Chat Widget -->
 <script src="live-chat-widget.js"></script>
@@ -1247,23 +1542,242 @@ overlay.onclick = closeMenu;
 
 <!-- Success Modal -->
 <div id="success-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+    <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4">
         <div class="text-center">
-            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-check text-2xl text-green-500"></i>
+            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-check text-2xl text-blue-500"></i>
             </div>
-            <h3 class="text-xl font-bold text-gray-900 mb-2">Account Created Successfully!</h3>
-            <p class="text-gray-600 mb-6">Please check your email for verification instructions.</p>
-            <button onclick="window.location.href='login.html'" class="w-full btn-gradient text-white py-3 rounded-lg font-medium transition duration-300">
-                <i class="fas fa-sign-in-alt mr-2"></i>Proceed to Login
+            <h3 class="text-xl font-bold text-blue-950 mb-2">Account Created Successfully!</h3>
+            <p class="text-blue-800 mb-6">Please check your email for verification instructions. Next, we’ll ask two quick onboarding questions.</p>
+            <button onclick="window.location.href='onboarding.html'" class="w-full btn-gradient text-white py-3 rounded-xl font-medium transition duration-300">
+                <i class="fas fa-arrow-right mr-2"></i>Continue Onboarding
             </button>
         </div>
     </div>
 </div>
+
+<!-- Joint Account Modal -->
+<div id="joint-modal" class="fixed inset-0 z-50 hidden">
+    <div id="joint-backdrop" class="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm"></div>
+    <div class="relative mx-auto my-4 md:my-8 max-w-[95vw] md:max-w-5xl bg-white rounded-xl shadow-2xl p-0 overflow-hidden max-h-[95vh] md:max-h-[90vh]">
+        <!-- Minimalist Header -->
+        <div class="border-b border-gray-200 bg-white px-6 md:px-8 py-5 md:py-6">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h3 class="text-2xl md:text-3xl font-bold text-blue-950 mb-1">Joint Account</h3>
+                    <p class="text-sm text-gray-500">Complete the form below to open a joint account</p>
+                </div>
+                <button type="button" id="close-joint-modal-btn" class="text-gray-400 hover:text-blue-800 transition-colors p-2 rounded-xl hover:bg-blue-50">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Form Container -->
+        <div class="p-6 md:p-10 overflow-y-auto max-h-[calc(95vh-140px)] md:max-h-[calc(90vh-160px)] bg-gray-50">
+            <!-- Info Banner -->
+            <div class="mb-8 p-4 bg-white border-l-4 border-gray-400 rounded-r-lg">
+                <p class="text-sm text-blue-950">
+                    <span class="font-semibold">Note:</span> Create a joint account with 2–3 holders. The principal holder's email will be used for secure login. Business information is optional unless you select a Business account type.
+                </p>
+            </div>
+
+            <form id="joint-account-form" class="space-y-8">
+                <!-- Number of Holders -->
+                <div class="bg-white rounded-xl border border-gray-200 p-6">
+                    <label for="holders-count" class="block text-sm font-semibold text-blue-950 mb-3">
+                        Number of Account Holders
+                    </label>
+                    <select id="holders-count" class="w-full md:w-64 border border-blue-200 rounded-xl px-4 py-3 text-blue-950 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-gray-500 transition-all">
+                        <option value="2" selected>2 Account Holders</option>
+                        <option value="3">3 Account Holders</option>
+                    </select>
+                </div>
+
+                <!-- Account Holders Section -->
+                <div class="space-y-6">
+                    <div class="flex items-center space-x-2 pb-3 border-b border-gray-200">
+                        <h4 class="text-lg font-bold text-blue-950">Account Holders</h4>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Primary Holder -->
+                        <div class="bg-white rounded-xl border border-gray-200 p-6 space-y-5">
+                            <div class="flex items-center space-x-3 pb-4 border-b border-gray-200">
+                                <div class="w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center">
+                                    <span class="text-white text-xs font-bold">1</span>
+                                </div>
+                                <h5 class="font-semibold text-blue-950">Primary Holder</h5>
+                            </div>
+                            <div>
+                                <label for="holder-name-1" class="block text-sm font-medium text-blue-950 mb-2">Full Name</label>
+                                <input id="holder-name-1" type="text" required class="w-full border border-blue-200 rounded-xl px-4 py-3 text-blue-950 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-gray-500 transition-all" placeholder="Enter full name" />
+                            </div>
+                            <div>
+                                <label for="principal-email" class="block text-sm font-medium text-blue-950 mb-2">Email Address</label>
+                                <input id="principal-email" type="email" required class="w-full border border-blue-200 rounded-xl px-4 py-3 text-blue-950 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-gray-500 transition-all" placeholder="primary@example.com" />
+                            </div>
+                            <div>
+                                <label for="principal-phone" class="block text-sm font-medium text-blue-950 mb-2">Phone Number</label>
+                                <input id="principal-phone" type="tel" required class="w-full border border-blue-200 rounded-xl px-4 py-3 text-blue-950 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-gray-500 transition-all" placeholder="+1 234 567 8900" />
+                            </div>
+                        </div>
+
+                        <!-- Secondary Holder -->
+                        <div class="bg-white rounded-xl border border-gray-200 p-6 space-y-5">
+                            <div class="flex items-center space-x-3 pb-4 border-b border-gray-200">
+                                <div class="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center">
+                                    <span class="text-white text-xs font-bold">2</span>
+                                </div>
+                                <h5 class="font-semibold text-blue-950">Secondary Holder</h5>
+                            </div>
+                            <div>
+                                <label for="holder-name-2" class="block text-sm font-medium text-blue-950 mb-2">Full Name</label>
+                                <input id="holder-name-2" type="text" required class="w-full border border-blue-200 rounded-xl px-4 py-3 text-blue-950 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-gray-500 transition-all" placeholder="Enter full name" />
+                            </div>
+                            <div>
+                                <label for="secondary-email" class="block text-sm font-medium text-blue-950 mb-2">Email Address</label>
+                                <input id="secondary-email" type="email" required class="w-full border border-blue-200 rounded-xl px-4 py-3 text-blue-950 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-gray-500 transition-all" placeholder="secondary@example.com" />
+                            </div>
+                            <div>
+                                <label for="secondary-phone" class="block text-sm font-medium text-blue-950 mb-2">Phone Number</label>
+                                <input id="secondary-phone" type="tel" required class="w-full border border-blue-200 rounded-xl px-4 py-3 text-blue-950 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-gray-500 transition-all" placeholder="+1 234 567 8901" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Third Holder (Conditional) -->
+                    <div id="holder-3-group" class="hidden">
+                        <div class="bg-white rounded-xl border border-gray-200 p-6 space-y-5">
+                            <div class="flex items-center space-x-3 pb-4 border-b border-gray-200">
+                                <div class="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
+                                    <span class="text-white text-xs font-bold">3</span>
+                                </div>
+                                <h5 class="font-semibold text-blue-950">Third Holder</h5>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div>
+                                    <label for="holder-name-3" class="block text-sm font-medium text-blue-950 mb-2">Full Name</label>
+                                    <input id="holder-name-3" type="text" class="w-full border border-blue-200 rounded-xl px-4 py-3 text-blue-950 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-gray-500 transition-all" placeholder="Enter full name" />
+                                </div>
+                                <div>
+                                    <label for="holder-name-3-email" class="block text-sm font-medium text-blue-950 mb-2">Email Address</label>
+                                    <input id="holder-name-3-email" type="email" class="w-full border border-blue-200 rounded-xl px-4 py-3 text-blue-950 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-gray-500 transition-all" placeholder="third@example.com" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account Details Section -->
+                <div class="bg-white rounded-xl border border-gray-200 p-6 space-y-6">
+                    <div class="flex items-center space-x-2 pb-4 border-b border-gray-200">
+                        <h4 class="text-lg font-bold text-blue-950">Account Details</h4>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="account-type" class="block text-sm font-medium text-blue-950 mb-2">Account Type</label>
+                            <select id="account-type" class="w-full border border-blue-200 rounded-xl px-4 py-3 text-blue-950 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-gray-500 transition-all">
+                                <option value="personal">Personal Account</option>
+                                <option value="business">Business Account</option>
+                                <option value="investment">Investment Account</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-blue-950 mb-2">Password</label>
+                            <input id="password" type="password" required class="w-full border border-blue-200 rounded-xl px-4 py-3 text-blue-950 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-gray-500 transition-all" placeholder="Enter a secure password" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Business Information Section -->
+                <div class="bg-white rounded-xl border border-gray-200 p-6 space-y-6">
+                    <div class="flex items-center space-x-2 pb-4 border-b border-gray-200">
+                        <h4 class="text-lg font-bold text-blue-950">Business Information</h4>
+                        <span class="text-xs text-gray-500 font-normal">(Optional)</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="business-name" class="block text-sm font-medium text-blue-950 mb-2">Business Name</label>
+                            <input id="business-name" type="text" class="w-full border border-blue-200 rounded-xl px-4 py-3 text-blue-950 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-gray-500 transition-all" placeholder="Enter business name" />
+                        </div>
+                        <div>
+                            <label for="business-reg" class="block text-sm font-medium text-blue-950 mb-2">Registration Number</label>
+                            <input id="business-reg" type="text" class="w-full border border-blue-200 rounded-xl px-4 py-3 text-blue-950 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-gray-500 transition-all" placeholder="Enter registration number" />
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="business-address" class="block text-sm font-medium text-blue-950 mb-2">Business Address</label>
+                        <textarea id="business-address" rows="3" class="w-full border border-blue-200 rounded-xl px-4 py-3 text-blue-950 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-gray-500 transition-all resize-none" placeholder="Enter complete business address"></textarea>
+                    </div>
+                </div>
+
+                <!-- Terms and Confirmation -->
+                <div class="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
+                    <div class="flex items-start space-x-3 p-4 bg-gray-50 rounded-xl border border-gray-200">
+                        <i class="fas fa-info-circle text-blue-800 mt-0.5"></i>
+                        <p class="text-sm text-blue-950">
+                            Joint accounts allow multiple holders to manage funds together. Each holder can access the account as permitted. Ensure all details are accurate and agreed upon by all parties.
+                        </p>
+                    </div>
+                    
+                    <div class="flex items-start space-x-3">
+                        <input id="joint-confirm" type="checkbox" required class="mt-1 w-5 h-5 text-blue-950 border-2 border-blue-200 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer" />
+                        <label for="joint-confirm" class="text-sm text-blue-950 leading-relaxed cursor-pointer">
+                            <span class="font-semibold text-blue-950">I confirm</span> that the information provided above is correct and all holders are in mutual understanding. I agree to the <span class="text-blue-950 font-medium underline">terms and conditions</span> of opening a joint account.
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Submit and Cancel Buttons -->
+                <div class="pt-4 flex gap-4">
+                    <button type="button" id="cancel-joint-modal-btn" class="flex-1 bg-white border-2 border-blue-200 hover:border-gray-400 text-blue-950 hover:text-blue-950 py-4 px-6 rounded-xl transition-all duration-200 font-semibold text-base shadow-sm hover:shadow-md">
+                        Cancel
+                    </button>
+                    <button id="joint-submit-btn" type="submit" class="flex-1 bg-gray-900 hover:bg-gray-800 text-white py-4 px-6 rounded-xl transition-all duration-200 font-semibold text-base shadow-md hover:shadow-lg flex items-center justify-center space-x-2">
+                        <span>Create Joint Account</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- Status Message -->
+                <p id="joint-form-status" class="text-sm text-center text-blue-800"></p>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Joint Account Success Modal -->
+<div id="joint-success-modal" class="fixed inset-0 z-50 hidden">
+    <div id="success-backdrop" class="absolute inset-0 bg-black bg-opacity-50"></div>
+    <div class="relative mx-auto my-12 max-w-md bg-white rounded-xl shadow-lg p-8">
+        <div class="text-center">
+            <!-- Success Icon -->
+            <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-50 mb-6">
+                <i class="fas fa-check-circle text-blue-950 text-3xl"></i>
+            </div>
+            
+            <!-- Success Message -->
+            <h3 class="text-xl font-semibold text-blue-950 mb-4">Joint Account Registration in Progress</h3>
+            
+            <div class="space-y-3 text-blue-800 mb-6">
+                <p>Please be informed that a verification link has been sent to both account holders to complete the registration process.</p>
+                <p>We will review your application and get back to you within 2-3 business days regarding your registration status.</p>
+            </div>
+            
+            <!-- Close Button -->
+            <button id="close-success-modal-btn" class="w-full bg-gray-900 hover:bg-gray-800 text-white py-3 px-6 rounded-xl transition duration-300 font-medium">
+                Close
+            </button>
+        </div>
+    </div>
+</div>
+  <script src="./components/site-shell.js"></script>
+  <!-- Include Font Awesome -->
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <div data-include="components/cookie-consent.html"></div>
 </body>
-
-</html>
-<!-- Include Font Awesome -->
-<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-
 </html>

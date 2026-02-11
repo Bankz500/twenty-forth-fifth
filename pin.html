@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Beal Offshore Ltd PIN</title>
+    <title>Twenty Third & Forth PIN</title>
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" sizes="180x180" href="logo new.png">
-    <link rel="icon" href="logo new.png" type="image/png">
+    <link rel="apple-touch-icon" sizes="180x180" href="app-icon.svg">
+    <link rel="icon" href="app-icon.svg" type="image/svg+xml">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js Library -->
@@ -15,8 +15,8 @@
     <script type="module">
         // Shared Firebase client (auth/db are consistent across all pages)
         import { auth, db } from "./firebase-client.js";
-        import { onAuthStateChanged, signOut, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-        import { doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+        import { onAuthStateChanged, signOut, signInWithEmailAndPassword } from "firebase/auth";
+        import { doc, getDoc, setDoc } from "firebase/firestore";
 
         // Check if the user is authenticated
         onAuthStateChanged(auth, async (user) => {
@@ -188,6 +188,17 @@
         });
     </script>
 
+    <style>
+        :root {
+            --ttf-brand: #1800ac;
+            --ttf-brand-hover: #140099;
+        }
+        .bg-gray-900 { background-color: var(--ttf-brand) !important; }
+        .bg-gray-800 { background-color: var(--ttf-brand-hover) !important; }
+        .hover\:bg-gray-800:hover { background-color: var(--ttf-brand-hover) !important; }
+        .bg-black { background-color: rgba(24, 0, 172, 0.55) !important; }
+        .text-black { color: rgb(17 24 39) !important; } /* Tailwind gray-900 */
+    </style>
 
 </head>
 
@@ -197,9 +208,9 @@
    <!-- Navbar -->
 <nav class="bg-white p-4 shadow">
     <div class="container mx-auto flex items-center justify-between">
-        <img src="Logo.png" alt="Beal Offshore Ltd Logo" class="h-14">
+        <img src="11.png" alt="Twenty Third & Forth Logo" class="h-14 md:h-16 w-auto">
         <button onclick="signOut()"
-            class="bg-white border-b-2 text-xs text-black px-6 py-2 rounded-full hover:bg-white border">Sign Out</button>
+            class="bg-white border-b-2 text-xs text-gray-900 px-6 py-2 rounded-full hover:bg-white border">Sign Out</button>
     </div>
 </nav>
 

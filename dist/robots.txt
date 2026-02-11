@@ -17,9 +17,11 @@ Disallow: /ach.html
 Disallow: /support.html
 
 # Sitemap location
-Sitemap: https://beal-offshore.com/sitemap.xml
+Sitemap: https://twentythirdforth.com/sitemap.xml
 
 # Crawl-delay for respectful crawling
 Crawl-delay: 1
+
+
 
 

@@ -48,7 +48,7 @@
         <div class="test-card mt-6">
             <h2 class="text-xl font-semibold mb-4">Test Controls</h2>
             <div class="flex gap-4">
-                <button id="run-tests" class="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600">
+                <button id="run-tests" class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">
                     Run All Tests
                 </button>
                 <button id="clear-tests" class="bg-gray-500 text-white px-6 py-2 rounded hover:bg-gray-600">
@@ -63,7 +63,7 @@
         <!-- Console Output -->
         <div class="test-card mt-6">
             <h2 class="text-xl font-semibold mb-4">Console Output</h2>
-            <div id="console-output" class="bg-black text-green-400 p-4 rounded font-mono text-sm h-64 overflow-y-auto">
+            <div id="console-output" class="bg-black text-blue-400 p-4 rounded font-mono text-sm h-64 overflow-y-auto">
                 <p>Console output will appear here...</p>
             </div>
         </div>
@@ -88,7 +88,7 @@
             
             const timestamp = new Date().toLocaleTimeString();
             const logEntry = document.createElement('div');
-            logEntry.className = type === 'error' ? 'text-red-400' : 'text-green-400';
+            logEntry.className = type === 'error' ? 'text-red-400' : 'text-blue-400';
             logEntry.textContent = `[${timestamp}] ${type.toUpperCase()}: ${message}`;
             consoleOutput.appendChild(logEntry);
             consoleOutput.scrollTop = consoleOutput.scrollHeight;
@@ -117,7 +117,7 @@
 
             testResults.forEach(result => {
                 const resultDiv = document.createElement('div');
-                resultDiv.className = `p-2 mb-2 rounded ${result.status === 'PASS' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`;
+                resultDiv.className = `p-2 mb-2 rounded ${result.status === 'PASS' ? 'bg-blue-100 text-blue-800' : 'bg-red-100 text-red-800'}`;
                 resultDiv.innerHTML = `
                     <strong>${result.testName}:</strong> ${result.status}<br>
                     <small>${result.message}</small><br>

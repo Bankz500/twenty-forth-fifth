@@ -1,4 +1,4 @@
-// Banking Details Generator for Beal Offshore Ltd
+// Banking Details Generator for Twenty Third & Forth
 // This module generates unique banking details for each user
 
 class BankingDetailsGenerator {
@@ -21,13 +21,13 @@ class BankingDetailsGenerator {
         try {
             // Initialize Firebase
             const firebaseConfig = {
-                apiKey: "AIzaSyDyZiL4-h5n9Kqr24e7liROgHXMZau2ZmI",
-                authDomain: "artis-stanbic-holdings.firebaseapp.com",
-                projectId: "artis-stanbic-holdings",
-                storageBucket: "artis-stanbic-holdings.firebasestorage.app",
-                messagingSenderId: "124094969669",
-                appId: "1:124094969669:web:54e6306dc5747a80ec8d8c",
-                measurementId: "G-0WSC5YMY2C"
+                apiKey: "AIzaSyBb9sVH4fMb-a5mQgcDjAfYT9RZHTb3sKE",
+                authDomain: "twenty-third-forth.firebaseapp.com",
+                projectId: "twenty-third-forth",
+                storageBucket: "twenty-third-forth.firebasestorage.app",
+                messagingSenderId: "835548579831",
+                appId: "1:835548579831:web:5259f071b50341af28d0f2",
+                measurementId: "G-KEMCE9679Y"
             };
             
             // Check if Firebase is already initialized
@@ -105,7 +105,7 @@ class BankingDetailsGenerator {
             accountNumber: this.generateAccountNumber(),
             swiftCode: this.generateSwiftCode(),
             routingNumber: this.generateRoutingNumber(),
-            bankName: 'Beal Offshore Ltd',
+            bankName: 'Twenty Third & Forth',
             accountType: 'Personal Account',
             generatedAt: new Date().toISOString()
         };

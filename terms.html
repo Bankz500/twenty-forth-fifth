@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Terms of Service | Twenty Third & Forth</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" sizes="180x180" href="app-icon.svg">
+    <link rel="icon" href="app-icon.svg" type="image/svg+xml">
+    <!-- Include Tailwind CSS -->
+    <script src="./tailwind-mono.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Include Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Typography + shared site theme -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./site.css">
+    <script src="./components/site-shell.js" defer></script>
+    <style>
+        :root {
+            --bg: #f6f9ff;
+            --surface: #ffffff;
+            --ink: #09090b;
+            --muted: #3f3f46;
+            --subtle: #71717a;
+            --border: #e4e4e7;
+            --brand: #1f66e5;
+            --brand-hover: #1c4fb8;
+        }
+
+        html { scroll-behavior: smooth; }
+        body { background: var(--bg); color: var(--ink); letter-spacing: -0.01em; }
+
+        /* Text-based Logo */
+        .text-logo {
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", sans-serif;
+            font-weight: 650;
+            font-size: 1.25rem;
+            letter-spacing: -0.02em;
+            color: var(--ink);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+        .text-logo .first { color: var(--ink); }
+        .text-logo .citizens { color: var(--ink); font-weight: 650; }
+        .text-logo .inc {
+            font-size: 0.75rem;
+            color: var(--subtle);
+            font-weight: 600;
+            margin-left: 2px;
+            vertical-align: super;
+        }
+        
+        /* Primary button */
+        .btn-blue {
+            background: var(--brand);
+            color: white;
+            border: 1px solid rgba(16, 43, 99, 0.18);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+        }
+        .btn-blue:hover {
+            background: var(--brand-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 18px 50px rgba(0,0,0,0.12);
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-blue-50">
+
+    <div data-include="components/site-header.html"></div>
+
+    <!-- Main Content -->
+    <section class="pt-24 md:pt-32 pb-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="max-w-4xl mx-auto">
+                <!-- Header -->
+                <div class="text-center mb-12">
+                    <div class="inline-flex items-center gap-2 bg-white border border-blue-100 rounded-full px-4 py-2 shadow-sm mb-6">
+                        <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+                        <span class="text-blue-800 text-xs font-semibold uppercase tracking-wider">Legal</span>
+                    </div>
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-blue-950 mb-4">Terms of Service</h1>
+                    <p class="text-blue-800 text-lg">Last updated: January 2025</p>
+                </div>
+
+                <!-- Content -->
+                <div class="bg-white rounded-2xl shadow-lg border border-blue-100 p-8 md:p-12 space-y-8">
+                <!-- Section 1 -->
+                <section>
+                    <h2 class="text-2xl font-bold text-blue-950 mb-4 flex items-center">
+                        <i class="fas fa-file-contract mr-3 text-blue-950"></i>
+                        1. Agreement to Terms
+                    </h2>
+                    <div class="text-blue-800 leading-relaxed space-y-4">
+                        <p>
+                            By accessing and using Twenty Third & Forth's services, you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using or accessing our services.
+                        </p>
+                        <p>
+                            These terms apply to all users of the site, including without limitation users who are browsers, vendors, customers, merchants, and/or contributors of content.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Section 2 -->
+                <section>
+                    <h2 class="text-2xl font-bold text-blue-950 mb-4 flex items-center">
+                        <i class="fas fa-user-shield mr-3 text-blue-950"></i>
+                        2. Account Registration
+                    </h2>
+                    <div class="text-blue-800 leading-relaxed space-y-4">
+                        <p>
+                            To access certain features of our services, you must register for an account. You agree to:
+                        </p>
+                        <ul class="list-disc list-inside space-y-2 ml-4">
+                            <li>Provide accurate, current, and complete information during registration</li>
+                            <li>Maintain and promptly update your account information</li>
+                            <li>Maintain the security of your password and identification</li>
+                            <li>Accept all responsibility for activities that occur under your account</li>
+                            <li>Notify us immediately of any unauthorized use of your account</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Section 3 -->
+                <section>
+                    <h2 class="text-2xl font-bold text-blue-950 mb-4 flex items-center">
+                        <i class="fas fa-hand-holding-usd mr-3 text-blue-950"></i>
+                        3. Financial Services
+                    </h2>
+                    <div class="text-blue-800 leading-relaxed space-y-4">
+                        <p>
+                            Twenty Third & Forth provides banking banking and financial services. By using our services, you acknowledge that:
+                        </p>
+                        <ul class="list-disc list-inside space-y-2 ml-4">
+                            <li>All transactions are subject to applicable laws and regulations</li>
+                            <li>We reserve the right to refuse or cancel any transaction at our discretion</li>
+                            <li>Transfer limits and fees are subject to change with prior notice</li>
+                            <li>You are responsible for ensuring compliance with your local tax obligations</li>
+                            <li>We may require additional verification for certain transactions</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Section 4 -->
+                <section>
+                    <h2 class="text-2xl font-bold text-blue-950 mb-4 flex items-center">
+                        <i class="fas fa-shield-alt mr-3 text-blue-950"></i>
+                        4. Security and Privacy
+                    </h2>
+                    <div class="text-blue-800 leading-relaxed space-y-4">
+                        <p>
+                            We implement industry-standard security measures to protect your information. However, you are responsible for:
+                        </p>
+                        <ul class="list-disc list-inside space-y-2 ml-4">
+                            <li>Keeping your login credentials confidential</li>
+                            <li>Using secure networks when accessing your account</li>
+                            <li>Reporting any security breaches immediately</li>
+                            <li>Not sharing your account access with third parties</li>
+                        </ul>
+                        <p>
+                            Please review our Privacy Policy to understand how we collect, use, and protect your personal information.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Section 5 -->
+                <section>
+                    <h2 class="text-2xl font-bold text-blue-950 mb-4 flex items-center">
+                        <i class="fas fa-ban mr-3 text-blue-950"></i>
+                        5. Prohibited Activities
+                    </h2>
+                    <div class="text-blue-800 leading-relaxed space-y-4">
+                        <p>You agree not to:</p>
+                        <ul class="list-disc list-inside space-y-2 ml-4">
+                            <li>Use our services for any illegal purpose or in violation of any laws</li>
+                            <li>Engage in money laundering, fraud, or other financial crimes</li>
+                            <li>Attempt to gain unauthorized access to our systems or accounts</li>
+                            <li>Interfere with or disrupt the integrity of our services</li>
+                            <li>Use automated systems to access our services without permission</li>
+                            <li>Transfer funds from accounts you do not own or have authorization to use</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Section 6 -->
+                <section>
+                    <h2 class="text-2xl font-bold text-blue-950 mb-4 flex items-center">
+                        <i class="fas fa-exclamation-triangle mr-3 text-blue-950"></i>
+                        6. Limitation of Liability
+                    </h2>
+                    <div class="text-blue-800 leading-relaxed space-y-4">
+                        <p>
+                            Twenty Third & Forth shall not be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use or inability to use our services. Our total liability shall not exceed the amount you paid us in the twelve months preceding the claim.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Section 7 -->
+                <section>
+                    <h2 class="text-2xl font-bold text-blue-950 mb-4 flex items-center">
+                        <i class="fas fa-edit mr-3 text-blue-950"></i>
+                        7. Modifications to Terms
+                    </h2>
+                    <div class="text-blue-800 leading-relaxed space-y-4">
+                        <p>
+                            We reserve the right to modify these terms at any time. We will notify users of any material changes by posting the new Terms of Service on this page and updating the "Last updated" date. Your continued use of our services after such modifications constitutes acceptance of the updated terms.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Section 8 -->
+                <section>
+                    <h2 class="text-2xl font-bold text-blue-950 mb-4 flex items-center">
+                        <i class="fas fa-gavel mr-3 text-blue-950"></i>
+                        8. Governing Law
+                    </h2>
+                    <div class="text-blue-800 leading-relaxed space-y-4">
+                        <p>
+                            These Terms of Service shall be governed by and construed in accordance with the laws of the Cayman Islands, without regard to its conflict of law provisions. Any disputes arising from these terms shall be subject to the exclusive jurisdiction of the courts of the Cayman Islands.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Section 9 -->
+                <section>
+                    <h2 class="text-2xl font-bold text-blue-950 mb-4 flex items-center">
+                        <i class="fas fa-phone mr-3 text-blue-950"></i>
+                        9. Contact Information
+                    </h2>
+                    <div class="text-blue-800 leading-relaxed space-y-4">
+                        <p>
+                            If you have any questions about these Terms of Service, please contact us:
+                        </p>
+                        <div class="bg-gray-50 border border-blue-100 rounded-xl p-6">
+                            <p class="font-semibold text-blue-950 mb-2">Twenty Third & Forth</p>
+                            <p class="text-blue-800"><i class="fas fa-map-marker-alt mr-2"></i>Forum Lane, Camana Bay, Grand Cayman</p>
+                            <p class="text-blue-800"><i class="fas fa-envelope mr-2"></i>support@twentythirdforth.com</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Back to Home -->
+            <div class="text-center mt-12">
+                <a href="index.html" class="inline-flex items-center gap-2 text-blue-950 hover:text-blue-800 font-medium transition duration-300">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back to Home</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-blue-100/90 py-16 mt-32 border-t border-white/10" style="background-color: #1800ac;">
+        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-12">
+            <!-- Company Info -->
+            <div>
+                <div class="flex items-center mb-6">
+                    <img src="2.png" alt="Twenty Third & Forth Logo" class="w-15 h-12 mr-3" />
+                </div>
+            </div>
+      
+            <!-- Quick Links -->
+            <div>
+                <h2 class="text-xl font-semibold mb-6 flex items-center">
+                    <i class="fas fa-link mr-2"></i>Quick Links
+                </h2>
+                <ul class="text-blue-100/80 space-y-4">
+                    <li><a href="about-us.html" class="hover:text-white transition duration-300 flex items-center">
+                        <i class="fas fa-chevron-right mr-2 text-sm"></i>About
+                    </a></li>
+                    <li><a href="personal.html" class="hover:text-white transition duration-300 flex items-center">
+                        <i class="fas fa-chevron-right mr-2 text-sm"></i>Personal Offshore
+                    </a></li>
+                    <li><a href="business.html" class="hover:text-white transition duration-300 flex items-center">
+                        <i class="fas fa-chevron-right mr-2 text-sm"></i>Business Offshore
+                    </a></li>
+                </ul>
+            </div>
+      
+            <!-- Services -->
+            <div>
+                <h2 class="text-xl font-semibold mb-6 flex items-center">
+                    <i class="fas fa-cogs mr-2"></i>Services
+                </h2>
+                <ul class="text-blue-100/80 space-y-4">
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-white mr-2"></i>Online banking
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check text-white mr-2"></i>E-bank Statement
+                    </li>
+                </ul>
+            </div>
+      
+            <!-- Contact Info -->
+            <div>
+                <h2 class="text-xl font-semibold mb-6 flex items-center">
+                    <i class="fas fa-map-marker-alt mr-2"></i>HEAD OFFICE
+                </h2>
+                <ul class="text-blue-100/80 space-y-4">
+                    <li class="flex items-start">
+                        <i class="fas fa-building mt-1 mr-3"></i>
+                        <span>Forum Lane, Camana Bay, Grand Cayman</span>
+                    </li>
+                </ul>
+                <div class="mt-8 border border-white/10 p-6 rounded-xl">
+                    <p class="text-blue-100/80 text-sm">
+                        This year, we've been recognized as one of the top financing institutions, offering unparalleled financial solutions.
+                    </p>
+                </div>
+            </div>
+        </div>
+      
+        <div class="mt-12 border-t border-white/10 pt-8 px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-blue-100/80 text-sm">
+                    © 2017 Twenty Third & Forth. Powered by Menta Digital Marketing Inc.
+                </p>
+                <div class="flex flex-wrap justify-center gap-6 text-sm">
+                    <a href="terms.html" class="text-blue-100/80 hover:text-white transition duration-300">Terms</a>
+                    <a href="privacy.html" class="text-blue-100/80 hover:text-white transition duration-300">Privacy</a>
+                    <a href="policy.html" class="text-blue-100/80 hover:text-white transition duration-300">Policy</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div data-include="components/site-footer.html"></div>
+    <div data-include="components/cookie-consent.html"></div>
+    <script src="./components/site-shell.js"></script>
+</body>
+</html>
+

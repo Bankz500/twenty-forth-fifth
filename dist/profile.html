@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Beal Offshore Ltd Profile</title>
-    <link rel="manifest" href="/assets/manifest-DnAVBaWg.json">
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/logo%20new-DPEJ_4oz.png">
-    <link rel="icon" href="/assets/logo%20new-DPEJ_4oz.png" type="image/png">
+    <title>Twenty Third & Forth Profile</title>
+    <link rel="manifest" href="/assets/manifest-DrZo22X-.json">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/app-icon-C11owm6W.svg">
+    <link rel="icon" href="/assets/app-icon-C11owm6W.svg" type="image/svg+xml">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js Library -->
@@ -56,25 +56,35 @@
         }
     </style>
     
+    <style>
+        :root {
+            --ttf-brand: #1800ac;
+            --ttf-brand-hover: #140099;
+        }
+        /* Replace “black/dark” accents with brand blue on dashboard pages */
+        .bg-gray-900 { background-color: var(--ttf-brand) !important; }
+        .bg-gray-800 { background-color: var(--ttf-brand-hover) !important; }
+        .hover\:bg-gray-800:hover { background-color: var(--ttf-brand-hover) !important; }
+        .border-gray-900 { border-color: var(--ttf-brand) !important; }
+        .focus\:ring-gray-800:focus { --tw-ring-color: var(--ttf-brand-hover) !important; }
+        .focus\:ring-gray-900:focus { --tw-ring-color: var(--ttf-brand) !important; }
+        .bg-black { background-color: rgba(24, 0, 172, 0.55) !important; }
+    </style>
     
     
-      <script type="module" crossorigin src="/assets/profile-gO99Z1e1.js"></script>
+      <script type="module" crossorigin src="/assets/profile-DdBMvWuJ.js"></script>
       <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
-      <link rel="modulepreload" crossorigin href="/assets/firebase-config-CJaibweW.js">
-      <link rel="modulepreload" crossorigin href="/assets/firebase-client-DudADU2j.js">
+      <link rel="modulepreload" crossorigin href="/assets/firebase-config-D2Ob3NcO.js">
+      <link rel="modulepreload" crossorigin href="/assets/firebase-client-Drf6QgQf.js">
     </head>
-    <body class="font-sans antialiased" style="background-image: url('/assets/background-CsKMVAM_.png');">
-<!-- <body class="font-sans antialiased bg-gray-100"> -->
+    <body class="font-sans antialiased bg-gray-100">
 
 <!-- Navbar -->
-<nav class="bg-white p-4 shadow">
+<nav class="bg-white border-b border-gray-300 p-4 shadow-sm">
     <div class="container mx-auto flex items-center justify-between">
-        <img src="/assets/LOGO-DP4bRQMr.png" alt="Beal Offshore Ltd Logo" class="h-14">
-        </a>
-
-            <!-- Sign out button for mobile and desktop -->
-            <a href="login.html" onclick="signOut()" class="bg-white border-b-2 text-xs text-black px-6 py-2 rounded-full hover:bg-white border">Sign Out</a>
-        </div>
+        <img src="/assets/11-BKkfsV3h.png" alt="Twenty Third & Forth Logo" class="h-14 md:h-16 w-auto">
+        <button onclick="signOut()"
+            class="bg-white border border-gray-400 text-xs text-gray-800 px-4 md:px-6 py-2 rounded-full hover:bg-gray-50 transition">Sign Out</button>
     </div>
 </nav>
 
@@ -107,8 +117,8 @@
         <!-- Desktop: Two-column layout, Mobile: Stacked -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
             <!-- Left Column: Account Status Card (2/3 on desktop) -->
-            <div class="lg:col-span-2">
-                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-5 md:p-6 lg:p-8">
+            <div class="lg:col-span-2 order-1 lg:order-1">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-300 p-5 md:p-6 lg:p-8">
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
                         <div>
                             <h2 class="text-xl md:text-2xl font-bold text-gray-900 mb-2">Account Status</h2>
@@ -120,10 +130,10 @@
             </div>
         </div>
 
-                    <div class="bg-gray-50 rounded-xl p-4 md:p-5 mb-6 border border-gray-100">
+                    <div class="bg-gray-50 rounded-lg p-4 md:p-5 mb-6 border border-gray-300">
                         <div class="flex items-start gap-3 md:gap-4">
-                            <div class="bg-blue-100 rounded-lg p-2 md:p-3 flex-shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                            <div class="bg-gray-900 rounded-lg p-2 md:p-3 flex-shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-white" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
                     </svg>
                 </div>
@@ -134,7 +144,7 @@
         </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-1 gap-4">
-                        <button onclick="navigateWithSpinner('dashboard.html#recent-transactions')" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-sm md:text-base font-semibold py-3 md:py-4 px-6 rounded-xl w-full transition-all duration-300 flex items-center justify-center group shadow-md hover:shadow-lg">
+                        <button onclick="navigateWithSpinner('dashboard.html#recent-transactions')" class="bg-gray-900 hover:bg-gray-800 text-white text-sm md:text-base font-semibold py-3 md:py-4 px-6 rounded-lg w-full transition-all duration-200 flex items-center justify-center group focus:outline-none focus:ring-2 focus:ring-gray-800 focus:ring-offset-2">
                 <span>View Transaction History</span>
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5 ml-2 group-hover:translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
@@ -142,21 +152,85 @@
             </button>
         </div>
     </div>
-</div>
 
-            <!-- Right Column: Profile Menu Sections (1/3 on desktop) -->
-            <div class="lg:col-span-1">
-                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-4 md:p-5 lg:p-6">
-                        <h2 class="text-lg md:text-xl font-bold text-white">Profile Settings</h2>
-                        <p class="text-xs md:text-sm text-blue-100 mt-1">Manage your account preferences</p>
+                <!-- Transfer Limit Section -->
+                <div class="bg-white rounded-lg shadow-sm border border-gray-300 p-5 md:p-6 lg:p-8 mt-12">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
+                        <div>
+                            <h2 class="text-xl md:text-2xl font-bold text-gray-900 mb-2">Transfer Limits</h2>
+                            <p class="text-sm md:text-base text-gray-600">Your current transfer limit based on verification tier</p>
+                        </div>
+                        <div id="transferTierBadge" class="inline-flex items-center text-xs md:text-sm px-4 py-2 rounded-full font-semibold shadow-sm bg-gray-400 text-white">
+                            <span id="transferTierText">Tier 1</span>
+                        </div>
                     </div>
 
-                    <div class="divide-y divide-gray-100">
+                    <div class="bg-gray-50 rounded-lg p-4 md:p-5 mb-6 border border-gray-300">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
+                                <span class="text-sm md:text-base text-gray-700 font-medium">Daily Limit:</span>
+                                <span id="dailyTransferLimit" class="text-sm md:text-base font-semibold text-gray-900">$1 - $250,000</span>
+                            </div>
+                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
+                                <span class="text-sm md:text-base text-gray-700 font-medium">Maximum Per Transfer:</span>
+                                <span id="perTransferLimit" class="text-sm md:text-base font-semibold text-gray-900">$50,000</span>
+                            </div>
+                            <div class="flex items-center justify-between py-2 border-b border-gray-200">
+                                <span class="text-sm md:text-base text-gray-700 font-medium">Monthly Limit:</span>
+                                <span id="monthlyTransferLimit" class="text-sm md:text-base font-semibold text-gray-900">$1,000,000</span>
+                            </div>
+                            <div class="flex items-center justify-between py-2">
+                                <span class="text-sm md:text-base text-gray-700 font-medium">Verification Tier:</span>
+                                <span id="verificationTier" class="text-sm md:text-base font-semibold text-gray-900">Tier 1 - Unverified</span>
+                            </div>
+                            <!-- Hidden elements for backward compatibility -->
+                            <span id="minTransferLimit" class="hidden">$1 - $250,000</span>
+                            <span id="maxTransferLimit" class="hidden">$1,000,000</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <button onclick="navigateWithSpinner('security.html')" class="bg-gray-900 hover:bg-gray-800 text-white text-sm md:text-base font-semibold py-3 md:py-4 px-6 rounded-lg w-full transition-all duration-200 flex items-center justify-center group focus:outline-none focus:ring-2 focus:ring-gray-800 focus:ring-offset-2">
+                            <span>Upgrade Transfer Limit</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5 ml-2 group-hover:translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div id="upgradeTransferLimitSection" class="bg-gray-50 rounded-lg p-4 md:p-5 mb-6 mt-6hidden">
+                        <div class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-gray-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <div class="flex-1">
+                                <p class="text-sm font-semibold text-gray-400 mb-1">Upgrade Your Transfer Limit</p>
+                                <p class="text-sm text-gray-500 mb-3">Complete KYC verification to unlock higher transfer limits and unlimited transfers.</p>
+                                <button onclick="navigateWithSpinner('security.html')" class="bg-gray-900 hover:bg-gray-800 text-white text-sm md:text-base font-semibold py-2.5 md:py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center group focus:outline-none focus:ring-2 focus:ring-gray-800 focus:ring-offset-2">
+                                    <span>Upgrade Transfer Limit</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5 ml-2 group-hover:translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Profile Menu Sections (1/3 on desktop) -->
+            <div class="lg:col-span-1 order-2 lg:order-2">
+                <div class="bg-white rounded-lg shadow-sm border border-gray-300 overflow-hidden">
+                    <div class="bg-gray-900 p-4 md:p-5 lg:p-6">
+                        <h2 class="text-lg md:text-xl font-bold text-white">Profile Settings</h2>
+                        <p class="text-xs md:text-sm text-gray-300 mt-1">Manage your account preferences</p>
+                    </div>
+
+                    <div class="divide-y divide-gray-300">
                         <a href="profile-2.html" onclick="showUserInfo()" class="flex items-center justify-between p-4 md:p-5 hover:bg-gray-50 transition-colors group">
                             <div class="flex items-center gap-3 md:gap-4 flex-1">
-                                <div class="bg-blue-100 rounded-lg p-2.5 md:p-3 group-hover:bg-blue-200 transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <div class="bg-gray-900 rounded-lg p-2.5 md:p-3 group-hover:bg-gray-800 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                     </svg>
                                 </div>
@@ -165,15 +239,15 @@
                                     <p class="text-xs md:text-sm text-gray-500 mt-0.5">View and edit your personal information</p>
                                 </div>
                             </div>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 group-hover:text-blue-600 transition-colors flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 group-hover:text-gray-800 transition-colors flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                             </svg>
                         </a>
                         
                         <a href="support.html" class="flex items-center justify-between p-4 md:p-5 hover:bg-gray-50 transition-colors group">
                             <div class="flex items-center gap-3 md:gap-4 flex-1">
-                                <div class="bg-green-100 rounded-lg p-2.5 md:p-3 group-hover:bg-green-200 transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <div class="bg-gray-900 rounded-lg p-2.5 md:p-3 group-hover:bg-gray-800 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
                                     </svg>
                                 </div>
@@ -182,24 +256,24 @@
                                     <p class="text-xs md:text-sm text-gray-500 mt-0.5">Get help and contact support</p>
                                 </div>
                             </div>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 group-hover:text-green-600 transition-colors flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 group-hover:text-gray-800 transition-colors flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                             </svg>
                         </a>
                         
-                        <a href="pin.html" class="flex items-center justify-between p-4 md:p-5 hover:bg-gray-50 transition-colors group">
+                        <a href="security.html" class="flex items-center justify-between p-4 md:p-5 hover:bg-gray-50 transition-colors group">
                             <div class="flex items-center gap-3 md:gap-4 flex-1">
-                                <div class="bg-purple-100 rounded-lg p-2.5 md:p-3 group-hover:bg-purple-200 transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <div class="bg-gray-900 rounded-lg p-2.5 md:p-3 group-hover:bg-gray-800 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                     </svg>
                                 </div>
                                 <div class="flex-1 min-w-0">
-                                    <h3 class="text-sm md:text-base font-semibold text-gray-900">PIN Management</h3>
-                                    <p class="text-xs md:text-sm text-gray-500 mt-0.5">Change and manage your security PIN</p>
+                                    <h3 class="text-sm md:text-base font-semibold text-gray-900">Security</h3>
+                                    <p class="text-xs md:text-sm text-gray-500 mt-0.5">Change and manage your security settings</p>
                                 </div>
                             </div>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 group-hover:text-purple-600 transition-colors flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 group-hover:text-gray-800 transition-colors flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                             </svg>
                         </a>
@@ -215,7 +289,7 @@
         <div id="waitlistSuccessModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm p-4">
             <div class="bg-white rounded-3xl shadow-2xl w-11/12 md:w-1/2 max-w-md relative overflow-hidden">
                 <!-- Header with Gradient -->
-                <div class="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 p-6 text-white text-center">
+                <div class="bg-gradient-to-r from-blue-600 via-emerald-600 to-teal-600 p-6 text-white text-center">
                     <button type="button" class="absolute top-4 right-4 text-white hover:text-gray-200 transition-colors w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20" onclick="closeWaitlistSuccess()">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -227,14 +301,14 @@
                         </svg>
                 </div>
                     <h3 class="text-2xl font-bold">Welcome Onboard!</h3>
-                    <p class="text-green-100 text-sm mt-2">You've successfully joined the waitlist</p>
+                    <p class="text-blue-100 text-sm mt-2">You've successfully joined the waitlist</p>
                 </div>
                 
                 <!-- Content -->
                 <div class="p-6">
-                    <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 rounded-lg p-4 mb-6">
+                    <div class="bg-gradient-to-r from-blue-50 to-emerald-50 border-l-4 border-blue-500 rounded-lg p-4 mb-6">
                         <div class="flex items-start">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600 mt-0.5 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                             <div class="text-sm text-gray-700">
@@ -251,7 +325,7 @@
                     </div>
                     
                     <!-- Action Button -->
-                    <button type="button" class="w-full bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 text-white text-sm font-semibold py-3.5 rounded-xl hover:from-green-700 hover:via-emerald-700 hover:to-teal-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5" onclick="closeWaitlistSuccess()">
+                    <button type="button" class="w-full bg-gradient-to-r from-blue-600 via-emerald-600 to-teal-600 text-white text-sm font-semibold py-3.5 rounded-xl hover:from-blue-700 hover:via-emerald-700 hover:to-teal-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5" onclick="closeWaitlistSuccess()">
                         <i class="fas fa-check-circle mr-2"></i>Great, thanks!
                     </button>
                 </div>
@@ -462,7 +536,7 @@
             </div>
         </div>
         <div class="flex justify-end">
-            <button id="saveChangesButton" type="submit" class="px-4 py-3 bg-purple-500 text-white text-xs rounded hover:bg-purple-600 transition duration-200 w-full mt-8">Save Changes</button>
+            <button id="saveChangesButton" type="submit" class="px-4 py-3 bg-gray-900 text-white text-xs rounded-lg hover:bg-gray-800 transition duration-200 w-full mt-8 focus:outline-none focus:ring-2 focus:ring-gray-800 focus:ring-offset-2">Save Changes</button>
         </div>
     </form>
 </div>
@@ -562,72 +636,43 @@
 
 
 <!-- Bottom Navbar (Mobile Friendly) -->
-<div class="mobile-nav fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t p-3" style="height: 100px;">
+<div class="mobile-nav fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-300 p-3" style="height: 100px; z-index: 100;">
     <div class="flex justify-around items-center h-full">
-        <!-- Wallet Icon -->
-        <a href="dashboard.html" class="nav-item flex flex-col items-center" onclick="setActive(this)">
+        <!-- Home Icon -->
+        <a href="dashboard.html" class="nav-item flex flex-col items-center" data-page="dashboard">
             <div class="bg-white rounded p-2">
                 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAABYlAAAWJQFJUiTwAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAARbSURBVHgB7Vq9cttGEN470LGLFHQSy5KawEVm6NhSECmZccl0SWeVqSw/gZkniFWldNKlM/UEUZ5ATOfCoag/k12QmUxEy5wxXUn+uVvvgfg5/NEgAJos/M1wuHfYA3Z53y727gjwAbMFgynBtOrVS3BeVXKv88iGKaF0B26srG1KYHcAsB55VIsDbh8ftptQIkpzoGbdMpl4/TBueOyRLTQu3C1rVkpx4Ib1rSWF+INEM3J32/nGSD+AjcZH35XhBIeCuL66fg+F2AXdeITfzgx5uXvQvqY+aMhriLClDaPZevXP9dW1BhREoRkgAx6Qsb4RjMFQSr7RO3rcStRfWb8NDB/oM0Jj7j85aG9BTuRyIJHvRBfkkmjRscePtUwm+W6IVox1kF/YyEOpiSmk+E7TvxsOVtw+4/LrdxmvoHQukq4aEwxH557qh4EJYUyirPgOUjZJXPT6GHG7e7TXGPb751nv0yfdwWl/57OFJUYUqrvdVYaicWVx6cXg6cmjrPfK7IDL9/skXnIMJ74j8h+6R383IScGpyetK1eX94l+t6hZdbu/X1hcgmdPT/7Kco93xkARvmdFkbgYGwNF+Z4VReIilUJl8T0r8saFkWx8nO8C2I+9o/bvMGVMGhexGIi+nMrme1YkxQUH/uvx4eOfdL1QDKhKMvRmBdgpm+9ZkRQXEmTj5s1v6rpeRW8gY/coeByZjG8+OWzfhRmi0+kM6WuTShBl3R3VJxj+TF8tT8efgS8o4yBFvteWhsxdn5SNi4Zo0A86HLWwrujlXfMdqEhRD4bgn7OgTRrUTCCwjtc2BK97su8ACyKesk6gPC9gDP0MhEwPbK/TnyJHrsKcIc2mIAshswMZTZg3IPvKFzFgSDADhtBoEyjPCxgECYYbwg76NXy5svbcmyq1JLRHaWzmsCyr+lLw5167e9j27Q4Xcyyg0cdvKhbMCc4hsCWaYEIOIMh9TxZczo0DTAa2IMp/9WuRcjrknQkFoUoTpzwpDtMTxs5AOBMVC+TRDh08VJ/CTqRkIIUwhUKZCAtRSH/Z6HIepGUgp603VPkQ1BxQNSn6YcZQGUh7iQ2Pqa7Qr8eXlHOWifQMFIlRBzEH5i0T6RmIauQX0esJi/pyM1EJMH2JsVb0YtyBEjNRKdBsMCTPQKGSMpFEd2s9Ik8KPQNh5c0wfj0BZdVENTf/93KeykRqoCHVQJejOpXEkSoTuctLNxO1IAd6BY+TVAZitJR3jUpcZCXuzCEEqx/JRovpWYCL4NlEJTtRJ6kTJd/xZcDN2ur6e3fCOfmhZ3vttE2GxJ25wen/9sLVZUWdmmpToNymtvnp8uf7g/5/U10jqOPZpYVPfnF3BsF9frN7sLedpJ+6O+0EkOR7sQM6lj+jZELC89TmWloiGbu97mzvCSPD0em0wFpnhtgYlwUznZGpdMgSD6/Lx+jghM4GkG2lHRaG9GFC1GqTn2NNgl5ven9L+IBp4C127CiPC2xWGQAAAABJRU5ErkJggg==" alt="Wallet Icon" class="h-6 w-6" />
             </div>
-            <span class="text-xs font-medium mt-2">Home</span>
+            <span class="text-xs font-medium mt-2 text-gray-700">Home</span>
         </a>
         <!-- Deposit Icon -->
-        <a href="deposit.html" class="nav-item flex flex-col items-center" onclick="setActive(this)">
+        <a href="deposit.html" class="nav-item flex flex-col items-center" data-page="deposit">
             <div class="bg-white rounded p-2">
-                <img src="data:image/png;base64,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" alt="Redeem Icon" class="h-6 w-6" />
+                <img src="data:image/png;base64,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" alt="Deposit Icon" class="h-6 w-6" />
             </div>
-            <span class="text-xs font-medium mt-2">Deposit</span>
+            <span class="text-xs font-medium mt-2 text-gray-700">Deposit</span>
         </a>
-        <!-- Withdraw Icon -->
-        <!-- <a href="withdraw.html" class="nav-item flex flex-col items-center" onclick="setActive(this)">
-            <div class="bg-white rounded p-2">
-                <img src="withdraw.png" alt="Withdraw Icon" class="h-6 w-6" />
-            </div>
-            <span class="text-xs font-medium mt-2">Withdraw</span>
-        </a> -->
-        <!-- Verify Icon -->
-        <a href="support.html" class="nav-item flex flex-col items-center" onclick="setActive(this)">
+        <!-- Support Icon -->
+        <a href="support.html" class="nav-item flex flex-col items-center" data-page="support">
             <div class="bg-white rounded p-2">
                 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAABYlAAAWJQFJUiTwAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAVLSURBVHgB7VnNUhtHEO6eJf5JUokOwYQkVRE3CD9Zg1Plm8UTBD8B4gmAJ7B4AuAJDE+AOOZk5eaqxMqGX928uQQFcyB/NgXZ6fSstKPZH0krCRCu4quimNHszHRP98x83QNwi/4C4ZIxaj/OIlzYAigT/CYBTy3++wc+dlyndAqXiJ4VyNq5zEfyr7wk/B6BbALItOni8rQOK7j9r/VJsVeFulZgwn6U8zx6BkA56AEIuCGtD1YqzksXukDHCozb39nSk6vNBEeEUyJ00F9pjYyyDCJbiJIt1K0iHSkwNjWzCERrCcOUAGmbzu8UK5XWAoyP8wJYXo4FniciO9LsCoCV/d3yBqREKgWUn9/3/t6KrTrB+rsBWXAdpys/Hp14lEP08izGfEgohMLBTnklzRhtFfBPFe/8BRezRrcSWd5CxXFcuASMTc7MsQVXeUGyegZ2qYPdVwvt+lqtGpOER4KVw73ywkm1emnH4cnxUeWr4aFNj2CYZwjcyn4w9EX2zfHRdqu+LRUYHBzaUgMFdZKwcLhfXoMrQLVaPTs5rhY/ezCM7EK5+s/20NCXmTfHv//QrF9TBUanpp+xf+WDuhK+sp9+c3ULtkbJVIKAHg9+PvznyR9HL5O+T9wDddd5rT9itznYKxfgGsH7YoPFDzb3KVl3HiYdsSKpc93vg1rpuoVXuGt5S7y8br2aQe9iNem7mALjk9N5MDatOm2gD3D4aCYpjLlpboKP3eh3MQWkcSazf21c1lHZDSp7P5f8S7IODxV1CSOkgPJ987KSlkx1mVwlmJYYMlAua9shKhJSAOX5ki73efUDRK1wX4q82R5WAPBJUCbAlhfItYJ5li4zbTebtAI2m8YkV+8srwQ3BHeF3GjUwgRQK3AGA7qBbxGnW4J2FXBqsrj1amacVzto0wqg1wgBieRvcOOAji56Iq4A+1m2UUYXbhqQ9KJKbARFDQsYsSyXb4z7BDBlMmUV8J5jAPoMFWNzNoNjZjzdd35yOu3fkQI1lvrfIoLM+0G6b1YsdhOMq/gaiQrS87Q7jE1Ouzze8uHuq2LacVK7UCM6k0tB7of8bAPlFfUenZqZTz0WxxoqOZCQQ8ryqFudjJVagXhcHGlngaI8JQn+QhAUdD/0rViq/e9sLIVUCvhBd134Wt5HzB7ulpEsOWJy9g+lWGo7oXehGSW7YPGtkCPsMrNSyIfmWFHO05MCKiGlKwTFGsFioqXIHuGyborneWIgw4qCxHpw49eJ47rxaRZSIJUC7OfZoMyr9mOozULjzhCfQg8QZLoRpBrrvb8HbhXoN24V6De0AmSwvegNyTzFDcrquQh6g+7PWYbQPB4JtzFP+LTj4/prSJBVGB+4Rvlbs29lp1zgTpyjwadRnoJSzjUq9Cu0g8HruZwLzVML4J+quSqRNwIysiWWFJr06dSiionPPfE6WH2Lb9u9+oXVDPHsdVzBWB//TUAGmb+mKUMToYcVvq0Pd8ojQZu2gJ8Jg0b076F8XssTNYeopfuyeuAULDKSJsmoBWg1j0+3mbUGdZSwGZLBrNy1aMmIfPzVracaQ1ATMj96wQpr9+G3r9RJMCHFctI86iUo+EaVv2HWynT7F70neZHeDsg1c6xYdjpi4gCuCqrVpDUuE/bdbrLXoywwj/c81hAQOopwIf6dhJyNJtsS0+v1h7it2CBJkLDc7aNH+nmaP2k1fSMbtW02LRaYij5JngBLwvKW93nzQI9Q1hCIiyabDZ5r2U03Ky1eLVO9Uiq3slBmVVndAyprdxWJLxXE3Du75/t7u+faW9wU/A/JvW6n3/qIXAAAAABJRU5ErkJggg==" alt="Support Icon" class="h-6 w-6" />
             </div>
-            <span class="text-xs font-medium mt-2">Support</span>
+            <span class="text-xs font-medium mt-2 text-gray-700">Support</span>
         </a>
         <!-- Profile Icon -->
-        <a href="profile.html" class="nav-item flex flex-col items-center" onclick="setActive(this)">
+        <a href="profile.html" class="nav-item flex flex-col items-center" data-page="profile">
             <div class="bg-white rounded p-2">
                 <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAABYlAAAWJQFJUiTwAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAT9SURBVHgB7Vm/UxtXEN69U2IHZyZKBluIZIZzkRnhCLiRnRm6iC4l6dIFunQ4fwGiSweUqYDSndIllUXnmSTiDAKU7jyTMRiYiSCJIQ7vbfaddJIs34HunQAXfI1un96P3Xf73u5+B3CNqwXCBSBrP8gTSIskWI1FamgYTsX5tQQ9Rs8MyNjjForTGQQ5RQDJkG4uApak+c5c1XniQg/QEwOGR+/PIFHhDMXfXBihsLVenoOYiGWAZeeTfXQ0z64y1TGri4QlQHrmyYRjhGQD1V2qrWPx2BTTruPUQBMJiIE+8dcS7/pkqwVLRDhX3Qj29Uz2QR4NudQyhCb7hKmUnwZNmKCJzGhuln++9WUkmNuulKcP9p67YWPUfwcvdhb776SRXSjfaLZvD6QPuf0JaEDLAO/ASlH0ZaX8VqVc6Hb8wd5OqcOI8f7BoUcHu39EdiUDNGCI/2abAvt7FOV9VL0xfE7qSKJ89RA0oGUAAeX9Z1Ma2v6rzkvbpN+ABiIbkOEgxT+WJ/DuVyr6walaH+s2xGQ2680dCZENQCntpkD0FOICabU5HUoLIiK6AW3Bik+hAzHBkdn1nwk748T50DoDbxOivwFq+qw6eEMQE3yQx1rTwcVfo4IMt23BPMQGNc8U32iRXVIrF7o3kvvTT9xMMiZ0byJ1o6GQjxuauNvr5bsQEXpxAGHFfxZIs6AJVn6p+UxQAg3oGWDIBWz6K+Xv1fOiSGjkUpYvS1NqpdZaudDB7m7to4H0v2zEl42m/J2BNOy/2FntZrxSnne84MteIri+VgQNxKoHhkfuL/MbaE8BXNM0psNKR1VqCqFcrpWKsALFrY3yV6CJWPXADVM8fCXMDzg38msCS/ChHB7Juayag9iI1IRDXNCw8p2RllZemqSVxPnoSUmZyeYKnBp3fQ64b40Eu81meQFiQrugaYeX3w+mVtiXP2Tt1PUaWBsrxTl4/ECmnK5urP0EPcCF0CqN0tH28yYVvVUArFZ6T6tc46rRUxdSNMst+Mfi+GyDhKSfbqigJw10TcDa3/C+4zolbRqlE7ENUHe7lPILApzk1NLuapCqI5g3Mkxc2XR+iVVTaBsQFJT0NEDHIFrc3CgvgwYiG3Ce4l6VRuAQ0SEa9XyJmbsktw/xahaFvyWXzHcnonKmkQzozGHqCnNQkrBCYBRPEqfOeTShZdvJm6cJG1FM8eg3mIionGlXBgRxoEpxKWHxJCEXdLnNjG1bcGpMGQgz7cQw18nLL03xXTfzdmUAJ22PX3cZ5kCZlK06jgs9gDLEEOZ8W07lrbG98dvEeWPPTSWGR3Pz/PN1c1qfA+WUGnoENdf+3s6jDrrRSqU+Tu7vPf/5rLFnGvDZSE59rPjel6NyoFHRyZnyGxm/nRp8yu3VsDGhLqT8/j1xtAZ+1USwyDsfK/XtFsPZ3AJrNtMQa8emvBt2HkJLylviSPmj5QlccB8nZAEuCTfUWtiiHPukEbpxoQZIaOX3xK4T5ytKVDi8llqzbf2ZsL6BBnxqf66CjeUJvBNVzSgZBzdNWWwRB+HEb6ABCSmanXXpjrjw3gLSj74sDBkYwcNcyPIfmAOKz0Bro0Ue80aOBfUIMYCaUdEguDTf70Q3awcaQG2UN7ZxoZeN13hYhMOgPoGB7JN0yjkl/J0puMWtK6xj1VfN/lT6GQe21WNmA2u7uydwjbcM/wOLnCVOEwYUZwAAAABJRU5ErkJggg==" alt="Profile Icon" class="h-6 w-6" />
             </div>
-            <span class="text-xs font-medium mt-2">Profile</span>
+            <span class="text-xs font-medium mt-2 text-gray-700">Profile</span>
         </a>
     </div>
 </div>
+<script src="bottom-navbar.js"></script>
 
 
 <!-- Script -->
 <script>
-    // Function to set the active navbar item
-    function setActive(element) {
-        // Reset all items to default styles
-        const icons = document.querySelectorAll('.nav-item div');
-        const texts = document.querySelectorAll('.nav-item span');
-        icons.forEach(icon => icon.classList.remove('bg-green-300', 'text-white'));
-        texts.forEach(text => text.classList.remove('text-black'));
-
-        // Add active styles to the clicked item
-        const icon = element.querySelector('div');
-        const text = element.querySelector('span');
-        icon.classList.add('bg-blue-400', 'text-white'); // Highlight background of active icon
-        text.classList.add('text-black'); // Highlight text of active item
-    }
-
-    // Set the active state on page load based on the current URL
-    const currentPath = window.location.pathname;
-    const navItems = document.querySelectorAll('.nav-item');
-    navItems.forEach(item => {
-        if (item.href.includes(currentPath)) {
-            setActive(item);
-        }
-    });
 
         // NOTE: Inactivity timeout is already handled in the module script above
         // This duplicate code has been removed to prevent conflicts
@@ -651,4 +696,8 @@
         }, 1000); // Adjust the delay as needed
     }
 </script>
+
+    <!-- Inactivity Timeout: Auto-logout after 5 minutes of inactivity -->
+    <script src="inactivity-timeout.js"></script>
+</body>
 </html>

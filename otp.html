@@ -1,443 +1,240 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Beal Offshore Ltd OTP</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Twenty Third & Forth OTP</title>
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" sizes="180x180" href="logo new.png">
-    <link rel="icon" href="logo new.png" type="image/png">
-    <!-- Include Tailwind CSS -->
+    <link rel="apple-touch-icon" sizes="180x180" href="app-icon.svg">
+    <link rel="icon" href="app-icon.svg" type="image/svg+xml">
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Include Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js"></script>
-    <!-- Add Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from 'firebase/app';
-        import firebaseConfig from './firebase-config.js';
-    </script>
 </head>
-<body class="font-sans antialiased">
+<body class="min-h-screen bg-gray-50">
+  <main class="min-h-screen flex items-center justify-center px-4">
+    <div class="w-full max-w-4xl bg-white rounded-3xl overflow-hidden shadow-xl border border-gray-200 flex flex-col sm:flex-row">
+      <div class="w-full sm:w-1/2 p-8 sm:p-10">
+        <div class="flex items-center gap-3 mb-6">
+          <img src="11.png" alt="Twenty Third & Forth" class="h-10 w-auto" />
+          <div class="text-sm font-semibold text-gray-900">Verify sign-in</div>
+        </div>
 
-    <!-- Navbar -->
-<nav class="fixed top-0 left-0 right-0 bg-white bg-opacity-800 p-4 z-50">
-  <div class="container mx-auto flex items-center justify-between">
-      <div class="flex items-center justify-center w-full md:w-auto">
-          <a href="index.html">
-              <img src="Logo.png" alt="Beal Offshore Ltd Logo" class="h-14 w-68">
-          </a>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900">Enter your OTP</h1>
+        <p class="mt-2 text-sm text-gray-600">
+          We sent a 6‑digit code to <span id="email-display" class="font-semibold text-gray-900"></span>.
+        </p>
 
-          <!-- Mobile Menu Button -->
-          <div class="md:hidden ml-auto">
-              <button id="mobile-menu-button" class="text-blue-600 focus:outline-none">
-                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                  </svg>
-              </button>
-          </div>
+        <div id="otp-status" class="hidden mt-4 text-sm text-blue-900 bg-blue-50 border border-blue-200 rounded-xl px-4 py-3"></div>
+        <div id="otp-error" class="hidden mt-4 text-sm text-red-700 bg-red-50 border border-red-200 rounded-xl px-4 py-3"></div>
+
+        <form id="otp-form" class="mt-6 space-y-4">
+          <div>
+            <label for="otp" class="block text-sm font-semibold text-gray-800 mb-2">OTP</label>
+            <input id="otp" name="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="6"
+              class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter 6-digit code" required />
       </div>
 
-<!-- Navigation links -->
-<div class="hidden md:flex items-center space-x-8 ml-auto">
-    <a href="/" class="text-blue text-sm hover:text-blue-800">Home</a>
-    <a href="about-us.html" class="text-blue text-sm hover:text-blue-800">About us</a>
-
-    <!-- Personal Banking Dropdown -->
-    <div class="relative">
-        <!-- Dropdown Button -->
-        <button id="personalBankingDropdownButton" class="text-blue text-sm hover:text-blue-800 focus:outline-none">
-            Personal Offers
+          <button type="submit" id="verify-otp-btn"
+            class="w-full text-white font-semibold py-3 rounded-xl transition"
+            style="background-color:#1800ac;"
+            onmouseover="this.style.backgroundColor='#140099'"
+            onmouseout="this.style.backgroundColor='#1800ac'">
+            Proceed
         </button>
+        </form>
 
-        <!-- Dropdown Menu -->
-        <div id="personalBankingDropdownMenu" class="absolute hidden bg-blue-900 shadow-lg mt-2 w-40">
-            <a href="personal.html" class="block px-4 py-2 text-xs font-semibold text-white hover:bg-black">Personal Offshore</a>
+        <div class="mt-4 flex items-center justify-between text-sm">
+          <a href="login.html" class="text-gray-600 hover:text-gray-900 font-semibold">Back to login</a>
+          <button type="button" id="resend-otp" class="text-blue-700 hover:text-blue-900 font-semibold">Resend code</button>
         </div>
     </div>
 
-    <!-- Business Banking Dropdown -->
-    <div class="relative">
-        <!-- Dropdown Button -->
-        <button id="businessBankingDropdownButton" class="text-blue text-sm hover:text-blue-800 focus:outline-none">
-            Business Offers
-        </button>
-
-        <!-- Dropdown Menu -->
-        <div id="businessBankingDropdownMenu" class="absolute hidden bg-blue-900 shadow-lg mt-2 w-40">
-            <a href="personal.html" class="block px-4 py-2 text-xs font-semibold text-white hover:bg-black">Business Offshore</a>
+      <div class="hidden sm:block w-full sm:w-1/2 bg-cover bg-center"
+        style="background-image:url('happy-woman-writing-notepad.jpg'); min-height: 420px;">
+        <div class="h-full w-full bg-gradient-to-br from-blue-600/40 to-blue-900/60"></div>
         </div>
     </div>
+  </main>
 
-    <a href="contact.html" class="text-blue text-sm hover:text-blue-800">Contact</a>
-    
-    <!-- Login Button -->
-    <a href="login.html" class="bg-blue-900 text-sm hover:bg-blue-700 text-white px-8 py-4 rounded">Login</a>
-</div>
-</div>
-</nav>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+    import { getAuth } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
+    import firebaseConfig from './firebase-config.js';
+    import { showAmlNoticeModal } from './components/compliance-modals.js';
 
-<!-- JavaScript for Dropdown -->
-<script>
-    // Personal Banking Dropdown
-    const personalBankingDropdownButton = document.getElementById("personalBankingDropdownButton");
-    const personalBankingDropdownMenu = document.getElementById("personalBankingDropdownMenu");
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-    personalBankingDropdownButton.addEventListener("click", (event) => {
-        event.stopPropagation();
-        personalBankingDropdownMenu.classList.toggle("hidden");
-    });
+    const emailDisplay = document.getElementById('email-display');
+    const statusEl = document.getElementById('otp-status');
+    const errorEl = document.getElementById('otp-error');
+    const otpInput = document.getElementById('otp');
+    const verifyBtn = document.getElementById('verify-otp-btn');
+    const resendBtn = document.getElementById('resend-otp');
 
-    // Business Banking Dropdown
-    const businessBankingDropdownButton = document.getElementById("businessBankingDropdownButton");
-    const businessBankingDropdownMenu = document.getElementById("businessBankingDropdownMenu");
+    function showStatus(msg) {
+      if (!statusEl) return;
+      statusEl.textContent = msg;
+      statusEl.classList.remove('hidden');
+    }
+    function clearStatus() {
+      if (!statusEl) return;
+      statusEl.textContent = '';
+      statusEl.classList.add('hidden');
+    }
+    function showError(msg) {
+      if (!errorEl) return;
+      errorEl.textContent = msg;
+      errorEl.classList.remove('hidden');
+    }
+    function clearError() {
+      if (!errorEl) return;
+      errorEl.textContent = '';
+      errorEl.classList.add('hidden');
+    }
 
-    businessBankingDropdownButton.addEventListener("click", (event) => {
-        event.stopPropagation();
-        businessBankingDropdownMenu.classList.toggle("hidden");
-    });
+    function generateOtp(length = 6) {
+      return Array.from({ length }, () => Math.floor(Math.random() * 10)).join('');
+    }
 
-    // Close dropdowns if clicking outside
-    window.addEventListener("click", (event) => {
-        if (!personalBankingDropdownMenu.contains(event.target) && !personalBankingDropdownButton.contains(event.target)) {
-            personalBankingDropdownMenu.classList.add("hidden");
+    function withTimeout(promise, ms, label = 'operation') {
+      let t;
+      const timeout = new Promise((_, reject) => {
+        t = setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms);
+      });
+      return Promise.race([promise, timeout]).finally(() => clearTimeout(t));
+    }
+
+    function getEmail() {
+      const fromSession = (sessionStorage.getItem('loginEmail') || '').trim();
+      const fromAuth = (auth.currentUser?.email || '').trim();
+      return fromSession || fromAuth || '';
+    }
+
+    function getOtp() {
+      return (sessionStorage.getItem('loginOtp') || '').trim();
+    }
+
+    async function sendOtpEmail(email, otp) {
+      if (!email) throw new Error('Missing email. Please log in again.');
+      if (!otp) throw new Error('Missing OTP. Please log in again.');
+
+      if (typeof emailjs === 'undefined') {
+        throw new Error('Email service not loaded. Please disable ad blockers and try again.');
+      }
+
+      // Use the same EmailJS public key + service/template as the login page
+      emailjs.init('PpoJ-7X-bqUjp3Wa7');
+
+      const p = emailjs.send('service_dou8hz3', 'template_nncgc6k', {
+        to_email: email,
+        email,
+        otp
+      });
+      await withTimeout(p, 12000, 'OTP send');
+      return true;
+    }
+
+    async function ensureOtpSent() {
+      clearError();
+      const email = getEmail();
+      if (emailDisplay) emailDisplay.textContent = email || '(unknown)';
+
+      let otp = getOtp();
+      if (!otp) {
+        otp = generateOtp();
+        sessionStorage.setItem('loginOtp', otp);
+      }
+
+      showStatus('Sending verification code…');
+      await sendOtpEmail(email, otp);
+      showStatus('Code sent. Please check your inbox (and spam).');
+      setTimeout(() => clearStatus(), 6000);
+    }
+
+    document.getElementById('otp-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearError();
+      clearStatus();
+
+      const entered = (otpInput?.value || '').trim();
+      const stored = getOtp();
+      if (!entered || entered.length !== 6 || !/^[0-9]{6}$/.test(entered)) {
+        showError('Please enter a valid 6-digit code.');
+        return;
+      }
+      if (!stored) {
+        showError('Your session expired. Please log in again.');
+        return;
+      }
+
+      if (verifyBtn) {
+        verifyBtn.disabled = true;
+        verifyBtn.textContent = 'Verifying…';
+      }
+
+      try {
+        if (entered !== stored) {
+          showError('Invalid OTP. Please try again.');
+          return;
         }
-        if (!businessBankingDropdownMenu.contains(event.target) && !businessBankingDropdownButton.contains(event.target)) {
-            businessBankingDropdownMenu.classList.add("hidden");
+
+        sessionStorage.removeItem('loginOtp');
+        sessionStorage.removeItem('loginEmail');
+
+        // Show AML notice, then redirect. Do not keep the page in a "processing" state while the modal is open.
+        // The modal itself blocks interaction; we can safely re-enable the button immediately.
+        try {
+          showAmlNoticeModal({
+            onContinue: () => {
+              window.location.href = 'dashboard.html';
+            }
+          });
+        } catch (err) {
+          console.error(err);
+          showError(err?.message || 'Could not open the AML notice. Please refresh and try again.');
         }
+        return;
+      } finally {
+        if (verifyBtn) {
+          verifyBtn.disabled = false;
+          verifyBtn.textContent = 'Proceed';
+        }
+      }
     });
-</script>
 
+    resendBtn?.addEventListener('click', async () => {
+      try {
+        resendBtn.disabled = true;
+        resendBtn.textContent = 'Sending…';
+        const email = getEmail();
+        const otp = generateOtp();
+        sessionStorage.setItem('loginOtp', otp);
+        sessionStorage.setItem('loginEmail', email);
+        await sendOtpEmail(email, otp);
+        showStatus('New code sent.');
+        setTimeout(() => clearStatus(), 6000);
+      } catch (e) {
+        console.error(e);
+        showError(e?.message || 'Failed to resend code. Please try again.');
+      } finally {
+        resendBtn.disabled = false;
+        resendBtn.textContent = 'Resend code';
+      }
+    });
 
-
-<!-- Overlay -->
-<div id="overlay" class="fixed inset-0 bg-gray-900 opacity-90 hidden z-40"></div>
-
-<!-- Mobile Menu -->
-<div id="mobile-menu" class="fixed inset-0 bg-white shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out md:hidden z-50">
-    <div class="p-6">
-        <!-- Close Button -->
-        <button id="close-menu" class="absolute top-4 right-4 text-2xl text-gray-600">
-            ✖
-        </button>
-
-        <!-- Navigation Links -->
-        <nav class="w-full flex flex-col items-center space-y-6 mt-8">
-            <a href="/" class="w-4/5 py-3 text-center border text-black text-xs-2 font-regular bg-white rounded hover:bg-blue-900 transition">
-                Home
-            </a>
-            <a href="personal.html" class="w-4/5 py-3 text-center border text-black text-xs-2 font-medium bg-white rounded hover:bg-blue-900 transition">
-                Personal Offshore
-            </a>
-            <a href="personal.html" class="w-4/5 py-3 text-center border text-black text-xs-2 font-medium bg-white rounded hover:bg-blue-900 transition">
-                Business offshore
-            </a>
-            <a href="about-us.html" class="w-4/5 py-3 text-center border text-black text-xs-2 font-medium bg-white rounded hover:bg-blue-900 transition">
-                About us
-            </a>
-            <a href="contact.html" class="w-4/5 py-3 text-center border text-black text-xs-2 font-medium bg-white rounded hover:bg-blue-900 transition">
-                Contact
-            </a>
-            <!-- Login Button -->
-            <a href="login.html" class="w-4/5 py-3 text-center text-white text-xs-2 font-medium bg-blue-800 rounded hover:bg-blue-900 transition">
-                Login
-            </a>
-        </nav>
-    </div>
-</div>
-
-<script>
-window.onload = function () {
-    const splashScreen = document.getElementById('splash-screen');
-    setTimeout(() => {
-        splashScreen.style.display = 'none'; // Hide the splash screen
-        document.body.style.overflow = 'auto'; // Restore scroll
-    }, 4000); // Adjust time to match animation duration
-};
-
-const menu = document.getElementById('mobile-menu');
-const overlay = document.getElementById('overlay');
-const mobileMenuButton = document.getElementById('mobile-menu-button');
-const closeMenuButton = document.getElementById('close-menu');
-
-// Function to open the menu
-function openMenu() {
-    menu.classList.remove('translate-x-full');
-    overlay.classList.add('active');
-    document.body.style.overflow = 'hidden'; // Disable scrolling
-}
-
-// Function to close the menu
-function closeMenu() {
-    menu.classList.add('translate-x-full');
-    overlay.classList.remove('active');
-    document.body.style.overflow = ''; // Restore scrolling
-}
-
-// Toggle mobile menu visibility
-mobileMenuButton.onclick = openMenu;
-closeMenuButton.onclick = closeMenu;
-
-// Close menu when clicking the overlay
-overlay.onclick = closeMenu;
+    // Send OTP on load (avoid top-level await for build targets)
+    (async () => {
+      try {
+        await ensureOtpSent();
+      } catch (e) {
+        console.error(e);
+        showError(e?.message || 'Failed to send OTP. Please try again.');
+      }
+    })();
 </script>
 </body>
 </html>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Login</title>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
-        const firebaseConfig = {
-        apiKey: "AIzaSyABYV12B7RM2ZCD2G1lFTLpgJwflJFwEXY",
-        authDomain: "beal-offshore.firebaseapp.com",
-        projectId: "beal-offshore",
-        storageBucket: "beal-offshore.firebasestorage.app",
-        messagingSenderId: "1091834410162",
-        appId: "1:1091834410162:web:56285433b5751e681745ab",
-        measurementId: "G-CT463F3T6J"
-        };
-
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-
-        // Sign-In Function
-        const signIn = (email, password) => {
-            const loginBtn = document.getElementById('login-btn');
-
-            // Disable button and change text while loading
-            loginBtn.disabled = true;
-            loginBtn.textContent = 'Logging in...';
-
-            signInWithEmailAndPassword(auth, email, password)
-                .then((userCredential) => {
-                    // Successfully logged in
-                    const user = userCredential.user;
-                    console.log('User logged in:', user);
-
-                    // Redirect to dashboard after successful login
-                    window.location.href = 'dashboard.html';
-                })
-                .catch((error) => {
-                    // Handle errors
-                    const errorCode = error.code;
-                    const errorMessage = error.message;
-                    console.error('Error during login:', errorCode, errorMessage);
-
-                    // Reset the button text and re-enable it
-                    loginBtn.disabled = false;
-                    loginBtn.textContent = 'Log In';
-
-                    // Optionally show an error message to the user
-                    alert('Invalid email or password. Please try again.');
-                });
-        };
-
-        // Attach sign-in function to the form
-        document.querySelector('form').addEventListener('submit', (event) => {
-            event.preventDefault();  // Prevent the default form submission
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            // Call sign-in function
-            signIn(email, password);
-        });
-    </script>
-</head>
-<body>
-
-  
-  <!-- Include Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
-  
-<!-- OTP Page -->
-<div class="flex items-center justify-center min-h-screen bg-gray-100 px-4">
-    <div class="flex flex-col sm:flex-row bg-white rounded-lg overflow-hidden w-full sm:max-w-4xl">
-        <!-- Form Section -->
-        <div class="w-full sm:w-1/2 p-8">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6">Enter OTP</h2>
-            <p class="text-sm text-gray-600 mb-4">
-                Enter the 6-digit OTP code sent to your provided email:
-            </p>
-            <p class="text-sm text-gray-600 mb-6">
-                <span class="font-bold">Email:</span> <span id="email-display" class="font-bold text-blue-600"></span>
-            </p>
-            <form id="otp-form" class="space-y-4">
-                <div>
-                    <label for="otp" class="block text-sm font-medium text-gray-700">OTP</label>
-                    <input type="text" id="otp" name="otp" maxlength="6" required placeholder="Enter OTP"
-                        class="mt-1 block w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-                <button type="submit" class="w-full bg-black text-white py-3 rounded-lg hover:bg-green-900 transition duration-200 mt-8">
-                    Proceed
-                </button>                
-            </form>
-            <p class="mt-4 text-sm text-gray-600">
-                Didn't get the code? <a href="#" id="resend-otp" class="text-blue-600 hover:underline">Request again</a>
-            </p>
-        </div>
-        <!-- Image Section -->
-        <div class="hidden sm:block w-full sm:w-1/2 bg-cover bg-center" style="background-image: url('happy-woman-writing-notepad.jpg');">
-        </div>
-    </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-<script>
-    // Wait for the DOM to be fully loaded before executing
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize EmailJS
-        (function() {
-            emailjs.init("N9MvCEIIhbWSHAM1D"); // Replace with your EmailJS User ID
-        })();
-
-        // Display the email that the OTP was sent to
-        const email = sessionStorage.getItem("email");
-        let storedOtp = sessionStorage.getItem("otp");
-
-        if (email) {
-            document.getElementById("email-display").textContent = email;
-        } else {
-            alert("No email found. Please log in again.");
-            window.location.href = "login.html";
-            return; // Exit further script execution
-        }
-
-        // Add event listener to OTP form
-        document.getElementById("otp-form").addEventListener("submit", function(event) {
-            event.preventDefault(); // Prevent form from submitting
-            
-            const enteredOtp = document.getElementById("otp").value.trim();
-
-            if (!enteredOtp || enteredOtp.length !== 6 || isNaN(enteredOtp)) {
-                alert("Please enter a valid 6-digit OTP.");
-                return; // Stop further execution
-            }
-
-            if (enteredOtp === storedOtp) {
-                alert("OTP verified successfully.");
-                window.location.href = "dashboard.html"; // Redirect to dashboard
-            } else {
-                alert("Invalid OTP. Please try again.");
-            }
-        });
-
-        // Handle OTP resend
-        document.getElementById("resend-otp").addEventListener("click", function(event) {
-            event.preventDefault(); // Prevent default anchor behavior
-
-            if (email) {
-                const newOtp = generateOtp(); // Generate a new OTP
-                storedOtp = newOtp; // Update stored OTP locally
-                sessionStorage.setItem("otp", newOtp); // Update the OTP in sessionStorage
-
-                // Send the new OTP using EmailJS
-                emailjs.send("service_f2t3rz7", "template_n4a50om", {
-                    email: email,
-                    otp: newOtp
-                })
-                .then(function(response) {
-                    console.log("New OTP sent successfully:", response);
-                    alert("A new OTP has been sent to your email.");
-                }, function(error) {
-                    console.error("Error sending new OTP:", error);
-                    alert("There was an error sending the OTP. Please try again later.");
-                });
-            } else {
-                alert("Email information is missing. Please log in again.");
-                window.location.href = "login.html";
-            }
-        });
-
-        // Function to generate a random 6-digit OTP
-        function generateOtp(length = 6) {
-            const characters = '0123456789';
-            let otp = '';
-            for (let i = 0; i < length; i++) {
-                otp += characters.charAt(Math.floor(Math.random() * characters.length));
-            }
-            return otp;
-        }
-    });
-</script>
-
-
-
-  
-
-<!-- Footer Section -->
-<footer class="bg-black text-white py-10 mt-32">
-    <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
-        <!-- Company Info -->
-        <div>
-            <div class="flex items-center mb-4">
-                <img src="LOGO.png" alt="Beal Offshore Ltd Logo" class="w-15 h-12 mr-3" />
-                <div>
-                    <h1 class="text-lg font-semibold"></h1>
-                    <p class="text-sm text-gray-400"></p>
-                </div>
-            </div>
-            <p class="text-sm text-gray-400 leading-relaxed">
-                Being a member of Beal Offshore Ltd is not like opening an account at the usual bank. You have a voice in what and how the organization is run. 
-            </p>
-        </div>
-
-        <!-- Quick Links -->
-        <div>
-            <h2 class="text-lg font-semibold mb-4">Quick Links</h2>
-            <ul class="text-sm text-gray-400 space-y-2">
-                <li><a href="about.html" class="hover:text-white">About</a></li>
-                <li><a href="personal.html" class="hover:text-white">Personal</a></li>
-                <li><a href="business.html" class="hover:text-white">Business</a></li>
-            </ul>
-        </div>
-
-        <!-- Services -->
-        <div>
-            <h2 class="text-lg font-semibold mb-4">Services</h2>
-            <ul class="text-sm text-gray-400 space-y-2">
-                <li>Personal</li>
-                <li>Business</li>
-            </ul>
-        </div>
-
-        <!-- Social and Review -->
-        <div>
-            <h2 class="text-lg font-semibold mb-4">HEAD OFFICE</h2>
-            <ul class="text-sm text-gray-400 space-y-2">
-            <li>Address: Forum Lane ,Camana Bay ,Grand Cayman</li>
-            </ul>
-            <div class="mt-6 max-w-7xl">
-                <div class="bg-gray-800 p-4 rounded-lg shadow-lg">
-                    <p class="text-sm text-gray-400">
-                        This year, we've been recognized as one of the top banking institutions, offering unparalleled financial solutions to our clients. This achievement is a testament to our dedicated team and the trust our clients place in us to manage their financial needs. We sincerely thank everyone for their continued support and partnership.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="mt-10 border-t border-gray-700 pt-6 px-4 text-center text-xs text-gray-500">
-        © 2025 Beal Offshore Ltd. Powered by Menta Digital Marketing Inc.
-    </div>
-</footer>
-
-</body>
-</html>
-
-<!-- Live Chat Widget -->
-<script src="live-chat-widget.js"></script>
-</body>
-</body>
-</html>
-
-<!-- Include Font Awesome -->
-<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>

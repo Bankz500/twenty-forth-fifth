@@ -1,20 +1,15 @@
 {
-  "name": "BBO",
-  "short_name": "Beal offshore",
+  "name": "Twenty Third & Forth",
+  "short_name": "23&4",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#000000",
+  "theme_color": "#1f66e5",
   "icons": [
     {
-      "src": "logo new.png",
-      "sizes": "132x108",
-      "type": "image/png"
-    },
-    {
-      "src": "logo new.png",
-      "sizes": "132x108",
-      "type": "image/png"
+      "src": "app-icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
     }
   ]
 }

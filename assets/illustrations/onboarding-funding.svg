@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" fill="none">
+  <title>FCCU onboarding funding illustration</title>
+  <desc>Monochrome human line illustration: person presenting funding options with bank transfer arrows and coins.</desc>
+  <g stroke="#111827" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Person -->
+    <path d="M190 176c0-34 26-60 60-60s60 26 60 60-26 60-60 60-60-26-60-60z"/>
+    <path d="M170 344c24-44 64-66 120-66s96 22 120 66"/>
+    <path d="M240 262v84"/>
+    <path d="M210 476l30-94h20l30 94"/>
+    <!-- Pointer arm -->
+    <path d="M336 330c34-20 74-30 120-30h26"/>
+    <path d="M480 300l-14-14"/>
+    <!-- Panel -->
+    <path d="M430 214h380c20 0 36 16 36 36v178c0 20-16 36-36 36H430c-20 0-36-16-36-36V250c0-20 16-36 36-36z"/>
+    <!-- Wire transfer arrows -->
+    <path d="M470 280h270"/>
+    <path d="M710 262l30 18-30 18"/>
+    <path d="M470 340h210"/>
+    <path d="M650 322l30 18-30 18"/>
+    <!-- Coins -->
+    <path d="M520 406c0-18 22-32 50-32s50 14 50 32-22 32-50 32-50-14-50-32z"/>
+    <path d="M560 364c0-18 22-32 50-32s50 14 50 32"/>
+    <!-- Check outline -->
+    <path d="M462 382h210c18 0 32 14 32 32v34H430v-34c0-18 14-32 32-32z"/>
+    <path d="M458 414h96"/>
+    <path d="M458 438h66"/>
+    <!-- Small offshore wave -->
+    <path d="M70 486c60-50 118-50 176 0s116 50 174 0"/>
+  </g>
+</svg>
+
+
+

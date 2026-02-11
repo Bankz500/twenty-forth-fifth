@@ -1,0 +1,109 @@
+<!-- Bottom Navbar (Mobile Friendly) - Reusable Component -->
+<div class="mobile-nav fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-300 p-3" style="height: 100px; z-index: 100;">
+    <div class="flex justify-around items-center h-full">
+        <!-- Home Icon -->
+        <a href="dashboard.html" class="nav-item flex flex-col items-center" data-page="dashboard">
+            <div class="bg-white rounded p-2">
+                <img src="../1221.png" alt="Wallet Icon" class="h-6 w-6" />
+            </div>
+            <span class="text-xs font-medium mt-2 text-gray-700">Home</span>
+        </a>
+        <!-- Deposit Icon -->
+        <a href="deposit.html" class="nav-item flex flex-col items-center" data-page="deposit">
+            <div class="bg-white rounded p-2">
+                <img src="../deposit.png" alt="Deposit Icon" class="h-6 w-6" />
+            </div>
+            <span class="text-xs font-medium mt-2 text-gray-700">Deposit</span>
+        </a>
+        <!-- Support Icon -->
+        <a href="support.html" class="nav-item flex flex-col items-center" data-page="support">
+            <div class="bg-white rounded p-2">
+                <img src="../support.png" alt="Support Icon" class="h-6 w-6" />
+            </div>
+            <span class="text-xs font-medium mt-2 text-gray-700">Support</span>
+        </a>
+        <!-- Profile Icon -->
+        <a href="profile.html" class="nav-item flex flex-col items-center" data-page="profile">
+            <div class="bg-white rounded p-2">
+                <img src="../profile.png" alt="Profile Icon" class="h-6 w-6" />
+            </div>
+            <span class="text-xs font-medium mt-2 text-gray-700">Profile</span>
+        </a>
+    </div>
+</div>
+
+<script>
+    // Function to set active navbar item based on current page
+    function setActiveNavItem() {
+        const currentPath = window.location.pathname;
+        const currentPage = currentPath.split('/').pop().replace('.html', '') || 'dashboard';
+        
+        // Reset all items
+        document.querySelectorAll('.nav-item').forEach(item => {
+            const icon = item.querySelector('div');
+            const text = item.querySelector('span');
+            if (icon) {
+                icon.classList.remove('bg-gray-800', 'text-white');
+                icon.classList.add('bg-white');
+            }
+            if (text) {
+                text.classList.remove('text-gray-900', 'font-bold');
+                text.classList.add('text-gray-700');
+            }
+        });
+        
+        // Set active item
+        const activeItem = document.querySelector(`.nav-item[data-page="${currentPage}"]`);
+        if (activeItem) {
+            const icon = activeItem.querySelector('div');
+            const text = activeItem.querySelector('span');
+            if (icon) {
+                icon.classList.remove('bg-white');
+                icon.classList.add('bg-gray-800', 'text-white');
+            }
+            if (text) {
+                text.classList.remove('text-gray-700');
+                text.classList.add('text-gray-900', 'font-bold');
+            }
+        }
+    }
+    
+    // Set active on page load
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setActiveNavItem);
+    } else {
+        setActiveNavItem();
+    }
+    
+    // Also set active on click
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', function() {
+            // Reset all
+            document.querySelectorAll('.nav-item').forEach(navItem => {
+                const icon = navItem.querySelector('div');
+                const text = navItem.querySelector('span');
+                if (icon) {
+                    icon.classList.remove('bg-gray-800', 'text-white');
+                    icon.classList.add('bg-white');
+                }
+                if (text) {
+                    text.classList.remove('text-gray-900', 'font-bold');
+                    text.classList.add('text-gray-700');
+                }
+            });
+            
+            // Set clicked item as active
+            const icon = this.querySelector('div');
+            const text = this.querySelector('span');
+            if (icon) {
+                icon.classList.remove('bg-white');
+                icon.classList.add('bg-gray-800', 'text-white');
+            }
+            if (text) {
+                text.classList.remove('text-gray-700');
+                text.classList.add('text-gray-900', 'font-bold');
+            }
+        });
+    });
+</script>
+

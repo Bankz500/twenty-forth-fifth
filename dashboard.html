@@ -4,7 +4,7 @@
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Beal Offshore Ltd Dashboard</title>
+    <title>Twenty Third & Forth Dashboard</title>
     <style>
         :root {
             --chase-blue: #117aca;
@@ -39,6 +39,32 @@
             font-size: 24px;
             font-weight: bold;
             color: var(--chase-blue);
+        }
+        
+        /* Text-based Logo */
+        .text-logo {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-weight: 700;
+            font-size: 1.75rem;
+            letter-spacing: -0.5px;
+            color: #1a1a1a;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+        .text-logo .first {
+            color: #1a1a1a;
+        }
+        .text-logo .citizens {
+            color: #4a4a4a;
+            font-weight: 600;
+        }
+        .text-logo .inc {
+            font-size: 0.75rem;
+            color: #6b7280;
+            font-weight: 500;
+            margin-left: 2px;
+            vertical-align: super;
         }
         
         .welcome-section {
@@ -90,13 +116,12 @@
         
         .account-card {
             flex: 0 0 320px;
-            background: linear-gradient(135deg, #0ea5e9 0%, #1e3a8a 100%); /* brand: blue sky to deep navy */
+            background: linear-gradient(135deg, #1800ac 0%, #140099 100%); /* footer blue gradient */
             border-radius: 16px;
             padding: 24px;
             position: relative !important; /* Ensure parent is positioned for absolute children */
             transition: all 0.3s ease;
-            /* box-shadow: 0 8px 32px rgba(2, 6, 23, 0.25); */
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             overflow: visible; /* Changed from hidden to visible so button isn't clipped */
         }
         
@@ -107,25 +132,25 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
             pointer-events: none;
         }
         
         .account-card:hover {
             transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
         }
         
         .account-card.checking {
-            background: linear-gradient(135deg, #38bdf8 0%, #1e40af 100%); /* light to brand navy */
+            background: linear-gradient(135deg, #374151 0%, #1f2937 100%); /* monochrome: medium gray to dark gray */
         }
         
         .account-card.savings {
-            background: linear-gradient(135deg, #22d3ee 0%, #0ea5e9 100%); /* cyan to blue */
+            background: linear-gradient(135deg, #4b5563 0%, #374151 100%); /* monochrome: lighter gray to medium gray */
         }
         
         .account-card.fixed {
-            background: linear-gradient(135deg, #1e3a8a 0%, #0b132b 100%); /* deep navy range */
+            background: linear-gradient(135deg, #140099 0%, #0d0066 100%); /* footer blue gradient */
         }
         
         .card-header {
@@ -743,8 +768,8 @@
         }
     </style>
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" sizes="180x180" href="logo new.png">
-    <link rel="icon" href="logo new.png" type="image/png">
+    <link rel="apple-touch-icon" sizes="180x180" href="app-icon.svg">
+    <link rel="icon" href="app-icon.svg" type="image/svg+xml">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome for icons -->
@@ -797,9 +822,11 @@
     </style>
     <script type="module">
         // Firebase SDK imports
+        // IMPORTANT: Do not mix CDN Firebase modules with npm-bundled Firebase instances.
+        // `auth`/`db` come from `firebase-client.js` (npm Firebase), so the helper functions must also come from npm Firebase.
         import { auth, db, cacheUserData, clearCachedUserData, getCachedUserData } from './firebase-client.js';
-        import { onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
-        import { doc, getDoc, collection, getDocs, query, where, updateDoc, addDoc, serverTimestamp, setDoc, deleteDoc } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
+        import { onAuthStateChanged, signOut } from 'firebase/auth';
+        import { doc, getDoc, collection, getDocs, query, where, updateDoc, addDoc, serverTimestamp, setDoc, deleteDoc, onSnapshot } from 'firebase/firestore';
         
         // Make db available globally for banking details generator
         window.auth = auth;
@@ -829,23 +856,95 @@
             }
         });
 
-        // Speed up first paint: render cached user data (if available) as soon as DOM is ready.
-        // This does not change the UI; it just fills the same fields earlier, then Firestore refreshes it.
+        // Speed up first paint: render cached user data (if available).
+        // IMPORTANT: only apply cache if it belongs to the currently signed-in user.
+        // This prevents showing a previous user's cached profile after switching accounts.
         document.addEventListener('DOMContentLoaded', () => {
+            try {
             const cached = getCachedUserData();
             const welcomeEl = document.getElementById('user-first-name');
-            // Only apply cache if the dashboard hasn't been populated yet.
-            if (cached && welcomeEl && !welcomeEl.textContent.trim()) {
-                try {
+                const currentUid = auth.currentUser?.uid || null;
+
+                if (!cached || !welcomeEl || welcomeEl.textContent.trim()) return;
+                if (!currentUid) return; // wait for onAuthStateChanged
+
+                if (cached.__uid && cached.__uid !== currentUid) {
+                    clearCachedUserData();
+                    return;
+                }
+
+                if (cached.__uid === currentUid) {
                     loadUserDataFromCache(cached);
+                }
                 } catch {
                     // ignore cache failures
-                }
             }
         }, { passive: true });
 
             // Add these at the top of your script section
             // Inactivity timer removed for performance
+
+        // Debit Card progress (dashboard)
+        let debitCardUnsubCard = null;
+        let debitCardUnsubApp = null;
+        let debitCardCardDoc = null;
+        let debitCardAppDoc = null;
+
+        function renderDebitCardProgress() {
+            const wrap = document.getElementById('debitCardProgressWrap');
+            const statusEl = document.getElementById('debitCardProgressStatus');
+            const bar = document.getElementById('debitCardProgressBar');
+            const text = document.getElementById('debitCardProgressText');
+            if (!wrap || !statusEl || !bar || !text) return;
+
+            const cardActive = debitCardCardDoc && (debitCardCardDoc.status || 'active') === 'active';
+            const appStatus = (debitCardAppDoc?.status || '').toLowerCase();
+
+            if (cardActive) {
+                wrap.classList.add('hidden');
+                return;
+            }
+
+            if (appStatus === 'pending') {
+                wrap.classList.remove('hidden');
+                statusEl.textContent = 'Pending approval';
+                bar.style.width = '60%';
+                text.textContent = 'Your debit card request is being reviewed.';
+                return;
+            }
+
+            wrap.classList.add('hidden');
+        }
+
+        function setupDebitCardProgress(user) {
+            try {
+                if (debitCardUnsubCard) { try { debitCardUnsubCard(); } catch {} debitCardUnsubCard = null; }
+                if (debitCardUnsubApp) { try { debitCardUnsubApp(); } catch {} debitCardUnsubApp = null; }
+                debitCardCardDoc = null;
+                debitCardAppDoc = null;
+
+                const cardRef = doc(db, 'debit_cards', user.uid);
+                const appRef = doc(db, 'debit_card_applications', user.uid);
+
+                debitCardUnsubCard = onSnapshot(cardRef, (snap) => {
+                    debitCardCardDoc = snap.exists() ? snap.data() : null;
+                    renderDebitCardProgress();
+                }, () => {
+                    debitCardCardDoc = null;
+                    renderDebitCardProgress();
+                });
+
+                debitCardUnsubApp = onSnapshot(appRef, (snap) => {
+                    debitCardAppDoc = snap.exists() ? snap.data() : null;
+                    renderDebitCardProgress();
+                }, () => {
+                    debitCardAppDoc = null;
+                    renderDebitCardProgress();
+                });
+            } catch (e) {
+                console.warn('Debit card progress setup failed', e);
+            }
+        }
     
         // Function to populate transaction data in the clean layout
         function populateTransactionData(element, historyText) {
@@ -963,7 +1062,7 @@
                 let fg = 'text-blue-700';
 
                 if (normalizedType.includes('deposit')) {
-                    initials = 'DP'; bg = 'bg-green-50'; fg = 'text-green-700';
+                    initials = 'DP'; bg = 'bg-blue-50'; fg = 'text-blue-700';
                 } else if (normalizedType.includes('transfer')) {
                     initials = 'TF'; bg = 'bg-indigo-50'; fg = 'text-indigo-700';
                 } else if (normalizedType.includes('refund')) {
@@ -1120,6 +1219,12 @@
                     // Fetch user data from Firestore
                     await loadUserDataFromFirestore(user);
                     
+                    // Check for loan application status
+                    checkLoanApplicationStatus(user);
+
+                    // Debit card progress bar (pending approval)
+                    setupDebitCardProgress(user);
+                    
                     // Hide loading indicators after data is loaded
                     loadingSections.forEach(section => {
                         if (section) section.style.opacity = '1';
@@ -1146,26 +1251,88 @@
         async function loadUserDataFromFirestore(user) {
             const userDocRef = doc(db, 'users', user.uid);
             const userDoc = await getDoc(userDocRef);
-    
+            let userData = null;
+
             if (userDoc.exists()) {
-                const userData = userDoc.data();
+                userData = userDoc.data() || {};
+            } else {
+                // Legacy fix: if the user exists in Auth but has no Firestore `users/{uid}` doc,
+                // attempt to migrate from older storage where the doc ID was the user's email.
+                // If nothing exists, create a minimal profile and mark approved so they are not locked out.
+                let migrated = null;
+                try {
+                    const legacyEmail = (user.email || '').trim();
+                    if (legacyEmail) {
+                        const legacyRef = doc(db, 'users', legacyEmail);
+                        const legacySnap = await getDoc(legacyRef);
+                        if (legacySnap.exists()) {
+                            migrated = legacySnap.data() || {};
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Legacy email-doc migration skipped/failed:', e);
+                }
+
+                const base = migrated && typeof migrated === 'object' ? migrated : {};
+                const displayName = user.displayName || '';
+                const inferredFirstName =
+                    base.firstName
+                    || (typeof base.name === 'string' ? base.name.split(' ')[0] : '')
+                    || (typeof base.fullName === 'string' ? base.fullName.split(' ')[0] : '')
+                    || (displayName ? displayName.split(' ')[0] : '')
+                    || ((user.email || '').split('@')[0] || '');
+
+                const legacyUserData = {
+                    ...base,
+                    email: base.email || user.email || null,
+                    firstName: base.firstName || inferredFirstName || null,
+                    approvalStatus: base.approvalStatus || 'approved',
+                    isApproved: (typeof base.isApproved === 'boolean') ? base.isApproved : true,
+                    approvedAt: base.approvedAt || serverTimestamp(),
+                    approvedBy: base.approvedBy || (migrated ? 'legacy_migrated' : 'legacy_auto'),
+                    createdAt: base.createdAt || serverTimestamp(),
+                    createdAtIso: base.createdAtIso || new Date().toISOString(),
+                    migratedFrom: migrated ? 'users/{email}' : null
+                };
+                await setDoc(userDocRef, legacyUserData, { merge: true });
+                userData = legacyUserData;
+            }
+
+                // Enforce admin approval before showing dashboard.
+                // Back-compat: legacy accounts without approval fields are allowed.
+                const approvalStatus = userData?.approvalStatus || null;
+                const isApproved = (typeof userData?.isApproved === 'boolean') ? userData.isApproved : null;
+                const approved =
+                    approvalStatus === 'approved'
+                    || (approvalStatus == null && isApproved !== false);
+
+                if (!approved) {
+                    clearCachedUserData();
+                    try { await signOut(auth); } catch {}
+                    window.location.href = 'login.html?pending=1';
+                    return;
+                }
                 
-                // Store user data for other pages
-                cacheUserData(userData);
+                // Store user data for other pages (tag with uid to prevent cross-user cache bleed)
+                cacheUserData({ ...(userData || {}), __uid: user.uid, __email: user.email || userData?.email || null });
                     
-                // Set the amounts directly from user data
-                document.getElementById('Deposit-account').textContent = `${userData.deposit || '$0.00'}`;
+                // Set the amounts directly from user data (support legacy field names)
+                const depositLike = userData.deposit ?? userData.checking ?? '$0.00';
+                document.getElementById('Deposit-account').textContent = `${depositLike || '$0.00'}`;
                 document.getElementById('savings').textContent = `${userData.savings || '$0.00'}`;
                 document.getElementById('fixed').textContent = `${userData.fixed || '$0.00'}`;
                 
-                // Update welcome message first to ensure it's visible immediately
+                // Update KYC notification based on status
+                updateKYCNotification(userData);
+                
+                // Update welcome message first to ensure it's visible immediately (support legacy field names)
                 const welcomeName = document.getElementById('user-first-name');
-                if (userData.firstName && userData.firstName.trim() !== '') {
-                    welcomeName.textContent = userData.firstName;
-                } else {
-                    welcomeName.textContent = '';
-                    console.log('User data does not contain a valid name field.');
-                }
+                const first =
+                    (typeof userData.firstName === 'string' && userData.firstName.trim()) ? userData.firstName.trim()
+                    : (typeof userData.name === 'string' && userData.name.trim()) ? userData.name.trim().split(' ')[0]
+                    : (typeof userData.fullName === 'string' && userData.fullName.trim()) ? userData.fullName.trim().split(' ')[0]
+                    : (user.email ? user.email.split('@')[0] : '');
+                if (welcomeName) welcomeName.textContent = first || '';
     
                 // Update cardholder name on the active card
                 const cardholderName = document.getElementById('cardholder-name');
@@ -1173,9 +1340,13 @@
                 let fullName = '';
                 
                 if (userData.firstName && userData.lastName) {
-                    fullName = `${userData.firstName.toUpperCase()} ${userData.lastName.toUpperCase()}`;
+                    fullName = `${String(userData.firstName).toUpperCase()} ${String(userData.lastName).toUpperCase()}`;
                 } else if (userData.firstName) {
-                    fullName = userData.firstName.toUpperCase();
+                    fullName = String(userData.firstName).toUpperCase();
+                } else if (userData.fullName) {
+                    fullName = String(userData.fullName).toUpperCase();
+                } else if (userData.name) {
+                    fullName = String(userData.name).toUpperCase();
                 }
                 
                 if (fullName) {
@@ -1245,6 +1416,8 @@
                     const pending1Element = document.getElementById('pending1');
                     const pending2Element = document.getElementById('pending2');
                     const pending3Element = document.getElementById('pending3');
+                    const pending4Element = document.getElementById('pending4');
+                    const pending5Element = document.getElementById('pending5');
                     const pendingList = document.getElementById('pending-list');
                     
                     function populatePendingData(element, pendingText) {
@@ -1299,25 +1472,83 @@
                         appendPendingCard(pending3Element);
                     }
                     
-                    if (userData.pending1 && userData.pending2 && userData.pending3 &&
-                        userData.pending1.trim() !== '' && userData.pending2.trim() !== '' && userData.pending3.trim() !== '') {
+                    if (userData.pending4 && userData.pending4.trim() !== '') {
+                        pending4Element.classList.remove('hidden');
+                        populatePendingData(pending4Element, userData.pending4);
+                        appendPendingCard(pending4Element);
+                    }
+                    
+                    if (userData.pending5 && userData.pending5.trim() !== '') {
+                        pending5Element.classList.remove('hidden');
+                        populatePendingData(pending5Element, userData.pending5);
+                        appendPendingCard(pending5Element);
+                    }
+                    
+                    if (userData.pending1 && userData.pending2 && userData.pending3 && userData.pending4 && userData.pending5 &&
+                        userData.pending1.trim() !== '' && userData.pending2.trim() !== '' && userData.pending3.trim() !== '' && 
+                        userData.pending4.trim() !== '' && userData.pending5.trim() !== '') {
                         document.getElementById('pending-limit-notice').classList.remove('hidden');
                     } else {
                         document.getElementById('pending-limit-notice').classList.add('hidden');
                     }
                 }, 200);
+        }
+        
+        // Function to update KYC notification based on user's KYC status
+        function updateKYCNotification(userData) {
+            const kycNotification = document.getElementById('kycNotification');
+            const kycNotificationTitle = document.getElementById('kycNotificationTitle');
+            const kycNotificationMessage = document.getElementById('kycNotificationMessage');
+            const kycNotificationTime = document.getElementById('kycNotificationTime');
+            
+            if (!kycNotification || !kycNotificationTitle || !kycNotificationMessage || !kycNotificationTime) {
+                return; // Elements not found, skip
+            }
+            
+            const kycStatus = userData.kycStatus || 'not_completed';
+            
+            // Show notification based on KYC status
+            if (kycStatus === 'pending') {
+                kycNotificationTitle.textContent = 'KYC Verification Pending';
+                kycNotificationMessage.textContent = 'Your KYC document is currently under review. We will notify you once the verification is complete.';
+                kycNotificationTime.textContent = 'Recently';
+                kycNotification.style.display = 'flex';
+            } else if (kycStatus === 'reviewed') {
+                kycNotificationTitle.textContent = 'KYC Under Review';
+                kycNotificationMessage.textContent = 'Your KYC document has been reviewed and is being processed. You will be notified once a decision is made.';
+                kycNotificationTime.textContent = 'Recently';
+                kycNotification.style.display = 'flex';
+            } else if (kycStatus === 'approved' || kycStatus === 'completed') {
+                kycNotificationTitle.textContent = 'KYC Verification Approved';
+                kycNotificationMessage.textContent = 'Congratulations! Your KYC verification has been approved. Your account now has full access to all features.';
+                kycNotificationTime.textContent = 'Recently';
+                kycNotification.style.display = 'flex';
+            } else if (kycStatus === 'rejected' || kycStatus === 'declined') {
+                kycNotificationTitle.textContent = 'KYC Verification Rejected';
+                kycNotificationMessage.textContent = 'Your KYC verification was not approved. Please upload a new valid government-issued ID document to complete verification.';
+                kycNotificationTime.textContent = 'Recently';
+                kycNotification.style.display = 'flex';
             } else {
-                console.log('No user document found in Firestore.');
-                alert('No user data found.');
+                // KYC not started or not_completed - show reminder
+                kycNotificationTitle.textContent = 'KYC Verification Required';
+                kycNotificationMessage.textContent = 'Complete your KYC verification to unlock all account features. Upload a valid government-issued ID in the Security section.';
+                kycNotificationTime.textContent = 'Important';
+                kycNotification.style.display = 'flex';
             }
         }
         
         // Function to load user data from cache
         function loadUserDataFromCache(userData) {
+            // Safety: only use cache for the currently signed-in user
+            const currentUid = auth.currentUser?.uid || null;
+            if (currentUid && userData?.__uid && userData.__uid !== currentUid) return;
             // Set the amounts directly from cached user data
             document.getElementById('Deposit-account').textContent = `${userData.deposit || '$0.00'}`;
             document.getElementById('savings').textContent = `${userData.savings || '$0.00'}`;
             document.getElementById('fixed').textContent = `${userData.fixed || '$0.00'}`;
+            
+            // Update KYC notification from cache
+            updateKYCNotification(userData);
             
             // Load transaction history from cache
             loadTransactionHistoryFromCache(userData);
@@ -1409,6 +1640,8 @@
             const pending1Element = document.getElementById('pending1');
             const pending2Element = document.getElementById('pending2');
             const pending3Element = document.getElementById('pending3');
+            const pending4Element = document.getElementById('pending4');
+            const pending5Element = document.getElementById('pending5');
             const pendingList = document.getElementById('pending-list');
             
             function populatePendingData(element, pendingText) {
@@ -1458,8 +1691,21 @@
                 if (pendingList) pendingList.appendChild(pending3Element);
             }
             
-            if (userData.pending1 && userData.pending2 && userData.pending3 &&
-                userData.pending1.trim() !== '' && userData.pending2.trim() !== '' && userData.pending3.trim() !== '') {
+            if (userData.pending4 && userData.pending4.trim() !== '') {
+                pending4Element.classList.remove('hidden');
+                populatePendingData(pending4Element, userData.pending4);
+                if (pendingList) pendingList.appendChild(pending4Element);
+            }
+            
+            if (userData.pending5 && userData.pending5.trim() !== '') {
+                pending5Element.classList.remove('hidden');
+                populatePendingData(pending5Element, userData.pending5);
+                if (pendingList) pendingList.appendChild(pending5Element);
+            }
+            
+            if (userData.pending1 && userData.pending2 && userData.pending3 && userData.pending4 && userData.pending5 &&
+                userData.pending1.trim() !== '' && userData.pending2.trim() !== '' && userData.pending3.trim() !== '' && 
+                userData.pending4.trim() !== '' && userData.pending5.trim() !== '') {
                 document.getElementById('pending-limit-notice').classList.remove('hidden');
             } else {
                 document.getElementById('pending-limit-notice').classList.add('hidden');
@@ -1473,7 +1719,20 @@
             
                 if (userDoc.exists()) {
                 const userData = userDoc.data();
-                cacheUserData(userData);
+
+                const approvalStatus = userData?.approvalStatus || null;
+                const isApproved = (typeof userData?.isApproved === 'boolean') ? userData.isApproved : null;
+                const approved =
+                    approvalStatus === 'approved'
+                    || (approvalStatus == null && isApproved !== false);
+                if (!approved) {
+                    clearCachedUserData();
+                    try { await signOut(auth); } catch {}
+                    window.location.href = 'login.html?pending=1';
+                    return;
+                }
+
+                cacheUserData({ ...(userData || {}), __uid: user.uid, __email: user.email || userData?.email || null });
                 // Update welcome message if it changed
                 const welcomeName = document.getElementById('user-first-name');
                 if (welcomeName && userData.firstName && userData.firstName.trim() !== '') {
@@ -1484,12 +1743,313 @@
     
         // Sign out function
         window.signOut = function() {
+            // Clear cached profile so a different account won't see the previous user's details.
+            clearCachedUserData();
             signOut(auth).then(() => {
                 alert('Signed out successfully!');
                 window.location.href = 'login.html'; // Redirect after sign-out
             }).catch((error) => {
                 alert('Error signing out: ' + error.message);
             });
+        };
+
+        // Loan application status tracking
+        let loanListenerUnsubscribe = null;
+
+        async function checkLoanApplicationStatus(user) {
+            try {
+                const loanDocRef = doc(db, 'loans', user.uid);
+                
+                // Unsubscribe from previous listener if exists
+                if (loanListenerUnsubscribe) {
+                    loanListenerUnsubscribe();
+                }
+                
+                // Set up real-time listener for loan status
+                loanListenerUnsubscribe = onSnapshot(loanDocRef, (loanDoc) => {
+                    if (loanDoc.exists()) {
+                        const loanData = loanDoc.data();
+                        console.log('Loan document updated:', loanData);
+                        console.log('Loan status:', loanData.status);
+                        // Force update the display with current status
+                        updateLoanStatusDisplay(loanData);
+                    } else {
+                        // No loan application, hide badge and modal
+                        console.log('Loan document does not exist');
+                        hideLoanStatusDisplay();
+                    }
+                }, (error) => {
+                    console.warn('Error listening to loan status:', error);
+                    // Don't show error if document doesn't exist
+                    if (error.code !== 'permission-denied') {
+                        hideLoanStatusDisplay();
+                    }
+                });
+            } catch (error) {
+                console.error('Error checking loan status:', error);
+            }
+        }
+
+        function updateLoanStatusDisplay(loanData) {
+            // Get status - normalize to lowercase for comparison
+            const rawStatus = loanData.status || loanData.loanStatus || 'pending';
+            const status = String(rawStatus).toLowerCase().trim();
+            const loanAmount = loanData.loanAmount || 0;
+            const submittedAt = loanData.submittedAt || loanData.createdAt;
+            
+            console.log('Updating loan status display:', {
+                rawStatus: rawStatus,
+                normalizedStatus: status,
+                fullLoanData: loanData
+            });
+            
+            // Get loan status card elements
+            const loanCard = document.getElementById('loanStatusCard');
+            
+            // Always hide the modal by default - only show when user clicks
+            const modal = document.getElementById('loanProgressModal');
+            if (modal) {
+                modal.classList.add('hidden');
+            }
+            
+            // Show loan status card instead of modal
+            if (loanCard) {
+                loanCard.classList.remove('hidden');
+                updateLoanStatusCard(loanData, status);
+            } else {
+                console.error('Loan status card not found');
+            }
+        }
+        
+        function updateLoanStatusCard(loanData, status) {
+            const card = document.getElementById('loanStatusCard');
+            if (!card) return;
+            
+            const loanAmount = loanData.loanAmount || 0;
+            const submittedAt = loanData.submittedAt || loanData.createdAt;
+            let dateText = 'N/A';
+            
+            if (submittedAt && submittedAt.toDate) {
+                dateText = submittedAt.toDate().toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric', 
+                    year: 'numeric' 
+                });
+            }
+            
+            // Update card content
+            const amountEl = card.querySelector('#loanCardAmount');
+            const statusEl = card.querySelector('#loanCardStatus');
+            const dateEl = card.querySelector('#loanCardDate');
+            const iconEl = card.querySelector('#loanCardIcon');
+            const titleEl = card.querySelector('#loanCardTitle');
+            const messageEl = card.querySelector('#loanCardMessage');
+            
+            if (amountEl) amountEl.textContent = `$${loanAmount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            if (dateEl) dateEl.textContent = dateText;
+            
+            if (status === 'approved') {
+                if (iconEl) {
+                    iconEl.className = 'w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center';
+                    iconEl.innerHTML = '<i class="fas fa-check-circle text-blue-600 text-2xl"></i>';
+                }
+                if (titleEl) titleEl.textContent = 'Loan Approved';
+                if (messageEl) messageEl.textContent = 'Your loan application has been approved. View details to see repayment schedule.';
+                if (statusEl) {
+                    statusEl.textContent = 'Approved';
+                    statusEl.className = 'px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700';
+                }
+                card.className = 'bg-white rounded-xl shadow-lg border-2 border-blue-200 p-5 mb-6';
+            } else if (status === 'rejected') {
+                if (iconEl) {
+                    iconEl.className = 'w-12 h-12 bg-red-100 rounded-full flex items-center justify-center';
+                    iconEl.innerHTML = '<i class="fas fa-times-circle text-red-600 text-2xl"></i>';
+                }
+                if (titleEl) titleEl.textContent = 'Loan Rejected';
+                if (messageEl) messageEl.textContent = 'Your loan application was not approved. Contact support for more information.';
+                if (statusEl) {
+                    statusEl.textContent = 'Rejected';
+                    statusEl.className = 'px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700';
+                }
+                card.className = 'bg-white rounded-xl shadow-lg border-2 border-red-200 p-5 mb-6';
+            } else {
+                // Pending
+                if (iconEl) {
+                    iconEl.className = 'w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center';
+                    iconEl.innerHTML = '<i class="fas fa-spinner fa-spin text-blue-600 text-2xl"></i>';
+                }
+                if (titleEl) titleEl.textContent = 'Loan Under Review';
+                if (messageEl) messageEl.textContent = 'Your loan application is being reviewed. We will notify you once a decision is made.';
+                if (statusEl) {
+                    statusEl.textContent = 'Pending';
+                    statusEl.className = 'px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700';
+                }
+                card.className = 'bg-white rounded-xl shadow-lg border-2 border-blue-200 p-5 mb-6';
+            }
+            
+            // Store loan data for modal
+            card.dataset.loanData = JSON.stringify(loanData);
+            card.dataset.loanStatus = status;
+        }
+
+        function showLoanStatusBadge(loanAmount, submittedAt) {
+            const badge = document.getElementById('loanStatusBadge');
+            const badgeText = document.getElementById('loanStatusBadgeText');
+            
+            if (badge && badgeText) {
+                badge.classList.remove('hidden');
+                badgeText.textContent = 'Under Review';
+            }
+        }
+
+        function showLoanStatusModal(loanData, status) {
+            const modal = document.getElementById('loanProgressModal');
+            const icon = document.getElementById('loanProgressIcon');
+            const title = document.getElementById('loanProgressTitle');
+            const message = document.getElementById('loanProgressMessage');
+            const amount = document.getElementById('loanProgressAmount');
+            const statusEl = document.getElementById('loanProgressStatus');
+            const date = document.getElementById('loanProgressDate');
+            const progressBar = document.getElementById('loanProgressBar');
+            
+            if (!modal) {
+                console.error('Loan progress modal not found');
+                return;
+            }
+
+            // Normalize status to lowercase for comparison
+            const normalizedStatus = String(status).toLowerCase().trim();
+            console.log('Showing loan status modal with status:', normalizedStatus, 'original:', status);
+
+            const loanAmount = loanData.loanAmount || 0;
+            const submittedAt = loanData.submittedAt || loanData.createdAt;
+            let dateText = 'N/A';
+            
+            if (submittedAt && submittedAt.toDate) {
+                dateText = submittedAt.toDate().toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric', 
+                    year: 'numeric' 
+                });
+            }
+
+            amount.textContent = `$${loanAmount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            date.textContent = dateText;
+
+            if (normalizedStatus === 'approved') {
+                console.log('Setting modal to APPROVED state');
+                icon.className = 'w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4';
+                icon.innerHTML = '<i class="fas fa-check-circle text-blue-600 text-3xl"></i>';
+                title.textContent = 'Loan Application Approved!';
+                message.textContent = 'Congratulations! Your loan application has been approved. Click the button below to view your loan details and repayment schedule.';
+                statusEl.textContent = 'Approved';
+                statusEl.className = 'text-sm font-semibold text-blue-600';
+                progressBar.style.width = '100%';
+                progressBar.className = 'bg-blue-600 h-2 rounded-full transition-all duration-500';
+                
+                // Update close button to navigate to loan page
+                const closeBtn = modal.querySelector('button');
+                if (closeBtn) {
+                    closeBtn.innerHTML = '<i class="fas fa-arrow-right mr-2"></i>View Loan Details';
+                    closeBtn.onclick = function() {
+                        window.location.href = 'loan.html';
+                    };
+                    closeBtn.className = 'w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200';
+                }
+            } else if (normalizedStatus === 'rejected') {
+                console.log('Setting modal to REJECTED state');
+                icon.className = 'w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4';
+                icon.innerHTML = '<i class="fas fa-times-circle text-red-600 text-3xl"></i>';
+                title.textContent = 'Loan Application Rejected';
+                message.textContent = 'We\'re sorry, but your loan application has been rejected. Please contact support for more information or try applying again later.';
+                statusEl.textContent = 'Rejected';
+                statusEl.className = 'text-sm font-semibold text-red-600';
+                progressBar.style.width = '100%';
+                progressBar.className = 'bg-red-600 h-2 rounded-full transition-all duration-500';
+                
+                // Reset close button
+                const closeBtn = modal.querySelector('button');
+                if (closeBtn) {
+                    closeBtn.innerHTML = '<i class="fas fa-times mr-2"></i>Close';
+                    closeBtn.onclick = function() {
+                        closeLoanProgressModal();
+                    };
+                    closeBtn.className = 'w-full text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200';
+                    closeBtn.style.backgroundColor = '#1800ac';
+                    closeBtn.onmouseover = function() { this.style.backgroundColor = '#140099'; };
+                    closeBtn.onmouseout = function() { this.style.backgroundColor = '#1800ac'; };
+                }
+            } else {
+                console.log('Setting modal to PENDING state');
+                icon.className = 'w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4';
+                icon.innerHTML = '<i class="fas fa-spinner fa-spin text-blue-600 text-3xl"></i>';
+                title.textContent = 'Loan Application Under Review';
+                message.textContent = 'Your loan application is being reviewed by our team. You will be notified once a decision has been made.';
+                statusEl.textContent = 'Pending';
+                statusEl.className = 'text-sm font-semibold text-yellow-600';
+                progressBar.style.width = '50%';
+                progressBar.className = 'bg-blue-600 h-2 rounded-full transition-all duration-500';
+                
+                // Reset close button
+                const closeBtn = modal.querySelector('button');
+                if (closeBtn) {
+                    closeBtn.innerHTML = '<i class="fas fa-times mr-2"></i>Close';
+                    closeBtn.onclick = function() {
+                        closeLoanProgressModal();
+                    };
+                    closeBtn.className = 'w-full text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200';
+                    closeBtn.style.backgroundColor = '#1800ac';
+                    closeBtn.onmouseover = function() { this.style.backgroundColor = '#140099'; };
+                    closeBtn.onmouseout = function() { this.style.backgroundColor = '#1800ac'; };
+                }
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function hideLoanStatusDisplay() {
+            const badge = document.getElementById('loanStatusBadge');
+            const modal = document.getElementById('loanProgressModal');
+            const card = document.getElementById('loanStatusCard');
+            
+            if (badge) badge.classList.add('hidden');
+            if (modal) modal.classList.add('hidden');
+            if (card) card.classList.add('hidden');
+        }
+
+        window.openLoanProgressModal = function() {
+            // Get loan data from the card if available
+            const loanCard = document.getElementById('loanStatusCard');
+            if (loanCard && loanCard.dataset.loanData) {
+                try {
+                    const loanData = JSON.parse(loanCard.dataset.loanData);
+                    const status = loanCard.dataset.loanStatus || loanData.status || 'pending';
+                    showLoanStatusModal(loanData, status);
+                } catch (e) {
+                    console.error('Error parsing loan data:', e);
+                }
+            } else {
+                // Fallback: fetch from Firestore
+                const user = auth.currentUser;
+                if (!user) return;
+
+                const loanDocRef = doc(db, 'loans', user.uid);
+                getDoc(loanDocRef).then((loanDoc) => {
+                    if (loanDoc.exists()) {
+                        const loanData = loanDoc.data();
+                        showLoanStatusModal(loanData, loanData.status || 'pending');
+                    }
+                }).catch((error) => {
+                    console.error('Error loading loan data:', error);
+                });
+            }
+        };
+
+        window.closeLoanProgressModal = function() {
+            const modal = document.getElementById('loanProgressModal');
+            if (modal) {
+                modal.classList.add('hidden');
+            }
         };
     </script>
     
@@ -1499,15 +2059,15 @@
 
 
     <!-- Navbar -->
-    <nav class="bg-white fixed top-0 w-full z-50 border-b">
+    <nav class="bg-white border-b border-gray-300 fixed top-0 w-full z-50 shadow-sm">
         <div class="container mx-auto flex items-center justify-between">
             <!-- Left Logo -->
-            <a href="/" class="flex items-center">
-                <img src="Logo.png" alt="Beal Offshore Ltd Logo" class="h-14">
+            <a href="/" class="flex items-center" aria-label="Twenty Third & Forth">
+                <img src="11.png" alt="Twenty Third & Forth" class="h-14 md:h-16 w-auto">
             </a>
 
             <!-- Right Logo (Email) -->
-            <a href="mailto:support@beal-offshore.com" class="flex items-center bg-blue-50 p-2 rounded-full hover:bg-blue-100 transition-all">
+            <a href="mailto:support@twentythirdforth.com" class="flex items-center bg-gray-100 p-2 rounded-full hover:bg-gray-200 transition-all">
                 <img src="chat.png" alt="Contact" class="h-8 w-8">
             </a>
         </div>
@@ -1573,10 +2133,10 @@
                 
                     <div class="accounts-carousel">
                     <!-- Checking Account Card -->
-                        <div class="account-card">
+                        <div class="account-card checking">
                         <div class="card-header">
                             <span class="account-type">CHECKING</span>
-                            <h3 class="account-name">Checking Offshore</h3>
+                            <h3 class="account-name">Checking Account</h3>
                         </div>
                         <div class="account-balance" id="Deposit-account">$0.00</div>
                         <div class="account-actions">
@@ -1593,10 +2153,10 @@
                     </div>
                     
                         <!-- Savings Account Card -->
-                        <div class="account-card">
+                        <div class="account-card savings">
                         <div class="card-header">
                             <span class="account-type">SAVINGS</span>
-                            <h3 class="account-name">Savings Offshore</h3>
+                            <h3 class="account-name">Savings Account</h3>
                         </div>
                         <div class="account-balance" id="fixed">$0.00</div>
                         <div class="account-actions">
@@ -1613,10 +2173,10 @@
                     </div>
                     
                         <!-- Fixed Account Card -->
-                        <div class="account-card">
+                        <div class="account-card fixed">
                         <div class="card-header">
                             <span class="account-type">FIXED DEPOSIT</span>
-                            <h3 class="account-name">Fixed Offshore</h3>
+                            <h3 class="account-name">Fixed Deposit</h3>
                         </div>
                         <div class="account-balance" id="savings">$0.00</div>
                         <div class="account-actions">
@@ -1634,9 +2194,55 @@
                 </div>
             </section>
 
+            <!-- Loan Status Card -->
+            <div id="loanStatusCard" class="hidden bg-white rounded-xl shadow-lg border-2 border-blue-200 p-5 mb-6">
+                <div class="flex items-start justify-between">
+                    <div class="flex items-start gap-4 flex-1">
+                        <div id="loanCardIcon" class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-spinner fa-spin text-blue-600 text-2xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <h3 id="loanCardTitle" class="text-lg font-semibold text-gray-900">Loan Under Review</h3>
+                                <span id="loanCardStatus" class="px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">Pending</span>
+                            </div>
+                            <p id="loanCardMessage" class="text-sm text-gray-600 mb-3">
+                                Your loan application is being reviewed. We will notify you once a decision is made.
+                            </p>
+                            <div class="flex items-center gap-4 text-sm">
+                                <div>
+                                    <span class="text-gray-500">Amount:</span>
+                                    <span id="loanCardAmount" class="font-semibold text-gray-900 ml-1">$0.00</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500">Submitted:</span>
+                                    <span id="loanCardDate" class="text-gray-700 ml-1">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 mt-4 pt-4 border-t border-gray-200">
+                    <button 
+                        onclick="openLoanProgressModal()" 
+                        class="flex-1 text-white font-semibold py-2.5 px-4 rounded-lg transition-all duration-200 text-sm"
+                        style="background-color: #1800ac;"
+                        onmouseover="this.style.backgroundColor='#140099'"
+                        onmouseout="this.style.backgroundColor='#1800ac'"
+                    >
+                        <i class="fas fa-info-circle mr-2"></i>See More Details
+                    </button>
+                    <button 
+                        onclick="window.location.href='loan.html'" 
+                        class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-lg transition-all duration-200 text-sm"
+                    >
+                        <i class="fas fa-arrow-right mr-2"></i>View Loan Page
+                    </button>
+                </div>
+            </div>
 
             <!-- ACH Transfer Modal (Subject to Approval) -->
-            <div id="achModal" class="hidden fixed inset-0 z-50 flex items-start md:items-center justify-center bg-black bg-opacity-50 p-2 md:p-3" style="padding-bottom: 120px;">
+            <div id="achModal" class="hidden fixed inset-0 z-50 flex items-start md:items-center justify-center p-2 md:p-3" style="padding-bottom: 120px; background-color: rgba(24, 0, 172, 0.5);">
                 <div class="bg-white rounded-xl md:rounded-2xl shadow-2xl border border-gray-200 w-full max-w-sm md:max-w-md mx-auto relative max-h-[80vh] md:max-h-[85vh] overflow-y-auto" style="margin: auto;">
                     <button type="button" class="absolute top-2 right-2 md:top-3 md:right-3 text-gray-400 hover:text-gray-600 text-xl md:text-2xl font-bold" aria-label="Close" onclick="closeAchModal()">&times;</button>
                     <div class="p-3 md:p-4">
@@ -1653,8 +2259,8 @@
                                 <label class="block text-[11px] uppercase tracking-wide text-gray-500 mb-2">Funding Source</label>
                                 <select id="achFundingSource" class="w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400 text-sm shadow-sm appearance-none">
                                     <option value="" disabled selected>Select funding source</option>
-                                    <option value="checking_offshore">Checking Offshore</option>
-                                    <option value="savings_offshore">Savings Offshore</option>
+                                    <option value="checking_account">Checking Account</option>
+                                    <option value="savings_account">Savings Account</option>
                                 </select>
                                 <p id="achFundingSourceError" class="hidden text-[11px] text-red-500 mt-2">Funding Source is required</p>
                             </div>
@@ -1695,7 +2301,7 @@
                         </div>
 
                         <div class="mt-4 md:mt-5 p-3 md:p-4 rounded-lg bg-blue-50 border border-blue-200">
-                            <p class="text-[11px] md:text-xs text-blue-900 leading-relaxed">By submitting, you authorize Beal Offshore Ltd to initiate an ACH debit or credit to the account indicated above in accordance with NACHA rules. Transfers are reviewed and may take 1–3 business days after approval to settle.</p>
+                            <p class="text-[11px] md:text-xs text-blue-900 leading-relaxed">By submitting, you authorize Twenty Third & Forth to initiate an ACH debit or credit to the account indicated above in accordance with NACHA rules. Transfers are reviewed and may take 1–3 business days after approval to settle.</p>
                         </div>
 
                         <div class="mt-4 space-y-2">
@@ -1720,10 +2326,10 @@
 
 
             <!-- ACH Submitted Modal -->
-            <div id="achSubmittedModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-3">
+            <div id="achSubmittedModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3" style="background-color: rgba(24, 0, 172, 0.5);">
                 <div class="bg-white rounded-2xl border border-gray-200 p-6 w-full max-w-sm mx-auto text-center">
-                    <div class="w-16 h-16 mx-auto rounded-full bg-green-50 border-2 border-green-600 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-600" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-3-3a1 1 0 111.414-1.414L9 11.586l6.293-6.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                    <div class="w-16 h-16 mx-auto rounded-full bg-blue-50 border-2 border-blue-600 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-3-3a1 1 0 111.414-1.414L9 11.586l6.293-6.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
                     </div>
                     <h3 class="text-lg font-semibold text-gray-900 mt-4">ACH Submitted for Approval</h3>
                     <p class="text-sm text-gray-600 mt-1">We'll notify you once it's approved and processing.</p>
@@ -1815,7 +2421,7 @@
             <hr class="my-4 border-gray-400"> <!-- Added line -->
         
             <!-- Quick Actions (Clean Design) -->
-            <section class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 mb-8">
+            <section class="bg-white rounded-lg shadow-sm border border-gray-300 p-6 mb-8">
                 <div class="flex items-center justify-between mb-4">
                     <div>
                         <h2 class="text-xl font-semibold text-gray-900">Quick Actions</h2>
@@ -1825,9 +2431,9 @@
                 
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                     <!-- Deposit -->
-                    <button type="button" class="group rounded-xl border border-gray-200 bg-white p-4 hover:shadow-md hover:border-blue-300 transition-colors duration-200 focus:outline-none" onclick="navigateWithSpinner('deposit.html')">
+                    <button type="button" class="group rounded-xl border border-gray-300 bg-white p-4 hover:shadow-md hover:border-gray-400 transition-colors duration-200 focus:outline-none" onclick="navigateWithSpinner('deposit.html')">
                         <div class="flex flex-col items-center">
-                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center ring-1 ring-gray-200 group-hover:ring-blue-300 mb-3">
+                            <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center ring-1 ring-gray-300 group-hover:ring-gray-400 mb-3">
                                 <img src="deposit.png" alt="Deposit Icon" class="h-6 w-6" />
                             </div>
                             <span class="text-sm font-medium text-gray-800">Deposit</span>
@@ -1835,9 +2441,9 @@
                     </button>
                     
                     <!-- Transfer -->
-                    <button type="button" class="group rounded-xl border border-gray-200 bg-white p-4 hover:shadow-md hover:border-blue-300 transition-colors duration-200 focus:outline-none" onclick="navigateWithSpinner('transfer.html')">
+                    <button type="button" class="group rounded-xl border border-gray-300 bg-white p-4 hover:shadow-md hover:border-gray-400 transition-colors duration-200 focus:outline-none" onclick="navigateWithSpinner('transfer.html')">
                         <div class="flex flex-col items-center">
-                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-50 to-indigo-100 flex items-center justify-center ring-1 ring-gray-200 group-hover:ring-blue-300 mb-3">
+                            <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center ring-1 ring-gray-300 group-hover:ring-gray-400 mb-3">
                                 <img src="transfer.png" alt="Transfer Icon" class="h-6 w-6" />
                             </div>
                             <span class="text-sm font-medium text-gray-800">Transfer</span>
@@ -1845,9 +2451,9 @@
                     </button>
 
                     <!-- ACH -->
-                    <button type="button" class="group rounded-xl border border-gray-200 bg-white p-4 hover:shadow-md hover:border-blue-300 transition-colors duration-200 focus:outline-none" onclick="navigateWithSpinner('ach.html')">
+                    <button type="button" class="group rounded-xl border border-gray-300 bg-white p-4 hover:shadow-md hover:border-gray-400 transition-colors duration-200 focus:outline-none" onclick="navigateWithSpinner('ach.html')">
                         <div class="flex flex-col items-center">
-                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center ring-1 ring-gray-200 group-hover:ring-blue-300 mb-3">
+                            <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center ring-1 ring-gray-300 group-hover:ring-gray-400 mb-3">
                                 <img src="deposit.png" alt="ACH Icon" class="h-6 w-6" />
                             </div>
                             <span class="text-sm font-medium text-gray-800">ACH</span>
@@ -1855,24 +2461,58 @@
                     </button>
                     
                     <!-- Statements -->
-                    <button type="button" class="group rounded-xl border border-gray-200 bg-white p-4 hover:shadow-md hover:border-blue-300 transition-colors duration-200 focus:outline-none" onclick="navigateWithSpinner('statement.html')">
+                    <button type="button" class="group rounded-xl border border-gray-300 bg-white p-4 hover:shadow-md hover:border-gray-400 transition-colors duration-200 focus:outline-none" onclick="navigateWithSpinner('statement.html')">
                         <div class="flex flex-col items-center">
-                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center ring-1 ring-gray-200 group-hover:ring-blue-300 mb-3">
+                            <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center ring-1 ring-gray-300 group-hover:ring-gray-400 mb-3">
                                 <img src="statement.png" alt="Statements Icon" class="h-6 w-6" />
                             </div>
                             <span class="text-sm font-medium text-gray-800">Statements</span>
                         </div>
                     </button>
                     
-                    <!-- Change PIN -->
-                    <button type="button" class="group rounded-xl border border-gray-200 bg-white p-4 hover:shadow-md hover:border-blue-300 transition-colors duration-200 focus:outline-none" onclick="navigateWithSpinner('pin.html')">
+                    <!-- Security -->
+                    <button type="button" class="group rounded-xl border border-gray-300 bg-white p-4 hover:shadow-md hover:border-gray-400 transition-colors duration-200 focus:outline-none" onclick="navigateWithSpinner('security.html')">
                         <div class="flex flex-col items-center">
-                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-teal-50 to-teal-100 flex items-center justify-center ring-1 ring-gray-200 group-hover:ring-blue-300 mb-3">
-                                <img src="key.png" alt="Change PIN Icon" class="h-6 w-6" />
+                            <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center ring-1 ring-gray-300 group-hover:ring-gray-400 mb-3">
+                                <img src="key.png" alt="Security Icon" class="h-6 w-6" />
                             </div>
-                            <span class="text-sm font-medium text-gray-800">Change PIN</span>
+                            <span class="text-sm font-medium text-gray-800">Security</span>
                         </div>
                     </button>
+
+                    <!-- Loans -->
+                    <button type="button" class="group rounded-xl border border-gray-300 bg-white p-4 hover:shadow-md hover:border-gray-400 transition-colors duration-200 focus:outline-none" onclick="navigateWithSpinner('loan.html')">
+                        <div class="flex flex-col items-center">
+                            <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center ring-1 ring-gray-300 group-hover:ring-gray-400 mb-3">
+                                <i class="fas fa-hand-holding-usd text-gray-800 text-xl"></i>
+                            </div>
+                            <span class="text-sm font-medium text-gray-800">Loans</span>
+                        </div>
+                    </button>
+
+                    <!-- Debit Card -->
+                    <button type="button" class="group rounded-xl border border-gray-300 bg-white p-4 hover:shadow-md hover:border-gray-400 transition-colors duration-200 focus:outline-none" onclick="window.location.href='debit-card.html'">
+                        <div class="flex flex-col items-center">
+                            <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center ring-1 ring-gray-300 group-hover:ring-gray-400 mb-3">
+                                <i class="fas fa-credit-card text-gray-800 text-xl"></i>
+                            </div>
+                            <span class="text-sm font-medium text-gray-800">Debit Card</span>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Debit Card progress (shows prior to approval) -->
+                <div id="debitCardProgressWrap" class="hidden mt-4 rounded-xl border border-gray-200 bg-white p-4">
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="text-sm font-semibold text-gray-900">Debit Card</div>
+                        <span id="debitCardProgressStatus" class="text-xs font-semibold px-3 py-1 rounded-full border" style="border-color: rgba(24,0,172,.25); background: rgba(24,0,172,.06); color:#1800ac;">Pending approval</span>
+                    </div>
+                    <div class="mt-3">
+                        <div class="h-2 rounded-full bg-gray-100 overflow-hidden border border-gray-200">
+                            <div id="debitCardProgressBar" class="h-full" style="width: 60%; background: linear-gradient(90deg, #1800ac, #4f46e5);"></div>
+                        </div>
+                        <p id="debitCardProgressText" class="text-xs text-gray-600 mt-2">Your debit card request is being reviewed.</p>
+                    </div>
                 </div>
             </section>
         
@@ -1885,7 +2525,7 @@
                 <div class="bg-white px-6 py-5 border-b border-gray-100">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
-                            <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                            <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
                             <h2 class="text-xl font-semibold text-gray-900">Transactions</h2>
                         </div>
                         <div class="flex items-center gap-4">
@@ -1927,7 +2567,7 @@
                         
                         <!-- Filter Actions -->
                         <div class="flex gap-3">
-                            <button id="apply-filters" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200">
+                            <button id="apply-filters" class="px-4 py-2 text-white rounded-lg text-sm font-medium focus:outline-none focus:ring-2 transition-all duration-200" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'" onfocus="this.style.outlineColor='#1800ac'">
                                 <i class="fas fa-search mr-2"></i>Apply
                             </button>
                             <button id="clear-filters" class="px-4 py-2 bg-gray-500 text-white rounded-lg text-sm font-medium hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 transition-all duration-200">
@@ -2016,7 +2656,7 @@
                                     <p class="text-gray-500 text-xs font-mono transaction-reference"></p>
                                 </div>
                                 <div class="col-span-1">
-                                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
                                 </div>
                     </div>
 
@@ -2060,7 +2700,7 @@
                                     <p class="text-gray-500 text-xs font-mono transaction-reference"></p>
                                 </div>
                                 <div class="col-span-1">
-                                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
                                 </div>
                     </div>
 
@@ -2103,7 +2743,7 @@
                                     <p class="text-gray-500 text-xs font-mono transaction-reference"></p>
                                 </div>
                                 <div class="col-span-1">
-                                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
                                 </div>
                             </div>
                     </div>
@@ -2134,7 +2774,7 @@
                                     <p class="text-gray-500 text-xs font-mono transaction-reference"></p>
                                 </div>
                                 <div class="col-span-1">
-                                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
                                 </div>
                             </div>
                     </div>
@@ -2165,7 +2805,7 @@
                                     <p class="text-gray-500 text-xs font-mono transaction-reference"></p>
                                 </div>
                                 <div class="col-span-1">
-                                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
                                 </div>
                             </div>
                     </div>
@@ -2196,7 +2836,7 @@
                                     <p class="text-gray-500 text-xs font-mono transaction-reference"></p>
                                 </div>
                                 <div class="col-span-1">
-                                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
                                 </div>
                             </div>
                     </div>
@@ -2228,7 +2868,7 @@
                                     <p class="text-gray-500 text-xs font-mono transaction-reference"></p>
                                 </div>
                                 <div class="col-span-1">
-                                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
                                 </div>
                             </div>
                         </div>
@@ -2259,7 +2899,7 @@
                                     <p class="text-gray-500 text-xs font-mono transaction-reference"></p>
                                 </div>
                                 <div class="col-span-1">
-                                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
                                 </div>
                             </div>
                         </div>
@@ -2290,7 +2930,7 @@
                                     <p class="text-gray-500 text-xs font-mono transaction-reference"></p>
                                 </div>
                                 <div class="col-span-1">
-                                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
                                 </div>
                             </div>
                         </div>
@@ -2322,7 +2962,7 @@
                                     <p class="text-gray-500 text-xs font-mono transaction-reference"></p>
                                 </div>
                                 <div class="col-span-1">
-                                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
                                 </div>
                             </div>
                         </div>
@@ -2354,7 +2994,7 @@
                                     <p class="text-gray-500 text-xs font-mono transaction-reference"></p>
                                 </div>
                                 <div class="col-span-1">
-                                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
                                 </div>
                             </div>
                         </div>
@@ -2386,7 +3026,7 @@
                                     <p class="text-gray-500 text-xs font-mono transaction-reference"></p>
                                 </div>
                                 <div class="col-span-1">
-                                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
                                 </div>
                             </div>
                         </div>
@@ -2417,7 +3057,7 @@
                                     <p class="text-gray-500 text-xs font-mono transaction-reference"></p>
                                 </div>
                                 <div class="col-span-1">
-                                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
                                 </div>
                             </div>
                         </div>
@@ -2448,7 +3088,7 @@
                                     <p class="text-gray-500 text-xs font-mono transaction-reference"></p>
                                 </div>
                                 <div class="col-span-1">
-                                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
                                 </div>
                             </div>
                         </div>
@@ -2479,7 +3119,7 @@
                                     <p class="text-gray-500 text-xs font-mono transaction-reference"></p>
                                 </div>
                                 <div class="col-span-1">
-                                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
                                 </div>
                             </div>
                         </div>
@@ -2510,7 +3150,7 @@
                                     <p class="text-gray-500 text-xs font-mono transaction-reference"></p>
                                 </div>
                                 <div class="col-span-1">
-                                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
                                 </div>
                             </div>
                         </div>
@@ -2541,7 +3181,7 @@
                                     <p class="text-gray-500 text-xs font-mono transaction-reference"></p>
                                 </div>
                                 <div class="col-span-1">
-                                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
                                 </div>
                             </div>
                         </div>
@@ -2572,7 +3212,7 @@
                                     <p class="text-gray-500 text-xs font-mono transaction-reference"></p>
                                 </div>
                                 <div class="col-span-1">
-                                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
                                 </div>
                             </div>
                         </div>
@@ -2603,7 +3243,7 @@
                                     <p class="text-gray-500 text-xs font-mono transaction-reference"></p>
                                 </div>
                                 <div class="col-span-1">
-                                    <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
                                 </div>
                             </div>
                         </div>
@@ -2611,8 +3251,8 @@
 
                     <!-- See More / See Less Controls -->
                     <div class="flex items-center justify-center gap-3 mt-12 mb-6 pt-4">
-                        <button id="see-more" class="group relative inline-flex items-center justify-center px-8 py-3.5 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl shadow-lg hover:shadow-xl hover:from-blue-700 hover:to-blue-800 transform hover:-translate-y-0.5 transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 hidden">
-                            <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-700 to-blue-800 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                        <button id="see-more" class="group relative inline-flex items-center justify-center px-8 py-3.5 text-base font-semibold text-white rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 hidden" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'" onfocus="this.style.outlineColor='#1800ac'">
+                            <span class="absolute inset-0 w-full h-full bg-gray-800 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                             <i class="fas fa-chevron-down mr-2 relative z-10 transform group-hover:translate-y-0.5 transition-transform duration-300"></i>
                             <span class="relative z-10">Load More Transactions</span>
                         </button>
@@ -2708,6 +3348,50 @@
                             </div>
                     </div>
                     
+                        <div id="pending4" class="bg-white border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-all duration-200 hidden">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 rounded-full flex items-center justify-center pending-avatar bg-orange-50 text-orange-700 font-semibold text-sm">
+                                        <span class="pending-avatar-text">PN</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-900 pending-description"></h3>
+                                        <p class="text-sm text-gray-500 pending-recipient"></p>
+                                        <p class="text-xs text-gray-400 mt-1">
+                                            <span class="pending-type"></span> • 
+                                            <span class="pending-date"></span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-semibold text-gray-900 pending-amount"></p>
+                                    <p class="text-xs text-orange-600 font-medium">Pending</p>
+                                </div>
+                            </div>
+                    </div>
+                    
+                        <div id="pending5" class="bg-white border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-all duration-200 hidden">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-12 h-12 rounded-full flex items-center justify-center pending-avatar bg-orange-50 text-orange-700 font-semibold text-sm">
+                                        <span class="pending-avatar-text">PN</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-gray-900 pending-description"></h3>
+                                        <p class="text-sm text-gray-500 pending-recipient"></p>
+                                        <p class="text-xs text-gray-400 mt-1">
+                                            <span class="pending-type"></span> • 
+                                            <span class="pending-date"></span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-semibold text-gray-900 pending-amount"></p>
+                                    <p class="text-xs text-orange-600 font-medium">Pending</p>
+                                </div>
+                            </div>
+                    </div>
+                    
                         <div id="pending-limit-notice" class="bg-orange-50 border border-orange-200 rounded-lg p-4 hidden">
                             <div class="flex items-center space-x-3">
                                 <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
@@ -2715,7 +3399,7 @@
                                 </div>
                                 <div>
                                     <h3 class="font-semibold text-orange-800">Maximum Pending Transactions Reached</h3>
-                                    <p class="text-sm text-orange-700 mt-1">This transaction has been queued as you have 3 pending transactions already.</p>
+                                    <p class="text-sm text-orange-700 mt-1">This transaction has been queued as you have 5 pending transactions already.</p>
                                 </div>
                             </div>
                         </div>
@@ -2750,9 +3434,45 @@
             <i class="fas fa-bell"></i>
         </div>
         <div class="notification-content">
-            <h3 class="notification-title">Welcome to Offshore Banking</h3>
-            <p class="notification-message">Thank you for choosing our banking services. Explore our features to make the most of your account.</p>
+            <h3 class="notification-title">Welcome to Finance</h3>
+            <p class="notification-message">Thank you for choosing our financial services. Explore our features to make the most of your account.</p>
             <span class="notification-time">1 day ago</span>
+        </div>
+    </div>
+    
+    <!-- System Update Notification -->
+    <div class="notification-item mt-4">
+        <div class="notification-icon">
+            <i class="fas fa-sync-alt"></i>
+        </div>
+        <div class="notification-content">
+            <h3 class="notification-title">System Update Available</h3>
+            <p class="notification-message">We've released new features and security enhancements. Your financial experience has been improved with faster transaction processing and enhanced security measures.</p>
+            <span class="notification-time">2 days ago</span>
+        </div>
+    </div>
+    
+    <!-- System Upgrade Notification -->
+    <div class="notification-item mt-4">
+        <div class="notification-icon">
+            <i class="fas fa-rocket"></i>
+        </div>
+        <div class="notification-content">
+            <h3 class="notification-title">Platform Upgrade Completed</h3>
+            <p class="notification-message">Our platform has been upgraded with improved performance, new security protocols, and enhanced user interface. Enjoy a smoother financial experience!</p>
+            <span class="notification-time">3 days ago</span>
+        </div>
+    </div>
+    
+    <!-- KYC Update Notification (Dynamic) -->
+    <div id="kycNotification" class="notification-item mt-4" style="display: none;">
+        <div class="notification-icon">
+            <i class="fas fa-user-check"></i>
+        </div>
+        <div class="notification-content">
+            <h3 class="notification-title" id="kycNotificationTitle">KYC Verification Update</h3>
+            <p class="notification-message" id="kycNotificationMessage">Your KYC verification status has been updated.</p>
+            <span class="notification-time" id="kycNotificationTime">Recently</span>
         </div>
     </div>
 </section>
@@ -2840,6 +3560,7 @@
                         document.body.style.overflow = '';
                     }
                 }
+
                 function closeAchSubmittedModal() {
                     const modal = document.getElementById('achSubmittedModal');
                     if (modal) {
@@ -3105,72 +3826,39 @@
 
 
             <!-- Bottom Navbar (Mobile Friendly) -->
-            <div class="mobile-nav fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t p-3" style="height: 100px; z-index: 100;">
+            <div class="mobile-nav fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-300 p-3" style="height: 100px; z-index: 100;">
                 <div class="flex justify-around items-center h-full">
-                    <!-- Wallet Icon -->
-                    <a href="dashboard.html" class="nav-item flex flex-col items-center" onclick="setActive(this)">
+                    <!-- Home Icon -->
+                    <a href="dashboard.html" class="nav-item flex flex-col items-center" data-page="dashboard">
                         <div class="bg-white rounded p-2">
                             <img src="1221.png" alt="Wallet Icon" class="h-6 w-6" />
                         </div>
-                        <span class="text-xs font-medium mt-2">Home</span>
+                        <span class="text-xs font-medium mt-2 text-gray-700">Home</span>
                     </a>
                     <!-- Deposit Icon -->
-                    <a href="deposit.html" class="nav-item flex flex-col items-center" onclick="setActive(this)">
+                    <a href="deposit.html" class="nav-item flex flex-col items-center" data-page="deposit">
                         <div class="bg-white rounded p-2">
-                            <img src="deposit.png" alt="Redeem Icon" class="h-6 w-6" />
+                            <img src="deposit.png" alt="Deposit Icon" class="h-6 w-6" />
                         </div>
-                        <span class="text-xs font-medium mt-2">Deposit</span>
+                        <span class="text-xs font-medium mt-2 text-gray-700">Deposit</span>
                     </a>
-                    <!-- Withdraw Icon -->
-                    <!-- <a href="withdraw.html" class="nav-item flex flex-col items-center" onclick="setActive(this)">
-                        <div class="bg-white rounded p-2">
-                            <img src="withdraw.png" alt="Withdraw Icon" class="h-6 w-6" />
-                        </div>
-                        <span class="text-xs font-medium mt-2">Withdraw</span>
-                    </a> -->
-                    <!-- Verify Icon -->
-                    <a href="support.html" class="nav-item flex flex-col items-center" onclick="setActive(this)">
+                    <!-- Support Icon -->
+                    <a href="support.html" class="nav-item flex flex-col items-center" data-page="support">
                         <div class="bg-white rounded p-2">
                             <img src="support.png" alt="Support Icon" class="h-6 w-6" />
                         </div>
-                        <span class="text-xs font-medium mt-2">Support</span>
+                        <span class="text-xs font-medium mt-2 text-gray-700">Support</span>
                     </a>
                     <!-- Profile Icon -->
-                    <a href="profile.html" class="nav-item flex flex-col items-center" onclick="setActive(this)">
+                    <a href="profile.html" class="nav-item flex flex-col items-center" data-page="profile">
                         <div class="bg-white rounded p-2">
                             <img src="profile.png" alt="Profile Icon" class="h-6 w-6" />
                         </div>
-                        <span class="text-xs font-medium mt-2">Profile</span>
+                        <span class="text-xs font-medium mt-2 text-gray-700">Profile</span>
                     </a>
                 </div>
             </div>
-
-            <!-- Script -->
-            <script>
-                // Function to set the active navbar item
-                function setActive(element) {
-                    // Reset all items to default styles
-                    const icons = document.querySelectorAll('.nav-item div');
-                    const texts = document.querySelectorAll('.nav-item span');
-                    icons.forEach(icon => icon.classList.remove('bg-green-300', 'text-white'));
-                    texts.forEach(text => text.classList.remove('text-black'));
-
-                    // Add active styles to the clicked item
-                    const icon = element.querySelector('div');
-                    const text = element.querySelector('span');
-                    icon.classList.add('bg-blue-400', 'text-white'); // Highlight background of active icon
-                    text.classList.add('text-black'); // Highlight text of active item
-                }
-
-                // Set the active state on page load based on the current URL
-                const currentPath = window.location.pathname;
-                const navItems = document.querySelectorAll('.nav-item');
-                navItems.forEach(item => {
-                    if (item.href.includes(currentPath)) {
-                        setActive(item);
-                    }
-                });
-            </script>
+            <script src="bottom-navbar.js"></script>
 
             <script>
                 // Duplicate colorization function removed to prevent performance issues
@@ -3521,12 +4209,71 @@
             </script>
 
             <!-- Spinner -->
-            <div id="spinner" class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div id="spinner" class="hidden fixed inset-0 flex items-center justify-center" style="background-color: rgba(24, 0, 172, 0.5);">
                 <div class="smart-spinner"></div>
             </div>
         </div>
     </div>
-    <!-- Live Chat Widget -->
-    <script src="live-chat-widget.js"></script>
+
+    <!-- Loan Application Progress Modal -->
+    <div id="loanProgressModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(24, 0, 172, 0.5);">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 md:p-8">
+            <div class="text-center">
+                <div id="loanProgressIcon" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-spinner fa-spin text-blue-600 text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-2" id="loanProgressTitle">Loan Application Under Review</h3>
+                <p class="text-gray-600 mb-4" id="loanProgressMessage">
+                    Your loan application is being reviewed by our team. You will be notified once a decision has been made.
+                </p>
+                <div class="bg-gray-100 rounded-lg p-4 mb-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm text-gray-600">Loan Amount:</span>
+                        <span class="text-sm font-semibold text-gray-900" id="loanProgressAmount">$0.00</span>
+                    </div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm text-gray-600">Status:</span>
+                        <span class="text-sm font-semibold" id="loanProgressStatus">Pending</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-600">Submitted:</span>
+                        <span class="text-sm text-gray-900" id="loanProgressDate">-</span>
+                    </div>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2 mb-4">
+                    <div id="loanProgressBar" class="bg-blue-600 h-2 rounded-full transition-all duration-500" style="width: 50%"></div>
+                </div>
+                <button 
+                    onclick="closeLoanProgressModal()" 
+                    class="w-full text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200"
+                    style="background-color: #1800ac;"
+                    onmouseover="this.style.backgroundColor='#140099'"
+                    onmouseout="this.style.backgroundColor='#1800ac'"
+                >
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loan Application Status Badge (Floating) -->
+    <div id="loanStatusBadge" class="hidden fixed bottom-24 right-6 z-40">
+        <button 
+            onclick="openLoanProgressModal()"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 transition-all duration-200"
+        >
+            <i class="fas fa-file-invoice-dollar"></i>
+            <div class="text-left">
+                <div class="text-xs font-semibold">Loan Application</div>
+                <div class="text-xs opacity-90" id="loanStatusBadgeText">Under Review</div>
+            </div>
+            <i class="fas fa-chevron-right ml-2"></i>
+        </button>
+    </div>
+
+    <!-- Inactivity Timeout: Auto-logout after 5 minutes of inactivity -->
+    <script src="inactivity-timeout.js"></script>
+
+    <!-- Card application functionality removed -->
 </body>
 </html>

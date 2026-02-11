@@ -5,7 +5,7 @@
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
   <!-- Home Page -->
   <url>
-    <loc>https://beal-offshore.com/</loc>
+    <loc>https://twentythirdforth.com/</loc>
     <lastmod>2024-01-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
@@ -13,7 +13,7 @@
   
   <!-- Testimonials Page - High Priority for SEO -->
   <url>
-    <loc>https://beal-offshore.com/testimonials</loc>
+    <loc>https://twentythirdforth.com/testimonials</loc>
     <lastmod>2024-01-01</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
@@ -21,25 +21,27 @@
   
   <!-- Other Important Pages -->
   <url>
-    <loc>https://beal-offshore.com/login.html</loc>
+    <loc>https://twentythirdforth.com/login.html</loc>
     <lastmod>2024-01-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
-    <loc>https://beal-offshore.com/sign-up.html</loc>
+    <loc>https://twentythirdforth.com/sign-up.html</loc>
     <lastmod>2024-01-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
-    <loc>https://beal-offshore.com/contact.html</loc>
+    <loc>https://twentythirdforth.com/contact.html</loc>
     <lastmod>2024-01-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 </urlset>
+
+
 
 

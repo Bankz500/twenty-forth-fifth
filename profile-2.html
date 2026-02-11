@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Beal Offshore Ltd Profile</title>
+    <title>Twenty Third & Forth Profile</title>
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" sizes="180x180" href="logo new.png">
-    <link rel="icon" href="logo new.png" type="image/png">
+    <link rel="apple-touch-icon" sizes="180x180" href="app-icon.svg">
+    <link rel="icon" href="app-icon.svg" type="image/svg+xml">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js Library -->
@@ -16,15 +16,24 @@
             overflow: auto; /* Ensures scrolling is enabled */
         }
     </style>
+    <style>
+        :root {
+            --ttf-brand: #1800ac;
+            --ttf-brand-hover: #140099;
+        }
+        .bg-gray-900 { background-color: var(--ttf-brand) !important; }
+        .bg-gray-800 { background-color: var(--ttf-brand-hover) !important; }
+        .hover\:bg-gray-800:hover { background-color: var(--ttf-brand-hover) !important; }
+        .bg-black { background-color: rgba(24, 0, 172, 0.55) !important; }
+    </style>
 </head>
 
-<body class="font-sans antialiased" style="background-image: url('background 3.png');">
+    <body class="font-sans antialiased bg-gray-100">
     <!-- Navbar -->
-    <nav class="bg-white p-4 shadow fixed top-0 left-0 right-0 z-10">
+    <nav class="bg-white border-b border-gray-300 p-4 shadow-sm fixed top-0 left-0 right-0 z-10">
         <div class="container mx-auto flex items-center justify-between">
-            <img src="Logo.png" alt="Beal Offshore Ltd Logo" class="h-14">
-            <!-- Sign out button for mobile and desktop -->
-            <a href="login.html" onclick="signOut()" class="bg-white border-b-2 text-xs text-black px-6 py-2 rounded-full hover:bg-white border">Sign Out</a>
+            <img src="11.png" alt="Twenty Third & Forth Logo" class="h-14 md:h-16 w-auto">
+            <button onclick="signOut()" class="bg-white border border-gray-400 text-xs text-gray-800 px-4 md:px-6 py-2 rounded-full hover:bg-gray-50 transition">Sign Out</button>
         </div>
     </nav>
 
@@ -35,8 +44,8 @@
                 <!-- Profile Header -->
                 <div id="profileInfoCard" class="bg-white rounded-2xl shadow-lg border border-gray-100 p-5 md:p-6 lg:p-8">
                     <!-- Back Button -->
-                    <a href="profile.html" class="inline-flex items-center mb-6 md:mb-8 text-blue-600 hover:text-blue-800 transition-all duration-300 group">
-                        <div class="bg-blue-50 p-2 rounded-lg mr-3 group-hover:-translate-x-1 transition-transform">
+                    <a href="profile.html" class="inline-flex items-center mb-6 md:mb-8 text-gray-700 hover:text-gray-900 transition-all duration-300 group">
+                        <div class="bg-gray-100 p-2 rounded-lg mr-3 group-hover:-translate-x-1 transition-transform">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                             </svg>
@@ -46,7 +55,7 @@
                     
                     <div class="flex flex-col items-center mb-6 md:mb-8">
                         <h2 class="text-xl md:text-2xl lg:text-3xl font-bold text-center text-gray-900 mb-2">Your Profile</h2>
-                        <div class="h-1 w-20 md:w-24 bg-gradient-to-r from-blue-400 to-indigo-600 rounded-full"></div>
+                        <div class="h-1 w-20 md:w-24 bg-gray-800 rounded-full"></div>
                     </div>
                     
                     <form class="space-y-6 md:space-y-8">
@@ -61,7 +70,7 @@
                                 </div>
                                 
                                 <!-- Upload Button -->
-                                <label class="absolute bottom-0 right-0 w-10 h-10 md:w-12 md:h-12 bg-gradient-to-r from-blue-500 to-indigo-600 text-white flex items-center justify-center rounded-full cursor-pointer shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110">
+                                <label class="absolute bottom-0 right-0 w-10 h-10 md:w-12 md:h-12 bg-gray-900 text-white flex items-center justify-center rounded-full cursor-pointer shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 hover:bg-gray-800">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                                     </svg>
@@ -75,13 +84,13 @@
                         <!-- User Information Cards -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                             <!-- Full Name Card -->
-                            <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden border border-gray-100">
-                                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 px-4 md:px-6 py-3 border-b border-gray-100">
+                            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-300">
+                                <div class="bg-gray-50 px-4 md:px-6 py-3 border-b border-gray-300">
                                     <label for="firstName" class="block text-sm md:text-base font-semibold text-gray-700">Full Name</label>
                                 </div>
                                 <div class="p-4 md:p-6">
                                     <div class="flex items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-blue-500 mr-3 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-gray-700 mr-3 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                                             <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
                                         </svg>
                                         <input type="text" id="firstName" name="firstName" 
@@ -93,13 +102,13 @@
                             </div>
                             
                             <!-- Email Address Card -->
-                            <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden border border-gray-100">
-                                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 px-4 md:px-6 py-3 border-b border-gray-100">
+                            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-300">
+                                <div class="bg-gray-50 px-4 md:px-6 py-3 border-b border-gray-300">
                                     <label for="email" class="block text-sm md:text-base font-semibold text-gray-700">Email Address</label>
                                 </div>
                                 <div class="p-4 md:p-6">
                                     <div class="flex items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-blue-500 mr-3 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-gray-700 mr-3 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                                             <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                                             <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
                                         </svg>
@@ -112,13 +121,13 @@
                             </div>
                             
                             <!-- Account Type Card -->
-                            <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden border border-gray-100">
-                                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 px-4 md:px-6 py-3 border-b border-gray-100">
+                            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-300">
+                                <div class="bg-gray-50 px-4 md:px-6 py-3 border-b border-gray-300">
                                     <label for="accountType" class="block text-sm md:text-base font-semibold text-gray-700">Account Type</label>
                                 </div>
                                 <div class="p-4 md:p-6">
                                     <div class="flex items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-blue-500 mr-3 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-gray-700 mr-3 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                                             <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm3 1h6v4H7V5zm6 6H7v2h6v-2z" clip-rule="evenodd" />
                                         </svg>
                                         <input type="text" id="accountType" 
@@ -130,19 +139,19 @@
                             </div>
                             
                             <!-- Phone Number Card -->
-                            <div class="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden border border-gray-100">
-                                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 px-4 md:px-6 py-3 border-b border-gray-100">
+                            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-300">
+                                <div class="bg-gray-50 px-4 md:px-6 py-3 border-b border-gray-300">
                                     <label for="phoneNumber" class="block text-sm md:text-base font-semibold text-gray-700">Phone Number</label>
                                 </div>
                                 <div class="p-4 md:p-6">
                                     <div id="phone-number-display" class="flex items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-blue-500 mr-3 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-gray-700 mr-3 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                                             <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
                                         </svg>
                                         <span id="phone-number-text" class="block w-full text-gray-700 text-sm md:text-base font-medium">Loading...</span>
                                     </div>
                                     <div id="phone-number-action" class="mt-3 hidden">
-                                        <button type="button" onclick="openAttachPhoneModal(event)" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-sm md:text-base font-semibold py-2.5 px-4 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg">
+                                        <button type="button" onclick="openAttachPhoneModal(event)" class="w-full bg-gray-900 hover:bg-gray-800 text-white text-sm md:text-base font-semibold py-2.5 px-4 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg">
                                             <i class="fas fa-plus mr-2"></i>Attach Phone Number to Account
                                         </button>
                                     </div>
@@ -153,8 +162,8 @@
                         <!-- Attach Phone Number Modal -->
                         <div id="attachPhoneModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm p-4">
                             <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md relative overflow-hidden animate-fade-in">
-                                <!-- Header with Gradient -->
-                                <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white">
+                                <!-- Header -->
+                                <div class="bg-gray-900 p-6 text-white">
                                     <button type="button" onclick="closeAttachPhoneModal()" class="absolute top-4 right-4 text-white hover:text-gray-200 transition-colors w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -166,7 +175,7 @@
                                         </svg>
                                     </div>
                                     <h3 class="text-xl font-bold text-center">Attach Phone Number</h3>
-                                    <p class="text-blue-100 text-sm mt-2 text-center">Add a phone number to your account</p>
+                                    <p class="text-gray-300 text-sm mt-2 text-center">Add a phone number to your account</p>
                                 </div>
                                 
                                 <!-- Content -->
@@ -183,22 +192,22 @@
                                                 </div>
                                                 <input type="tel" id="new-phone-number" 
                                                     placeholder="Enter your phone number" 
-                                                    class="w-full border-2 border-gray-300 rounded-lg p-3 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                                    class="w-full border-2 border-gray-300 rounded-lg p-3 pl-12 focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent">
                                             </div>
                                         </div>
-                                        <button type="button" onclick="proceedToPasswordStep()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 rounded-lg transition-all shadow-md hover:shadow-lg">
+                                        <button type="button" onclick="proceedToPasswordStep()" class="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3 rounded-lg transition-all shadow-md hover:shadow-lg">
                                             Continue
                                         </button>
                                     </div>
                                     
                                     <!-- Step 2: Password Verification -->
                                     <div id="password-verification-step" class="hidden">
-                                        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4 rounded">
+                                        <div class="bg-gray-50 border-l-4 border-gray-800 p-4 mb-4 rounded">
                                             <div class="flex items-start">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700 mt-0.5 mr-3 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                                                     <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
                                                 </svg>
-                                                <p class="text-sm text-blue-800">For security, please enter your account password to confirm this change.</p>
+                                                <p class="text-sm text-gray-700">For security, please enter your account password to confirm this change.</p>
                                             </div>
                                         </div>
                                         <div class="mb-4">
@@ -211,14 +220,14 @@
                                                 </div>
                                                 <input type="password" id="verify-password" 
                                                     placeholder="Enter your password" 
-                                                    class="w-full border-2 border-gray-300 rounded-lg p-3 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                                    class="w-full border-2 border-gray-300 rounded-lg p-3 pl-12 focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent">
                                             </div>
                                         </div>
                                         <div class="flex gap-3">
                                             <button type="button" onclick="backToPhoneStep()" class="flex-1 bg-gray-200 text-gray-800 font-semibold py-3 rounded-lg transition-all hover:bg-gray-300">
                                                 Back
                                             </button>
-                                            <button type="button" onclick="attachPhoneNumber()" class="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 rounded-lg transition-all shadow-md hover:shadow-lg">
+                                            <button type="button" onclick="attachPhoneNumber()" class="flex-1 bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3 rounded-lg transition-all shadow-md hover:shadow-lg">
                                                 <span id="attach-phone-btn-text">Attach Phone</span>
                                                 <span id="attach-phone-spinner" class="hidden">
                                                     <i class="fas fa-spinner fa-spin mr-2"></i>Processing...
@@ -238,8 +247,8 @@
                         <!-- Success Modal for Phone Number -->
                         <div id="phoneSuccessModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm p-4">
                             <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md relative overflow-hidden animate-fade-in">
-                                <!-- Header with Gradient -->
-                                <div class="bg-gradient-to-r from-green-600 to-emerald-600 p-6 text-white">
+                                <!-- Header -->
+                                <div class="bg-gray-900 p-6 text-white">
                                     <button type="button" onclick="closePhoneSuccessModal()" class="absolute top-4 right-4 text-white hover:text-gray-200 transition-colors w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -251,14 +260,14 @@
                                         </svg>
                                     </div>
                                     <h3 class="text-2xl font-bold text-center">Success!</h3>
-                                    <p class="text-green-100 text-sm mt-2 text-center">Phone number successfully added</p>
+                                    <p class="text-gray-300 text-sm mt-2 text-center">Phone number successfully added</p>
                                 </div>
                                 
                                 <!-- Content -->
                                 <div class="p-6">
-                                    <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 rounded-lg p-4 mb-6">
+                                    <div class="bg-gray-50 border-l-4 border-gray-800 rounded-lg p-4 mb-6">
                                         <div class="flex items-start">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600 mt-0.5 mr-3 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700 mt-0.5 mr-3 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                                             </svg>
                                             <div class="text-sm text-gray-700">
@@ -275,7 +284,7 @@
                                     </div>
                                     
                                     <!-- Action Button -->
-                                    <button type="button" onclick="closePhoneSuccessModal()" class="w-full bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 text-white text-sm font-semibold py-3.5 rounded-xl hover:from-green-700 hover:via-emerald-700 hover:to-teal-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                                    <button type="button" onclick="closePhoneSuccessModal()" class="w-full bg-gray-900 hover:bg-gray-800 text-white text-sm font-semibold py-3.5 rounded-lg transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
                                         <i class="fas fa-check-circle mr-2"></i>Got it, thanks!
                                     </button>
                                 </div>
@@ -283,9 +292,9 @@
                         </div>
                         
                         <!-- Security Section -->
-                        <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
-                            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 px-4 md:px-6 py-4 border-b border-gray-100 flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-blue-500 mr-2 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                        <div class="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-300">
+                            <div class="bg-gray-50 px-4 md:px-6 py-4 border-b border-gray-300 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-gray-700 mr-2 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                                 </svg>
                                 <h3 class="text-sm md:text-base font-semibold text-gray-700">Account Security</h3>
@@ -293,7 +302,7 @@
                             <div class="p-4 md:p-6">
                                 <p class="text-sm md:text-base text-gray-600 mb-4">Your personal information is secure and protected.</p>
                                 <div class="flex justify-end">
-                                    <a href="pin.html" class="inline-flex items-center px-4 md:px-6 py-2 md:py-2.5 bg-blue-100 text-blue-700 text-xs md:text-sm font-medium rounded-lg hover:bg-blue-200 transition-colors">
+                                    <a href="security.html" class="inline-flex items-center px-4 md:px-6 py-2 md:py-2.5 bg-gray-900 text-white text-xs md:text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors">
                                         Manage PIN
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
                                             <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
@@ -337,45 +346,46 @@
 
 
     <!-- Bottom Navbar (Mobile Friendly) -->
-    <div class="mobile-nav fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t p-3" style="height: 100px;">
+    <div class="mobile-nav fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-300 p-3" style="height: 100px; z-index: 100;">
         <div class="flex justify-around items-center h-full">
-            <!-- Wallet Icon -->
-            <a href="dashboard.html" class="nav-item flex flex-col items-center" onclick="setActive(this)">
+            <!-- Home Icon -->
+            <a href="dashboard.html" class="nav-item flex flex-col items-center" data-page="dashboard">
                 <div class="bg-white rounded p-2">
                     <img src="1221.png" alt="Wallet Icon" class="h-6 w-6" />
                 </div>
-                <span class="text-xs font-medium mt-2">Home</span>
+                <span class="text-xs font-medium mt-2 text-gray-700">Home</span>
             </a>
             <!-- Deposit Icon -->
-            <a href="deposit.html" class="nav-item flex flex-col items-center" onclick="setActive(this)">
+            <a href="deposit.html" class="nav-item flex flex-col items-center" data-page="deposit">
                 <div class="bg-white rounded p-2">
-                    <img src="deposit.png" alt="Redeem Icon" class="h-6 w-6" />
+                    <img src="deposit.png" alt="Deposit Icon" class="h-6 w-6" />
                 </div>
-                <span class="text-xs font-medium mt-2">Deposit</span>
+                <span class="text-xs font-medium mt-2 text-gray-700">Deposit</span>
             </a>
             <!-- Support Icon -->
-            <a href="support.html" class="nav-item flex flex-col items-center" onclick="setActive(this)">
+            <a href="support.html" class="nav-item flex flex-col items-center" data-page="support">
                 <div class="bg-white rounded p-2">
                     <img src="support.png" alt="Support Icon" class="h-6 w-6" />
                 </div>
-                <span class="text-xs font-medium mt-2">Support</span>
+                <span class="text-xs font-medium mt-2 text-gray-700">Support</span>
             </a>
             <!-- Profile Icon -->
-            <a href="profile.html" class="nav-item flex flex-col items-center" onclick="setActive(this)">
+            <a href="profile.html" class="nav-item flex flex-col items-center" data-page="profile">
                 <div class="bg-white rounded p-2">
                     <img src="profile.png" alt="Profile Icon" class="h-6 w-6" />
                 </div>
-                <span class="text-xs font-medium mt-2">Profile</span>
+                <span class="text-xs font-medium mt-2 text-gray-700">Profile</span>
             </a>
         </div>
     </div>
+    <script src="bottom-navbar.js"></script>
 
     <!-- Firebase Scripts -->
     <script type="module">
         // Shared Firebase client (auth/db are consistent across all pages)
         import { auth, db } from "./firebase-client.js";
-        import { onAuthStateChanged, updateProfile, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-        import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+        import { onAuthStateChanged, updateProfile, signOut, reauthenticateWithCredential, EmailAuthProvider } from "firebase/auth";
+        import { doc, getDoc, updateDoc } from "firebase/firestore";
 
         // Expose globally
         window.auth = auth;
@@ -591,7 +601,6 @@
                 }
                 
                 // Re-authenticate user with password
-                const { reauthenticateWithCredential, EmailAuthProvider } = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js');
                 const credential = EmailAuthProvider.credential(user.email, password);
                 await reauthenticateWithCredential(user, credential);
                 
@@ -740,32 +749,8 @@
     </script>
 
     <!-- Navigation Script -->
+    <script src="bottom-navbar.js"></script>
     <script>
-        // Function to set the active navbar item
-        function setActive(element) {
-            // Reset all items to default styles
-            const icons = document.querySelectorAll('.nav-item div');
-            const texts = document.querySelectorAll('.nav-item span');
-            icons.forEach(icon => icon.classList.remove('bg-green-300', 'text-white'));
-            texts.forEach(text => text.classList.remove('text-black'));
-
-            // Add active styles to the clicked item
-            const icon = element.querySelector('div');
-            const text = element.querySelector('span');
-            icon.classList.add('bg-blue-400', 'text-white'); // Highlight background of active icon
-            text.classList.add('text-black'); // Highlight text of active item
-        }
-
-        // Set the active state on page load based on the current URL
-        window.addEventListener('DOMContentLoaded', () => {
-            const currentPath = window.location.pathname;
-            const navItems = document.querySelectorAll('.nav-item');
-            navItems.forEach(item => {
-                if (item.href.includes(currentPath)) {
-                    setActive(item);
-                }
-            });
-        });
 
         // Update profile info function
         window.updateProfile = function() {
@@ -793,5 +778,8 @@
             }
         };
     </script>
+
+    <!-- Inactivity Timeout: Auto-logout after 5 minutes of inactivity -->
+    <script src="inactivity-timeout.js"></script>
 </body>
 </html>

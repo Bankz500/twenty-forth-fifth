@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Admin - Manage Testimonials | Beal Offshore Ltd</title>
-    <link rel="manifest" href="/assets/manifest-DnAVBaWg.json">
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/logo%20new-DPEJ_4oz.png">
-    <link rel="icon" href="/assets/logo%20new-DPEJ_4oz.png" type="image/png">
+    <title>Admin - Manage Testimonials | Twenty Third & Forth</title>
+    <link rel="manifest" href="/assets/manifest-DrZo22X-.json">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/app-icon-C11owm6W.svg">
+    <link rel="icon" href="/assets/app-icon-C11owm6W.svg" type="image/svg+xml">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -59,7 +59,7 @@
             margin-top: auto;
         }
     </style>
-  <script type="module" crossorigin src="/assets/admin-DCSWn7cg.js"></script>
+  <script type="module" crossorigin src="/assets/admin-DLj7kjK_.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
   <link rel="modulepreload" crossorigin href="/assets/preload-helper-D7HrI6pR.js">
 </head>
@@ -75,7 +75,7 @@
                     </div>
                 <div>
                         <h1 class="text-lg font-bold text-white">Admin Panel</h1>
-                        <p class="text-xs text-slate-400">Beal Offshore</p>
+                        <p class="text-xs text-slate-400">Twenty Third & Forth</p>
                 </div>
                 </div>
                 <button id="closeSidebar" class="md:hidden text-slate-400 hover:text-white transition-colors">
@@ -88,8 +88,8 @@
                 <a href="#testimonials" onclick="showSection('testimonials'); return false;" 
                    class="nav-item active flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 cursor-pointer group">
                     <div class="w-5 flex justify-center">
-                        <i class="fas fa-star text-yellow-400 group-hover:scale-110 transition-transform"></i>
-        </div>
+                        <i class="fas fa-star text-slate-300 group-hover:text-white group-hover:scale-110 transition-transform transition-colors"></i>
+                    </div>
                     <span class="font-medium text-sm">Testimonials</span>
                 </a>
                 <a href="#chat" onclick="showSection('chat'); return false;" 
@@ -98,18 +98,49 @@
                         <i class="fas fa-comments text-slate-300 group-hover:text-white transition-colors"></i>
                     </div>
                     <span class="font-medium text-sm">Live Chat</span>
-                    <span id="adminChatBadge" class="ml-auto bg-red-500 text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5 hidden shadow-lg">0</span>
+                    <span id="adminChatBadge" class="ml-auto text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5 hidden shadow-lg" style="background-color: #1800ac;">0</span>
+                </a>
+                <a href="#kyc" onclick="showSection('kyc'); return false;" 
+                   class="nav-item relative flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 cursor-pointer group">
+                    <div class="w-5 flex justify-center">
+                        <i class="fas fa-id-card text-slate-300 group-hover:text-white transition-colors"></i>
+                    </div>
+                    <span class="font-medium text-sm">KYC Verification</span>
+                    <span id="adminKYCBadge" class="ml-auto text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5 hidden shadow-lg" style="background-color: #1800ac;">0</span>
+                </a>
+                <a href="#loans" onclick="showSection('loans'); return false;" 
+                   class="nav-item relative flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 cursor-pointer group">
+                    <div class="w-5 flex justify-center">
+                        <i class="fas fa-money-bill-wave text-slate-300 group-hover:text-white transition-colors"></i>
+                    </div>
+                    <span class="font-medium text-sm">Loan Requests</span>
+                    <span id="adminLoanBadge" class="ml-auto text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5 hidden shadow-lg" style="background-color: #1800ac;">0</span>
+                </a>
+                <a href="#debit-cards" onclick="showSection('debitCards'); return false;" 
+                   class="nav-item relative flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 cursor-pointer group">
+                    <div class="w-5 flex justify-center">
+                        <i class="fas fa-credit-card text-slate-300 group-hover:text-white transition-colors"></i>
+                    </div>
+                    <span class="font-medium text-sm">Debit Cards</span>
+                    <span id="adminDebitCardBadge" class="ml-auto text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5 hidden shadow-lg" style="background-color: #1800ac;">0</span>
+                </a>
+                <a href="#users" onclick="showSection('users'); return false;"
+                   class="nav-item relative flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 cursor-pointer group">
+                    <div class="w-5 flex justify-center">
+                        <i class="fas fa-users text-slate-300 group-hover:text-white transition-colors"></i>
+                    </div>
+                    <span class="font-medium text-sm">Users</span>
                 </a>
             </nav>
 
             <!-- Sidebar Footer with Logout -->
             <div class="sidebar-footer">
                 <button onclick="signOut()" 
-                   class="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-red-600/20 hover:border-red-500/50 border border-transparent cursor-pointer group">
+                   class="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-white/10 hover:border-white/10 border border-transparent cursor-pointer group">
                     <div class="w-5 flex justify-center">
-                        <i class="fas fa-sign-out-alt text-slate-400 group-hover:text-red-400 transition-colors"></i>
+                        <i class="fas fa-sign-out-alt text-slate-400 group-hover:text-white transition-colors"></i>
                     </div>
-                    <span class="font-medium text-sm text-slate-300 group-hover:text-red-400 transition-colors">Logout</span>
+                    <span class="font-medium text-sm text-slate-300 group-hover:text-white transition-colors">Logout</span>
                 </button>
             </div>
         </aside>
@@ -126,6 +157,12 @@
                         <h2 id="pageTitle" class="text-2xl font-bold text-gray-900">Testimonials</h2>
             </div>
         </div>
+                    <div class="hidden sm:flex items-center gap-2">
+                        <span id="adminAuthPill" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-gray-50 text-gray-700 border border-gray-200">
+                            <span class="w-2 h-2 rounded-full bg-gray-300"></span>
+                            <span id="adminAuthEmail">Not signed in</span>
+                        </span>
+                    </div>
             </header>
 
             <!-- Content Area -->
@@ -133,13 +170,13 @@
                 <div class="max-w-7xl mx-auto">
 
         <!-- Success Message -->
-        <div id="successMessage" class="hidden success-message bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg mb-4">
+        <div id="successMessage" class="hidden success-message bg-white border border-gray-200 text-gray-900 px-4 py-3 rounded-lg mb-4">
             <i class="fas fa-check-circle mr-2"></i>
             <span id="successText"></span>
         </div>
 
         <!-- Error Message -->
-        <div id="errorMessage" class="hidden bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg mb-4">
+        <div id="errorMessage" class="hidden bg-white border border-gray-200 text-gray-900 px-4 py-3 rounded-lg mb-4">
             <i class="fas fa-exclamation-circle mr-2"></i>
             <span id="errorText"></span>
         </div>
@@ -147,9 +184,9 @@
         <!-- Testimonials Section -->
         <div id="testimonialsSection">
         <!-- Add Testimonial Form -->
-        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+        <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-6 mb-6">
             <h2 class="text-xl font-semibold text-gray-900 mb-4">
-                <i class="fas fa-plus-circle text-blue-500 mr-2"></i>
+                <i class="fas fa-plus-circle text-gray-800 mr-2"></i>
                 Add New Testimonial
             </h2>
             <form id="testimonialForm" class="space-y-4">
@@ -157,13 +194,13 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Author Name *</label>
                         <input type="text" id="authorName" required
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 bg-white"
                             placeholder="John Smith">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Company *</label>
                         <input type="text" id="company" required
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 bg-white"
                             placeholder="ABC Corporation">
                     </div>
                 </div>
@@ -172,13 +209,13 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Country *</label>
                         <input type="text" id="country" required
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 bg-white"
                             placeholder="United States">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Rating *</label>
                         <select id="rating" required
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 bg-white">
                             <option value="">Select rating</option>
                             <option value="5">5 ⭐⭐⭐⭐⭐</option>
                             <option value="4">4 ⭐⭐⭐⭐</option>
@@ -192,7 +229,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Like Count (75–300)</label>
                     <input type="number" id="likeCount" min="0"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 bg-white"
                         placeholder="Leave empty to auto-generate">
                     <p class="text-xs text-gray-500 mt-1">If empty: new testimonials get a random value (75–300). When editing, leaving empty keeps the current value.</p>
                 </div>
@@ -200,7 +237,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Review Text *</label>
                     <textarea id="reviewText" required rows="4"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 bg-white"
                         placeholder="Enter the testimonial text here..."></textarea>
                 </div>
 
@@ -208,7 +245,7 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">Author Image (Optional)</label>
                     <div class="flex items-center gap-4">
                         <input type="file" id="authorImage" accept="image/*"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 text-sm bg-white">
                         <div id="imagePreview" class="hidden">
                             <img id="previewImg" src="" alt="Preview" class="w-20 h-20 object-cover rounded-lg border border-gray-300">
                         </div>
@@ -219,26 +256,26 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Published Date (Optional)</label>
                     <input type="date" id="publishedDate"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 bg-white">
                     <p class="text-xs text-gray-500 mt-1">Leave empty to use current date</p>
                 </div>
 
                 <div class="flex items-center gap-4">
                     <label class="flex items-center">
                         <input type="checkbox" id="verified" checked
-                            class="mr-2 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            class="mr-2 w-4 h-4 text-gray-900 border-gray-300 rounded focus:ring-gray-900">
                         <span class="text-sm text-gray-700">Verified</span>
                     </label>
                     <label class="flex items-center">
                         <input type="checkbox" id="published" checked
-                            class="mr-2 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            class="mr-2 w-4 h-4 text-gray-900 border-gray-300 rounded focus:ring-gray-900">
                         <span class="text-sm text-gray-700">Published (visible on testimonials page)</span>
                     </label>
                 </div>
 
                 <div class="flex gap-2">
-                <button type="submit" id="submitBtn"
-                        class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors">
+                  <button type="submit" id="submitBtn"
+                          class="flex-1 text-white font-semibold py-2 px-4 rounded-lg transition-colors" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
                         <i class="fas fa-save mr-2"></i><span id="submitBtnText">Add Testimonial</span>
                     </button>
                     <button type="button" id="cancelEditBtn" onclick="cancelEdit()" class="hidden bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors">
@@ -249,19 +286,19 @@
         </div>
 
         <!-- Add Sample Testimonials -->
-        <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+        <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-6 mb-6">
             <h2 class="text-xl font-semibold text-gray-900 mb-4">
-                <i class="fas fa-magic text-purple-500 mr-2"></i>
+                <i class="fas fa-magic text-gray-800 mr-2"></i>
                 Quick Setup
             </h2>
             <p class="text-gray-600 text-sm mb-4">Add realistic sample testimonials to get started quickly.</p>
             <div class="flex flex-col sm:flex-row gap-2">
             <button id="addSamplesBtn"
-                class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors">
+                class="text-white font-semibold py-2 px-4 rounded-lg transition-colors" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
                 <i class="fas fa-sparkles mr-2"></i>Add Sample Testimonials
             </button>
                 <button id="backfillLikesBtn"
-                    class="bg-gray-800 hover:bg-gray-900 text-white font-semibold py-2 px-4 rounded-lg transition-colors">
+                    class="text-white font-semibold py-2 px-4 rounded-lg transition-colors" style="background-color: #140099;" onmouseover="this.style.backgroundColor='#0d0066'" onmouseout="this.style.backgroundColor='#140099'">
                     <i class="fas fa-thumbs-up mr-2"></i>Assign Random Like Counts
             </button>
             </div>
@@ -269,7 +306,7 @@
         </div>
 
         <!-- Existing Testimonials List -->
-        <div class="bg-white rounded-lg shadow-lg p-6">
+        <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-6">
             <h2 class="text-xl font-semibold text-gray-900 mb-4">
                 <i class="fas fa-list text-gray-700 mr-2"></i>
                 Existing Testimonials
@@ -281,13 +318,317 @@
         </div>
 
         <!-- Live Chat Management Section -->
-        <div id="chatSection" class="hidden bg-white rounded-lg shadow-lg p-6">
-            <h2 class="text-xl font-semibold text-gray-900 mb-4">
-                <i class="fas fa-comments text-blue-500 mr-2"></i>
-                Live Chat Management
+        <div id="chatSection" class="hidden bg-white border border-gray-200 rounded-xl shadow-sm p-6">
+            <h2 class="text-xl font-semibold text-gray-950 mb-4">
+                <i class="fas fa-comments text-gray-800 mr-2"></i>
+                Live Chat
             </h2>
+
+            <!-- Start chat -->
+            <div class="mb-6 bg-white border border-gray-200 rounded-xl p-4">
+                <h3 class="text-sm font-semibold text-gray-950 mb-3">
+                    <i class="fas fa-plus text-gray-800 mr-2"></i>
+                    Start a chat
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-3 items-end">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-800 mb-1">Select user</label>
+                        <select id="chatUserSelect"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 text-sm bg-white">
+                            <option value="">Loading users...</option>
+                        </select>
+                        <p class="text-xs text-gray-500 mt-1">Creates (or opens) a live chat for the selected user.</p>
+                    </div>
+                    <button type="button"
+                            id="startChatBtn"
+                            class="px-4 py-2.5 rounded-lg text-white text-sm font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'"
+                            onclick="window.startChatForSelectedUser && window.startChatForSelectedUser()"
+                            disabled>
+                        Start chat
+                    </button>
+                </div>
+            </div>
+
             <div id="chatsList" class="space-y-4">
                 <p class="text-gray-500 text-center py-8">Loading chats...</p>
+            </div>
+        </div>
+
+        <!-- KYC Verification Management Section -->
+        <div id="kycSection" class="hidden bg-white border border-gray-200 rounded-xl shadow-sm p-6">
+            <h2 class="text-xl font-semibold text-gray-950 mb-4">
+                <i class="fas fa-id-card text-gray-800 mr-2"></i>
+                KYC
+            </h2>
+            <div id="kycList" class="space-y-4">
+                <p class="text-gray-500 text-center py-8">Loading KYC requests...</p>
+            </div>
+        </div>
+
+        <!-- Loan Requests Management Section -->
+        <div id="loansSection" class="hidden bg-white border border-gray-200 rounded-xl shadow-sm p-6">
+            <h2 class="text-xl font-semibold text-gray-950 mb-4">
+                <i class="fas fa-money-bill-wave text-gray-800 mr-2"></i>
+                Loans
+            </h2>
+            <div id="loansList" class="space-y-4">
+                <p class="text-gray-500 text-center py-8">Loading loan requests...</p>
+            </div>
+        </div>
+
+        <!-- Debit Cards Management Section -->
+        <div id="debitCardsSection" class="hidden bg-white border border-gray-200 rounded-xl shadow-sm p-6">
+            <div class="flex items-start justify-between gap-4 mb-5">
+                <div>
+                    <h2 class="text-xl font-semibold text-gray-950 mb-1">
+                        <i class="fas fa-credit-card text-gray-800 mr-2"></i>
+                        Debit Cards
+                    </h2>
+                    <p class="text-sm text-gray-600">
+                        Review debit card requests, approve them, and issue virtual cards.
+                    </p>
+                </div>
+                <span id="debitCardBadge" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200">
+                    0 pending
+                </span>
+            </div>
+
+            <div class="bg-white border border-gray-200 rounded-xl p-4 mb-6">
+                <h3 class="text-sm font-semibold text-gray-950 mb-2">
+                    Pending requests
+                </h3>
+                <div id="debitCardRequestsList" class="space-y-3">
+                    <p class="text-gray-500 text-center py-4 text-sm">Loading debit card requests...</p>
+                </div>
+                <p class="text-xs text-gray-500 mt-3">
+                    Approving issues a virtual card and makes it visible to the user in <code>debit-card.html</code>.
+                </p>
+            </div>
+
+            <div class="bg-white border border-gray-200 rounded-xl p-4">
+                <h3 class="text-sm font-semibold text-gray-950 mb-2">
+                    Issued cards
+                </h3>
+                <div id="issuedDebitCardsList" class="space-y-3">
+                    <p class="text-gray-500 text-center py-4 text-sm">Loading issued cards...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Management Section -->
+        <div id="usersSection" class="hidden bg-white border border-gray-200 rounded-xl shadow-sm p-6">
+            <div class="flex items-start justify-between gap-4 mb-5">
+                <div>
+                    <h2 class="text-xl font-semibold text-gray-950">
+                        <i class="fas fa-users text-gray-800 mr-2"></i>
+                        Users
+            </h2>
+                    <p class="text-sm text-gray-600 mt-1">
+                        Manage user accounts, balances, history entries, and approval access.
+            </p>
+                </div>
+            </div>
+
+            <!-- Account approval requests -->
+            <div class="mb-6 bg-white border border-gray-200 rounded-xl p-4">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
+                    <h3 class="text-sm font-semibold text-gray-950">
+                        <i class="fas fa-user-check text-gray-800 mr-2"></i>
+                        Account Sign‑Up Requests
+                    </h3>
+                    <div class="flex flex-wrap items-center gap-2 justify-end">
+                        <label class="flex items-center gap-2 text-xs text-gray-700 cursor-pointer select-none">
+                            <input type="checkbox" id="approvalSelectAll" class="rounded border-gray-300 focus:ring-2 focus:ring-gray-900">
+                            Select all
+                        </label>
+                        <button type="button"
+                                id="approveSelectedAccountsBtn"
+                                class="px-3 py-1.5 rounded-lg text-white text-xs font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'"
+                                disabled>
+                            Approve selected
+                        </button>
+                        <button type="button"
+                                id="approveAllAccountsBtn"
+                                class="px-3 py-1.5 rounded-lg bg-white hover:bg-gray-50 text-gray-900 border border-gray-300 text-xs font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed">
+                            Approve all
+                        </button>
+                        <span id="approvalBadge" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200">
+                        0 pending
+                    </span>
+                </div>
+                </div>
+                <p id="approvalSelectedCount" class="text-xs text-gray-500 mb-2"></p>
+                <div id="approvalRequestsList" class="space-y-3">
+                    <p class="text-gray-500 text-center py-4 text-sm">Loading approval requests...</p>
+                </div>
+                <p class="text-xs text-gray-500 mt-3">
+                    New accounts are created as <code>pending</code>. Approving enables dashboard access.
+                </p>
+            </div>
+
+            <!-- User selector -->
+            <div class="mb-6 bg-white border border-gray-200 rounded-xl p-4">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <div class="lg:col-span-1">
+                        <label class="block text-sm font-medium text-gray-800 mb-1">Select user</label>
+                    <select id="adminUserSelect"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 text-sm bg-white">
+                        <option value="">Loading users...</option>
+                    </select>
+                    <p class="text-xs text-gray-500 mt-1">
+                        Users are loaded from Firestore <code>users</code> collection (admins only).
+                    </p>
+                </div>
+
+                <!-- Summary -->
+                <div class="lg:col-span-2">
+                        <div id="adminUserSummary" class="bg-white border border-gray-200 rounded-lg p-4 text-sm text-gray-800">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1">
+                                <p class="mb-0.5"><span class="font-semibold">UID:</span> <span id="adminUserId">-</span></p>
+                                <p class="mb-0.5"><span class="font-semibold">Status:</span> <span id="adminUserStatusLabel">-</span></p>
+                                <p class="mb-0.5"><span class="font-semibold">Name:</span> <span id="adminUserName">-</span></p>
+                                <p class="mb-0.5"><span class="font-semibold">Email:</span> <span id="adminUserEmail">-</span></p>
+                                <p class="mb-0.5"><span class="font-semibold">Checking:</span> <span id="adminUserChecking">-</span></p>
+                                <p class="mb-0.5"><span class="font-semibold">Fixed:</span> <span id="adminUserFixed">-</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Generate History Section -->
+            <div class="mb-6 bg-white border border-gray-200 rounded-xl p-4">
+                <h3 class="text-sm font-semibold text-gray-950 mb-3">
+                    <i class="fas fa-magic text-gray-800 mr-2"></i>
+                    Generate History
+                </h3>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    <div class="lg:col-span-2">
+                        <label class="block text-sm font-medium text-gray-800 mb-1">History entry template</label>
+                        <input 
+                            type="text" 
+                            id="adminHistoryTemplateInput" 
+                            placeholder="Deposit | 15-Aug-25 | Gerald Sell Jr | CP456 | +$50,000.00 | 10:22 am | TXN9A7F3C2E8B41 |"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 text-sm font-mono bg-white"
+                            onkeypress="if(event.key === 'Enter') { event.preventDefault(); window.adminGenerateHistory && window.adminGenerateHistory(); }"
+                        />
+                        <p class="text-xs text-gray-500 mt-1">
+                            Enter a history entry template. The system will generate 15 variations with backdated dates (working days) and unique transaction IDs.
+                        </p>
+                    </div>
+                    <div class="flex flex-col justify-end gap-2">
+                        <button 
+                            type="button"
+                            id="adminGenerateHistoryBtn"
+                            onclick="window.adminGenerateHistory && window.adminGenerateHistory()"
+                            class="w-full text-white text-sm font-semibold py-2.5 rounded-lg transition-colors" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
+                            <i class="fas fa-sync-alt mr-2"></i>
+                            Generate 15 Histories
+                        </button>
+                        <div id="adminHistoryGenStatus" class="text-xs text-gray-600"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
+                <!-- Top up checking -->
+                <div class="space-y-3 bg-white border border-gray-200 rounded-xl p-4">
+                    <h3 class="text-sm font-semibold text-gray-950">Top up checking</h3>
+                    <input id="adminCheckingTopUpAmount"
+                           type="number"
+                           min="0"
+                           step="0.01"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 text-sm bg-white"
+                           placeholder="Amount e.g. 5000">
+                    <button type="button"
+                            id="adminTopUpCheckingBtn"
+                            onclick="window.adminTopUpChecking && window.adminTopUpChecking()"
+                            class="w-full text-white text-sm font-semibold py-2.5 rounded-lg transition-colors" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
+                        Apply Top Up
+                    </button>
+                    <p class="text-xs text-gray-500">
+                        This adds the amount to the user's <code>checking</code> balance and stores it formatted as USD.
+                    </p>
+                </div>
+
+                <!-- Top up fixed (savings) -->
+                <div class="space-y-3 bg-white border border-gray-200 rounded-xl p-4">
+                    <h3 class="text-sm font-semibold text-gray-950">Top up fixed</h3>
+                    <input id="adminFixedTopUpAmount"
+                           type="number"
+                           min="0"
+                           step="0.01"
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 text-sm bg-white"
+                           placeholder="Amount e.g. 5000">
+                    <button type="button"
+                            id="adminTopUpFixedBtn"
+                            onclick="window.adminTopUpFixed && window.adminTopUpFixed()"
+                            class="w-full text-white text-sm font-semibold py-2.5 rounded-lg transition-colors" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
+                        Apply Top Up
+                    </button>
+                    <p class="text-xs text-gray-500">
+                        This adds the amount to the user's <code>fixed</code> balance (treated as savings) and stores it formatted as USD.
+                    </p>
+                </div>
+
+                <!-- History 1–15 bulk update -->
+                <div class="space-y-3 lg:col-span-2 bg-white border border-gray-200 rounded-xl p-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-sm font-semibold text-gray-950">History 1–15</h3>
+                        <div class="flex items-center gap-2">
+                            <label class="flex items-center gap-1 text-xs text-gray-700 cursor-pointer">
+                                <input type="checkbox" id="adminSelectAllHistory" class="rounded border-gray-300 focus:ring-2 focus:ring-gray-900">
+                                Select All
+                            </label>
+                        </div>
+                    </div>
+                    <div id="adminHistoryList" class="border border-gray-300 rounded-lg p-3 max-h-96 overflow-y-auto space-y-2">
+                        <!-- History entries will be populated here -->
+                        <p class="text-xs text-gray-500 text-center py-4">Generate histories or load existing ones to view/edit</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button type="button"
+                                id="adminSaveHistoryBtn"
+                                onclick="window.adminSaveHistory && window.adminSaveHistory()"
+                                class="flex-1 text-white text-sm font-semibold py-2.5 rounded-lg transition-colors" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
+                            Save History 1–15
+                        </button>
+                        <button type="button"
+                                id="adminDeleteHistoryBtn"
+                                onclick="window.adminDeleteHistory && window.adminDeleteHistory()"
+                                class="flex-1 bg-white hover:bg-gray-50 text-gray-900 border border-gray-300 text-sm font-semibold py-2.5 rounded-lg transition-colors">
+                            <i class="fas fa-trash mr-1"></i>
+                            Delete Selected
+                        </button>
+                    </div>
+                    <p class="text-xs text-gray-500">
+                        Up to 15 entries will be written to <code>history1</code>–<code>history15</code> on the user's document. Check entries to delete them.
+                    </p>
+                </div>
+
+                <!-- Status update -->
+                <div class="space-y-3 bg-white border border-gray-200 rounded-xl p-4">
+                    <h3 class="text-sm font-semibold text-gray-950">Update status</h3>
+                    <select id="adminUserStatusSelect"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 text-sm bg-white">
+                        <option value="">Select status</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                        <option value="suspended">Suspended</option>
+                        <option value="processing">Processing / Under Review</option>
+                        <option value="banned">Banned</option>
+                    </select>
+                    <button type="button"
+                            id="adminSaveStatusBtn"
+                            onclick="window.adminSaveStatus && window.adminSaveStatus()"
+                            class="w-full text-white text-sm font-semibold py-2.5 rounded-lg transition-colors" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
+                        Update Status
+                    </button>
+                    <p class="text-xs text-gray-500">
+                        Writes the selected value to the user's <code>status</code> field, which is used across the app (e.g., to allow or block transfers).
+                    </p>
+                </div>
             </div>
         </div>
     </div>

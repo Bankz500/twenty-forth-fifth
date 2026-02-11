@@ -1,9 +1,9 @@
 {
-  "name": "beal-offshore",
+  "name": "forth-citizen-inc",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Beal Offshore Banking Platform",
+  "description": "Twenty Third & Forth Financial Platform",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

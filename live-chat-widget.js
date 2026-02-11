@@ -1,4 +1,4 @@
-// Live Chat Widget for Beal Offshore Ltd
+// Live Chat Widget for Twenty Third & Forth
 // Replaces WhatsApp button with FAQ + Live Chat
 
 // Add custom styles for animations
@@ -68,6 +68,12 @@ class LiveChatWidget {
         this.selectedImageFile = null;
         this.selectedImageBase64 = null;
         this.realtimeUnsubscribe = null;
+        
+        // Store hash intent for mobile devices (in case hash is lost during navigation)
+        if (window.location.hash === '#open-chat') {
+            sessionStorage.setItem('fci_open_chat', 'true');
+        }
+        
         this.init();
     }
 
@@ -76,23 +82,96 @@ class LiveChatWidget {
         this.loadUserAuth();
         this.setupFAQ();
         this.restoreChatSession();
+        
+        // Check if URL has #open-chat hash and auto-open chat widget
+        // Multiple checks for mobile devices
+        this.checkAndOpenChat();
+        
+        // Listen for hash changes (in case user navigates with hash)
+        window.addEventListener('hashchange', () => {
+            this.checkAndOpenChat();
+        });
+        
+        // Additional check after a delay for mobile (widget might not be ready immediately)
+        setTimeout(() => {
+            if (this.shouldOpenChat()) {
+                this.checkAndOpenChat();
+            }
+        }, 1000);
+        
+        // Another check after longer delay for slow mobile connections
+        setTimeout(() => {
+            if (this.shouldOpenChat()) {
+                this.checkAndOpenChat();
+            }
+        }, 2500);
+    }
+
+    shouldOpenChat() {
+        // Check both hash and sessionStorage (for mobile devices where hash might be lost)
+        return window.location.hash === '#open-chat' || sessionStorage.getItem('fci_open_chat') === 'true';
+    }
+
+    checkAndOpenChat() {
+        if (this.shouldOpenChat()) {
+            // Clear the sessionStorage flag once we've detected it (only if it was set)
+            if (sessionStorage.getItem('fci_open_chat') === 'true') {
+                sessionStorage.removeItem('fci_open_chat');
+            }
+            // Wait for widget to be fully created and DOM to be ready
+            const tryOpen = (attempts = 0) => {
+                const chatWindow = document.getElementById('chatWindow');
+                const chatToggleBtn = document.getElementById('chatToggleBtn');
+                
+                if (chatWindow && chatToggleBtn) {
+                    if (!this.isOpen) {
+                        // Widget is ready, open it
+                        this.toggleChat();
+                        // Scroll to top to ensure chat is visible on mobile
+                        setTimeout(() => {
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }, 300);
+                        return; // Success, stop retrying
+                    }
+                }
+                
+                // Widget not ready yet, try again (max 50 attempts = 5 seconds for mobile)
+                if (attempts < 50) {
+                    setTimeout(() => tryOpen(attempts + 1), 100);
+                } else {
+                    // Last resort: try one more time after a longer delay
+                    setTimeout(() => {
+                        const chatWindow = document.getElementById('chatWindow');
+                        const chatToggleBtn = document.getElementById('chatToggleBtn');
+                        if (chatWindow && chatToggleBtn && !this.isOpen) {
+                            this.toggleChat();
+                        }
+                    }, 1000);
+                }
+            };
+            
+            // Start checking immediately, then again after delays for mobile
+            tryOpen(0);
+            setTimeout(() => tryOpen(0), 500);
+            setTimeout(() => tryOpen(0), 1500);
+        }
     }
 
     async restoreChatSession() {
         // Restore chat session from localStorage
         // First, try to get saved session ID
-        const savedSessionId = localStorage.getItem('beal_chat_session_id');
+        const savedSessionId = localStorage.getItem('fci_chat_session_id');
         if (savedSessionId) {
             this.currentUserId = savedSessionId;
             this.isAuthenticated = false;
             
             // Try to restore chat ID
-            const savedChatId = localStorage.getItem(`beal_chat_id_${savedSessionId}`);
+            const savedChatId = localStorage.getItem(`fci_chat_id_${savedSessionId}`);
             if (savedChatId) {
                 this.currentChatId = savedChatId;
                 
                 // Restore unread count from localStorage
-                const savedUnread = localStorage.getItem(`beal_chat_unread_${savedChatId}`);
+                const savedUnread = localStorage.getItem(`fci_chat_unread_${savedChatId}`);
                 if (savedUnread) {
                     this.unreadCount = parseInt(savedUnread) || 0;
                     this.updateBadgeDisplay();
@@ -125,9 +204,10 @@ class LiveChatWidget {
         widget.id = 'liveChatWidget';
         widget.innerHTML = `
             <!-- Chat Button (always visible) -->
-            <button id="chatToggleBtn" class="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 rounded-full shadow-xl flex items-center justify-center transition-all z-50 group hover:scale-110 hover:shadow-2xl" style="box-shadow: 0 10px 25px rgba(17, 122, 202, 0.4);">
+            <button id="chatToggleBtn" class="fixed bottom-20 right-6 w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 rounded-full shadow-xl flex items-center justify-center transition-all z-50 group hover:scale-110 hover:shadow-2xl" style="box-shadow: 0 10px 25px rgba(17, 122, 202, 0.4);">
                 <div class="relative">
-                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-sm">
+                    <img src="chat bot.png" alt="Chat Support" class="w-10 h-10 object-contain drop-shadow-sm" onerror="this.onerror=null; this.src='chat icon.png'; this.onerror=function() { this.style.display='none'; this.nextElementSibling.style.display='block'; }">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-sm hidden">
                         <defs>
                             <linearGradient id="chatGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                                 <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
@@ -153,9 +233,9 @@ class LiveChatWidget {
                             <i class="fas fa-headset text-lg"></i>
                         </div>
                         <div>
-                            <div class="font-semibold text-sm">Beal Offshore Support</div>
+                            <div class="font-semibold text-sm">Twenty Third & Forth Support</div>
                             <div class="text-xs text-blue-100 flex items-center gap-1">
-                                <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                                <span class="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></span>
                                 Online now
                             </div>
                         </div>
@@ -184,7 +264,7 @@ class LiveChatWidget {
                         </div>
                         <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-blue-300 hover:shadow-md transition-all group" data-topic="transfers">
                             <div class="flex items-start gap-3">
-                                <div class="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center text-green-600 group-hover:bg-green-100 transition-colors">
+                                <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 group-hover:bg-blue-100 transition-colors">
                                     <i class="fas fa-exchange-alt text-sm"></i>
                                 </div>
                                 <div class="flex-1">
@@ -201,7 +281,7 @@ class LiveChatWidget {
                                 </div>
                                 <div class="flex-1">
                                     <div class="font-semibold text-sm text-gray-900">Fees & Charges</div>
-                                    <div class="text-xs text-gray-500 mt-0.5">What are your banking fees?</div>
+                                    <div class="text-xs text-gray-500 mt-0.5">What are your financial fees?</div>
                                 </div>
                                 <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-blue-500 transition-colors"></i>
                             </div>
@@ -357,10 +437,10 @@ class LiveChatWidget {
 
     setupFAQ() {
         this.faqAnswers = {
-            'account-setup': 'To open an offshore account with Beal Offshore Ltd, please visit our sign-up page and complete the registration form. You\'ll need to provide identification documents and proof of address. Our compliance team will review your application within 1-2 business days.',
+            'account-setup': 'To open an account with Twenty Third & Forth, please visit our sign-up page and complete the registration form. You\'ll need to provide identification documents and proof of address. Our compliance team will review your application within 1-2 business days.',
             'transfers': 'You can make international wire transfers through your online dashboard. Navigate to the Transfer section, enter the recipient details, amount, and currency. Transfers are typically processed within 1-3 business days. Fees vary by currency and destination.',
             'fees': 'Our fee structure is transparent and competitive. Account maintenance fees start at $50/month. Wire transfer fees range from $25-$75 depending on currency and destination. Please contact us for a detailed fee schedule tailored to your needs.',
-            'security': 'Your account is protected by bank-level encryption, multi-factor authentication, and regular security audits. We comply with international banking regulations and maintain strict KYC/AML procedures. Your funds are held in segregated accounts.',
+            'security': 'Your account is protected by bank-level encryption, multi-factor authentication, and regular security audits. We comply with international financial regulations and maintain strict KYC/AML procedures. Your funds are held in segregated accounts.',
             'multi-currency': 'We support over 20 major currencies including USD, EUR, GBP, JPY, CHF, AUD, CAD, and more. You can hold multiple currencies in a single account and convert between them at competitive exchange rates.',
             'investment': 'We offer various investment options including fixed deposits, treasury bonds, and managed investment portfolios. Minimum investment amounts and returns vary by product. Please schedule a consultation with our investment team for personalized advice.'
         };
@@ -417,7 +497,7 @@ class LiveChatWidget {
             </div>
             <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-blue-300 hover:shadow-md transition-all group" data-topic="transfers">
                 <div class="flex items-start gap-3">
-                    <div class="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center text-green-600 group-hover:bg-green-100 transition-colors">
+                    <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 group-hover:bg-blue-100 transition-colors">
                         <i class="fas fa-exchange-alt text-sm"></i>
                     </div>
                     <div class="flex-1">
@@ -498,22 +578,24 @@ class LiveChatWidget {
         if (!window.db) {
             try {
                 const firebaseConfig = {
-                    apiKey: "AIzaSyABYV12B7RM2ZCD2G1lFTLpgJwflJFwEXY",
-                    authDomain: "beal-offshore.firebaseapp.com",
-                    projectId: "beal-offshore",
-                    storageBucket: "beal-offshore.firebasestorage.app",
-                    messagingSenderId: "1091834410162",
-                    appId: "1:1091834410162:web:56285433b5751e681745ab",
-                    measurementId: "G-CT463F3T6J"
+                    apiKey: "AIzaSyBb9sVH4fMb-a5mQgcDjAfYT9RZHTb3sKE",
+                    authDomain: "twenty-third-forth.firebaseapp.com",
+                    projectId: "twenty-third-forth",
+                    storageBucket: "twenty-third-forth.firebasestorage.app",
+                    messagingSenderId: "835548579831",
+                    appId: "1:835548579831:web:5259f071b50341af28d0f2",
+                    measurementId: "G-KEMCE9679Y"
                 };
 
                 const { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js');
                 const { getFirestore } = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
                 const { getAuth } = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js');
+                const { getAnalytics } = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js');
 
                 const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
                 window.db = getFirestore(app);
                 window.auth = getAuth(app);
+                window.analytics = typeof window !== 'undefined' ? getAnalytics(app) : null;
             } catch (error) {
                 console.error('Error initializing Firebase:', error);
                 return false;
@@ -562,10 +644,10 @@ class LiveChatWidget {
 
     setupAnonymousUser() {
         // Generate or retrieve anonymous session ID
-        let sessionId = localStorage.getItem('beal_chat_session_id');
+        let sessionId = localStorage.getItem('fci_chat_session_id');
         if (!sessionId) {
             sessionId = 'anon_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-            localStorage.setItem('beal_chat_session_id', sessionId);
+            localStorage.setItem('fci_chat_session_id', sessionId);
         }
         this.currentUserId = sessionId;
         this.isAuthenticated = false;
@@ -1015,9 +1097,9 @@ class LiveChatWidget {
                         </div>
                     </div>
                     <div class="flex-1">
-                        <h4 class="font-bold text-gray-900 mb-2 text-base">Welcome to Beal Offshore Support! 👋</h4>
+                        <h4 class="font-bold text-gray-900 mb-2 text-base">Welcome to Twenty Third & Forth Support! 👋</h4>
                         <p class="text-sm text-gray-700 leading-relaxed mb-3">
-                            We're here to help you with any questions about our banking services. 
+                            We're here to help you with any questions about our financial services. 
                             Our support team will respond to your message as soon as possible.
                         </p>
                         <div class="flex items-center gap-4 text-xs text-gray-600">
@@ -1026,7 +1108,7 @@ class LiveChatWidget {
                                 <span>5-10 min response</span>
                             </div>
                             <div class="flex items-center gap-1.5">
-                                <i class="fas fa-shield-alt text-green-500"></i>
+                                <i class="fas fa-shield-alt text-blue-500"></i>
                                 <span>Secure & Private</span>
                             </div>
                         </div>
@@ -1077,7 +1159,7 @@ class LiveChatWidget {
             this.currentChatId = chatRef.id;
             
             // Save chat ID to localStorage for persistence
-            localStorage.setItem(`beal_chat_id_${this.currentUserId}`, this.currentChatId);
+            localStorage.setItem(`fci_chat_id_${this.currentUserId}`, this.currentChatId);
             
             await this.setupRealtimeListener();
         } catch (error) {
@@ -1147,7 +1229,7 @@ class LiveChatWidget {
             
             // Save unread count to localStorage for persistence
             if (this.currentChatId) {
-                localStorage.setItem(`beal_chat_unread_${this.currentChatId}`, this.unreadCount.toString());
+                localStorage.setItem(`fci_chat_unread_${this.currentChatId}`, this.unreadCount.toString());
             }
             
             const badge = document.getElementById('chatBadge');
@@ -1170,9 +1252,9 @@ class LiveChatWidget {
     showNotification() {
         // Show browser notification if permission granted
         if ('Notification' in window && Notification.permission === 'granted') {
-            new Notification('New message from Beal Offshore', {
+            new Notification('New message from Twenty Third & Forth', {
                 body: 'You have a new message in your chat',
-                icon: '/logo new.png'
+                icon: '/app-icon.svg'
             });
         }
     }
@@ -1185,5 +1267,55 @@ if (document.readyState === 'loading') {
     });
 } else {
     window.liveChatWidget = new LiveChatWidget();
+}
+
+// Helper function to check if chat should open
+function shouldOpenChatWidget() {
+    return window.location.hash === '#open-chat' || sessionStorage.getItem('fci_open_chat') === 'true';
+}
+
+// Also check hash on window load (in case page loads slowly, especially on mobile)
+window.addEventListener('load', () => {
+    if (window.liveChatWidget && shouldOpenChatWidget()) {
+        // Multiple attempts for mobile devices that may load slower
+        setTimeout(() => {
+            window.liveChatWidget.checkAndOpenChat();
+        }, 500);
+        setTimeout(() => {
+            window.liveChatWidget.checkAndOpenChat();
+        }, 1500);
+        setTimeout(() => {
+            window.liveChatWidget.checkAndOpenChat();
+        }, 3000);
+    }
+});
+
+// Also check when page becomes visible (for mobile browsers that pause scripts)
+document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && window.liveChatWidget && shouldOpenChatWidget()) {
+        setTimeout(() => {
+            window.liveChatWidget.checkAndOpenChat();
+        }, 500);
+    }
+});
+
+// Check when page becomes fully interactive (mobile optimization)
+if (document.readyState === 'complete') {
+    // Page already loaded, check immediately
+    setTimeout(() => {
+        if (window.liveChatWidget && shouldOpenChatWidget()) {
+            window.liveChatWidget.checkAndOpenChat();
+        }
+    }, 100);
+} else {
+    // Wait for page to be fully loaded
+    window.addEventListener('pageshow', (event) => {
+        // Handle back/forward cache on mobile
+        if (window.liveChatWidget && shouldOpenChatWidget()) {
+            setTimeout(() => {
+                window.liveChatWidget.checkAndOpenChat();
+            }, 300);
+        }
+    });
 }
 

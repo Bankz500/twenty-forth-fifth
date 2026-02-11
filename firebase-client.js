@@ -1,13 +1,10 @@
-import firebaseConfig from './firebase-config.js';
-
-import { initializeApp, getApps } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
-import { getAuth } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
-import { getFirestore } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
-
-const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+import { app, analytics } from './firebase-config.js';
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+export { analytics };
 
 // Lightweight cross-page cache for user profile document (optional, but speeds up navigation)
 const USER_DATA_KEY = 'beal_offshore_user_data';

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Welcome to Twenty Third & Forth</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" sizes="180x180" href="app-icon.svg">
+  <link rel="icon" href="app-icon.svg" type="image/svg+xml">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .noise {
+      background-image:
+        radial-gradient(circle at 10% 10%, rgba(0,0,0,0.08), transparent 35%),
+        radial-gradient(circle at 90% 30%, rgba(0,0,0,0.06), transparent 40%),
+        radial-gradient(circle at 30% 90%, rgba(0,0,0,0.05), transparent 45%);
+    }
+    .mono-ring:focus-visible { outline: 2px solid #1800ac; outline-offset: 2px; }
+    .btn-primary { background-color: #1800ac; }
+    .btn-primary:hover { background-color: #140099; }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-gray-50 to-white noise">
+
+  <!-- Top bar -->
+  <nav class="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-gray-200">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <img src="11.png" alt="Twenty Third & Forth Logo" class="h-10 w-auto" />
+      </a>
+      <div class="text-xs sm:text-sm text-gray-600">
+        Onboarding • <span class="font-semibold text-gray-900">2 quick steps</span>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-6xl mx-auto px-4 py-10">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+
+      <!-- Left: hero -->
+      <section class="rounded-3xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+        <div class="p-8 sm:p-10">
+          <div class="flex items-start gap-4">
+            <div class="w-12 h-12 rounded-2xl text-white flex items-center justify-center" style="background-color: #1800ac;">
+              <i class="fas fa-sparkles"></i>
+            </div>
+            <div>
+              <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 leading-tight">
+                Welcome to Twenty Third & Forth
+              </h1>
+              <p class="mt-2 text-gray-600">
+                Help us create a better experience by answering two quick questions. Your choices can be changed later.
+              </p>
+            </div>
+          </div>
+
+          <div class="mt-8 rounded-2xl bg-gray-50 border border-gray-200 p-5">
+            <div class="flex items-center justify-between">
+              <p class="text-sm font-semibold text-gray-900">Progress</p>
+              <p class="text-xs text-gray-500"><span id="stepLabel">Step 1</span> of 2</p>
+            </div>
+            <div class="mt-3 h-2 rounded-full bg-white border border-gray-200 overflow-hidden">
+              <div id="progressBar" class="h-full w-1/2 transition-all" style="background: linear-gradient(to right, #1800ac, #140099);"></div>
+            </div>
+          </div>
+
+          <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+            <div class="rounded-2xl border border-gray-200 p-5">
+              <p class="font-semibold text-gray-900 mb-1">Offshore-ready onboarding</p>
+              <p class="text-gray-600">Funding preferences and residency help tailor your banking experience.</p>
+            </div>
+            <div class="rounded-2xl border border-gray-200 p-5">
+              <p class="font-semibold text-gray-900 mb-1">Bank‑grade onboarding</p>
+              <p class="text-gray-600">Structured setup designed for secure banking banking and compliance.</p>
+            </div>
+          </div>
+        </div>
+        <div class="h-16 relative" style="background: linear-gradient(to right, #1800ac, #0d0066);">
+          <div class="absolute inset-0 opacity-20" style="background-image: linear-gradient(90deg, rgba(255,255,255,0.12) 1px, transparent 1px); background-size: 28px 28px;"></div>
+        </div>
+      </section>
+
+      <!-- Right: steps -->
+      <section class="rounded-3xl border border-gray-200 bg-white shadow-sm p-6 sm:p-8">
+
+        <!-- Step 1 -->
+        <div id="step1" class="space-y-5">
+          <div>
+            <h2 class="text-xl font-bold text-gray-900">How would you like to fund your banking account?</h2>
+            <p class="text-sm text-gray-600 mt-1">Select all that apply — you can change this later.</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <button type="button" data-deposit="wire" class="depositOption group text-left rounded-2xl border border-gray-200 p-5 hover:border-gray-400 hover:bg-gray-50 transition mono-ring">
+              <div class="flex items-center justify-between">
+                <div class="w-10 h-10 rounded-xl text-white flex items-center justify-center" style="background-color: #1800ac;">
+                  <i class="fas fa-globe"></i>
+                </div>
+                <i class="fas fa-check text-gray-900 opacity-0 group-[.selected]:opacity-100 transition"></i>
+              </div>
+              <p class="mt-4 font-semibold text-gray-900">International Wire</p>
+              <p class="mt-1 text-xs text-gray-600">Traditional funding via your bank (cross‑border).</p>
+            </button>
+
+            <button type="button" data-deposit="crypto" class="depositOption group text-left rounded-2xl border border-gray-200 p-5 hover:border-gray-400 hover:bg-gray-50 transition mono-ring">
+              <div class="flex items-center justify-between">
+                <div class="w-10 h-10 rounded-xl text-white flex items-center justify-center" style="background-color: #1800ac;">
+                  <i class="fas fa-coins"></i>
+                </div>
+                <i class="fas fa-check text-gray-900 opacity-0 group-[.selected]:opacity-100 transition"></i>
+              </div>
+              <p class="mt-4 font-semibold text-gray-900">Digital Asset Deposit</p>
+              <p class="mt-1 text-xs text-gray-600">Funding via supported crypto rails (review may apply).</p>
+            </button>
+
+            <button type="button" data-deposit="check" class="depositOption group text-left rounded-2xl border border-gray-200 p-5 hover:border-gray-400 hover:bg-gray-50 transition mono-ring">
+              <div class="flex items-center justify-between">
+                <div class="w-10 h-10 rounded-xl text-white flex items-center justify-center" style="background-color: #1800ac;">
+                  <i class="fas fa-landmark"></i>
+                </div>
+                <i class="fas fa-check text-gray-900 opacity-0 group-[.selected]:opacity-100 transition"></i>
+              </div>
+              <p class="mt-4 font-semibold text-gray-900">Check Deposit</p>
+              <p class="mt-1 text-xs text-gray-600">Paper deposit option (clearing times may vary).</p>
+            </button>
+          </div>
+
+          <div class="pt-2 flex items-center justify-end gap-3">
+            <a href="login.html" class="text-sm font-semibold text-gray-600 hover:text-gray-900">Skip for now</a>
+            <button id="nextBtn" class="px-6 py-3 rounded-xl text-white font-semibold transition mono-ring btn-primary">
+              Next
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div id="step2" class="hidden space-y-5">
+          <div>
+            <h2 class="text-xl font-bold text-gray-900">Where do you reside?</h2>
+            <p class="text-sm text-gray-600 mt-1">This helps us align your experience with local requirements.</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <button type="button" data-residency="cayman" class="residencyOption group text-left rounded-2xl border border-gray-200 p-5 hover:border-gray-400 hover:bg-gray-50 transition mono-ring">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="font-semibold text-gray-900">Cayman (Camana Bay)</p>
+                  <p class="text-xs text-gray-600 mt-1">Resident in Cayman Islands.</p>
+                </div>
+                <i class="fas fa-check text-gray-900 opacity-0 group-[.selected]:opacity-100 transition"></i>
+              </div>
+            </button>
+
+            <button type="button" data-residency="other" class="residencyOption group text-left rounded-2xl border border-gray-200 p-5 hover:border-gray-400 hover:bg-gray-50 transition mono-ring">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="font-semibold text-gray-900">Outside the country (Others)</p>
+                  <p class="text-xs text-gray-600 mt-1">Non-resident / international.</p>
+                </div>
+                <i class="fas fa-check text-gray-900 opacity-0 group-[.selected]:opacity-100 transition"></i>
+              </div>
+            </button>
+          </div>
+
+          <div class="pt-2 flex items-center justify-between gap-3">
+            <button id="backBtn" class="px-6 py-3 rounded-xl bg-white text-gray-900 font-semibold border border-gray-200 hover:bg-gray-50 transition mono-ring">
+              Back
+            </button>
+            <button id="finishBtn" class="px-6 py-3 rounded-xl text-white font-semibold transition mono-ring btn-primary">
+              Finish Sign Up
+            </button>
+          </div>
+        </div>
+
+        <div id="statusLine" class="mt-4 text-xs text-gray-500"></div>
+      </section>
+    </div>
+  </main>
+
+  <script type="module">
+    import firebaseConfig from './firebase-config.js';
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+    import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
+    import { getFirestore, doc, updateDoc, setDoc, getDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
+    import { showAmlNoticeModal, showPendingApprovalModal } from './components/compliance-modals.js';
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+    const progressBar = document.getElementById('progressBar');
+    const stepLabel = document.getElementById('stepLabel');
+    const statusLine = document.getElementById('statusLine');
+
+    const nextBtn = document.getElementById('nextBtn');
+    const backBtn = document.getElementById('backBtn');
+    const finishBtn = document.getElementById('finishBtn');
+
+    let depositMethods = new Set();
+    let residency = '';
+    let currentUser = null;
+
+    function setStep(n) {
+      if (n === 1) {
+        step1.classList.remove('hidden');
+        step2.classList.add('hidden');
+        progressBar.style.width = '50%';
+        stepLabel.textContent = 'Step 1';
+      } else {
+        step1.classList.add('hidden');
+        step2.classList.remove('hidden');
+        progressBar.style.width = '100%';
+        stepLabel.textContent = 'Step 2';
+      }
+    }
+
+    function selectOption(btns, selectedEl) {
+      btns.forEach((b) => {
+        b.classList.remove('selected');
+        b.style.borderColor = '';
+      });
+      selectedEl.classList.add('selected');
+      selectedEl.style.borderColor = '#1800ac';
+    }
+
+    document.querySelectorAll('.depositOption').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const v = btn.dataset.deposit || '';
+        if (!v) return;
+
+        if (depositMethods.has(v)) {
+          depositMethods.delete(v);
+          btn.classList.remove('selected');
+          btn.style.borderColor = '';
+        } else {
+          depositMethods.add(v);
+          btn.classList.add('selected');
+          btn.style.borderColor = '#1800ac';
+        }
+      });
+    });
+
+    document.querySelectorAll('.residencyOption').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        residency = btn.dataset.residency || '';
+        selectOption(document.querySelectorAll('.residencyOption'), btn);
+      });
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (!depositMethods.size) {
+        statusLine.textContent = 'Please select at least one deposit method to continue.';
+        return;
+      }
+      statusLine.textContent = '';
+      setStep(2);
+    });
+
+    backBtn.addEventListener('click', () => {
+      statusLine.textContent = '';
+      setStep(1);
+    });
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        // No session; send them to sign-up to create an account first.
+        window.location.href = 'sign-up.html';
+        return;
+      }
+      currentUser = user;
+    });
+
+    finishBtn.addEventListener('click', async () => {
+      if (!currentUser) return;
+      if (!residency) {
+        statusLine.textContent = 'Please select your residency to finish.';
+        return;
+      }
+
+      finishBtn.disabled = true;
+      finishBtn.textContent = 'Saving...';
+      statusLine.textContent = 'Finalizing your setup...';
+
+      try {
+        const depositMethodsArr = Array.from(depositMethods);
+        const primaryDepositMethod = depositMethodsArr[0] || null; // back-compat for existing admin display
+        const userRef = doc(db, 'users', currentUser.uid);
+        
+        console.log('Saving onboarding data for user:', currentUser.uid);
+        console.log('Deposit methods:', depositMethodsArr);
+        console.log('Residency:', residency);
+        
+        // Check if user document exists first
+        const userDoc = await getDoc(userRef);
+        const onboardingData = {
+          onboarding: {
+            depositMethod: primaryDepositMethod,
+            depositMethods: depositMethodsArr,
+            residency
+          },
+          onboardingCompletedAt: serverTimestamp(),
+          onboardingStatus: 'completed'
+        };
+        
+        if (userDoc.exists()) {
+          // Document exists, use updateDoc
+          console.log('User document exists, updating...');
+          await updateDoc(userRef, onboardingData);
+        } else {
+          // Document doesn't exist, create it with setDoc and merge
+          console.log('User document does not exist, creating with onboarding data...');
+          await setDoc(userRef, {
+            email: currentUser.email || '',
+            createdAt: serverTimestamp(),
+            createdAtIso: new Date().toISOString(),
+            ...onboardingData
+          }, { merge: true });
+        }
+        
+        console.log('Onboarding data saved successfully');
+
+        statusLine.textContent = '';
+
+        // Show AML notice, then pending approval message.
+        await showAmlNoticeModal();
+
+        await showPendingApprovalModal({
+          onClose: async () => {
+            try { await signOut(auth); } catch {}
+            window.location.href = 'login.html';
+          }
+        });
+      } catch (e) {
+        console.error('Onboarding save error:', e);
+        console.error('Error code:', e?.code);
+        console.error('Error message:', e?.message);
+        console.error('Error stack:', e?.stack);
+        
+        let errorMessage = 'We could not save your onboarding details. Please try again.';
+        if (e?.code === 'permission-denied') {
+          errorMessage = 'Permission denied. Please contact support if this issue persists.';
+        } else if (e?.message) {
+          errorMessage = `Error: ${e.message}`;
+        }
+        
+        statusLine.textContent = errorMessage;
+        statusLine.className = 'mt-4 text-xs text-red-600';
+        
+        // Also show alert for immediate feedback
+        alert(errorMessage);
+      } finally {
+        finishBtn.disabled = false;
+        finishBtn.textContent = 'Finish Sign Up';
+      }
+    });
+
+    setStep(1);
+  </script>
+</body>
+</html>
+
+

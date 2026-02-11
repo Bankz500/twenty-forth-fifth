@@ -1,9 +1,29 @@
 {
   "projects": {
-    "default": "beal-offshore",
-    "beal offshore": "beal-offshore-inc",
-    "defualt": "beal-offshore-inc"
+    "default": "twenty-third-forth"
   },
-  "targets": {},
+  "targets": {
+    "forth-citizen": {
+      "hosting": {
+        "forth-citizen": [
+          "forth-citizen"
+        ]
+      }
+    },
+    "first-citizens-inc": {
+      "hosting": {
+        "forth-citizen": [
+          "forth-citizen"
+        ]
+      }
+    },
+    "twenty-third-forth": {
+      "hosting": {
+        "twenty-third-forth": [
+          "twenty-third-forth"
+        ]
+      }
+    }
+  },
   "etags": {}
 }

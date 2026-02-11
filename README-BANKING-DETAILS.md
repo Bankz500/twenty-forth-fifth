@@ -1,4 +1,4 @@
-# Beal Offshore Ltd - Dynamic Banking Details System
+# Twenty Third & Forth - Dynamic Banking Details System
 
 ## Overview
 
@@ -116,7 +116,7 @@ generateBankingDetails() {
         accountNumber: this.generateAccountNumber(),
         swiftCode: this.generateSwiftCode(),
         routingNumber: this.generateRoutingNumber(),
-        bankName: 'Beal Offshore Ltd',
+        bankName: 'Twenty Third & Forth',
         accountType: 'Personal Account',
         // Add new fields here
         branchCode: this.generateBranchCode(),

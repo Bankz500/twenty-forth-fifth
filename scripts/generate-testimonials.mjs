@@ -83,22 +83,22 @@ function renderPage({ reviews, schemaJson }) {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Client Testimonials & Reviews | Beal Offshore Ltd - Verified Customer Experiences</title>
-    <meta name="description" content="Read verified client testimonials and reviews for Beal Offshore Ltd. Real customer experiences from businesses worldwide praising our offshore banking services, compliance expertise, and professional operations." />
-    <meta name="keywords" content="Beal Offshore testimonials, offshore banking reviews, client testimonials, verified reviews, customer experiences, offshore banking services, international banking reviews" />
+    <title>Client Testimonials & Reviews | Twenty Third & Forth - Verified Customer Experiences</title>
+    <meta name="description" content="Read verified client testimonials and reviews for Twenty Third & Forth. Real customer experiences from businesses worldwide praising our offshore banking services, compliance expertise, and professional operations." />
+    <meta name="keywords" content="Twenty Third & Forth testimonials, offshore banking reviews, client testimonials, verified reviews, customer experiences, offshore banking services, international banking reviews" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-    <link rel="canonical" href="https://beal-offshore.com/testimonials" />
+    <link rel="canonical" href="https://twentythirdforth.com/testimonials" />
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" sizes="180x180" href="logo new.png">
-    <link rel="icon" href="logo new.png" type="image/png">
+    <link rel="apple-touch-icon" sizes="180x180" href="app-icon.svg">
+    <link rel="icon" href="app-icon.svg" type="image/png">
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://beal-offshore.com/testimonials" />
-    <meta property="og:title" content="Client Testimonials & Reviews | Beal Offshore Ltd" />
-    <meta property="og:description" content="Read verified client testimonials and reviews for Beal Offshore Ltd. Real customer experiences from businesses worldwide." />
-    <meta property="og:image" content="https://beal-offshore.com/Logo.png" />
+    <meta property="og:url" content="https://twentythirdforth.com/testimonials" />
+    <meta property="og:title" content="Client Testimonials & Reviews | Twenty Third & Forth" />
+    <meta property="og:description" content="Read verified client testimonials and reviews for Twenty Third & Forth. Real customer experiences from businesses worldwide." />
+    <meta property="og:image" content="https://twentythirdforth.com/11.png" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Client Testimonials & Reviews | Beal Offshore Ltd" />
-    <meta name="twitter:description" content="Read verified client testimonials and reviews for Beal Offshore Ltd." />
+    <meta name="twitter:title" content="Client Testimonials & Reviews | Twenty Third & Forth" />
+    <meta name="twitter:description" content="Read verified client testimonials and reviews for Twenty Third & Forth." />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
@@ -106,8 +106,8 @@ function renderPage({ reviews, schemaJson }) {
       ${schemaTag ? schemaJson : JSON.stringify({
         "@context": "https://schema.org",
         "@type": "Organization",
-        "name": "Beal Offshore Ltd",
-        "url": "https://beal-offshore.com"
+        "name": "Twenty Third & Forth",
+        "url": "https://twentythirdforth.com"
       })}
     </script>
   </head>
@@ -117,8 +117,8 @@ function renderPage({ reviews, schemaJson }) {
         <div class="flex justify-between items-center h-16">
           <div class="flex items-center">
             <a href="/" class="flex items-center space-x-3">
-              <img src="Logo.png" alt="Beal Offshore Ltd" class="h-10 w-auto">
-              <span class="text-xl font-bold text-gray-900" style="font-family: 'Playfair Display', serif;">Beal Offshore Ltd</span>
+              <img src="11.png" alt="Twenty Third & Forth" class="h-10 w-auto">
+              <span class="text-xl font-bold text-gray-900" style="font-family: 'Playfair Display', serif;">Twenty Third & Forth</span>
             </a>
           </div>
         </div>
@@ -127,9 +127,9 @@ function renderPage({ reviews, schemaJson }) {
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <header class="mb-12 text-center">
         <div class="flex items-center justify-center mb-6">
-          <img src="Logo.png" alt="Beal Offshore Ltd" class="h-20 w-auto mr-4">
+          <img src="11.png" alt="Twenty Third & Forth" class="h-20 w-auto mr-4">
           <div class="text-left">
-            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-2" style="font-family: 'Playfair Display', serif;">Beal Offshore Ltd</h1>
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-2" style="font-family: 'Playfair Display', serif;">Twenty Third & Forth</h1>
             <p class="text-lg text-purple-600 font-semibold">Client Testimonials & Reviews</p>
           </div>
         </div>
@@ -145,13 +145,13 @@ function renderPage({ reviews, schemaJson }) {
       import { getFirestore, collection, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
 
       const firebaseConfig = {
-        apiKey: "AIzaSyABYV12B7RM2ZCD2G1lFTLpgJwflJFwEXY",
-        authDomain: "beal-offshore.firebaseapp.com",
-        projectId: "beal-offshore",
-        storageBucket: "beal-offshore.firebasestorage.app",
-        messagingSenderId: "1091834410162",
-        appId: "1:1091834410162:web:56285433b5751e681745ab",
-        measurementId: "G-CT463F3T6J"
+        apiKey: "AIzaSyA7Nw-PhSrJVrO5nl2M9Elin0OZnLLXOwM",
+        authDomain: "forth-citizen.firebaseapp.com",
+        projectId: "forth-citizen",
+        storageBucket: "forth-citizen.firebasestorage.app",
+        messagingSenderId: "1058388832999",
+        appId: "1:1058388832999:web:d685aa9aed4fae8ba6a842",
+        measurementId: "G-XMRK5XK70J"
       };
 
       try {
@@ -208,8 +208,8 @@ function renderPage({ reviews, schemaJson }) {
             const schema = {
               "@context": "https://schema.org",
               "@type": "Organization",
-              "name": "Beal Offshore Ltd",
-              "url": "https://beal-offshore.com",
+              "name": "Twenty Third & Forth",
+              "url": "https://twentythirdforth.com",
               "aggregateRating": {
                 "@type": "AggregateRating",
                 "ratingValue": avgRating.toFixed(1),
@@ -271,7 +271,7 @@ function renderPage({ reviews, schemaJson }) {
                     </div>
                   </div>
                   <p class="text-gray-700 leading-relaxed">\${r.reviewText || ''}</p>
-                  \${r.verified ? '<div class="mt-3"><span class="inline-flex items-center text-xs bg-green-100 text-green-800 px-2 py-1 rounded"><i class="fas fa-check-circle mr-1"></i>Verified</span></div>' : ''}
+                  \${r.verified ? '<div class="mt-3"><span class="inline-flex items-center text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded"><i class="fas fa-check-circle mr-1"></i>Verified</span></div>' : ''}
                 </article>
               \`;
             }).join('');
@@ -364,8 +364,8 @@ async function main() {
       const schema = {
         '@context': 'https://schema.org',
         '@type': 'Organization',
-        name: 'Beal Offshore Ltd',
-        url: 'https://beal-offshore.com',
+        name: 'Twenty Third & Forth',
+        url: 'https://twentythirdforth.com',
         aggregateRating: {
           '@type': 'AggregateRating',
           ratingValue: avgRating.toFixed(1),

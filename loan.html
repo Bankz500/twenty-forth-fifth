@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Loan Application | Twenty Third & Forth</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" sizes="180x180" href="app-icon.svg">
+    <link rel="icon" href="app-icon.svg" type="image/svg+xml">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        html, body {
+            overflow: auto;
+        }
+        .loader {
+            border: 8px solid rgba(0, 0, 0, 0.1);
+            border-top: 8px solid #1800ac;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .btn-loading {
+            position: relative;
+            color: transparent !important;
+            pointer-events: none;
+        }
+        .btn-loading::after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin-left: -10px;
+            margin-top: -10px;
+            border: 3px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.8s linear infinite;
+        }
+        .credit-score-loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .credit-score-loading.active {
+            display: block;
+        }
+        .pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+        .step-section {
+            display: block;
+        }
+        .step-section.hidden {
+            display: none;
+        }
+        input, select, textarea {
+            font-size: 16px !important;
+        }
+        input:focus, select:focus, textarea:focus {
+            font-size: 16px !important;
+        }
+        :root {
+            --ttf-brand: #1800ac;
+            --ttf-brand-hover: #140099;
+        }
+        .bg-gray-900 { background-color: var(--ttf-brand) !important; }
+        .bg-gray-800 { background-color: var(--ttf-brand-hover) !important; }
+        .hover\:bg-gray-800:hover { background-color: var(--ttf-brand-hover) !important; }
+        .bg-black { background-color: rgba(24, 0, 172, 0.55) !important; }
+    </style>
+    <script type="module">
+        import { auth, db } from './firebase-client.js';
+        import { onAuthStateChanged, signOut } from 'firebase/auth';
+        import { doc, getDoc, onSnapshot } from 'firebase/firestore';
+
+        let loanListenerUnsubscribe = null;
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                // User is authenticated, load loan data
+                await loadLoanData(user);
+            } else {
+                // Unsubscribe from loan listener if user signs out
+                if (loanListenerUnsubscribe) {
+                    loanListenerUnsubscribe();
+                    loanListenerUnsubscribe = null;
+                }
+                console.log('No user signed in, redirecting to sign-in page.');
+                window.location.href = 'login.html';
+            }
+        });
+
+        window.signOut = function() {
+            if (loanListenerUnsubscribe) {
+                loanListenerUnsubscribe();
+                loanListenerUnsubscribe = null;
+            }
+            signOut(auth).then(() => {
+                alert('Signed out successfully!');
+                window.location.href = 'login.html';
+            }).catch((error) => {
+                alert('Error signing out: ' + error.message);
+            });
+        };
+
+        async function loadLoanData(user) {
+            try {
+                // Check if user has an approved loan with real-time listener
+                const loanDocRef = doc(db, 'loans', user.uid);
+                
+                // Unsubscribe from previous listener if exists
+                if (loanListenerUnsubscribe) {
+                    loanListenerUnsubscribe();
+                }
+                
+                // Set up real-time listener for loan status
+                loanListenerUnsubscribe = onSnapshot(loanDocRef, (loanDoc) => {
+                    if (loanDoc.exists()) {
+                        const loanData = loanDoc.data();
+                        // Normalize status to lowercase for comparison
+                        const rawStatus = loanData.status || 'pending';
+                        const status = String(rawStatus).toLowerCase().trim();
+                        
+                        console.log('Loan status changed:', {
+                            rawStatus: rawStatus,
+                            normalizedStatus: status,
+                            loanData: loanData
+                        });
+                        
+                        // Handle different status changes
+                        if (status === 'approved') {
+                            console.log('Loan approved - showing repayment progress');
+                            // Show repayment progress
+                            showRepaymentProgress(loanData);
+                        } else if (status === 'rejected') {
+                            console.log('Loan rejected - showing rejection message');
+                            // Show rejection message
+                            showLoanRejectionMessage();
+                        } else if (status === 'pending') {
+                            console.log('Loan pending - keeping application flow');
+                            // Show application form or keep current state
+                            // Don't change UI if user is already in application flow
+                            const currentStep = document.querySelector('.step-section:not(.hidden)');
+                            if (!currentStep || currentStep.id === 'repaymentProgressSection') {
+                                // If on repayment page or no step visible, go back to step 1
+                                goToStep(1);
+                            }
+                        } else {
+                            console.log('Unknown loan status:', status, 'raw:', rawStatus);
+                        }
+                    } else {
+                        console.log('Loan document does not exist');
+                        // Document doesn't exist - user can apply for loan
+                        // Reset to step 1 if they're viewing repayment progress
+                        const repaymentSection = document.getElementById('repaymentProgressSection');
+                        if (repaymentSection && !repaymentSection.classList.contains('hidden')) {
+                            goToStep(1);
+                        }
+                    }
+                }, (error) => {
+                    // Only log error if it's not a permission error for non-existent document
+                    if (error.code === 'permission-denied') {
+                        console.warn('Permission denied for loan document. This may be normal if the document does not exist yet.');
+                    } else {
+                        console.error('Error listening to loan data:', error);
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading loan data:', error);
+            }
+        }
+
+        window.loadLoanData = loadLoanData;
+
+        function showLoanRejectionMessage() {
+            // Hide all sections
+            document.getElementById('loanPlansSection').classList.add('hidden');
+            document.getElementById('creditScoreSection').classList.add('hidden');
+            document.getElementById('loanApplicationForm').classList.add('hidden');
+            document.getElementById('repaymentProgressSection').classList.add('hidden');
+            
+            // Show rejection message
+            const creditSection = document.getElementById('creditScoreSection');
+            creditSection.classList.remove('hidden');
+            creditSection.innerHTML = `
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-times-circle text-red-600 text-3xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">Loan Application Rejected</h2>
+                    <p class="text-gray-600 mb-6">We're sorry, but your loan application has been rejected. Please contact support for more information or try applying again later.</p>
+                    <button onclick="window.location.href='dashboard.html'" class="bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200">
+                        Return to Dashboard
+                    </button>
+                </div>
+            `;
+        }
+    </script>
+</head>
+<body class="font-sans antialiased bg-gray-100">
+
+<!-- Navbar -->
+<nav class="bg-white border-b border-gray-300 p-4 shadow-sm fixed top-0 w-full z-50">
+    <div class="container mx-auto flex items-center justify-between">
+        <a href="dashboard.html" class="flex items-center">
+            <img src="11.png" alt="Twenty Third & Forth Logo" class="h-14 md:h-16 w-auto">
+        </a>
+        <button onclick="signOut()" class="bg-white border border-gray-400 text-xs text-gray-800 px-4 md:px-6 py-2 rounded-full hover:bg-gray-50 transition">Sign Out</button>
+    </div>
+</nav>
+
+<!-- Spacer -->
+<div class="h-20"></div>
+
+<!-- Main Content -->
+<div class="min-h-screen py-6 md:py-12 px-4 sm:px-6 lg:px-8 pb-40 md:pb-28">
+    <div class="max-w-4xl mx-auto">
+        
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Loan Application</h1>
+            <p class="text-gray-600 text-sm md:text-base mb-4">Apply for a loan with competitive rates</p>
+            <div class="bg-gray-50 border-l-4 border-gray-500 p-4 rounded-lg max-w-3xl mx-auto text-left">
+                <div class="flex items-start">
+                    <i class="fas fa-info-circle text-gray-500 text-xl mr-3 mt-1"></i>
+                    <div>
+                        <h3 class="font-semibold text--900 mb-2">SBA Small Business Loan Initiative</h3>
+                        <p class="text-sm text-gray-800 leading-relaxed">
+                            This loan program is an initiative under the Small Business Administration (SBA) designed to help small businesses access quick loans with competitive rates. Our streamlined application process makes it easy for qualifying businesses to secure the funding they need to grow and expand their operations.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step Indicator -->
+        <div class="mb-6 md:mb-8 px-2">
+            <div class="flex items-center justify-center overflow-x-auto">
+                <div class="flex items-center min-w-max">
+                    <!-- Step 1 -->
+                    <div class="flex items-center">
+                        <div id="step1Indicator" class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-900 text-white flex items-center justify-center font-semibold text-sm md:text-base">1</div>
+                        <span class="ml-2 text-xs md:text-sm font-medium text-gray-900 hidden sm:inline">Select Plan</span>
+                    </div>
+                    <div class="w-8 md:w-16 h-1 bg-gray-300 mx-2 md:mx-4"></div>
+                    <!-- Step 2 -->
+                    <div class="flex items-center">
+                        <div id="step2Indicator" class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center font-semibold text-sm md:text-base">2</div>
+                        <span class="ml-2 text-xs md:text-sm font-medium text-gray-600 hidden sm:inline">Check Eligibility</span>
+                    </div>
+                    <div class="w-8 md:w-16 h-1 bg-gray-300 mx-2 md:mx-4"></div>
+                    <!-- Step 3 -->
+                    <div class="flex items-center">
+                        <div id="step3Indicator" class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center font-semibold text-sm md:text-base">3</div>
+                        <span class="ml-2 text-xs md:text-sm font-medium text-gray-600 hidden sm:inline">Application</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loan Plans Section - Step 1 -->
+        <div id="loanPlansSection" class="step-section bg-white border border-gray-300 rounded-lg p-6 md:p-8 shadow-sm mb-8">
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">Select Your Preferred Loan Plan</h2>
+                <p class="text-gray-600 mb-2">Choose the loan plan that best fits your business needs</p>
+            </div>
+
+            <!-- Loan Terms & Conditions Section -->
+            <div class="bg-gradient-to-br from-gray-50 to-gray-100 border-2 border-gray-200 rounded-xl p-6 md:p-8 mb-6 shadow-sm">
+                <div class="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6">
+                    <div class="flex-shrink-0 w-16 h-16 bg-gray-900 rounded-full flex items-center justify-center mx-auto md:mx-0">
+                        <i class="fas fa-file-contract text-white text-2xl"></i>
+                    </div>
+                    <div class="flex-1 text-center md:text-left">
+                        <h3 class="text-lg md:text-xl font-bold text-gray-900 mb-3 flex items-center justify-center md:justify-start gap-2">
+                            <span>Loan Terms & Conditions</span>
+                            <i class="fas fa-info-circle text-gray-600 text-sm"></i>
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+                                <div class="flex items-start gap-3">
+                                    <div class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mt-0.5">
+                                        <i class="fas fa-shield-alt text-blue-600 text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900 mb-1 text-sm md:text-base">10% Collateral Fee Required</h4>
+                                        <p class="text-xs md:text-sm text-gray-700 leading-relaxed">
+                                            A 10% upfront collateral fee is required as <strong>soft security collateral</strong> for all loan plans. This fee serves as security in case of default and will be held as collateral throughout the loan term.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+                                <div class="flex items-start gap-3">
+                                    <div class="flex-shrink-0 w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center mt-0.5">
+                                        <i class="fas fa-exclamation-circle text-orange-600 text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-gray-900 mb-1 text-sm md:text-base">Important Notice</h4>
+                                        <p class="text-xs md:text-sm text-gray-700 leading-relaxed">
+                                            The collateral fee is <strong>refundable</strong> and will be applied towards the loan repayment in the event of default, in the event of no default will be refunded.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-xs text-gray-400 text-center mb-6">Please select a plan before proceeding to the credit score check</p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6">
+                <!-- Plan 1: $3,000 -->
+                <div class="border-2 border-gray-200 rounded-lg p-6 hover:border-gray-900 transition-all cursor-pointer loan-plan" data-amount="3000" data-plan="plan1">
+                    <div class="text-center">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Starter Plan</h3>
+                        <div class="text-3xl font-bold text-gray-900 mb-4">$3,000</div>
+                        <div class="space-y-2 text-sm text-gray-600 mb-4">
+                            <p><span class="font-semibold">Collateral Fee:</span> $300 (10%)</p>
+                            <p class="text-xs text-gray-500 italic">Required as soft security collateral</p>
+                            <p><span class="font-semibold">Repayment:</span> 3-12 months</p>
+                            <p><span class="font-semibold">Interest Rate:</span> Competitive</p>
+                        </div>
+                        <button class="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-2 px-4 rounded-lg transition-all">
+                            Select Plan
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Plan 2: $10,000 -->
+                <div class="border-2 border-gray-200 rounded-lg p-6 hover:border-gray-900 transition-all cursor-pointer loan-plan" data-amount="10000" data-plan="plan2">
+                    <div class="text-center">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Business Plan</h3>
+                        <div class="text-3xl font-bold text-gray-900 mb-4">$10,000</div>
+                        <div class="space-y-2 text-sm text-gray-600 mb-4">
+                            <p><span class="font-semibold">Collateral Fee:</span> $1,000 (10%)</p>
+                            <p class="text-xs text-gray-500 italic">Required as soft security collateral</p>
+                            <p><span class="font-semibold">Repayment:</span> 6-24 months</p>
+                            <p><span class="font-semibold">Interest Rate:</span> Competitive</p>
+                        </div>
+                        <button class="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-2 px-4 rounded-lg transition-all">
+                            Select Plan
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Plan 3: $25,000 -->
+                <div class="border-2 border-gray-200 rounded-lg p-6 hover:border-gray-900 transition-all cursor-pointer loan-plan" data-amount="25000" data-plan="plan3">
+                    <div class="text-center">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Professional Plan</h3>
+                        <div class="text-3xl font-bold text-gray-900 mb-4">$25,000</div>
+                        <div class="space-y-2 text-sm text-gray-600 mb-4">
+                            <p><span class="font-semibold">Collateral Fee:</span> $2,500 (10%)</p>
+                            <p class="text-xs text-gray-500 italic">Required as soft security collateral</p>
+                            <p><span class="font-semibold">Repayment:</span> 12-36 months</p>
+                            <p><span class="font-semibold">Interest Rate:</span> Competitive</p>
+                        </div>
+                        <button class="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-2 px-4 rounded-lg transition-all">
+                            Select Plan
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Plan 4: $50,000 -->
+                <div class="border-2 border-gray-200 rounded-lg p-6 hover:border-gray-900 transition-all cursor-pointer loan-plan" data-amount="50000" data-plan="plan4">
+                    <div class="text-center">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Enterprise Plan</h3>
+                        <div class="text-3xl font-bold text-gray-900 mb-4">$50,000</div>
+                        <div class="space-y-2 text-sm text-gray-600 mb-4">
+                            <p><span class="font-semibold">Collateral Fee:</span> $5,000 (10%)</p>
+                            <p class="text-xs text-gray-500 italic">Required as soft security collateral</p>
+                            <p><span class="font-semibold">Repayment:</span> 12-48 months</p>
+                            <p><span class="font-semibold">Interest Rate:</span> Competitive</p>
+                        </div>
+                        <button class="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-2 px-4 rounded-lg transition-all">
+                            Select Plan
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Plan 5: $100,000 -->
+                <div class="border-2 border-gray-200 rounded-lg p-6 hover:border-gray-900 transition-all cursor-pointer loan-plan md:col-span-2 lg:col-span-1" data-amount="100000" data-plan="plan5">
+                    <div class="text-center">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">Premium Plan</h3>
+                        <div class="text-3xl font-bold text-gray-900 mb-4">$100,000</div>
+                        <div class="space-y-2 text-sm text-gray-600 mb-4">
+                            <p><span class="font-semibold">Collateral Fee:</span> $10,000 (10%)</p>
+                            <p class="text-xs text-gray-500 italic">Required as soft security collateral</p>
+                            <p><span class="font-semibold">Repayment:</span> 24-60 months</p>
+                            <p><span class="font-semibold">Interest Rate:</span> Competitive</p>
+                        </div>
+                        <button class="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-2 px-4 rounded-lg transition-all">
+                            Select Plan
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Navigation Buttons for Step 1 -->
+            <div class="flex justify-end mt-6">
+                <button 
+                    id="nextToStep2Btn"
+                    onclick="goToStep(2)" 
+                    class="hidden w-full sm:w-auto bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3 px-6 md:px-8 rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
+                >
+                    Next
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Credit Score Check Section - Step 2 -->
+        <div id="creditScoreSection" class="step-section hidden bg-white border border-gray-300 rounded-lg p-6 md:p-8 shadow-sm mb-8">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-gray-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-credit-card text-white text-2xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">Check Your Eligibility</h2>
+                <p class="text-gray-600 mb-2">Enter your credit score to see if you're eligible for a loan</p>
+                <p class="text-sm text-gray-500">Minimum credit score required: 500</p>
+                <div id="selectedPlanInfo" class="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-3 max-w-md mx-auto hidden">
+                    <p class="text-xs text-gray-800">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        Selected Plan: <span id="selectedPlanAmount" class="font-semibold">$0</span>
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Loading Animation -->
+            <div id="creditScoreLoading" class="credit-score-loading">
+                <div class="flex flex-col items-center">
+                    <div class="loader mb-4"></div>
+                    <p class="text-gray-600 font-medium">Checking your credit score...</p>
+                    <p class="text-sm text-gray-500 mt-2">Please wait</p>
+                </div>
+            </div>
+
+            <div id="creditScoreForm" class="max-w-md mx-auto">
+                <label for="creditScore" class="block text-sm font-medium text-gray-700 mb-2">
+                    Credit Score
+                </label>
+                <input 
+                    type="number" 
+                    id="creditScore" 
+                    min="300" 
+                    max="850" 
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-gray-900"
+                    placeholder="Enter your credit score (300-850)"
+                    style="font-size: 16px !important;"
+                >
+                <p class="text-xs text-gray-500 mt-2">Minimum credit score required: 500</p>
+                
+                <button 
+                    id="checkEligibilityBtn"
+                    onclick="checkCreditScore()" 
+                    class="w-full mt-4 bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200"
+                >
+                    Check Eligibility
+                </button>
+            </div>
+            
+            <!-- Navigation Buttons for Step 2 -->
+            <div class="flex justify-between mt-6">
+                <button 
+                    onclick="goToStep(1)" 
+                    class="w-full sm:w-auto bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-6 md:px-8 rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
+                >
+                    <i class="fas fa-arrow-left"></i>
+                    Back
+                </button>
+            </div>
+        </div>
+
+        <!-- Loan Application Form - Step 3 -->
+        <div id="loanApplicationForm" class="step-section hidden bg-white border border-gray-300 rounded-lg p-6 md:p-8 shadow-sm mb-8">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">Loan Application Form</h2>
+                <p class="text-gray-600">Please fill in all required information</p>
+            </div>
+
+            <form id="loanForm" class="space-y-6">
+                <!-- Personal Information -->
+                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-user mr-2 text-gray-800"></i>
+                        Personal Information
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="loanFirstName" class="block text-sm font-medium text-gray-700 mb-2">
+                                First Name <span class="text-red-500">*</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                id="loanFirstName" 
+                                required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-gray-900"
+                                style="font-size: 16px !important;"
+                            >
+                        </div>
+                        <div>
+                            <label for="loanLastName" class="block text-sm font-medium text-gray-700 mb-2">
+                                Last Name <span class="text-red-500">*</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                id="loanLastName" 
+                                required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-gray-900"
+                                style="font-size: 16px !important;"
+                            >
+                        </div>
+                        <div>
+                            <label for="loanEmail" class="block text-sm font-medium text-gray-700 mb-2">
+                                Email Address <span class="text-red-500">*</span>
+                            </label>
+                            <input 
+                                type="email" 
+                                id="loanEmail" 
+                                required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-gray-900"
+                                style="font-size: 16px !important;"
+                            >
+                        </div>
+                        <div>
+                            <label for="loanPhone" class="block text-sm font-medium text-gray-700 mb-2">
+                                Phone Number <span class="text-red-500">*</span>
+                            </label>
+                            <input 
+                                type="tel" 
+                                id="loanPhone" 
+                                required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-gray-900"
+                                style="font-size: 16px !important;"
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loan Details -->
+                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-dollar-sign mr-2 text-gray-800"></i>
+                        Loan Details
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="loanAmount" class="block text-sm font-medium text-gray-700 mb-2">
+                                Loan Amount <span class="text-red-500">*</span>
+                            </label>
+                            <input 
+                                type="number" 
+                                id="loanAmount" 
+                                min="3000" 
+                                step="1000"
+                                required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-gray-900"
+                                placeholder="$3,000"
+                                style="font-size: 16px !important;"
+                                readonly
+                            >
+                            <p class="text-xs text-gray-500 mt-1" id="upfrontFeeDisplay">Collateral Fee (10%): $0.00 <span class="text-gray-400 italic">(Soft security collateral)</span></p>
+                        </div>
+                        <div>
+                            <label for="loanPurpose" class="block text-sm font-medium text-gray-700 mb-2">
+                                Loan Purpose <span class="text-red-500">*</span>
+                            </label>
+                            <select 
+                                id="loanPurpose" 
+                                required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-gray-900 bg-white"
+                                style="font-size: 16px !important;"
+                            >
+                                <option value="">Select purpose</option>
+                                <option value="business">Business Expansion</option>
+                                <option value="personal">Personal Use</option>
+                                <option value="debt_consolidation">Debt Consolidation</option>
+                                <option value="home_improvement">Home Improvement</option>
+                                <option value="education">Education</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="repaymentWindow" class="block text-sm font-medium text-gray-700 mb-2">
+                                Repayment Window <span class="text-red-500">*</span>
+                            </label>
+                            <select 
+                                id="repaymentWindow" 
+                                required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-gray-900 bg-white"
+                                style="font-size: 16px !important;"
+                            >
+                                <option value="">Select repayment period</option>
+                                <option value="3">3 Months</option>
+                                <option value="6">6 Months</option>
+                                <option value="12">12 Months (Monthly)</option>
+                                <option value="yearly">Yearly</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="employmentStatus" class="block text-sm font-medium text-gray-700 mb-2">
+                                Employment Status <span class="text-red-500">*</span>
+                            </label>
+                            <select 
+                                id="employmentStatus" 
+                                required
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-gray-900 bg-white"
+                                style="font-size: 16px !important;"
+                            >
+                                <option value="">Select status</option>
+                                <option value="employed">Employed</option>
+                                <option value="self_employed">Self-Employed</option>
+                                <option value="unemployed">Unemployed</option>
+                                <option value="retired">Retired</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <label for="loanDescription" class="block text-sm font-medium text-gray-700 mb-2">
+                            Additional Information
+                        </label>
+                        <textarea 
+                            id="loanDescription" 
+                            rows="4"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-gray-900"
+                            placeholder="Please provide any additional information about your loan request..."
+                            style="font-size: 16px !important;"
+                        ></textarea>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons for Step 3 -->
+                <div class="flex flex-col sm:flex-row justify-between gap-4 mt-6">
+                    <button 
+                        type="button"
+                        onclick="goToStep(2)" 
+                        class="w-full sm:w-auto bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-6 md:px-8 rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
+                    >
+                        <i class="fas fa-arrow-left"></i>
+                        Back
+                    </button>
+                    <button 
+                        type="submit" 
+                        class="w-full sm:w-auto bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3 px-6 md:px-8 rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
+                    >
+                        Submit Application
+                        <i class="fas fa-check"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Repayment Progress Section (Shown when loan is approved) -->
+        <div id="repaymentProgressSection" class="hidden bg-white border border-gray-300 rounded-lg p-6 md:p-8 shadow-sm mb-8">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">Loan Repayment Progress</h2>
+                <p class="text-gray-600">Track your loan repayment schedule</p>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Loan Summary -->
+                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Loan Summary</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm text-gray-600">Loan Amount</p>
+                            <p id="repaymentLoanAmount" class="text-xl font-bold text-gray-900">$0.00</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Repayment Period</p>
+                            <p id="repaymentPeriod" class="text-xl font-bold text-gray-900">-</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Monthly Payment</p>
+                            <p id="monthlyPayment" class="text-xl font-bold text-gray-900">$0.00</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Total Remaining</p>
+                            <p id="totalRemaining" class="text-xl font-bold text-gray-900">$0.00</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm font-medium text-gray-700">Repayment Progress</span>
+                        <span id="progressPercentage" class="text-sm font-medium text-gray-900">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-4">
+                        <div id="progressBar" class="bg-gray-900 h-4 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Payment Schedule -->
+                <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Payment Schedule</h3>
+                    <div id="paymentSchedule" class="space-y-3">
+                        <!-- Payment schedule items will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bottom Navbar -->
+<div class="mobile-nav fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-300 p-3" style="height: 100px;">
+    <div class="flex justify-around items-center h-full">
+        <a href="dashboard.html" class="nav-item flex flex-col items-center" onclick="setActive(this)">
+            <div class="bg-white rounded p-2">
+                <img src="1221.png" alt="Wallet Icon" class="h-6 w-6" />
+            </div>
+            <span class="text-xs font-medium mt-2 text-gray-700">Home</span>
+        </a>
+        <a href="deposit.html" class="nav-item flex flex-col items-center" onclick="setActive(this)">
+            <div class="bg-white rounded p-2">
+                <img src="deposit.png" alt="Deposit Icon" class="h-6 w-6" />
+            </div>
+            <span class="text-xs font-medium mt-2 text-gray-700">Deposit</span>
+        </a>
+        <a href="support.html" class="nav-item flex flex-col items-center" onclick="setActive(this)">
+            <div class="bg-white rounded p-2">
+                <img src="support.png" alt="Support Icon" class="h-6 w-6" />
+            </div>
+            <span class="text-xs font-medium mt-2 text-gray-700">Support</span>
+        </a>
+        <a href="profile.html" class="nav-item flex flex-col items-center" onclick="setActive(this)">
+            <div class="bg-white rounded p-2">
+                <img src="profile.png" alt="Profile Icon" class="h-6 w-6" />
+            </div>
+            <span class="text-xs font-medium mt-2 text-gray-700">Profile</span>
+        </a>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div id="successModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8">
+        <div class="text-center">
+            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-check-circle text-blue-600 text-3xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">Application Submitted!</h3>
+            <p class="text-gray-600 mb-6">
+                Your loan application has been submitted successfully. We will review your application and if found eligible, you will receive an update via the email provided in your application form.
+            </p>
+            <button 
+                onclick="closeSuccessModal()" 
+                class="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200"
+            >
+                Close
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Not Eligible Modal -->
+<div id="notEligibleModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8">
+        <div class="text-center">
+            <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-times-circle text-red-600 text-3xl"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">Not Eligible</h3>
+            <p class="text-gray-600 mb-6">
+                We're sorry, but your credit score of <span id="enteredCreditScore" class="font-semibold">0</span> is below our minimum requirement of 500. Please work on improving your credit score and try again later.
+            </p>
+            <button 
+                onclick="closeNotEligibleModal()" 
+                class="w-full bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200"
+            >
+                Close
+            </button>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { auth, db } from './firebase-client.js';
+    import { doc, getDoc, setDoc, serverTimestamp, collection, addDoc } from 'firebase/firestore';
+
+    let userCreditScore = null;
+    let selectedLoanAmount = null;
+    let selectedUpfrontFee = null;
+    let currentStep = 1;
+
+    // Step navigation function
+    window.goToStep = function(step) {
+        // Validate step 1 before moving to step 2
+        if (step === 2 && (!selectedLoanAmount || selectedLoanAmount === null)) {
+            alert('Please select a loan plan first.');
+            return;
+        }
+
+        // Hide all steps
+        document.querySelectorAll('.step-section').forEach(section => {
+            section.classList.add('hidden');
+        });
+
+        // Show selected step
+        if (step === 1) {
+            document.getElementById('loanPlansSection').classList.remove('hidden');
+        } else if (step === 2) {
+            document.getElementById('creditScoreSection').classList.remove('hidden');
+            // Update selected plan info if available
+            if (selectedLoanAmount) {
+                const selectedPlanInfo = document.getElementById('selectedPlanInfo');
+                const selectedPlanAmount = document.getElementById('selectedPlanAmount');
+                if (selectedPlanInfo && selectedPlanAmount) {
+                    selectedPlanInfo.classList.remove('hidden');
+                    selectedPlanAmount.textContent = `$${selectedLoanAmount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                }
+            }
+        } else if (step === 3) {
+            document.getElementById('loanApplicationForm').classList.remove('hidden');
+        }
+
+        // Update step indicators
+        updateStepIndicators(step);
+        currentStep = step;
+        
+        // Scroll to top of the step section
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    function updateStepIndicators(activeStep) {
+        for (let i = 1; i <= 3; i++) {
+            const indicator = document.getElementById(`step${i}Indicator`);
+            if (i <= activeStep) {
+                indicator.classList.remove('bg-gray-300', 'text-gray-600');
+                indicator.classList.add('bg-gray-900', 'text-white');
+            } else {
+                indicator.classList.remove('bg-gray-900', 'text-white');
+                indicator.classList.add('bg-gray-300', 'text-gray-600');
+            }
+        }
+    }
+
+    // Loan plan selection
+    document.addEventListener('DOMContentLoaded', function() {
+        const loanPlans = document.querySelectorAll('.loan-plan');
+        const nextToStep2Btn = document.getElementById('nextToStep2Btn');
+        
+        loanPlans.forEach(plan => {
+            plan.addEventListener('click', function() {
+                // Remove selected class from all plans
+                loanPlans.forEach(p => {
+                    p.classList.remove('border-gray-900', 'bg-gray-50');
+                    p.classList.add('border-gray-200');
+                });
+                
+                // Add selected class to clicked plan
+                this.classList.remove('border-gray-200');
+                this.classList.add('border-gray-900', 'bg-gray-50');
+                
+                // Get loan amount
+                selectedLoanAmount = parseFloat(this.dataset.amount);
+                selectedUpfrontFee = selectedLoanAmount * 0.1;
+                
+                // Update loan amount input
+                const loanAmountInput = document.getElementById('loanAmount');
+                if (loanAmountInput) {
+                    loanAmountInput.value = selectedLoanAmount;
+                }
+                
+                // Update upfront fee display
+                const upfrontFeeDisplay = document.getElementById('upfrontFeeDisplay');
+                if (upfrontFeeDisplay) {
+                    upfrontFeeDisplay.innerHTML = `Collateral Fee (10%): $${selectedUpfrontFee.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span class="text-gray-400 italic">(Soft security collateral)</span>`;
+                }
+                
+                // Show and enable Next button
+                if (nextToStep2Btn) {
+                    nextToStep2Btn.classList.remove('hidden');
+                    nextToStep2Btn.disabled = false;
+                }
+                
+                // Update selected plan info in step 2
+                const selectedPlanInfo = document.getElementById('selectedPlanInfo');
+                const selectedPlanAmount = document.getElementById('selectedPlanAmount');
+                if (selectedPlanInfo && selectedPlanAmount) {
+                    selectedPlanInfo.classList.remove('hidden');
+                    selectedPlanAmount.textContent = `$${selectedLoanAmount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                }
+            });
+        });
+        
+        // Initialize step indicators
+        updateStepIndicators(1);
+    });
+
+    window.checkCreditScore = function() {
+        // Check if a loan plan has been selected
+        if (!selectedLoanAmount || selectedLoanAmount === null) {
+            alert('Please select a loan plan first before checking your eligibility.');
+            goToStep(1);
+            return;
+        }
+
+        const creditScoreInput = document.getElementById('creditScore');
+        const creditScore = parseInt(creditScoreInput.value);
+        const checkBtn = document.getElementById('checkEligibilityBtn');
+        const creditScoreForm = document.getElementById('creditScoreForm');
+        const creditScoreLoading = document.getElementById('creditScoreLoading');
+        
+        if (!creditScore || creditScore < 300 || creditScore > 850) {
+            alert('Please enter a valid credit score between 300 and 850');
+            return;
+        }
+
+        // Show loading animation
+        creditScoreForm.classList.add('hidden');
+        creditScoreLoading.classList.add('active');
+        checkBtn.disabled = true;
+        checkBtn.classList.add('btn-loading');
+
+        // Simulate loading (2-3 seconds)
+        setTimeout(() => {
+            userCreditScore = creditScore;
+            
+            // Hide loading
+            creditScoreLoading.classList.remove('active');
+            creditScoreForm.classList.remove('hidden');
+            checkBtn.disabled = false;
+            checkBtn.classList.remove('btn-loading');
+
+            if (creditScore < 500) {
+                // Show not eligible modal
+                document.getElementById('enteredCreditScore').textContent = creditScore;
+                document.getElementById('notEligibleModal').classList.remove('hidden');
+            } else {
+                // Move to step 3 (loan application form)
+                goToStep(3);
+                
+                // Load user data to pre-fill form
+                loadUserData();
+            }
+        }, 2500); // 2.5 second loading simulation
+    };
+
+    async function loadUserData() {
+        try {
+            const user = auth.currentUser;
+            if (!user) return;
+
+            const userDocRef = doc(db, 'users', user.uid);
+            const userDoc = await getDoc(userDocRef);
+            
+            if (userDoc.exists()) {
+                const userData = userDoc.data();
+                
+                // Pre-fill form with user data
+                if (userData.firstName) document.getElementById('loanFirstName').value = userData.firstName;
+                if (userData.lastName) document.getElementById('loanLastName').value = userData.lastName;
+                if (userData.email) document.getElementById('loanEmail').value = userData.email;
+                if (userData.phone) document.getElementById('loanPhone').value = userData.phone;
+            }
+        } catch (error) {
+            console.error('Error loading user data:', error);
+        }
+    }
+
+    window.closeNotEligibleModal = function() {
+        document.getElementById('notEligibleModal').classList.add('hidden');
+        document.getElementById('creditScore').value = '';
+    };
+
+    window.closeSuccessModal = function() {
+        document.getElementById('successModal').classList.add('hidden');
+        window.location.href = 'dashboard.html';
+    };
+
+    // Handle form submission
+    document.getElementById('loanForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const user = auth.currentUser;
+        if (!user) {
+            alert('You must be logged in to submit a loan application');
+            return;
+        }
+
+        if (!userCreditScore || userCreditScore < 500) {
+            alert('Credit score must be 500 or higher');
+            return;
+        }
+
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.classList.add('btn-loading');
+        submitBtn.textContent = 'Processing...';
+
+        try {
+            const loanAmount = parseFloat(document.getElementById('loanAmount').value);
+            const upfrontFee = loanAmount * 0.1;
+            
+            const loanData = {
+                userId: user.uid,
+                firstName: document.getElementById('loanFirstName').value.trim(),
+                lastName: document.getElementById('loanLastName').value.trim(),
+                email: document.getElementById('loanEmail').value.trim(),
+                phone: document.getElementById('loanPhone').value.trim(),
+                loanAmount: loanAmount,
+                upfrontFee: upfrontFee,
+                loanPurpose: document.getElementById('loanPurpose').value,
+                repaymentWindow: document.getElementById('repaymentWindow').value,
+                employmentStatus: document.getElementById('employmentStatus').value,
+                description: document.getElementById('loanDescription').value.trim(),
+                creditScore: userCreditScore,
+                status: 'pending',
+                createdAt: serverTimestamp(),
+                submittedAt: serverTimestamp()
+            };
+
+            // Save to user's loan document
+            await setDoc(doc(db, 'loans', user.uid), loanData);
+
+            // Also save to loans collection for admin view
+            await addDoc(collection(db, 'loan_requests'), {
+                ...loanData,
+                userEmail: user.email || loanData.email
+            });
+
+            // Show success modal
+            document.getElementById('successModal').classList.remove('hidden');
+        } catch (error) {
+            console.error('Error submitting loan application:', error);
+            alert('Failed to submit loan application. Please try again.');
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('btn-loading');
+            submitBtn.textContent = originalText;
+        }
+    });
+
+    window.showRepaymentProgress = function(loanData) {
+        // Hide all step sections
+        document.getElementById('loanPlansSection').classList.add('hidden');
+        document.getElementById('creditScoreSection').classList.add('hidden');
+        document.getElementById('loanApplicationForm').classList.add('hidden');
+        
+        // Show repayment progress section
+        document.getElementById('repaymentProgressSection').classList.remove('hidden');
+
+        const loanAmount = loanData.loanAmount || 0;
+        const repaymentWindow = loanData.repaymentWindow;
+        const paidAmount = loanData.paidAmount || 0;
+        const remainingAmount = loanAmount - paidAmount;
+        const progress = (paidAmount / loanAmount) * 100;
+
+        // Update summary
+        document.getElementById('repaymentLoanAmount').textContent = `$${loanAmount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+        document.getElementById('repaymentPeriod').textContent = getRepaymentWindowText(repaymentWindow);
+        document.getElementById('totalRemaining').textContent = `$${remainingAmount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+
+        // Calculate monthly payment
+        let monthlyPayment = 0;
+        if (repaymentWindow === 'yearly') {
+            monthlyPayment = loanAmount / 12;
+        } else {
+            const months = parseInt(repaymentWindow) || 12;
+            monthlyPayment = loanAmount / months;
+        }
+        document.getElementById('monthlyPayment').textContent = `$${monthlyPayment.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+
+        // Update progress
+        document.getElementById('progressBar').style.width = `${progress}%`;
+        document.getElementById('progressPercentage').textContent = `${progress.toFixed(1)}%`;
+
+        // Generate payment schedule
+        const paymentHistory = loanData.paymentHistory || [];
+        generatePaymentSchedule(loanAmount, repaymentWindow, paidAmount, paymentHistory);
+    };
+
+    function getRepaymentWindowText(window) {
+        switch(window) {
+            case '3': return '3 Months';
+            case '6': return '6 Months';
+            case '12': return '12 Months (Monthly)';
+            case 'yearly': return 'Yearly';
+            default: return window;
+        }
+    }
+
+    function generatePaymentSchedule(loanAmount, repaymentWindow, paidAmount, paymentHistory = []) {
+        const scheduleDiv = document.getElementById('paymentSchedule');
+        scheduleDiv.innerHTML = '';
+
+        let totalPayments = 0;
+        let paymentAmount = 0;
+
+        if (repaymentWindow === 'yearly') {
+            totalPayments = 12;
+            paymentAmount = loanAmount / 12;
+        } else {
+            totalPayments = parseInt(repaymentWindow) || 12;
+            paymentAmount = loanAmount / totalPayments;
+        }
+
+        const currentDate = new Date();
+
+        for (let i = 1; i <= totalPayments; i++) {
+            const paymentDate = new Date(currentDate);
+            if (repaymentWindow === 'yearly') {
+                paymentDate.setMonth(paymentDate.getMonth() + i);
+            } else {
+                paymentDate.setMonth(paymentDate.getMonth() + i);
+            }
+
+            // Check payment status from history (if available)
+            const paymentIndex = i - 1;
+            const paymentRecord = paymentHistory[paymentIndex];
+            const paymentStatus = paymentRecord?.status || 'pending';
+            const isPaid = paymentStatus === 'paid';
+            const isDefaulted = paymentStatus === 'defaulted';
+            const isOverdue = !isPaid && !isDefaulted && paymentDate < currentDate;
+            
+            // Format payment dates if available
+            let paidDateText = '';
+            let defaultedDateText = '';
+            if (paymentRecord) {
+                if (paymentRecord.paidDate) {
+                    const paidDate = paymentRecord.paidDate.toDate ? paymentRecord.paidDate.toDate() : new Date(paymentRecord.paidDate);
+                    paidDateText = paidDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                }
+                if (paymentRecord.defaultedDate) {
+                    const defaultedDate = paymentRecord.defaultedDate.toDate ? paymentRecord.defaultedDate.toDate() : new Date(paymentRecord.defaultedDate);
+                    defaultedDateText = defaultedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                }
+            }
+
+            const paymentItem = document.createElement('div');
+            paymentItem.className = `flex items-center justify-between p-4 rounded-lg border ${isPaid ? 'bg-blue-50 border-blue-200' : isDefaulted ? 'bg-red-50 border-red-200' : isOverdue ? 'bg-orange-50 border-orange-200' : 'bg-white border-gray-200'}`;
+            paymentItem.innerHTML = `
+                <div class="flex items-center gap-3 flex-1">
+                    <div class="w-10 h-10 rounded-full ${isPaid ? 'bg-blue-500' : isDefaulted ? 'bg-red-500' : isOverdue ? 'bg-orange-500' : 'bg-gray-300'} flex items-center justify-center">
+                        <i class="fas ${isPaid ? 'fa-check' : isDefaulted ? 'fa-times' : isOverdue ? 'fa-exclamation' : 'fa-clock'} text-white"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="font-semibold text-gray-900">Payment ${i} of ${totalPayments}</p>
+                        <p class="text-sm text-gray-600">Due: ${paymentDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+                        ${paidDateText ? `<p class="text-xs text-blue-600 mt-1">Paid: ${paidDateText}</p>` : ''}
+                        ${defaultedDateText ? `<p class="text-xs text-red-600 mt-1">Defaulted: ${defaultedDateText}</p>` : ''}
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="font-semibold text-gray-900">$${paymentAmount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+                    <p class="text-xs ${isPaid ? 'text-blue-600' : isDefaulted ? 'text-red-600' : isOverdue ? 'text-orange-600' : 'text-gray-500'}">
+                        ${isPaid ? 'Paid' : isDefaulted ? 'Defaulted' : isOverdue ? 'Overdue' : 'Pending'}
+                    </p>
+                </div>
+            `;
+            scheduleDiv.appendChild(paymentItem);
+        }
+    }
+
+    // Set active nav item
+    function setActive(element) {
+        const icons = document.querySelectorAll('.nav-item div');
+        const texts = document.querySelectorAll('.nav-item span');
+        icons.forEach(icon => icon.classList.remove('bg-gray-800', 'text-white'));
+        texts.forEach(text => text.classList.remove('text-gray-900'));
+
+        const icon = element.querySelector('div');
+        const text = element.querySelector('span');
+        icon.classList.add('bg-gray-800', 'text-white');
+        text.classList.add('text-gray-900');
+    }
+</script>
+
+    <!-- Inactivity Timeout: Auto-logout after 5 minutes of inactivity -->
+    <script src="inactivity-timeout.js"></script>
+</body>
+</html>
+

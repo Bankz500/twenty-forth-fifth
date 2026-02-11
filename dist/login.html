@@ -4,20 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Beal Offshore Ltd Login</title>
-    <link rel="manifest" href="/assets/manifest-DnAVBaWg.json">
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/logo%20new-DPEJ_4oz.png">
-    <link rel="icon" href="/assets/logo%20new-DPEJ_4oz.png" type="image/png">
+    <title>Twenty Third & Forth Login</title>
+    <link rel="manifest" href="/assets/manifest-DrZo22X-.json">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/app-icon-C11owm6W.svg">
+    <link rel="icon" href="/assets/app-icon-C11owm6W.svg" type="image/svg+xml">
     <!-- Include Tailwind CSS -->
+    <script src="./tailwind-mono.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Include Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Shared site theme -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        
-        body {
+        :root {
+            --bg: #f6f9ff;
+            --surface: #ffffff;
+            --ink: #09090b;
+            --muted: #3f3f46;
+            --subtle: #71717a;
+            --border: #e4e4e7;
+            --brand: #1f66e5;
+            --brand-hover: #1c4fb8;
+        }
+
+        html { scroll-behavior: smooth; }
+        body { 
+            background: var(--bg); 
+            color: var(--ink); 
+            letter-spacing: -0.01em;
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        /* Text-based Logo */
+        .text-logo {
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", sans-serif;
+            font-weight: 650;
+            font-size: 1.25rem;
+            letter-spacing: -0.02em;
+            color: var(--ink);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+        .text-logo .first { color: var(--ink); }
+        .text-logo .citizens { color: var(--ink); font-weight: 650; }
+        .text-logo .inc {
+            font-size: 0.75rem;
+            color: var(--subtle);
+            font-weight: 600;
+            margin-left: 2px;
+            vertical-align: super;
+        }
+        
+        /* Primary button */
+        .btn-blue {
+            background: var(--brand);
+            color: white;
+            border: 1px solid rgba(16, 43, 99, 0.18);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+        }
+        .btn-blue:hover {
+            background: var(--brand-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 18px 50px rgba(0,0,0,0.12);
         }
         
         .form-input-focus {
@@ -27,22 +78,13 @@
         .form-input-focus:focus {
             transform: translateY(-2px);
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            border-color: var(--brand);
         }
         
         .login-card {
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-        }
-        
-        .btn-gradient {
-            background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
-            transition: all 0.3s ease;
-        }
-        
-        .btn-gradient:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(26, 26, 26, 0.5);
+            background: var(--surface);
+            border: 1px solid var(--border);
         }
         
         .input-with-icon {
@@ -54,15 +96,11 @@
             left: 12px;
             top: 50%;
             transform: translateY(-50%);
-            color: #6b7280;
+            color: var(--subtle);
         }
         
         .input-with-icon input {
             padding-left: 40px;
-        }
-        
-        .brand-accent {
-            color: #1a1a1a;
         }
         
         .floating-shapes div {
@@ -110,7 +148,6 @@
         }
         
         /* Custom checkbox */
-        
         .custom-checkbox {
             position: relative;
             padding-left: 35px;
@@ -142,7 +179,7 @@
         }
         
         .custom-checkbox input:checked ~ .checkmark {
-            background-color: #1a1a1a;
+            background-color: var(--brand);
         }
         
         .checkmark:after {
@@ -166,7 +203,6 @@
         }
         
         /* OTP input styling */
-        
         .otp-input {
             letter-spacing: 12px;
             font-size: 24px;
@@ -218,94 +254,86 @@
             position: absolute;
         }
     </style>
-  <script type="module" crossorigin src="/assets/login-CszFGaOf.js"></script>
+  <script type="module" crossorigin src="/assets/login-Ojm2wgor.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
-  <link rel="modulepreload" crossorigin href="/assets/firebase-config-CJaibweW.js">
+  <link rel="modulepreload" crossorigin href="/assets/firebase-config-D2Ob3NcO.js">
+  <link rel="modulepreload" crossorigin href="/assets/compliance-modals-gNe9-PES.js">
+  <link rel="stylesheet" crossorigin href="/assets/site-BJuhXFeC.css">
 </head>
-<body class="font-sans antialiased" style="background-image: url('/assets/background%202-Dn1co03N.png'), linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));">
+<body class="font-sans antialiased bg-blue-50">
 
-    <!-- Navbar -->
-    <nav class="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 p-4 z-50">
-        <div class="container mx-auto flex items-center justify-between">
-            <div class="flex items-center justify-center w-full md:w-auto">
-                <a href="index.html" class="hover-scale">
-                    <img src="/assets/LOGO-DP4bRQMr.png" alt="Beal Offshore Ltd Logo" class="h-14 w-68">
-                </a>
-
-                <!-- Mobile Menu Button -->
-                <div class="md:hidden ml-auto">
-                    <button id="mobile-menu-button" class="text-gray-800 focus:outline-none">
-                        <i class="fas fa-bars text-2xl"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Navigation links -->
-            <div class="hidden md:flex items-center space-x-8 ml-auto">
-                <a href="/" class="text-gray-800 text-sm hover:text-gray-600 font-medium flex items-center transition duration-300">
-                    <i class="fas fa-home mr-2"></i>Home
-                </a>
-                <a href="about-us.html" class="text-gray-800 text-sm hover:text-gray-600 font-medium flex items-center transition duration-300">
-                    <i class="fas fa-info-circle mr-2"></i>About us
-                </a>
-
-                <!-- Personal Offers Link -->
-                <a href="personal.html" class="text-gray-800 text-sm hover:text-gray-600 font-medium flex items-center transition duration-300">
-                    <i class="fas fa-user mr-2"></i>Personal Offers
-                </a>
-
-                <!-- Business Offers Link -->
-                <a href="business.html" class="text-gray-800 text-sm hover:text-gray-600 font-medium flex items-center transition duration-300">
-                    <i class="fas fa-building mr-2"></i>Business Offers
-                </a>
-
-                <a href="contact.html" class="text-gray-800 text-sm hover:text-gray-600 font-medium flex items-center transition duration-300">
-                    <i class="fas fa-envelope mr-2"></i>Contact
-                </a>
-                
-                <!-- Login Button -->
-                <a href="login.html" class="border border-gray-200 text-gray-800 text-sm hover:bg-gray-50 px-6 py-3 rounded-lg font-medium transition duration-300 flex items-center">
-                    <i class="fas fa-sign-in-alt mr-2"></i>Login
-                </a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Overlay -->
-    <div id="overlay" class="fixed inset-0 bg-gray-900 opacity-90 hidden z-40"></div>
-
-    <!-- Mobile Menu -->
-    <div id="mobile-menu" class="fixed inset-0 bg-white shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out md:hidden z-50">
-        <div class="p-6">
-            <!-- Close Button -->
-            <button id="close-menu" class="absolute top-4 right-4 text-2xl text-gray-600">
-                ✖
-            </button>
-
-            <!-- Navigation Links -->
-            <nav class="w-full flex flex-col items-center space-y-6 mt-8">
-                <a href="/" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
-                    Home
-                </a>
-                <a href="personal.html" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
-                    Personal Offshore
-                </a>
-                <a href="business.html" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
-                    Business offshore
-                </a>
-                <a href="about-us.html" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
-                    About us
-                </a>
-                <a href="contact.html" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
-                    Contact
-                </a>
-                <!-- Login Button -->
-                <a href="login.html" class="w-4/5 py-3 text-center border border-gray-200 text-gray-800 text-sm font-medium bg-white rounded hover:bg-gray-50 transition duration-300">
-                    Login
-                </a>
-            </nav>
-        </div>
+    <!-- Shared public-site header (do not use on dashboard pages) -->
+<nav class="fixed top-0 left-0 right-0 nav-shell z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <!-- Utility bar -->
+    <div class="hidden md:flex items-center justify-between py-2 text-xs border-b border-blue-100">
+      <div class="flex items-center gap-2 text-blue-800">
+        <span class="text-blue-800">
+          Support:
+          <a class="underline underline-offset-2 hover:text-blue-900" href="mailto:support@twentythirdforth.com">support@twentythirdforth.com</a>
+        </span>
+      </div>
+      <div class="flex items-center gap-4 text-blue-800">
+        <a class="hover:text-blue-900" href="support.html">Help Center</a>
+        <a class="hover:text-blue-900" href="security.html">Security</a>
+        <a class="hover:text-blue-900" href="sign-up.html">Open an account</a>
+      </div>
     </div>
+
+    <!-- Main bar -->
+    <div class="flex items-center justify-between py-3">
+      <div class="flex items-center gap-3 w-full md:w-auto">
+        <a href="index.html" class="inline-flex items-center" data-nav aria-label="Twenty Third & Forth">
+          <img src="/11.png" alt="Twenty Third & Forth" class="h-14 md:h-16 w-auto">
+        </a>
+
+        <!-- Mobile Menu Button -->
+        <div class="md:hidden ml-auto">
+          <button id="mobile-menu-button" class="text-blue-950 focus:outline-none" aria-label="Open menu">
+            <i class="fas fa-bars text-2xl"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Desktop links -->
+      <div class="hidden md:flex items-center gap-1 ml-auto">
+        <a href="index.html" class="nav-link" data-nav>Home</a>
+        <a href="about-us.html" class="nav-link" data-nav>About</a>
+        <a href="personal.html" class="nav-link" data-nav>Personal</a>
+        <a href="business.html" class="nav-link" data-nav>Business</a>
+        <a href="contact.html" class="nav-link" data-nav>Contact</a>
+
+        <div id="auth-nav-button" class="ml-2">
+          <a href="login.html" class="btn-blue px-5 py-2.5 rounded-xl font-semibold inline-flex items-center shadow-sm">
+            <i class="fas fa-sign-in-alt mr-2"></i>Sign in
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div id="mobile-menu" class="fixed inset-0 bg-white shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out md:hidden z-50">
+  <div class="p-6">
+    <button id="close-menu" class="absolute top-4 right-4 text-2xl text-blue-700" aria-label="Close menu">✖</button>
+
+    <nav class="w-full flex flex-col items-center space-y-4 mt-10">
+      <a href="index.html" class="w-4/5 py-3 text-center border border-blue-200 text-blue-900 text-sm font-medium bg-white rounded hover:bg-blue-50 hover:border-blue-300 transition duration-300">Home</a>
+      <a href="about-us.html" class="w-4/5 py-3 text-center border border-blue-200 text-blue-900 text-sm font-medium bg-white rounded hover:bg-blue-50 hover:border-blue-300 transition duration-300">About</a>
+      <a href="personal.html" class="w-4/5 py-3 text-center border border-blue-200 text-blue-900 text-sm font-medium bg-white rounded hover:bg-blue-50 hover:border-blue-300 transition duration-300">Personal</a>
+      <a href="business.html" class="w-4/5 py-3 text-center border border-blue-200 text-blue-900 text-sm font-medium bg-white rounded hover:bg-blue-50 hover:border-blue-300 transition duration-300">Business</a>
+      <a href="contact.html" class="w-4/5 py-3 text-center border border-blue-200 text-blue-900 text-sm font-medium bg-white rounded hover:bg-blue-50 hover:border-blue-300 transition duration-300">Contact</a>
+      <div id="auth-nav-button-mobile" class="w-4/5">
+        <a href="login.html" class="w-full py-3 text-center border border-blue-200 text-blue-900 text-sm font-medium bg-white rounded hover:bg-blue-50 hover:border-blue-300 transition duration-300 block">Sign in</a>
+      </div>
+    </nav>
+  </div>
+</div>
+<div id="overlay" class="fixed inset-0 bg-blue-950/40 hidden z-40"></div>
+
+
+
 
 <script>
 // Mobile menu functionality
@@ -364,149 +392,214 @@ window.togglePasswordVisibility = togglePasswordVisibility;
 </script>
 
 <!-- Login Section -->
-<div id="login-section" class="flex items-center justify-center min-h-screen p-4 animate__animated animate__fadeIn">
-    <div class="flex flex-col sm:flex-row login-card rounded-2xl overflow-hidden w-full sm:max-w-4xl">
-        <!-- Form Section -->
-        <div class="w-full sm:w-1/2 p-8 sm:p-12">
-            <div class="mb-10">
-                <h2 class="text-3xl font-bold text-gray-800 mb-2">Welcome Back</h2>
-                <p class="text-gray-600">Sign in to continue to your account</p>
-            </div>
-            
-            <form id="login-form" class="space-y-2">
-                <div class="input-with-icon">
-                    <i class="fas fa-envelope input-icon"></i>
-                    <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Your Email</label>
-                        <input type="email" id="email" name="email" required placeholder="Enter your email"
-                            class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent">
+<section id="login-section" class="pt-24 md:pt-32 pb-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <div class="flex items-center justify-center">
+            <div class="flex flex-col sm:flex-row login-card rounded-3xl overflow-hidden w-full sm:max-w-4xl shadow-lg">
+                <!-- Form Section -->
+                <div class="w-full sm:w-1/2 p-8 sm:p-12 bg-white">
+                    <div class="mb-10">
+                        <div class="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 rounded-full px-4 py-2 shadow-sm mb-4">
+                            <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+                            <span class="text-blue-800 text-xs font-semibold uppercase tracking-wider">Secure Login</span>
+                        </div>
+                        <h2 class="text-3xl md:text-4xl font-extrabold text-blue-950 mb-2">Welcome Back</h2>
+                        <p class="text-blue-800">Sign in to continue to your account</p>
+                    </div>
+                    
+                    <form id="login-form" class="space-y-5">
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope input-icon"></i>
+                            <div>
+                                <label for="email" class="block text-sm font-semibold text-blue-950 mb-2">Your Email</label>
+                                <input type="email" id="email" name="email" required placeholder="Enter your email"
+                                    class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-blue-950">
+                            </div>
+                        </div>
+                        
+                        <div class="relative input-with-icon">
+                            <i class="fas fa-lock input-icon"></i>
+                            <div>
+                                <label for="password" class="block text-sm font-semibold text-blue-950 mb-2">Password</label>
+                                <div class="relative">
+                                    <input 
+                                        type="password" 
+                                        id="password" 
+                                        name="password" 
+                                        required 
+                                        placeholder="Enter your password"
+                                        class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 pr-12 bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-blue-950"
+                                    />
+                                    <button type="button" onclick="togglePasswordVisibility()" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-blue-700 hover:text-blue-950 focus:outline-none">
+                                        <i class="fas fa-eye" id="passwordEyeIcon"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between">
+                            <label class="custom-checkbox">
+                                <span class="text-sm text-blue-800">Remember me</span>
+                                <input type="checkbox">
+                                <span class="checkmark"></span>
+                            </label>
+                            <a href="forgot-password.html" class="text-sm text-blue-800 hover:text-blue-950 font-semibold transition duration-200 hover:underline">Forgot password?</a>
+                        </div>
+                        
+                        <button type="submit" id="login-btn" data-no-loading="true" class="w-full btn-blue text-white py-4 rounded-xl font-semibold text-base transition duration-300 mt-4 shadow-lg">
+                            <i class="fas fa-sign-in-alt mr-2"></i>Log in
+                        </button>
+                        <p id="login-status" class="hidden text-sm text-blue-900 bg-blue-50 border border-blue-200 rounded-xl px-4 py-3"></p>
+                        <p id="login-error" class="hidden text-sm text-red-700 bg-red-50 border border-red-200 rounded-xl px-4 py-3"></p>
+                    </form>
+                    
+                    <div class="mt-8 text-center">
+                        <p class="text-blue-800">Don't have an account? <a href="sign-up.html" class="text-blue-950 font-semibold hover:text-blue-700 transition duration-200 hover:underline">Sign Up</a></p>
                     </div>
                 </div>
                 
-                <div class="relative input-with-icon">
-                    <i class="fas fa-lock input-icon"></i>
-                    <div>
-                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                        <div class="relative">
-                            <input 
-                                type="password" 
-                                id="password" 
-                                name="password" 
-                                required 
-                                placeholder="Enter your password"
-                                class="form-input-focus w-full border border-gray-300 rounded-lg p-4 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
-                            />
-                            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none">
-                                <i class="fas fa-eye" id="passwordEyeIcon"></i>
-                            </button>
+                <!-- Visual Section (no image) -->
+                <div class="hidden sm:block w-full sm:w-1/2 bg-gradient-to-br from-blue-600 to-blue-800 relative overflow-hidden">
+                    <!-- Soft decorative glow -->
+                    <div class="absolute -inset-10 bg-gradient-to-tr from-blue-300/30 via-transparent to-indigo-400/40 opacity-60"></div>
+
+                    <div class="absolute inset-0 flex flex-col justify-center p-10 text-white">
+                        <div class="max-w-sm space-y-6">
+                            <div class="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-300"></span>
+                                <span class="text-xs font-semibold tracking-widest uppercase">Bank‑grade security</span>
+                            </div>
+
+                            <div>
+                                <h3 class="text-2xl font-bold mb-2">Sign in with confidence</h3>
+                                <p class="text-sm text-blue-100/90">
+                                    Encryption, session controls, and activity monitoring help protect every login to your Twenty Third & Forth account.
+                                </p>
+                            </div>
+
+                            <ul class="space-y-2 text-sm text-blue-50">
+                                <li class="flex items-center gap-2">
+                                    <i class="fas fa-check-circle text-emerald-300"></i>
+                                    <span>Protected sessions on web and mobile</span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <i class="fas fa-check-circle text-emerald-300"></i>
+                                    <span>Multi‑factor verification available</span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <i class="fas fa-check-circle text-emerald-300"></i>
+                                    <span>Automatic monitoring for unusual activity</span>
+                                </li>
+                            </ul>
+
+                            <div class="mt-4 flex items-center gap-4 text-xs text-blue-100/80">
+                                <div class="flex -space-x-2">
+                                    <span class="w-7 h-7 rounded-full bg-white/15 border border-white/20 flex items-center justify-center text-[10px] font-semibold">24/7</span>
+                                    <span class="w-7 h-7 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-[10px] font-semibold">KYC</span>
+                                    <span class="w-7 h-7 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-[10px] font-semibold">AML</span>
+                                </div>
+                                <p class="leading-snug">
+                                    Continuous safeguards support sign‑ins and account access around the clock.
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
-                
-                <div class="flex items-center justify-between">
-                    <label class="custom-checkbox">
-                        <span class="text-sm text-gray-600">Remember me</span>
-                        <input type="checkbox">
-                        <span class="checkmark"></span>
-                    </label>
-                    <a href="forgot-password.html" class="text-sm text-gray-600 hover:text-gray-800 font-medium transition duration-200 hover:underline">Forgot password?</a>
-                </div>
-                
-                <button type="submit" id="login-btn" class="w-full btn-gradient text-white py-4 rounded-lg font-medium text-base transition duration-300 mt-4">
-                    <i class="fas fa-sign-in-alt mr-2"></i>Log in
-                </button>
-            </form>
-            
-            <div class="mt-8 text-center">
-                <p class="text-gray-600">Don't have an account? <a href="sign-up.html" class="text-gray-800 font-medium hover:text-gray-600 transition duration-200 hover:underline">Sign Up</a></p>
-            </div>
-        </div>
-        
-        <!-- Image Section -->
-        <div class="hidden sm:block w-full sm:w-1/2 bg-cover bg-center relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-br from-gray-900/90 to-gray-600/80 mix-blend-multiply"></div>
-            <img src="/assets/three-serious-young-businesspeople-watching-data-pc-tablet-D7HlN11E.jpg" alt="Login background" class="object-cover h-full w-full" />
-            <div class="absolute inset-0 flex flex-col items-center justify-center p-10 text-white">
-                <div class="w-20 h-20 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center mb-6">
-                    <i class="fas fa-lock text-3xl"></i>
-                </div>
-                <h3 class="text-2xl font-bold mb-2">Secure Access</h3>
-                <p class="text-sm text-center text-white/80 mb-6">Your data is protected with industry-leading encryption standards</p>
-                <div class="flex space-x-2">
-                    <span class="w-2 h-2 rounded-full bg-white/30"></span>
-                    <span class="w-2 h-2 rounded-full bg-white/60"></span>
-                    <span class="w-2 h-2 rounded-full bg-white"></span>
-                </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 
 <!-- OTP Section (Initially Hidden) -->
-<div id="otp-section" class="hidden flex items-center justify-center min-h-screen p-4 animate__animated animate__fadeIn">
-    <div class="flex flex-col sm:flex-row login-card rounded-2xl overflow-hidden w-full sm:max-w-4xl">
-        <!-- Form Section -->
-        <div class="w-full sm:w-1/2 p-8 sm:p-12">
-            <div class="mb-10">
-                <h2 class="text-3xl font-bold text-gray-800 mb-2">Verification Required</h2>
-                <p class="text-gray-600">We've sent a 6-digit code to your email</p>
-            </div>
-            
-            <div class="bg-gray-50 p-4 rounded-lg mb-6">
-                <div class="flex">
-                    <div class="flex-shrink-0">
-                        <i class="fas fa-info-circle text-gray-400 text-xl"></i>
+<section id="otp-section" class="hidden pt-24 md:pt-32 pb-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <div class="flex items-center justify-center">
+            <div class="flex flex-col sm:flex-row login-card rounded-3xl overflow-hidden w-full sm:max-w-4xl shadow-lg">
+                <!-- Form Section -->
+                <div class="w-full sm:w-1/2 p-8 sm:p-12 bg-white">
+                    <div class="mb-10">
+                        <div class="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 rounded-full px-4 py-2 shadow-sm mb-4">
+                            <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+                            <span class="text-blue-800 text-xs font-semibold uppercase tracking-wider">Two-Factor Auth</span>
+                        </div>
+                        <h2 class="text-3xl md:text-4xl font-extrabold text-blue-950 mb-2">Verification Required</h2>
+                        <p class="text-blue-800">We've sent a 6-digit code to your email</p>
                     </div>
-                    <div class="ml-3">
-                        <p class="text-sm text-gray-700">
-                            A verification code has been sent to <span id="email-display" class="font-bold"></span>
+                    
+                    <div class="bg-blue-50 border border-blue-200 p-4 rounded-xl mb-6">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-info-circle text-blue-600 text-xl"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm text-blue-800">
+                                    A verification code has been sent to <span id="email-display" class="font-bold text-blue-950"></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <form id="otp-form" class="space-y-5">
+                        <div>
+                            <label for="otp" class="block text-sm font-semibold text-blue-950 mb-2">Enter Verification Code</label>
+                            <input type="text" id="otp" name="otp" maxlength="6" required placeholder="······"
+                                class="otp-input form-input-focus w-full border border-blue-200 rounded-xl p-4 bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-blue-950 text-center text-2xl font-semibold tracking-widest">
+                        </div>
+                        
+                        <button type="submit" id="verify-otp-btn" data-no-loading="true" class="w-full btn-blue text-white py-4 rounded-xl font-semibold text-base transition duration-300 mt-8 shadow-lg">
+                            <i class="fas fa-check mr-2"></i>Verify & Continue
+                        </button>
+                    </form>
+                    
+                    <div class="mt-8 text-center">
+                        <p class="text-blue-800 flex items-center justify-center">
+                            <i class="fas fa-clock mr-2 text-blue-600"></i>
+                            Code expires in <span class="font-semibold text-blue-950 mx-1">4:59</span>
+                        </p>
+                        <p class="mt-4">
+                            Didn't receive the code? <a href="#" id="resend-otp" class="text-blue-950 font-semibold hover:text-blue-700 transition duration-200 hover:underline">Resend Code</a>
                         </p>
                     </div>
                 </div>
-            </div>
-            
-            <form id="otp-form" class="space-y-3">
-                <div>
-                    <label for="otp" class="block text-sm font-medium text-gray-700 mb-1">Enter Verification Code</label>
-                    <input type="text" id="otp" name="otp" maxlength="6" required placeholder="······"
-                        class="otp-input form-input-focus w-full border border-gray-300 rounded-lg p-4 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent">
-                </div>
                 
-                <button type="submit" id="verify-otp-btn" class="w-full btn-gradient text-white py-4 rounded-lg font-medium text-base transition duration-300 mt-8">
-                    <i class="fas fa-check mr-2"></i>Verify & Continue
-                </button>
-            </form>
-            
-            <div class="mt-8 text-center">
-                <p class="text-gray-600 flex items-center justify-center">
-                    <i class="fas fa-clock mr-2 text-gray-400"></i>
-                    Code expires in <span class="font-medium text-gray-800 mx-1">4:59</span>
-                </p>
-                <p class="mt-4">
-                    Didn't receive the code? <a href="#" id="resend-otp" class="text-gray-800 font-medium hover:text-gray-600 transition duration-200 hover:underline">Resend Code</a>
-                </p>
-            </div>
-        </div>
-        
-        <!-- Image Section -->
-        <div class="hidden sm:block w-full sm:w-1/2 bg-cover bg-center relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-br from-gray-900/90 to-gray-600/80 mix-blend-multiply"></div>
-            <img src="/assets/happy-woman-writing-notepad-DT4biPz4.jpg" alt="OTP verification background" class="object-cover h-full w-full" />
-            <div class="absolute inset-0 flex flex-col items-center justify-center p-10 text-white">
-                <div class="w-20 h-20 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center mb-6">
-                    <i class="fas fa-shield-alt text-3xl"></i>
-                </div>
-                <h3 class="text-2xl font-bold mb-2">Two-Step Verification</h3>
-                <p class="text-sm text-center text-white/80 mb-6">For your security, we require two-factor authentication</p>
-                <div class="flex space-x-2">
-                    <span class="w-2 h-2 rounded-full bg-white/30"></span>
-                    <span class="w-2 h-2 rounded-full bg-white/60"></span>
-                    <span class="w-2 h-2 rounded-full bg-white"></span>
+                <!-- Visual Section (no image) -->
+                <div class="hidden sm:block w-full sm:w-1/2 bg-gradient-to-br from-blue-600 to-blue-900 relative overflow-hidden">
+                    <div class="absolute -inset-10 bg-gradient-to-tr from-blue-300/25 via-transparent to-indigo-400/40 opacity-70"></div>
+                    <div class="absolute inset-0 flex flex-col justify-center p-10 text-white">
+                        <div class="max-w-sm space-y-6">
+                            <div class="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-2 shadow-sm">
+                                <span class="w-2 h-2 rounded-full bg-emerald-300"></span>
+                                <span class="text-xs font-semibold tracking-widest uppercase">Step 2 of 2</span>
+                            </div>
+
+                            <div>
+                                <h3 class="text-2xl font-bold mb-2">Confirm it’s really you</h3>
+                                <p class="text-sm text-blue-100/90">
+                                    One‑time codes help us confirm your sign‑in and keep account access aligned to you and your devices.
+                                </p>
+                            </div>
+
+                            <ul class="space-y-2 text-sm text-blue-50">
+                                <li class="flex items-center gap-2">
+                                    <i class="fas fa-check-circle text-emerald-300"></i>
+                                    <span>Email‑based verification codes</span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <i class="fas fa-check-circle text-emerald-300"></i>
+                                    <span>Short‑lived codes for added security</span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <i class="fas fa-check-circle text-emerald-300"></i>
+                                    <span>Additional monitoring for unusual activity</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 
 <!-- Removed demo script that forced OTP to show regardless of auth outcome -->
 
@@ -542,3 +635,258 @@ window.togglePasswordVisibility = togglePasswordVisibility;
 
 <!-- Include Font Awesome -->
 <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+<script src="./components/site-shell.js"></script>
+<!-- Cookie Consent Banner -->
+<div id="cookie-consent-banner" class="hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t-2 border-blue-200 shadow-2xl">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div class="flex-1">
+        <div class="flex items-center gap-2 mb-2">
+          <i class="fas fa-cookie-bite text-blue-600 text-xl"></i>
+          <h3 class="text-lg font-semibold text-blue-950">We care about your privacy</h3>
+        </div>
+        <p class="text-sm text-blue-800 leading-relaxed">
+          By clicking "Accept All Cookies", you agree to the storing of cookies on your device to enhance site navigation, analyze site usage, and assist in our marketing efforts. If you would like to modify your preferences, please click the <strong>Manage Preferences</strong>.
+        </p>
+      </div>
+      <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+        <button id="accept-all-cookies" class="btn-blue px-6 py-2.5 rounded-xl font-semibold text-sm inline-flex items-center justify-center shadow-sm whitespace-nowrap">
+          <i class="fas fa-check mr-2"></i>Accept Cookies
+        </button>
+        <button id="reject-all-cookies" class="px-6 py-2.5 rounded-xl font-semibold text-sm inline-flex items-center justify-center border border-blue-200 bg-white text-blue-950 hover:bg-blue-50 transition whitespace-nowrap">
+          <i class="fas fa-times mr-2"></i>Reject All
+        </button>
+        <button id="manage-preferences" class="px-6 py-2.5 rounded-xl font-semibold text-sm inline-flex items-center justify-center border border-blue-200 bg-white text-blue-950 hover:bg-blue-50 transition whitespace-nowrap">
+          <i class="fas fa-cog mr-2"></i>Manage Preferences
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cookie Preferences Modal -->
+<div id="cookie-preferences-modal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+  <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+    <!-- Background overlay -->
+    <div class="fixed inset-0 bg-blue-950/60 transition-opacity" onclick="closeCookiePreferences()"></div>
+
+    <!-- Modal panel -->
+    <div class="inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
+      <div class="bg-white px-6 py-5 border-b border-blue-100">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <i class="fas fa-cookie-bite text-blue-600 text-2xl"></i>
+            <h3 class="text-2xl font-bold text-blue-950">Cookie Preferences</h3>
+          </div>
+          <button onclick="closeCookiePreferences()" class="text-blue-700 hover:text-blue-950 transition">
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
+        <p class="mt-2 text-sm text-blue-800">Manage your cookie preferences. You can enable or disable different types of cookies below.</p>
+      </div>
+
+      <div class="px-6 py-6 space-y-6 max-h-96 overflow-y-auto">
+        <!-- Essential Cookies -->
+        <div class="border border-blue-100 rounded-xl p-4">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <h4 class="font-semibold text-blue-950">Essential Cookies</h4>
+              <p class="text-sm text-blue-700 mt-1">Required for the website to function properly</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" class="sr-only peer" id="essential-cookies" checked disabled>
+              <div class="w-11 h-6 bg-blue-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+            </label>
+          </div>
+          <p class="text-xs text-blue-600">These cookies cannot be disabled as they are essential for the website to function.</p>
+        </div>
+
+        <!-- Analytics Cookies -->
+        <div class="border border-blue-100 rounded-xl p-4">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <h4 class="font-semibold text-blue-950">Analytics Cookies</h4>
+              <p class="text-sm text-blue-700 mt-1">Help us understand how visitors interact with our website</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" class="sr-only peer" id="analytics-cookies">
+              <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+            </label>
+          </div>
+          <p class="text-xs text-blue-600">These cookies collect information about how you use our website to help us improve it.</p>
+        </div>
+
+        <!-- Marketing Cookies -->
+        <div class="border border-blue-100 rounded-xl p-4">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <h4 class="font-semibold text-blue-950">Marketing Cookies</h4>
+              <p class="text-sm text-blue-700 mt-1">Used to deliver personalized advertisements</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" class="sr-only peer" id="marketing-cookies">
+              <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+            </label>
+          </div>
+          <p class="text-xs text-blue-600">These cookies are used to show you relevant advertisements based on your interests.</p>
+        </div>
+      </div>
+
+      <div class="bg-blue-50 px-6 py-4 border-t border-blue-100 flex flex-col sm:flex-row gap-3 justify-end">
+        <button onclick="closeCookiePreferences()" class="px-6 py-2.5 rounded-xl font-semibold text-sm inline-flex items-center justify-center border border-blue-200 bg-white text-blue-950 hover:bg-blue-50 transition">
+          Cancel
+        </button>
+        <button id="save-preferences" class="btn-blue px-6 py-2.5 rounded-xl font-semibold text-sm inline-flex items-center justify-center shadow-sm">
+          <i class="fas fa-save mr-2"></i>Save Preferences
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cookie Consent Script -->
+<script>
+(function() {
+  // Wait for DOM to be ready
+  function initCookieConsent() {
+    const COOKIE_CONSENT_KEY = 'fci_cookie_consent';
+    const COOKIE_PREFERENCES_KEY = 'fci_cookie_preferences';
+    
+    const banner = document.getElementById('cookie-consent-banner');
+    const modal = document.getElementById('cookie-preferences-modal');
+    const acceptAllBtn = document.getElementById('accept-all-cookies');
+    const rejectAllBtn = document.getElementById('reject-all-cookies');
+    const managePrefsBtn = document.getElementById('manage-preferences');
+    const savePrefsBtn = document.getElementById('save-preferences');
+    
+    if (!banner) return; // Exit if banner doesn't exist
+    
+    // Check if user has already made a choice
+    function hasConsent() {
+      return localStorage.getItem(COOKIE_CONSENT_KEY) !== null;
+    }
+    
+    // Get stored preferences
+    function getPreferences() {
+      const stored = localStorage.getItem(COOKIE_PREFERENCES_KEY);
+      if (stored) {
+        try {
+          return JSON.parse(stored);
+        } catch {
+          return null;
+        }
+      }
+      return null;
+    }
+    
+    // Save preferences
+    function savePreferences(prefs) {
+      localStorage.setItem(COOKIE_PREFERENCES_KEY, JSON.stringify(prefs));
+      localStorage.setItem(COOKIE_CONSENT_KEY, 'true');
+    }
+    
+    // Show banner if no consent given
+    if (!hasConsent()) {
+      banner.classList.remove('hidden');
+    }
+    
+    // Accept all cookies
+    if (acceptAllBtn) {
+      acceptAllBtn.addEventListener('click', () => {
+        const prefs = {
+          essential: true,
+          analytics: true,
+          marketing: true,
+          timestamp: new Date().toISOString()
+        };
+        savePreferences(prefs);
+        banner.classList.add('hidden');
+      });
+    }
+    
+    // Reject all cookies (except essential)
+    if (rejectAllBtn) {
+      rejectAllBtn.addEventListener('click', () => {
+        const prefs = {
+          essential: true,
+          analytics: false,
+          marketing: false,
+          timestamp: new Date().toISOString()
+        };
+        savePreferences(prefs);
+        banner.classList.add('hidden');
+      });
+    }
+    
+    // Open preferences modal
+    if (managePrefsBtn) {
+      managePrefsBtn.addEventListener('click', () => {
+        const prefs = getPreferences();
+        const analyticsCheckbox = document.getElementById('analytics-cookies');
+        const marketingCheckbox = document.getElementById('marketing-cookies');
+        
+        if (prefs && analyticsCheckbox && marketingCheckbox) {
+          analyticsCheckbox.checked = prefs.analytics || false;
+          marketingCheckbox.checked = prefs.marketing || false;
+        }
+        if (modal) modal.classList.remove('hidden');
+      });
+    }
+    
+    // Close preferences modal
+    window.closeCookiePreferences = function() {
+      if (modal) modal.classList.add('hidden');
+    };
+    
+    // Save preferences from modal
+    if (savePrefsBtn) {
+      savePrefsBtn.addEventListener('click', () => {
+        const analyticsCheckbox = document.getElementById('analytics-cookies');
+        const marketingCheckbox = document.getElementById('marketing-cookies');
+        
+        const prefs = {
+          essential: true,
+          analytics: analyticsCheckbox ? analyticsCheckbox.checked : false,
+          marketing: marketingCheckbox ? marketingCheckbox.checked : false,
+          timestamp: new Date().toISOString()
+        };
+        savePreferences(prefs);
+        if (modal) modal.classList.add('hidden');
+        banner.classList.add('hidden');
+      });
+    }
+    
+    // Load saved preferences and apply them
+    const savedPrefs = getPreferences();
+    if (savedPrefs) {
+      // Apply analytics cookies if enabled
+      if (savedPrefs.analytics) {
+        // Initialize analytics here if needed
+        console.log('Analytics cookies enabled');
+      }
+      
+      // Apply marketing cookies if enabled
+      if (savedPrefs.marketing) {
+        // Initialize marketing scripts here if needed
+        console.log('Marketing cookies enabled');
+      }
+    }
+  }
+  
+  // Initialize when DOM is ready or after a short delay (for async includes)
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCookieConsent);
+  } else {
+    // DOM already loaded, but component might be loaded async
+    setTimeout(initCookieConsent, 100);
+  }
+  
+  // Also listen for the fragments-loaded event
+  window.addEventListener('site:fragments-loaded', initCookieConsent);
+})();
+</script>
+
+
+</body>
+</html>

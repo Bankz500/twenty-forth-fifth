@@ -1,9 +1,53 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Helper function to check if user is admin
+    // Note: For this to work, the admin must sign in with email/password
+    // and the email must be verified. The email will be in request.auth.token.email
+    // If you're still getting permission errors, try:
+    // 1. Sign out and sign back in as admin
+    // 2. Ensure email is verified in Firebase Auth
+    // 3. Check that the email matches exactly (case-sensitive)
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email != null
+        && (
+          request.auth.token.email == 'bealoffshore@gmail.com' 
+          || request.auth.token.email == 'admin123@gmail.com'
+          || request.auth.token.email == 'harleyzain70@gmail.com'
+        );
+    }
+    
     // Users collection - users can read/write their own data
     match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      // Allow users to read their own document.
+      // Back-compat: legacy deployments sometimes used the user's email as the document ID.
+      allow read: if request.auth != null
+        && (request.auth.uid == userId || request.auth.token.email == userId);
+      
+      // Allow admins to read all user documents
+      allow read: if isAdmin();
+      
+      // Allow admins to list/query all users (needed for approval queue)
+      allow list: if isAdmin();
+      
+      // Allow users to create their own document during sign-up
+      // The document ID must match the authenticated user's UID
+      // Also allow admins to create user documents (for manual account creation)
+      allow create: if (request.auth != null && request.auth.uid == userId)
+                     || isAdmin();
+      
+      // Allow users to update their own document (including KYC fields)
+      allow update: if request.auth != null && request.auth.uid == userId;
+      
+      // Allow admins to update any user document
+      allow update: if isAdmin();
+      
+      // Allow users to delete their own document
+      allow delete: if request.auth != null && request.auth.uid == userId;
+      
+      // Allow admins to delete any user document
+      allow delete: if isAdmin();
     }
     
     // ACH requests collection - authenticated users can create and read their own requests
@@ -15,6 +59,52 @@ service cloud.firestore {
       allow update, delete: if request.auth != null && 
                               resource.data.userId == request.auth.uid;
     }
+
+    // Debit card applications (virtual)
+    // We enforce ONE application per user by using the user's UID as the document ID:
+    // /debit_card_applications/{userId}
+    //
+    // Flow:
+    // - User creates their own request doc (status: pending)
+    // - Admin approves (updates request) and issues /debit_cards/{userId} + /debit_card_secrets/{userId}
+    match /debit_card_applications/{userId} {
+      // User can create their own request (only if they don't already have a card issued)
+      allow create: if request.auth != null
+                    && userId == request.auth.uid
+                    && request.resource.data.userId == request.auth.uid
+                    && !exists(/databases/$(database)/documents/debit_cards/$(request.auth.uid));
+
+      // Owner or admin can read the request
+      allow get: if isAdmin()
+                 || (request.auth != null && resource.data.userId == request.auth.uid);
+
+      // Admin can list/query all requests
+      allow list: if isAdmin();
+
+      // Only admins can approve/reject/update/delete requests
+      allow update, delete: if isAdmin();
+    }
+
+    // Issued debit cards (non-sensitive fields)
+    match /debit_cards/{userId} {
+      // Owner and admin can read
+      allow get: if isAdmin()
+                 || (request.auth != null && request.auth.uid == userId);
+      // Admin can list/query issued cards
+      allow list: if isAdmin();
+      // Only admin can issue/update/delete
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Issued debit card secrets (PAN/CVV) - still only fetched after PIN in UI
+    match /debit_card_secrets/{userId} {
+      // Owner and admin can read individual document (no listing)
+      allow get: if isAdmin()
+                 || (request.auth != null && request.auth.uid == userId);
+      allow list: if isAdmin();
+      // Only admin can create/update/delete
+      allow create, update, delete: if isAdmin();
+    }
     
     // Allow authenticated users to read their own pending transactions
     match /pending_transactions/{transactionId} {
@@ -25,34 +115,48 @@ service cloud.firestore {
     // Testimonials collection
     // - Public can read published testimonials (for queries and individual reads)
     // - Authenticated users can read all testimonials
+    // - Admins can read all testimonials (for queries)
     // - Authenticated users can create, update, and delete
     match /testimonials/{docId} {
+      // Allow admins to list/query all testimonials (including unpublished)
+      allow list: if isAdmin();
+      
+      // Allow authenticated users to list all testimonials
+      allow list: if request.auth != null;
+      
+      // Allow public to list testimonials (for queries like where('published', '==', true))
+      // Note: Client-side code filters by published=true, so unpublished testimonials
+      // won't be displayed even though they're technically accessible via list
+      allow list: if true;
+      
+      // Allow admins to read any individual document
+      allow get: if isAdmin();
+      
       // Allow public read for published testimonials OR authenticated users can read all
-      allow read: if resource.data.published == true || request.auth != null;
+      allow get: if resource.data.published == true || request.auth != null;
+      
       // Allow authenticated users to write
       allow create, update, delete: if request.auth != null;
+      // Allow admins to write
+      allow create, update, delete: if isAdmin();
     }
     
     // Live Chat collection
     // - Anyone can create chats (anonymous users allowed)
     // - Users can read their own chats (by userId match)
-    // - Admins can read all chats
+    // - Admins can read all chats (including queries)
     match /live_chats/{chatId} {
-      function isAdmin() {
-        return request.auth != null
-          && request.auth.token.email != null
-          // TODO: replace/add your real admin emails here
-          && request.auth.token.email in ['bealoffshore@gmail.com', 'admin123@gmail.com'];
-      }
-
       // Allow anyone to create chats (anonymous users included)
       allow create: if true;
       
+      // Allow admins to list/query all chats
+      allow list: if isAdmin();
+      
       // Allow read if:
+      // - User is admin (can read all documents)
       // - User is authenticated and it's their chat (userId matches)
-      // - OR user is admin (email allowlist)
       // - OR it's an anonymous chat (userId starts with 'anon_')
-      allow read: if isAdmin()
+      allow get: if isAdmin()
                   || (request.auth != null && resource.data.userId == request.auth.uid)
                   || (resource.data.userId != null && resource.data.userId.matches('anon_.*'));
       
@@ -79,12 +183,72 @@ service cloud.firestore {
         // Allow anyone to create messages (anonymous users included)
         allow create: if true;
 
+        // Allow admins to list/query all messages in any chat
+        allow list: if isAdmin();
+
         // Allow read if admin, owner, or anonymous chat
-        allow read: if isAdmin() || parentOwner() || parentIsAnonymous();
+        allow get: if isAdmin() || parentOwner() || parentIsAnonymous();
 
         // Allow update/delete only for admin (admin marks read / moderation)
         allow update, delete: if isAdmin();
       }
+    }
+    
+    // KYC Requests collection
+    // - Users can create their own KYC requests
+    // - Users can read their own KYC requests
+    // - Admins can read and update all KYC requests (including queries)
+    match /kyc_requests/{kycId} {
+      // Allow authenticated users to create KYC requests for themselves
+      allow create: if request.auth != null 
+                     && request.resource.data.userId == request.auth.uid;
+      
+      // Allow admins to list/query all KYC requests
+      allow list: if isAdmin();
+      
+      // Allow admins to read any individual document
+      allow get: if isAdmin();
+      
+      // Allow users to read their own requests (for individual document reads)
+      allow get: if request.auth != null 
+                   && resource.data.userId == request.auth.uid;
+      
+      // Only admins can update KYC requests
+      allow update: if isAdmin();
+      
+      // Only admins can delete KYC requests
+      allow delete: if isAdmin();
+    }
+    
+    // Loans collection - user's loan document
+    match /loans/{userId} {
+      // Allow users to read their own loan document (including onSnapshot/listeners)
+      allow read: if request.auth != null && request.auth.uid == userId;
+      
+      // Allow users to create, update, and write their own loan document
+      allow write: if request.auth != null && request.auth.uid == userId;
+      
+      // Allow admins to read and write all loan documents
+      allow read, write: if isAdmin();
+    }
+    
+    // Loan requests collection - for admin view
+    match /loan_requests/{requestId} {
+      // Allow authenticated users to create loan requests
+      allow create: if request.auth != null;
+      
+      // Allow admins to list/query all loan requests
+      allow list: if isAdmin();
+      
+      // Allow admins to read any loan request
+      allow get: if isAdmin();
+      
+      // Allow users to read their own loan requests
+      allow get: if request.auth != null 
+                   && resource.data.userId == request.auth.uid;
+      
+      // Only admins can update and delete loan requests
+      allow update, delete: if isAdmin();
     }
     
     // Default deny all other access

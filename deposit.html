@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Beal Offshore Ltd Deposit</title>
+    <title>Twenty Third & Forth Deposit</title>
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" sizes="180x180" href="logo new.png">
-    <link rel="icon" href="logo new.png" type="image/png">
+    <link rel="apple-touch-icon" sizes="180x180" href="app-icon.svg">
+    <link rel="icon" href="app-icon.svg" type="image/svg+xml">
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Font Awesome for icons -->
@@ -15,11 +15,14 @@
     <script type="module">
         // Shared Firebase client (auth/db are consistent across all pages)
         import { auth, db } from "./firebase-client.js";
-        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+        import { onAuthStateChanged, signOut } from "firebase/auth";
         
         // Expose for non-module scripts (including banking-details-generator.js)
         window.auth = auth;
         window.db = db;
+        // Firestore helpers for non-module scripts (avoid dynamic imports in inline HTML scripts)
+        import { doc, getDoc, setDoc } from "firebase/firestore";
+        window.firestoreHelpers = { doc, getDoc, setDoc };
 
         // Check authentication state - use signed-in user from dashboard.html
         // Don't redirect, just use the current user if available
@@ -39,7 +42,7 @@
         }
         .loader {
             border: 8px solid rgba(0, 0, 0, 0.1);
-            border-top: 8px solid #000000;
+            border-top: 8px solid #1800ac;
             border-radius: 50%;
             width: 50px;
             height: 50px;
@@ -84,11 +87,11 @@
             transform: translateY(-5px);
         }
         .active-nav {
-            color: #3b82f6;
-            font-weight: 600;
+            color: #1f2937;
+            font-weight: 700;
         }
         .active-nav-icon {
-            background-color: #3b82f6;
+            background-color: #1f2937;
             color: white;
         }
         .copy-btn {
@@ -102,20 +105,54 @@
             padding-left: 1rem;
             margin-bottom: 1rem;
         }
+        
+        /* Text-based Logo */
+        .text-logo {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-weight: 700;
+            font-size: 1.75rem;
+            letter-spacing: -0.5px;
+            color: #1a1a1a;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+        .text-logo .first {
+            color: #1a1a1a;
+        }
+        .text-logo .citizens {
+            color: #4a4a4a;
+            font-weight: 600;
+        }
+        .text-logo .inc {
+            font-size: 0.75rem;
+            color: #6b7280;
+            font-weight: 500;
+            margin-left: 2px;
+            vertical-align: super;
+        }
+        :root {
+            --ttf-brand: #1800ac;
+            --ttf-brand-hover: #140099;
+        }
+        .bg-gray-900 { background-color: var(--ttf-brand) !important; }
+        .bg-gray-800 { background-color: var(--ttf-brand-hover) !important; }
+        .hover\:bg-gray-800:hover { background-color: var(--ttf-brand-hover) !important; }
+        .bg-black { background-color: rgba(24, 0, 172, 0.55) !important; }
     </style>
 </head>
 <body class="font-sans antialiased bg-white">
 
 <!-- Navbar -->
-<nav class="bg-white p-4 fixed top-0 w-full z-50 border-b">
+<nav class="bg-white border-b border-gray-300 p-4 fixed top-0 w-full z-50 shadow-sm">
     <div class="container mx-auto flex items-center justify-between">
         <!-- Left Logo -->
-        <a href="/" class="flex items-center">
-            <img src="Logo.png" alt="Beal Offshore Ltd Logo" class="h-14">
+        <a href="/" class="flex items-center" aria-label="Twenty Third & Forth">
+            <img src="11.png" alt="Twenty Third & Forth Logo" class="h-14 md:h-16 w-auto">
         </a>
 
         <!-- Right Logo (Email) -->
-        <a href="mailto:support@beal-offshore.com" class="flex items-center bg-blue-50 p-2 rounded-full hover:bg-blue-100 transition-all">
+        <a href="mailto:support@twentythirdforth.com" class="flex items-center bg-gray-100 p-2 rounded-full hover:bg-gray-200 transition-all">
             <img src="chat.png" alt="Contact" class="h-8 w-8">
         </a>
     </div>
@@ -128,7 +165,7 @@
 <div class="container mx-auto px-4 py-8 mb-32 mt-10">
     <!-- Section Header -->
     <div class="text-center mb-12">
-      <h1 class="text-2xl md:text-3xl font-bold text-black mb-2">Deposit Portal</h1>
+      <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Deposit Portal</h1>
       <p class="text-gray-600 text-sm md:text-base max-w-2xl mx-auto">
         Manage your finances seamlessly with your secure, personalized banking details. Use the information below to make deposits to your account.
       </p>
@@ -142,8 +179,8 @@
           <div class="flex items-center justify-between mb-6">
             <h2 class="text-lg font-bold text-gray-800">Banking Details</h2>
             <div class="flex items-center space-x-3">
-              <div class="bg-blue-500 text-white text-xs px-3 py-1 rounded-full">Personal Account</div>
-              <button id="refresh-banking-details" class="bg-green-500 hover:bg-green-600 p-2.5 rounded-full transition-all shadow-md hover:shadow-lg text-white animate-pulse" title="Generate Banking Details - Click to create and save your banking details">
+              <div class="bg-gray-800 text-white text-xs px-3 py-1 rounded-full">Personal Account</div>
+              <button id="refresh-banking-details" class="bg-gray-900 hover:bg-gray-800 p-2.5 rounded-full transition-all shadow-md hover:shadow-lg text-white" title="Generate Banking Details - Click to create and save your banking details">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
@@ -160,8 +197,8 @@
                   <div id="account-number-loading" class="loader h-4 w-4"></div>
                   <p id="account-number" class="text-sm font-semibold text-gray-800 hidden">Loading...</p>
                 </div>
-                <button onclick="copyToClipboard('account-number')" class="bg-blue-100 p-2 rounded-full hover:bg-blue-200 copy-btn">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <button onclick="copyToClipboard('account-number')" class="bg-gray-100 p-2 rounded-full hover:bg-gray-200 copy-btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
                   </svg>
@@ -177,8 +214,8 @@
                   <div id="swift-code-loading" class="loader h-4 w-4"></div>
                   <p id="swift-code" class="text-sm font-semibold text-gray-800 hidden">Loading...</p>
                 </div>
-                <button onclick="copyToClipboard('swift-code')" class="bg-blue-100 p-2 rounded-full hover:bg-blue-200 copy-btn">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <button onclick="copyToClipboard('swift-code')" class="bg-gray-100 p-2 rounded-full hover:bg-gray-200 copy-btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
                   </svg>
@@ -194,8 +231,8 @@
                   <div id="routing-number-loading" class="loader h-4 w-4"></div>
                   <p id="routing-number" class="text-sm font-semibold text-gray-800 hidden">Loading...</p>
                 </div>
-                <button onclick="copyToClipboard('routing-number')" class="bg-blue-100 p-2 rounded-full hover:bg-blue-200 copy-btn">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <button onclick="copyToClipboard('routing-number')" class="bg-gray-100 p-2 rounded-full hover:bg-gray-200 copy-btn">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h5 w-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                       d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
                   </svg>
@@ -227,7 +264,7 @@
                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
               </div>
-              <p><span class="font-medium">Enter Details:</span> Add Beal Offshore Ltd as a recipient using the details provided.</p>
+              <p><span class="font-medium">Enter Details:</span> Add Twenty Third & Forth as a recipient using the details provided.</p>
             </li>
             <li class="flex gap-3 items-start">
               <div class="bg-blue-100 text-blue-600 rounded-full p-1 mt-1 flex-shrink-0">
@@ -253,7 +290,7 @@
         <!-- Header Section -->
         <div class="flex items-center justify-between mb-8 pb-6 border-b-2 border-gray-200">
           <div class="flex items-center gap-4">
-            <div class="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
+            <div class="w-14 h-14 bg-gray-900 rounded-lg flex items-center justify-center shadow-lg">
               <i class="fab fa-bitcoin text-white text-2xl"></i>
             </div>
             <div>
@@ -261,7 +298,7 @@
               <p class="text-sm text-gray-600 mt-1">Secure digital asset deposits</p>
             </div>
           </div>
-          <div class="bg-gradient-to-r from-amber-500 to-orange-600 text-white text-xs font-bold px-4 py-2 rounded-full shadow-md uppercase tracking-wider">
+          <div class="bg-gray-900 text-white text-xs font-bold px-4 py-2 rounded-full shadow-md uppercase tracking-wider">
             Digital Assets
           </div>
         </div>
@@ -270,18 +307,18 @@
         <div class="mb-6 md:mb-8">
           <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-3 md:mb-4">Select Deposit Method</label>
           <div class="grid grid-cols-2 gap-3 md:gap-4">
-            <button id="bank-deposit-btn" onclick="selectDepositMethod('bank')" class="group relative px-3 md:px-6 py-3 md:py-4 rounded-xl border-2 border-blue-500 bg-gradient-to-br from-blue-50 to-blue-100 text-blue-700 font-semibold text-xs md:text-sm transition-all duration-300 shadow-md hover:shadow-xl hover:scale-105">
+            <button id="bank-deposit-btn" onclick="selectDepositMethod('bank')" class="group relative px-3 md:px-6 py-3 md:py-4 rounded-lg border-2 border-gray-800 bg-gray-100 text-gray-900 font-semibold text-xs md:text-sm transition-all duration-300 shadow-md hover:shadow-xl hover:scale-105">
               <div class="flex flex-col sm:flex-row items-center justify-center gap-2 md:gap-3">
-                <div class="w-8 h-8 md:w-10 md:h-10 bg-blue-500 rounded-lg flex items-center justify-center group-hover:bg-blue-600 transition-colors flex-shrink-0">
+                <div class="w-8 h-8 md:w-10 md:h-10 bg-gray-900 rounded-lg flex items-center justify-center group-hover:bg-gray-800 transition-colors flex-shrink-0">
                   <i class="fas fa-university text-white text-sm md:text-lg"></i>
                 </div>
                 <span class="text-center sm:text-left">Bank Transfer</span>
               </div>
-              <div class="absolute top-2 right-2 w-2 h-2 md:w-3 md:h-3 bg-blue-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <div class="absolute top-2 right-2 w-2 h-2 md:w-3 md:h-3 bg-gray-900 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
             </button>
-            <button id="crypto-deposit-btn" onclick="selectDepositMethod('crypto')" class="group relative px-3 md:px-6 py-3 md:py-4 rounded-xl border-2 border-gray-200 bg-white text-gray-700 font-semibold text-xs md:text-sm hover:border-amber-500 hover:bg-gradient-to-br hover:from-amber-50 hover:to-orange-50 transition-all duration-300 shadow-md hover:shadow-xl hover:scale-105">
+            <button id="crypto-deposit-btn" onclick="selectDepositMethod('crypto')" class="group relative px-3 md:px-6 py-3 md:py-4 rounded-lg border-2 border-gray-300 bg-white text-gray-700 font-semibold text-xs md:text-sm hover:border-gray-800 hover:bg-gray-50 transition-all duration-300 shadow-md hover:shadow-xl hover:scale-105">
               <div class="flex flex-col sm:flex-row items-center justify-center gap-2 md:gap-3">
-                <div class="w-8 h-8 md:w-10 md:h-10 bg-gray-200 rounded-lg flex items-center justify-center group-hover:bg-amber-500 transition-colors flex-shrink-0">
+                <div class="w-8 h-8 md:w-10 md:h-10 bg-gray-200 rounded-lg flex items-center justify-center group-hover:bg-gray-800 transition-colors flex-shrink-0">
                   <i class="fab fa-bitcoin text-gray-600 group-hover:text-white text-sm md:text-lg transition-colors"></i>
                 </div>
                 <span class="text-center sm:text-left">Cryptocurrency</span>
@@ -292,14 +329,14 @@
 
         <!-- Bank Deposit Section (Default) -->
         <div id="bank-deposit-section" class="space-y-4">
-          <div class="bg-gradient-to-r from-blue-50 to-blue-100 border-l-4 border-blue-500 rounded-lg p-5 shadow-sm">
+          <div class="bg-gray-50 border-l-4 border-gray-800 rounded-lg p-5 shadow-sm">
             <div class="flex items-start gap-3">
-              <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
+              <div class="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center flex-shrink-0">
                 <i class="fas fa-info-circle text-white"></i>
               </div>
               <div>
-                <p class="text-sm font-semibold text-blue-900 mb-1">Bank Transfer Instructions</p>
-                <p class="text-sm text-blue-800">Use the banking details displayed above to make your deposit via traditional bank transfer.</p>
+                <p class="text-sm font-semibold text-gray-900 mb-1">Bank Transfer Instructions</p>
+                <p class="text-sm text-gray-700">Use the banking details displayed above to make your deposit via traditional bank transfer.</p>
               </div>
             </div>
           </div>
@@ -311,26 +348,26 @@
           <div class="mb-6 md:mb-8">
             <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-3 md:mb-4">Select Cryptocurrency</label>
             <div class="grid grid-cols-2 gap-3 md:gap-4">
-              <button id="btc-btn" onclick="selectCryptoType('btc')" class="group relative px-3 md:px-6 py-4 md:py-5 rounded-xl border-2 border-amber-500 bg-gradient-to-br from-amber-50 to-orange-50 text-amber-700 font-bold text-xs md:text-sm transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-105">
+              <button id="btc-btn" onclick="selectCryptoType('btc')" class="group relative px-3 md:px-6 py-4 md:py-5 rounded-lg border-2 border-gray-800 bg-gray-100 text-gray-900 font-bold text-xs md:text-sm transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-105">
                 <div class="flex flex-col items-center gap-2 md:gap-3">
-                  <div class="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-all">
+                  <div class="w-12 h-12 md:w-16 md:h-16 bg-gray-900 rounded-lg flex items-center justify-center shadow-md group-hover:shadow-lg transition-all">
                     <i class="fab fa-bitcoin text-white text-2xl md:text-3xl"></i>
                   </div>
                   <div class="text-center">
                     <div class="font-bold text-sm md:text-base">Bitcoin</div>
-                    <div class="text-[10px] md:text-xs text-amber-600 font-semibold">BTC</div>
+                    <div class="text-[10px] md:text-xs text-gray-700 font-semibold">BTC</div>
                   </div>
                 </div>
-                <div class="absolute top-2 right-2 md:top-3 md:right-3 w-3 h-3 md:w-4 md:h-4 bg-amber-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div class="absolute top-2 right-2 md:top-3 md:right-3 w-3 h-3 md:w-4 md:h-4 bg-gray-900 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
               </button>
-              <button id="usdt-btn" onclick="selectCryptoType('usdt')" class="group relative px-3 md:px-6 py-4 md:py-5 rounded-xl border-2 border-gray-200 bg-white text-gray-700 font-bold text-xs md:text-sm hover:border-teal-500 hover:bg-gradient-to-br hover:from-teal-50 hover:to-cyan-50 transition-all duration-300 shadow-md hover:shadow-2xl hover:scale-105">
+              <button id="usdt-btn" onclick="selectCryptoType('usdt')" class="group relative px-3 md:px-6 py-4 md:py-5 rounded-lg border-2 border-gray-300 bg-white text-gray-700 font-bold text-xs md:text-sm hover:border-gray-800 hover:bg-gray-50 transition-all duration-300 shadow-md hover:shadow-2xl hover:scale-105">
                 <div class="flex flex-col items-center gap-2 md:gap-3">
-                  <div class="w-12 h-12 md:w-16 md:h-16 bg-gray-200 rounded-xl flex items-center justify-center shadow-md group-hover:bg-gradient-to-br group-hover:from-teal-500 group-hover:to-cyan-600 transition-all">
+                  <div class="w-12 h-12 md:w-16 md:h-16 bg-gray-200 rounded-lg flex items-center justify-center shadow-md group-hover:bg-gray-900 transition-all">
                     <i class="fas fa-coins text-gray-600 group-hover:text-white text-2xl md:text-3xl transition-colors"></i>
                   </div>
                   <div class="text-center">
                     <div class="font-bold text-sm md:text-base">Tether</div>
-                    <div class="text-[10px] md:text-xs text-gray-600 group-hover:text-teal-600 font-semibold">USDT</div>
+                    <div class="text-[10px] md:text-xs text-gray-600 group-hover:text-gray-900 font-semibold">USDT</div>
                   </div>
                 </div>
               </button>
@@ -339,11 +376,11 @@
 
           <!-- BTC Wallet Section -->
           <div id="btc-wallet-section" class="hidden">
-            <div class="bg-gradient-to-br from-white via-amber-50/30 to-orange-50/30 border-2 border-amber-200 rounded-2xl p-4 md:p-8 shadow-xl">
+            <div class="bg-white border-2 border-gray-300 rounded-lg p-4 md:p-8 shadow-sm">
               <!-- Wallet Header -->
-              <div class="flex items-center mb-6 md:mb-8 pb-4 md:pb-6 border-b-2 border-amber-200">
+              <div class="flex items-center mb-6 md:mb-8 pb-4 md:pb-6 border-b-2 border-gray-300">
                 <div class="flex items-center gap-3 md:gap-5">
-                  <div class="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
+                  <div class="w-12 h-12 md:w-16 md:h-16 bg-gray-900 rounded-lg flex items-center justify-center shadow-lg flex-shrink-0">
                     <i class="fab fa-bitcoin text-white text-2xl md:text-3xl"></i>
                   </div>
                   <div class="min-w-0">
@@ -354,10 +391,10 @@
               </div>
               
               <!-- Wallet Address Card -->
-              <div class="bg-white rounded-xl p-4 md:p-6 border-2 border-amber-200 shadow-lg mb-4 md:mb-6">
+              <div class="bg-white rounded-lg p-4 md:p-6 border-2 border-gray-300 shadow-sm mb-4 md:mb-6">
                 <div class="flex items-center gap-2 mb-3 md:mb-4">
-                  <div class="w-7 h-7 md:w-8 md:h-8 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <i class="fas fa-wallet text-amber-600 text-xs md:text-sm"></i>
+                  <div class="w-7 h-7 md:w-8 md:h-8 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-wallet text-gray-700 text-xs md:text-sm"></i>
                   </div>
                   <label class="text-[10px] md:text-xs font-bold uppercase tracking-wider text-gray-700">BTC Wallet Address</label>
                 </div>
@@ -369,14 +406,14 @@
                     </div>
                     <p id="btc-wallet-address" class="text-xs md:text-sm font-mono text-gray-900 break-all hidden bg-white p-2 md:p-3 rounded border border-gray-200"></p>
                   </div>
-                  <button onclick="copyToClipboard('btc-wallet-address')" class="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white p-2.5 md:p-3 rounded-lg copy-btn flex-shrink-0 shadow-md hover:shadow-lg transition-all transform hover:scale-110 w-full sm:w-auto justify-center sm:justify-start">
+                  <button onclick="copyToClipboard('btc-wallet-address')" class="bg-gray-900 hover:bg-gray-800 text-white p-2.5 md:p-3 rounded-lg copy-btn flex-shrink-0 shadow-md hover:shadow-lg transition-all transform hover:scale-110 w-full sm:w-auto justify-center sm:justify-start">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
                     </svg>
                   </button>
                 </div>
                 <p class="text-[10px] md:text-xs text-gray-500 mt-3 flex flex-col sm:flex-row items-start sm:items-center gap-2">
-                  <i class="fas fa-shield-alt text-amber-600 flex-shrink-0"></i>
+                  <i class="fas fa-shield-alt text-gray-700 flex-shrink-0"></i>
                   <span>Send only Bitcoin (BTC) to this address. Sending other cryptocurrencies may result in permanent loss.</span>
                 </p>
               </div>
@@ -467,72 +504,39 @@
   
 
              <!-- Bottom Navbar (Mobile Friendly) -->
-            <div class="mobile-nav fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t p-3" style="height: 100px;">
+            <div class="mobile-nav fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-300 p-3" style="height: 100px; z-index: 100;">
                 <div class="flex justify-around items-center h-full">
-                    <!-- Wallet Icon -->
-                    <a href="dashboard.html" class="nav-item flex flex-col items-center" onclick="setActive(this)">
+                    <!-- Home Icon -->
+                    <a href="dashboard.html" class="nav-item flex flex-col items-center" data-page="dashboard">
                         <div class="bg-white rounded p-2">
                             <img src="1221.png" alt="Wallet Icon" class="h-6 w-6" />
                         </div>
-                        <span class="text-xs font-medium mt-2">Home</span>
+                        <span class="text-xs font-medium mt-2 text-gray-700">Home</span>
                     </a>
                     <!-- Deposit Icon -->
-                    <a href="deposit.html" class="nav-item flex flex-col items-center" onclick="setActive(this)">
+                    <a href="deposit.html" class="nav-item flex flex-col items-center" data-page="deposit">
                         <div class="bg-white rounded p-2">
-                            <img src="deposit.png" alt="Redeem Icon" class="h-6 w-6" />
+                            <img src="deposit.png" alt="Deposit Icon" class="h-6 w-6" />
                         </div>
-                        <span class="text-xs font-medium mt-2">Deposit</span>
+                        <span class="text-xs font-medium mt-2 text-gray-700">Deposit</span>
                     </a>
-                    <!-- Withdraw Icon -->
-                    <!-- <a href="withdraw.html" class="nav-item flex flex-col items-center" onclick="setActive(this)">
-                        <div class="bg-white rounded p-2">
-                            <img src="withdraw.png" alt="Withdraw Icon" class="h-6 w-6" />
-                        </div>
-                        <span class="text-xs font-medium mt-2">Withdraw</span>
-                    </a> -->
-                    <!-- Verify Icon -->
-                    <a href="support.html" class="nav-item flex flex-col items-center" onclick="setActive(this)">
+                    <!-- Support Icon -->
+                    <a href="support.html" class="nav-item flex flex-col items-center" data-page="support">
                         <div class="bg-white rounded p-2">
                             <img src="support.png" alt="Support Icon" class="h-6 w-6" />
                         </div>
-                        <span class="text-xs font-medium mt-2">Support</span>
+                        <span class="text-xs font-medium mt-2 text-gray-700">Support</span>
                     </a>
                     <!-- Profile Icon -->
-                    <a href="profile.html" class="nav-item flex flex-col items-center" onclick="setActive(this)">
+                    <a href="profile.html" class="nav-item flex flex-col items-center" data-page="profile">
                         <div class="bg-white rounded p-2">
                             <img src="profile.png" alt="Profile Icon" class="h-6 w-6" />
                         </div>
-                        <span class="text-xs font-medium mt-2">Profile</span>
+                        <span class="text-xs font-medium mt-2 text-gray-700">Profile</span>
                     </a>
                 </div>
             </div>
-
-            <!-- Script -->
-            <script>
-                // Function to set the active navbar item
-                function setActive(element) {
-                    // Reset all items to default styles
-                    const icons = document.querySelectorAll('.nav-item div');
-                    const texts = document.querySelectorAll('.nav-item span');
-                    icons.forEach(icon => icon.classList.remove('bg-green-300', 'text-white'));
-                    texts.forEach(text => text.classList.remove('text-black'));
-
-                    // Add active styles to the clicked item
-                    const icon = element.querySelector('div');
-                    const text = element.querySelector('span');
-                    icon.classList.add('bg-blue-400', 'text-white'); // Highlight background of active icon
-                    text.classList.add('text-black'); // Highlight text of active item
-                }
-
-                // Set the active state on page load based on the current URL
-                const currentPath = window.location.pathname;
-                const navItems = document.querySelectorAll('.nav-item');
-                navItems.forEach(item => {
-                    if (item.href.includes(currentPath)) {
-                        setActive(item);
-                    }
-                });
-            </script>
+            <script src="bottom-navbar.js"></script>
 
             <script>
                 document.addEventListener('DOMContentLoaded', () => {
@@ -700,7 +704,7 @@
                     const generateBtn = document.getElementById('refresh-banking-details');
                     if (generateBtn) {
                         generateBtn.classList.remove('hidden');
-                        generateBtn.classList.add('bg-green-500', 'hover:bg-green-600', 'text-white', 'shadow-lg');
+                        generateBtn.classList.add('bg-blue-500', 'hover:bg-blue-600', 'text-white', 'shadow-lg');
                         generateBtn.title = 'Generate Banking Details - Click to create your banking details';
                     }
                 }
@@ -860,7 +864,7 @@
                     // Create notification element
                     const notification = document.createElement('div');
                     notification.className = `fixed top-20 right-4 p-4 rounded-lg shadow-lg z-50 transition-all duration-300 ${
-                        type === 'success' ? 'bg-green-500 text-white' : 
+                        type === 'success' ? 'bg-blue-500 text-white' : 
                         type === 'error' ? 'bg-red-500 text-white' : 
                         'bg-blue-500 text-white'
                     }`;
@@ -989,8 +993,9 @@
                         const walletAddress = generateCryptoWalletAddress(type);
                         console.log(`Generated ${type.toUpperCase()} wallet:`, walletAddress);
 
-                        // Save to Firebase
-                        const { doc, getDoc, setDoc } = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+                        // Save to Firebase (avoid dynamic imports in inline HTML scripts)
+                        const { doc, getDoc, setDoc } = window.firestoreHelpers || {};
+                        if (!doc || !getDoc || !setDoc) throw new Error('Firestore helpers not available');
                         const userDocRef = doc(window.db, 'users', user.uid);
                         
                         // Get current user data
@@ -1044,7 +1049,8 @@
                             return;
                         }
 
-                        const { doc, getDoc, setDoc } = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+                        const { doc, getDoc, setDoc } = window.firestoreHelpers || {};
+                        if (!doc || !getDoc || !setDoc) return;
                         const userDocRef = doc(window.db, 'users', user.uid);
                         const userDoc = await getDoc(userDocRef);
 
@@ -1119,3 +1125,8 @@
             </script>
         </div>
     </div>
+
+    <!-- Inactivity Timeout: Auto-logout after 5 minutes of inactivity -->
+    <script src="inactivity-timeout.js"></script>
+</body>
+</html>

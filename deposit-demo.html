@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Beal Offshore Ltd Deposit - Demo</title>
+    <title>Twenty Third & Forth Deposit - Demo</title>
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" sizes="180x180" href="logo new.png">
-    <link rel="icon" href="logo new.png" type="image/png">
+    <link rel="apple-touch-icon" sizes="180x180" href="app-icon.svg">
+    <link rel="icon" href="app-icon.svg" type="image/svg+xml">
     <script src="https://cdn.tailwindcss.com"></script>
 
     <script type="module" src="banking-details-demo.js"></script>
@@ -114,11 +114,11 @@
     <div class="container mx-auto flex items-center justify-between">
         <!-- Left Logo -->
         <a href="/" class="flex items-center">
-            <img src="Logo.png" alt="Beal Offshore Ltd Logo" class="h-14">
+            <img src="11.png" alt="Twenty Third & Forth Logo" class="h-14">
         </a>
 
         <!-- Right Logo (Email) -->
-        <a href="mailto:support@beal-offshore.com" class="flex items-center bg-blue-50 p-2 rounded-full hover:bg-blue-100 transition-all">
+        <a href="mailto:support@twentythirdforth.com" class="flex items-center bg-blue-50 p-2 rounded-full hover:bg-blue-100 transition-all">
             <img src="chat.png" alt="Contact" class="h-8 w-8">
         </a>
     </div>
@@ -146,8 +146,8 @@
             <h2 class="text-lg font-bold text-gray-800">Banking Details</h2>
             <div class="flex items-center space-x-3">
               <div class="bg-blue-500 text-white text-xs px-3 py-1 rounded-full">Personal Account</div>
-              <button id="refresh-banking-details" class="bg-green-100 p-2 rounded-full hover:bg-green-200 transition-all" title="Generate New Banking Details">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <button id="refresh-banking-details" class="bg-blue-100 p-2 rounded-full hover:bg-blue-200 transition-all" title="Generate New Banking Details">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
               </button>
@@ -230,7 +230,7 @@
                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
               </div>
-              <p><span class="font-medium">Enter Details:</span> Add Beal Offshore Ltd as a recipient using the details provided.</p>
+              <p><span class="font-medium">Enter Details:</span> Add Twenty Third & Forth as a recipient using the details provided.</p>
             </li>
             <li class="flex gap-3 items-start">
               <div class="bg-blue-100 text-blue-600 rounded-full p-1 mt-1 flex-shrink-0">
@@ -320,7 +320,7 @@
         // Create notification element
         const notification = document.createElement('div');
         notification.className = `fixed top-20 right-4 p-4 rounded-lg shadow-lg z-50 transition-all duration-300 ${
-            type === 'success' ? 'bg-green-500 text-white' : 
+            type === 'success' ? 'bg-blue-500 text-white' : 
             type === 'error' ? 'bg-red-500 text-white' : 
             'bg-blue-500 text-white'
         }`;

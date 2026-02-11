@@ -3,12 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Beal Offshore Ltd Statement</title>
-    <link rel="manifest" href="/assets/manifest-DnAVBaWg.json">
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/logo%20new-DPEJ_4oz.png">
-    <link rel="icon" href="/assets/logo%20new-DPEJ_4oz.png" type="image/png">
+    <title>Twenty Third & Forth Statement</title>
+    <link rel="manifest" href="/assets/manifest-DrZo22X-.json">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/app-icon-C11owm6W.svg">
+    <link rel="icon" href="/assets/app-icon-C11owm6W.svg" type="image/svg+xml">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        :root {
+            --ttf-brand: #1800ac;
+            --ttf-brand-hover: #140099;
+        }
         body {
             background-color: #f7f9fc;
             font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -18,15 +22,15 @@
             transition: all 0.3s ease;
         }
         .input-field:focus {
-            border-color: #2563EB;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            border-color: #374151;
+            box-shadow: 0 0 0 3px rgba(55, 65, 81, 0.1);
         }
         .btn-primary {
             transition: all 0.2s ease;
         }
         .btn-primary:hover {
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+            box-shadow: 0 4px 12px rgba(17, 24, 39, 0.15);
         }
         .btn-primary:active {
             transform: translateY(0);
@@ -72,6 +76,12 @@
                 gap: 12px;
             }
         }
+        /* Remove black/dark accents */
+        .bg-gray-900 { background-color: var(--ttf-brand) !important; }
+        .bg-gray-800 { background-color: var(--ttf-brand-hover) !important; }
+        .hover\:bg-gray-800:hover { background-color: var(--ttf-brand-hover) !important; }
+        .bg-black { background-color: rgba(24, 0, 172, 0.55) !important; }
+        .text-black { color: rgb(17 24 39) !important; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -80,11 +90,11 @@
 <!-- Navbar -->
 <nav class="bg-white p-4 shadow">
     <div class="container mx-auto flex items-center justify-between">
-        <img src="/assets/LOGO-DP4bRQMr.png" alt="Beal Offshore Ltd Logo" class="h-14">
+        <img src="/assets/11-BKkfsV3h.png" alt="Twenty Third & Forth Logo" class="h-14 md:h-16 w-auto">
         </a>
 
             <!-- Sign out button for mobile and desktop -->
-            <a href="login.html" onclick="signOut()" class="bg-white border-b-2 text-xs text-black px-6 py-2 rounded-full hover:bg-white border">Sign Out</a>
+            <a href="login.html" onclick="signOut()" class="bg-white border-b-2 text-xs text-gray-900 px-6 py-2 rounded-full hover:bg-white border">Sign Out</a>
         </div>
     </div>
 </nav>
@@ -94,8 +104,8 @@
         <div class="card bg-white rounded-2xl p-5 sm:p-8 max-w-md w-full">
             <!-- Card Header with Bank Logo -->
             <div class="flex items-center justify-center mb-6">
-                <div class="bg-blue-100 rounded-full p-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div class="bg-gray-100 rounded-full p-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                     </svg>
                 </div>
@@ -165,15 +175,15 @@
                         <label class="block text-sm font-medium text-gray-600 mb-2">Statement Format</label>
                         <div class="flex space-x-6">
                             <label class="flex items-center">
-                                <input type="radio" name="format" value="pdf" checked class="text-blue-600 focus:ring-blue-500 h-4 w-4">
+                                <input type="radio" name="format" value="pdf" checked class="text-gray-800 focus:ring-gray-500 h-4 w-4">
                                 <span class="ml-2 text-sm text-gray-700">PDF</span>
                             </label>
                             <label class="flex items-center">
-                                <input type="radio" name="format" value="csv" class="text-blue-600 focus:ring-blue-500 h-4 w-4">
+                                <input type="radio" name="format" value="csv" class="text-gray-800 focus:ring-gray-500 h-4 w-4">
                                 <span class="ml-2 text-sm text-gray-700">CSV</span>
                             </label>
                             <label class="flex items-center">
-                                <input type="radio" name="format" value="xlsx" class="text-blue-600 focus:ring-blue-500 h-4 w-4">
+                                <input type="radio" name="format" value="xlsx" class="text-gray-800 focus:ring-gray-500 h-4 w-4">
                                 <span class="ml-2 text-sm text-gray-700">Excel</span>
                             </label>
                         </div>
@@ -184,14 +194,14 @@
                 <button 
                     type="submit" 
                     id="submitButton"
-                    class="btn-primary w-full bg-blue-600 text-white font-medium text-sm py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 mt-4">
+                    class="btn-primary w-full bg-gray-900 text-white font-medium text-sm py-3 px-4 rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 mt-4">
                     Request Statement
                 </button>
 
                 <!-- Loading State -->
                 <div id="loadingState" class="hidden">
                     <div class="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                        <div class="progress-bar h-full bg-blue-600"></div>
+                        <div class="progress-bar h-full bg-gray-900"></div>
                     </div>
                     <p class="text-center text-sm text-gray-500 mt-2">Processing your request...</p>
                 </div>
@@ -199,9 +209,9 @@
                 <!-- Success Message -->
                 <div 
                     id="successMessage" 
-                    class="hidden bg-green-50 border border-green-200 text-green-700 p-4 rounded-lg">
+                    class="hidden bg-blue-50 border border-blue-200 text-blue-700 p-4 rounded-lg">
                     <div class="flex">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0 text-blue-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                         </svg>
                         <p class="text-sm">Your bank statement will be sent to <span id="emailConfirmation" class="font-medium"></span> shortly.</p>
@@ -259,14 +269,14 @@
                     // Reset all items to default styles
                     const icons = document.querySelectorAll('.nav-item div');
                     const texts = document.querySelectorAll('.nav-item span');
-                    icons.forEach(icon => icon.classList.remove('bg-green-300', 'text-white'));
+                    icons.forEach(icon => icon.classList.remove('bg-blue-300', 'text-white'));
                     texts.forEach(text => text.classList.remove('text-black'));
 
                     // Add active styles to the clicked item
                     const icon = element.querySelector('div');
                     const text = element.querySelector('span');
-                    icon.classList.add('bg-blue-400', 'text-white'); // Highlight background of active icon
-                    text.classList.add('text-black'); // Highlight text of active item
+                    icon.classList.add('bg-gray-800', 'text-white'); // Highlight background of active icon
+                    text.classList.add('text-gray-900'); // Highlight text of active item
                 }
 
                 // Set the active state on page load based on the current URL
@@ -340,8 +350,8 @@
         <!-- Header -->
         <div class="text-center">
             <div class="flex justify-center mb-4">
-                <div class="w-14 h-14 flex items-center justify-center rounded-full bg-blue-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div class="w-14 h-14 flex items-center justify-center rounded-full bg-gray-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-gray-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m2 8H7a2 2 0 01-2-2V6a2 2 0 012-2h5.5l5.5 5.5V18a2 2 0 01-2 2z" />
                     </svg>
                 </div>
@@ -354,7 +364,7 @@
         <div class="mt-6">
             <button 
                 id="closeModal" 
-                class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-full transition duration-200"
+                class="w-full py-3 bg-gray-900 hover:bg-gray-800 text-white text-sm font-medium rounded-full transition duration-200"
             >
                 Close
             </button>
@@ -386,5 +396,8 @@
             document.getElementById('statementModal').classList.add('hidden');
         });
     </script>
+
+    <!-- Inactivity Timeout: Auto-logout after 5 minutes of inactivity -->
+    <script src="inactivity-timeout.js"></script>
 </body>
 </html>

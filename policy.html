@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Policy | Twenty Third & Forth</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" sizes="180x180" href="app-icon.svg">
+    <link rel="icon" href="app-icon.svg" type="image/svg+xml">
+    <!-- Include Tailwind CSS -->
+    <script src="./tailwind-mono.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Include Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Typography + shared site theme -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./site.css">
+    <script src="./components/site-shell.js" defer></script>
+    <style>
+        :root {
+            --bg: #f6f9ff;
+            --surface: #ffffff;
+            --ink: #09090b;
+            --muted: #3f3f46;
+            --subtle: #71717a;
+            --border: #e4e4e7;
+            --brand: #1f66e5;
+            --brand-hover: #1c4fb8;
+        }
+
+        html { scroll-behavior: smooth; }
+        body { background: var(--bg); color: var(--ink); letter-spacing: -0.01em; }
+
+        /* Text-based Logo */
+        .text-logo {
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", sans-serif;
+            font-weight: 650;
+            font-size: 1.25rem;
+            letter-spacing: -0.02em;
+            color: var(--ink);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+        .text-logo .first { color: var(--ink); }
+        .text-logo .citizens { color: var(--ink); font-weight: 650; }
+        .text-logo .inc {
+            font-size: 0.75rem;
+            color: var(--subtle);
+            font-weight: 600;
+            margin-left: 2px;
+            vertical-align: super;
+        }
+        
+        /* Primary button */
+        .btn-blue {
+            background: var(--brand);
+            color: white;
+            border: 1px solid rgba(16, 43, 99, 0.18);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+        }
+        .btn-blue:hover {
+            background: var(--brand-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 18px 50px rgba(0,0,0,0.12);
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-blue-50">
+
+    <div data-include="components/site-header.html"></div>
+
+    <!-- Main Content -->
+    <section class="pt-24 md:pt-32 pb-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <div class="max-w-4xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-12">
+                    <div class="inline-flex items-center gap-2 bg-white border border-blue-100 rounded-full px-4 py-2 shadow-sm mb-6">
+                        <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+                        <span class="text-blue-800 text-xs font-semibold uppercase tracking-wider">Legal</span>
+                    </div>
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-blue-950 mb-4">Policy</h1>
+                    <p class="text-blue-800 text-lg">Last updated: January 2025</p>
+            </div>
+
+            <!-- Content -->
+                <div class="bg-white rounded-2xl shadow-lg border border-blue-100 p-8 md:p-12 space-y-8">
+                <!-- Section 1 -->
+                <section>
+                    <h2 class="text-2xl font-bold text-blue-950 mb-4 flex items-center">
+                        <i class="fas fa-balance-scale mr-3 text-blue-950"></i>
+                        1. Account Policies
+                    </h2>
+                    <div class="text-blue-800 leading-relaxed space-y-4">
+                        <p>
+                            Twenty Third & Forth maintains strict policies regarding account management, transactions, and user conduct. All account holders are expected to comply with these policies to ensure the security and integrity of our banking services.
+                        </p>
+                        <ul class="list-disc list-inside space-y-2 ml-4">
+                            <li>Accounts must be maintained in good standing with accurate information</li>
+                            <li>Account holders are responsible for all activities under their account</li>
+                            <li>We reserve the right to suspend or close accounts that violate our policies</li>
+                            <li>Account verification may be required at any time</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Section 2 -->
+                <section>
+                    <h2 class="text-2xl font-bold text-blue-950 mb-4 flex items-center">
+                        <i class="fas fa-money-check-alt mr-3 text-blue-950"></i>
+                        2. Transaction Policies
+                    </h2>
+                    <div class="text-blue-800 leading-relaxed space-y-4">
+                        <p>Our transaction policies include:</p>
+                        <ul class="list-disc list-inside space-y-2 ml-4">
+                            <li><strong>Transfer Limits:</strong> Minimum transfer: $0-100,000. Maximum limits vary by account tier and verification status</li>
+                            <li><strong>Processing Times:</strong> Domestic transfers: 1-2 business days. International transfers: 1-3 business days</li>
+                            <li><strong>Fees:</strong> Transaction fees apply as disclosed in our fee schedule. Fees are non-refundable once a transaction is processed</li>
+                            <li><strong>Reversals:</strong> Transactions cannot be reversed once processed. Please verify all details before confirming</li>
+                            <li><strong>Pending Transactions:</strong> Maximum of 5 pending transactions allowed at any time</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Section 3 -->
+                <section>
+                    <h2 class="text-2xl font-bold text-blue-950 mb-4 flex items-center">
+                        <i class="fas fa-id-card mr-3 text-blue-950"></i>
+                        3. KYC and Verification Policy
+                    </h2>
+                    <div class="text-blue-800 leading-relaxed space-y-4">
+                        <p>
+                            Know Your Customer (KYC) verification is mandatory for all account holders. Our verification policy includes:
+                        </p>
+                        <ul class="list-disc list-inside space-y-2 ml-4">
+                            <li>Initial verification required during account registration</li>
+                            <li>Periodic re-verification may be required</li>
+                            <li>Enhanced due diligence for high-value transactions</li>
+                            <li>Documentation must be current and valid</li>
+                            <li>Verification status affects account limits and features</li>
+                        </ul>
+                        <p class="mt-4">
+                            Failure to complete KYC verification may result in account restrictions or closure.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Section 4 -->
+                <section>
+                    <h2 class="text-2xl font-bold text-blue-950 mb-4 flex items-center">
+                        <i class="fas fa-shield-alt mr-3 text-blue-950"></i>
+                        4. Security Policy
+                    </h2>
+                    <div class="text-blue-800 leading-relaxed space-y-4">
+                        <p>To maintain account security, users must:</p>
+                        <ul class="list-disc list-inside space-y-2 ml-4">
+                            <li>Use strong, unique passwords and change them regularly</li>
+                            <li>Enable multi-factor authentication when available</li>
+                            <li>Never share account credentials with anyone</li>
+                            <li>Report suspicious activity immediately</li>
+                            <li>Log out from shared or public devices</li>
+                            <li>Keep contact information up to date for security alerts</li>
+                        </ul>
+                        <p class="mt-4">
+                            We employ bank-level encryption and security measures, but users are responsible for maintaining the security of their login credentials.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Section 5 -->
+                <section>
+                    <h2 class="text-2xl font-bold text-blue-950 mb-4 flex items-center">
+                        <i class="fas fa-file-invoice-dollar mr-3 text-blue-950"></i>
+                        5. Fee Policy
+                    </h2>
+                    <div class="text-blue-800 leading-relaxed space-y-4">
+                        <p>Our fee structure includes:</p>
+                        <ul class="list-disc list-inside space-y-2 ml-4">
+                            <li><strong>Account Maintenance:</strong> Fees vary by account type and tier</li>
+                            <li><strong>Transaction Fees:</strong> Applied to transfers, withdrawals, and certain services</li>
+                            <li><strong>Currency Conversion:</strong> Exchange rates and fees apply for multi-currency transactions</li>
+                            <li><strong>Inactivity Fees:</strong> May apply to dormant accounts after extended periods</li>
+                        </ul>
+                        <p class="mt-4">
+                            All fees are disclosed before transaction completion. Fee schedules are subject to change with 30 days' notice.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Section 6 -->
+                <section>
+                    <h2 class="text-2xl font-bold text-blue-950 mb-4 flex items-center">
+                        <i class="fas fa-gavel mr-3 text-blue-950"></i>
+                        6. Compliance and Regulatory Policy
+                    </h2>
+                    <div class="text-blue-800 leading-relaxed space-y-4">
+                        <p>
+                            Twenty Third & Forth operates in compliance with international banking regulations, including:
+                        </p>
+                        <ul class="list-disc list-inside space-y-2 ml-4">
+                            <li>Anti-Money Laundering (AML) regulations</li>
+                            <li>Know Your Customer (KYC) requirements</li>
+                            <li>Sanctions screening and compliance</li>
+                            <li>Tax reporting obligations where applicable</li>
+                            <li>Data protection and privacy regulations</li>
+                        </ul>
+                        <p class="mt-4">
+                            We may be required to report certain transactions to regulatory authorities as mandated by law.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Section 7 -->
+                <section>
+                    <h2 class="text-2xl font-bold text-blue-950 mb-4 flex items-center">
+                        <i class="fas fa-user-times mr-3 text-blue-950"></i>
+                        7. Account Closure Policy
+                    </h2>
+                    <div class="text-blue-800 leading-relaxed space-y-4">
+                        <p>
+                            Accounts may be closed by the account holder at any time, subject to:
+                        </p>
+                        <ul class="list-disc list-inside space-y-2 ml-4">
+                            <li>Settlement of all outstanding balances and fees</li>
+                            <li>Completion of pending transactions</li>
+                            <li>Verification of account holder identity</li>
+                            <li>Compliance with regulatory requirements</li>
+                        </ul>
+                        <p class="mt-4">
+                            We reserve the right to close accounts that violate our terms, engage in fraudulent activity, or fail to meet regulatory requirements.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Section 8 -->
+                <section>
+                    <h2 class="text-2xl font-bold text-blue-950 mb-4 flex items-center">
+                        <i class="fas fa-headset mr-3 text-blue-950"></i>
+                        8. Dispute Resolution Policy
+                    </h2>
+                    <div class="text-blue-800 leading-relaxed space-y-4">
+                        <p>
+                            If you have a dispute or complaint regarding our services:
+                        </p>
+                        <ul class="list-disc list-inside space-y-2 ml-4">
+                            <li>Contact our support team immediately</li>
+                            <li>Provide detailed information about the issue</li>
+                            <li>We will investigate and respond within 5-10 business days</li>
+                            <li>Disputes may be escalated to our compliance department</li>
+                            <li>Final resolution is subject to our terms and applicable law</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Section 9 -->
+                <section>
+                    <h2 class="text-2xl font-bold text-blue-950 mb-4 flex items-center">
+                        <i class="fas fa-phone mr-3 text-blue-950"></i>
+                        9. Contact Information
+                    </h2>
+                    <div class="text-blue-800 leading-relaxed space-y-4">
+                        <p>
+                            For questions about our policies, please contact us:
+                        </p>
+                        <div class="bg-blue-50 border border-blue-100 rounded-xl p-6">
+                            <p class="font-semibold text-blue-950 mb-2">Twenty Third & Forth</p>
+                            <p class="text-blue-800"><i class="fas fa-map-marker-alt mr-2"></i>Forum Lane, Camana Bay, Grand Cayman</p>
+                            <p class="text-blue-800"><i class="fas fa-envelope mr-2"></i>support@twentythirdforth.com</p>
+                            <p class="text-blue-800 mt-2"><i class="fas fa-phone mr-2"></i>Available 24/7 for support</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Back to Home -->
+            <div class="text-center mt-12">
+                <a href="index.html" class="inline-flex items-center gap-2 text-blue-950 hover:text-blue-800 font-medium transition duration-300">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back to Home</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <div data-include="components/site-footer.html"></div>
+    <div data-include="components/cookie-consent.html"></div>
+    <script src="./components/site-shell.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,179 @@
+:root {
+  --bg: #f6f9ff;
+  --surface: #ffffff;
+  --ink: #0b1f3b;
+  --muted: rgba(11, 31, 59, 0.72);
+  --border: rgba(11, 31, 59, 0.12);
+  --brand: #1f66e5;       /* blue-600 */
+  --brand-hover: #1c4fb8; /* blue-700 */
+  /* Match the logo background (1.png) to avoid visible seams */
+  --nav-bg: #fcfcfc;
+}
+
+html { 
+  scroll-behavior: smooth;
+  /* Prevent page dragging on mobile - allow vertical scrolling only */
+  touch-action: pan-y;
+  overscroll-behavior: none;
+  /* Prevent pull-to-refresh on mobile */
+  overscroll-behavior-y: contain;
+}
+body {
+  background: var(--bg);
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  /* Create a small gap between the fixed header and page content */
+  padding-top: 1rem;
+  /* Prevent page dragging on mobile - allow vertical scrolling only */
+  touch-action: pan-y;
+  overscroll-behavior: none;
+  /* Prevent pull-to-refresh on mobile */
+  overscroll-behavior-y: contain;
+  /* Prevent text selection that causes dragging, but allow in form fields */
+  -webkit-touch-callout: none;
+}
+
+/* Allow text selection in form fields and content areas */
+input, textarea, select, [contenteditable="true"], 
+p, span, div[role="textbox"], .selectable {
+  -webkit-user-select: text;
+  user-select: text;
+  -webkit-touch-callout: default;
+}
+
+/* Logo */
+.text-logo {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", sans-serif;
+  font-weight: 650;
+  font-size: 1.25rem;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+.text-logo .first, .text-logo .citizens, .text-logo .credit { color: var(--ink); font-weight: 650; }
+.text-logo .inc {
+  font-size: 0.75rem;
+  color: rgba(11, 31, 59, 0.55);
+  font-weight: 600;
+  margin-left: 2px;
+  vertical-align: super;
+}
+
+/* Primary button */
+.btn-blue {
+  background: var(--brand);
+  color: #fff;
+  border: 1px solid rgba(16, 43, 99, 0.18);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+.btn-blue:hover {
+  background: var(--brand-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 18px 50px rgba(0,0,0,0.12);
+}
+.btn-blue i { display: none; }
+
+/* Global loading state for primary buttons (public pages) */
+.btn-loading {
+  position: relative;
+  cursor: default;
+}
+.btn-loading-spinner {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 9999px;
+  border-width: 2px;
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.5);
+  border-top-color: #ffffff;
+  margin-right: 0.5rem;
+  animation: btn-spin 0.6s linear infinite;
+}
+.btn-loading-label {
+  display: inline-block;
+}
+
+@keyframes btn-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Top nav */
+.nav-shell {
+  background: var(--nav-bg);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(11, 31, 59, 0.10);
+}
+.nav-link {
+  color: var(--ink);
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.75rem;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.nav-link:hover { background: rgba(16, 43, 99, 0.06); }
+.nav-link i { display: none; }
+
+.nav-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(11, 31, 59, 0.12);
+  background: rgba(255, 255, 255, 0.85);
+  color: #102b63;
+  font-weight: 600;
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.nav-pill i { display: none; }
+.nav-pill--on-dark {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.10);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* Dropdown (cards menu in header) */
+.dropdown:focus-within .dropdown-menu { display: block; }
+.dropdown:hover .dropdown-menu { display: block; }
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  min-width: 260px;
+  background: var(--surface);
+  border: 1px solid rgba(11, 31, 59, 0.12);
+  border-radius: 1rem;
+  box-shadow: 0 28px 70px rgba(0,0,0,0.14);
+  padding: 0.5rem;
+  z-index: 60;
+}
+.dropdown-item {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.75rem 0.75rem;
+  border-radius: 0.75rem;
+  color: var(--ink);
+  text-decoration: none;
+  transition: background-color 0.15s ease;
+}
+.dropdown-item:hover { background: rgba(16, 43, 99, 0.06); }
+.dropdown-item .title { font-weight: 650; }
+.dropdown-item .desc { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+
+/* Mobile overlay toggle helpers (existing JS often toggles `.active`) */
+#overlay.active { display: block !important; }
+
+
