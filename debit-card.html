@@ -586,3 +586,590 @@
 </html>
 
 
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Debit Card | Twenty Third & Forth</title>
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" sizes="180x180" href="app-icon.svg" />
+  <link rel="icon" href="app-icon.svg" type="image/svg+xml" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <style>
+    :root {
+      --ttf-brand: #1800ac;
+      --ttf-brand-hover: #140099;
+    }
+    html, body { overscroll-behavior: none; }
+    .brand-bg { background-color: var(--ttf-brand); }
+    .brand-bg-hover:hover { background-color: var(--ttf-brand-hover); }
+    .brand-ring:focus { box-shadow: 0 0 0 3px rgba(24, 0, 172, 0.18); }
+  </style>
+
+  <script type="module">
+    import { auth, db } from "./firebase-client.js";
+    import { onAuthStateChanged, signOut } from "firebase/auth";
+    import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
+
+    const $ = (id) => document.getElementById(id);
+    let cachedUserDoc = null;
+    let cachedUser = null;
+    let cachedCard = null;
+    let cachedApplication = null;
+
+    function setStatus(type, message) {
+      const el = $("status");
+      if (!el) return;
+      el.className = "text-sm mt-3";
+      if (type === "error") el.classList.add("text-red-600");
+      else if (type === "success") el.classList.add("text-green-700");
+      else el.classList.add("text-gray-600");
+      el.textContent = message || "";
+    }
+
+    function setLoading(isLoading) {
+      const btn = $("submitBtn");
+      const btnText = $("submitBtnText");
+      const btnSpinner = $("submitBtnSpinner");
+      if (!btn || !btnText || !btnSpinner) return;
+      btn.disabled = isLoading;
+      btnSpinner.classList.toggle("hidden", !isLoading);
+      btnText.textContent = isLoading ? "Submitting..." : "Submit for approval";
+    }
+
+    function show(el) { el?.classList.remove("hidden"); }
+    function hide(el) { el?.classList.add("hidden"); }
+
+    function setState(state) {
+      // states: "request", "pending", "approved"
+      hide($("requestPanel"));
+      hide($("pendingPanel"));
+      hide($("approvedPanel"));
+      if (state === "pending") show($("pendingPanel"));
+      else if (state === "approved") show($("approvedPanel"));
+      else show($("requestPanel"));
+    }
+
+    async function loadUser(user) {
+      try {
+        const snap = await getDoc(doc(db, "users", user.uid));
+        cachedUserDoc = snap.exists() ? snap.data() : {};
+        const data = snap.exists() ? snap.data() : {};
+        const name = [data.firstName, data.lastName].filter(Boolean).join(" ").trim();
+        $("who")?.classList.remove("hidden");
+        if ($("whoName")) $("whoName").textContent = name || "Signed in";
+        if ($("whoEmail")) $("whoEmail").textContent = user.email || "";
+      } catch (e) {
+        console.warn("Debit card: could not load user profile", e);
+      }
+    }
+
+    function formatCardNumberMasked(last4) {
+      const l4 = (last4 || "").toString().slice(-4);
+      return `•••• •••• •••• ${l4 || "••••"}`;
+    }
+
+    function formatExp(mm, yy) {
+      const m = String(mm || "").padStart(2, "0");
+      const y = String(yy || "").slice(-2);
+      return `${m}/${y}`;
+    }
+
+    function renderCard() {
+      const userData = cachedUserDoc || {};
+      const name = [userData.firstName, userData.lastName].filter(Boolean).join(" ").trim() || "Cardholder";
+      const last4 = cachedCard?.last4 || "";
+      const expMonth = cachedCard?.expMonth || "";
+      const expYear = cachedCard?.expYear || "";
+
+      if ($("cardHolderName")) $("cardHolderName").textContent = name.toUpperCase();
+      if ($("cardNumberMasked")) $("cardNumberMasked").textContent = formatCardNumberMasked(last4);
+      if ($("cardExp")) $("cardExp").textContent = formatExp(expMonth, expYear);
+    }
+
+    async function loadDebitCardState(user) {
+      // 1) Check issued card
+      try {
+        const cardSnap = await getDoc(doc(db, "debit_cards", user.uid));
+        cachedCard = cardSnap.exists() ? cardSnap.data() : null;
+      } catch (e) {
+        console.warn("Debit card: could not load issued card", e);
+        cachedCard = null;
+      }
+
+      // 2) Check application request (docId is user.uid)
+      try {
+        const appSnap = await getDoc(doc(db, "debit_card_applications", user.uid));
+        cachedApplication = appSnap.exists() ? appSnap.data() : null;
+      } catch (e) {
+        console.warn("Debit card: could not load application", e);
+        cachedApplication = null;
+      }
+
+      if (cachedCard) {
+        setState("approved");
+        renderCard();
+        const status = (cachedCard.status || "active").toLowerCase();
+        const badge = $("cardStatusBadge");
+        const viewBtn = $("viewDetailsBtn");
+        const warn = $("cardStatusNote");
+
+        if (badge) {
+          badge.className = "inline-flex items-center gap-2 text-xs px-3 py-1 rounded-full border";
+          if (status === "active") {
+            badge.classList.add("bg-green-50", "text-green-700", "border-green-200");
+            badge.textContent = "Active";
+          } else if (status === "hold") {
+            badge.classList.add("bg-amber-50", "text-amber-700", "border-amber-200");
+            badge.textContent = "On hold";
+          } else {
+            badge.classList.add("bg-gray-100", "text-gray-700", "border-gray-200");
+            badge.textContent = "Suspended";
+          }
+        }
+
+        const allowDetails = status === "active";
+        if (viewBtn) {
+          viewBtn.disabled = !allowDetails;
+          viewBtn.classList.toggle("opacity-50", !allowDetails);
+          viewBtn.classList.toggle("cursor-not-allowed", !allowDetails);
+        }
+        if (warn) {
+          if (allowDetails) {
+            hide(warn);
+          } else {
+            warn.textContent = status === "hold"
+              ? "Your debit card is currently on hold. Contact support if you need help."
+              : "Your debit card is suspended. Contact support to resolve this.";
+            show(warn);
+          }
+        }
+        return;
+      }
+
+      const status = (cachedApplication?.status || "").toLowerCase();
+      if (status === "pending") {
+        setState("pending");
+        return;
+      }
+
+      setState("request");
+    }
+
+    function validate() {
+      const cardType = $("cardType")?.value || "";
+      const linkedAccount = $("linkedAccount")?.value || "";
+      const address = ($("deliveryAddress")?.value || "").trim();
+      const phone = ($("phoneNumber")?.value || "").trim();
+      const authorize = $("authorize")?.checked;
+      const confirm = $("confirm")?.checked;
+
+      const errors = [];
+      if (!cardType) errors.push("Select a card type.");
+      if (!linkedAccount) errors.push("Select a linked account.");
+      if (!address) errors.push("Enter a delivery address.");
+      if (!phone) errors.push("Enter a phone number.");
+      if (!authorize || !confirm) errors.push("Authorization and confirmation are required.");
+      return errors;
+    }
+
+    async function submit() {
+      setStatus("", "");
+      const user = auth.currentUser;
+      if (!user) {
+        setStatus("error", "You must be signed in.");
+        return;
+      }
+
+      // Enforce one-at-a-time on the client (rules enforce one-per-user docId + no requests after issued card)
+      await loadDebitCardState(user);
+      if (cachedCard) {
+        setStatus("error", "You already have an active debit card.");
+        setState("approved");
+        return;
+      }
+      if ((cachedApplication?.status || "").toLowerCase() === "pending") {
+        setStatus("error", "Your request is already pending approval.");
+        setState("pending");
+        return;
+      }
+
+      const errors = validate();
+      if (errors.length) {
+        setStatus("error", errors[0]);
+        return;
+      }
+
+      setLoading(true);
+      try {
+        // Use deterministic doc ID = user.uid so only one request exists per user
+        // (if doc exists, rules will block update; we check above anyway)
+        await setDoc(doc(db, "debit_card_applications", user.uid), {
+          userId: user.uid,
+          cardType: $("cardType").value,
+          linkedAccount: $("linkedAccount").value,
+          deliveryAddress: $("deliveryAddress").value.trim(),
+          phoneNumber: $("phoneNumber").value.trim(),
+          status: "pending",
+          createdAt: serverTimestamp(),
+          createdAtIso: new Date().toISOString()
+        });
+
+        $("form")?.reset();
+        hide($("successModal"));
+        show($("successModal"));
+        setState("pending");
+      } catch (e) {
+        console.error("Debit card submit error", e);
+        setStatus("error", "We couldn’t submit your request. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      $("submitBtn")?.addEventListener("click", submit);
+      $("closeSuccessModalBtn")?.addEventListener("click", () => hide($("successModal")));
+      $("viewDetailsBtn")?.addEventListener("click", () => {
+        setStatus("", "");
+        $("pinInput").value = "";
+        hide($("pinError"));
+        show($("pinModal"));
+      });
+      $("closePinModalBtn")?.addEventListener("click", () => hide($("pinModal")));
+      $("pinConfirmBtn")?.addEventListener("click", async () => {
+        try {
+          hide($("pinError"));
+          const entered = ($("pinInput").value || "").trim();
+          if (!/^\d{5}$/.test(entered)) {
+            $("pinError").textContent = "Enter your 5-digit PIN.";
+            show($("pinError"));
+            return;
+          }
+          const user = auth.currentUser;
+          if (!user) throw new Error("Not signed in");
+          // Reload user doc to ensure latest PIN
+          const uSnap = await getDoc(doc(db, "users", user.uid));
+          const uData = uSnap.exists() ? uSnap.data() : {};
+          const storedPin = (uData.pin || "").toString().trim();
+          if (!storedPin || storedPin !== entered) {
+            $("pinError").textContent = "Incorrect PIN.";
+            show($("pinError"));
+            return;
+          }
+
+          // Fetch secrets only after PIN passes
+          const sSnap = await getDoc(doc(db, "debit_card_secrets", user.uid));
+          if (!sSnap.exists()) {
+            $("pinError").textContent = "Card details not available yet.";
+            show($("pinError"));
+            return;
+          }
+          const secrets = sSnap.data();
+          $("detailPan").textContent = secrets.pan || "—";
+          $("detailCvv").textContent = secrets.cvv || "—";
+          $("detailExp").textContent = formatExp(secrets.expMonth, secrets.expYear);
+          hide($("pinModal"));
+          show($("detailsModal"));
+        } catch (err) {
+          console.error("View details error", err);
+          $("pinError").textContent = "Unable to verify PIN. Please try again.";
+          show($("pinError"));
+        }
+      });
+      $("closeDetailsModalBtn")?.addEventListener("click", () => hide($("detailsModal")));
+    });
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+        return;
+      }
+      cachedUser = user;
+      await loadUser(user);
+      await loadDebitCardState(user);
+    });
+
+    // For inline onclick on the shared dashboard header button
+    window.signOut = function () {
+      signOut(auth)
+        .then(() => (window.location.href = "login.html"))
+        .catch((e) => {
+          console.error("Sign out error", e);
+          setStatus("error", "Unable to sign out. Please try again.");
+        });
+    };
+  </script>
+</head>
+
+<body class="bg-gray-50 text-gray-900 min-h-screen">
+  <!-- Navbar (match other user dashboard pages) -->
+  <nav class="bg-white border-b border-gray-300 p-4 shadow-sm fixed top-0 w-full z-50">
+    <div class="container mx-auto flex items-center justify-between">
+      <a href="dashboard.html" class="flex items-center" aria-label="Twenty Third & Forth">
+        <img src="11.png" alt="Twenty Third & Forth Logo" class="h-14 md:h-16 w-auto" />
+      </a>
+      <button onclick="signOut()" class="bg-white border border-gray-400 text-xs text-gray-800 px-4 md:px-6 py-2 rounded-full hover:bg-gray-50 transition">Sign Out</button>
+    </div>
+  </nav>
+
+  <!-- Spacer to prevent content overlap -->
+  <div class="h-20"></div>
+
+  <main class="max-w-5xl mx-auto px-4 py-8 pb-32">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <section class="lg:col-span-7">
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 md:p-6">
+          <div class="mb-4">
+            <a href="dashboard.html" class="inline-flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900">
+              <i class="fas fa-arrow-left"></i>
+              Back to dashboard
+            </a>
+          </div>
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h1 class="text-xl md:text-2xl font-semibold">Debit Card</h1>
+              <p class="text-sm text-gray-600 mt-1">Request a virtual debit card, then view it here once approved.</p>
+            </div>
+          </div>
+
+          <div id="who" class="hidden mt-4 rounded-xl border border-gray-200 bg-gray-50 p-4">
+            <div class="text-xs uppercase tracking-wide text-gray-500">Signed in as</div>
+            <div class="mt-1 font-medium" id="whoName"></div>
+            <div class="text-sm text-gray-600" id="whoEmail"></div>
+          </div>
+
+          <!-- Request -->
+          <div id="requestPanel" class="mt-5">
+            <form id="form" class="space-y-4">
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-2">Card type</label>
+                <select id="cardType" class="w-full border border-gray-300 rounded-xl px-4 py-3 bg-white focus:outline-none brand-ring">
+                  <option value="" disabled selected>Select card type</option>
+                  <option value="standard">Standard</option>
+                  <option value="premium">Premium</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-2">Linked account</label>
+                <select id="linkedAccount" class="w-full border border-gray-300 rounded-xl px-4 py-3 bg-white focus:outline-none brand-ring">
+                  <option value="" disabled selected>Select account</option>
+                  <option value="checking">Checking Offshore</option>
+                  <option value="savings">Savings Offshore</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-2">Delivery address</label>
+                <textarea id="deliveryAddress" rows="3" class="w-full border border-gray-300 rounded-xl px-4 py-3 bg-white focus:outline-none brand-ring" placeholder="Street, city, state, country"></textarea>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-2">Phone number</label>
+                <input id="phoneNumber" type="tel" class="w-full border border-gray-300 rounded-xl px-4 py-3 bg-white focus:outline-none brand-ring" placeholder="+1 555 000 0000" />
+              </div>
+
+              <div class="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-2">
+                <label class="flex items-start gap-3 text-sm text-gray-700">
+                  <input id="authorize" type="checkbox" class="mt-1 h-4 w-4" />
+                  <span>I authorize this request.</span>
+                </label>
+                <label class="flex items-start gap-3 text-sm text-gray-700">
+                  <input id="confirm" type="checkbox" class="mt-1 h-4 w-4" />
+                  <span>I confirm my details are accurate.</span>
+                </label>
+              </div>
+
+              <button id="submitBtn" type="button" class="w-full md:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full text-sm font-semibold text-white brand-bg brand-bg-hover transition shadow-sm" data-no-loading="true">
+                <i id="submitBtnSpinner" class="fas fa-spinner fa-spin hidden"></i>
+                <span id="submitBtnText">Submit for approval</span>
+              </button>
+
+              <div id="status"></div>
+            </form>
+          </div>
+
+          <!-- Pending -->
+          <div id="pendingPanel" class="hidden mt-6">
+            <div class="rounded-2xl border border-gray-200 bg-gray-50 p-5">
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <div class="text-sm font-semibold text-gray-900">Request pending approval</div>
+                  <div class="text-sm text-gray-600 mt-1">We’re reviewing your debit card request. You’ll see your card here once approved.</div>
+                </div>
+                <span class="inline-flex items-center gap-2 text-xs px-3 py-1 rounded-full border" style="border-color: rgba(24,0,172,.25); background: rgba(24,0,172,.06); color: #1800ac;">
+                  Pending
+                </span>
+              </div>
+              <div class="mt-4">
+                <div class="flex items-center justify-between text-xs text-gray-600 mb-2">
+                  <span>Progress</span>
+                  <span>Pending</span>
+                </div>
+                <div class="h-2 rounded-full bg-white border border-gray-200 overflow-hidden">
+                  <div class="h-full" style="width: 60%; background: linear-gradient(90deg, #1800ac, #4f46e5);"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Approved / Card -->
+          <div id="approvedPanel" class="hidden mt-6">
+            <div class="rounded-2xl border border-gray-200 p-5 md:p-6 bg-white">
+              <div class="flex items-center justify-between gap-3">
+                <div class="text-sm font-semibold text-gray-900">Your virtual debit card</div>
+                <span id="cardStatusBadge" class="inline-flex items-center gap-2 text-xs px-3 py-1 rounded-full bg-green-50 text-green-700 border border-green-200">Active</span>
+              </div>
+
+              <div class="mt-4 rounded-2xl p-5 text-white shadow-lg" style="background: radial-gradient(1200px circle at 10% 10%, rgba(255,255,255,.22), transparent 40%), linear-gradient(135deg, #1800ac, #4f46e5 60%, #7c3aed);">
+                <div class="flex items-start justify-between">
+                  <div class="text-sm font-semibold tracking-wide">Twenty Third &amp; Forth</div>
+                  <div class="text-xs opacity-90">VIRTUAL</div>
+                </div>
+                <div class="mt-6 flex items-center justify-between">
+                  <div class="text-2xl md:text-3xl font-semibold tracking-widest" id="cardNumberMasked">•••• •••• •••• ••••</div>
+                </div>
+                <div class="mt-6 flex items-end justify-between gap-4">
+                  <div>
+                    <div class="text-[10px] opacity-80 uppercase tracking-wider">Card holder</div>
+                    <div class="text-sm font-semibold" id="cardHolderName">CARDHOLDER</div>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-[10px] opacity-80 uppercase tracking-wider">Exp</div>
+                    <div class="text-sm font-semibold" id="cardExp">--/--</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-4 flex flex-col sm:flex-row gap-2">
+                <button id="viewDetailsBtn" type="button" class="w-full sm:w-auto px-5 py-3 rounded-full text-sm font-semibold text-white brand-bg brand-bg-hover transition shadow-sm" data-no-loading="true">
+                  View card details
+                </button>
+                <p id="cardStatusNote" class="hidden text-sm text-gray-700 self-center sm:self-auto sm:ml-2"></p>
+                <a href="pin.html" class="w-full sm:w-auto px-5 py-3 rounded-full text-sm font-semibold border border-gray-300 text-gray-800 hover:bg-gray-50 text-center">
+                  Change PIN
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="lg:col-span-5">
+        <div class="rounded-2xl border border-gray-200 bg-white shadow-sm p-5 md:p-6">
+          <h2 class="text-base font-semibold">What happens next</h2>
+          <ul class="mt-3 space-y-2 text-sm text-gray-700">
+            <li class="flex gap-2"><span style="color:#1800ac" class="font-semibold">1.</span> Your request is submitted as <span class="font-medium">pending</span>.</li>
+            <li class="flex gap-2"><span style="color:#1800ac" class="font-semibold">2.</span> Admin reviews and approves.</li>
+            <li class="flex gap-2"><span style="color:#1800ac" class="font-semibold">3.</span> You’ll be notified after approval.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- Success modal (after request submit) -->
+  <div id="successModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(24, 0, 172, 0.55);">
+    <div class="bg-white rounded-2xl border border-gray-200 p-6 w-full max-w-sm mx-auto text-center shadow-2xl">
+      <div class="w-14 h-14 mx-auto rounded-full flex items-center justify-center" style="background: rgba(24,0,172,.08); border: 2px solid #1800ac;">
+        <i class="fas fa-check text-xl" style="color:#1800ac;"></i>
+      </div>
+      <h3 class="text-lg font-semibold text-gray-900 mt-4">Request submitted</h3>
+      <p class="text-sm text-gray-600 mt-1">Your debit card request is pending approval. You’ll see it here once approved.</p>
+      <button id="closeSuccessModalBtn" type="button" class="mt-5 w-full px-5 py-3 rounded-full text-sm font-semibold text-white brand-bg brand-bg-hover transition">Done</button>
+    </div>
+  </div>
+
+  <!-- PIN modal (gate viewing card details) -->
+  <div id="pinModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(24, 0, 172, 0.55);">
+    <div class="bg-white rounded-2xl border border-gray-200 p-6 w-full max-w-sm mx-auto shadow-2xl">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <h3 class="text-lg font-semibold text-gray-900">Enter PIN</h3>
+          <p class="text-sm text-gray-600 mt-1">To view card details, confirm your 5-digit PIN.</p>
+        </div>
+        <button id="closePinModalBtn" type="button" class="text-gray-400 hover:text-gray-700 text-xl leading-none">&times;</button>
+      </div>
+      <div class="mt-4">
+        <input id="pinInput" inputmode="numeric" maxlength="5" class="w-full border border-gray-300 rounded-xl px-4 py-3 bg-white focus:outline-none brand-ring" placeholder="•••••" />
+        <p id="pinError" class="hidden text-sm text-red-600 mt-2"></p>
+      </div>
+      <button id="pinConfirmBtn" type="button" class="mt-4 w-full px-5 py-3 rounded-full text-sm font-semibold text-white brand-bg brand-bg-hover transition">Continue</button>
+    </div>
+  </div>
+
+  <!-- Card details modal -->
+  <div id="detailsModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(24, 0, 172, 0.55);">
+    <div class="bg-white rounded-2xl border border-gray-200 p-6 w-full max-w-sm mx-auto shadow-2xl">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <h3 class="text-lg font-semibold text-gray-900">Card details</h3>
+          <p class="text-sm text-gray-600 mt-1">Keep these private.</p>
+        </div>
+        <button id="closeDetailsModalBtn" type="button" class="text-gray-400 hover:text-gray-700 text-xl leading-none">&times;</button>
+      </div>
+
+      <div class="mt-4 space-y-3">
+        <div class="rounded-xl border border-gray-200 bg-gray-50 p-4">
+          <div class="text-xs uppercase tracking-wide text-gray-500">Card number</div>
+          <div class="mt-1 font-mono text-sm text-gray-900" id="detailPan">—</div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="rounded-xl border border-gray-200 bg-gray-50 p-4">
+            <div class="text-xs uppercase tracking-wide text-gray-500">CVV</div>
+            <div class="mt-1 font-mono text-sm text-gray-900" id="detailCvv">—</div>
+          </div>
+          <div class="rounded-xl border border-gray-200 bg-gray-50 p-4">
+            <div class="text-xs uppercase tracking-wide text-gray-500">Exp</div>
+            <div class="mt-1 font-mono text-sm text-gray-900" id="detailExp">—</div>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="mt-5 w-full px-5 py-3 rounded-full text-sm font-semibold text-white brand-bg brand-bg-hover transition" onclick="document.getElementById('detailsModal').classList.add('hidden')">Done</button>
+    </div>
+  </div>
+
+  <!-- Bottom Navbar (Mobile Friendly) -->
+  <div class="mobile-nav fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-300 p-3" style="height: 100px; z-index: 100;">
+    <div class="flex justify-around items-center h-full">
+      <!-- Home Icon -->
+      <a href="dashboard.html" class="nav-item flex flex-col items-center" data-page="dashboard">
+        <div class="bg-white rounded p-2">
+          <img src="1221.png" alt="Wallet Icon" class="h-6 w-6" />
+        </div>
+        <span class="text-xs font-medium mt-2 text-gray-700">Home</span>
+      </a>
+      <!-- Deposit Icon -->
+      <a href="deposit.html" class="nav-item flex flex-col items-center" data-page="deposit">
+        <div class="bg-white rounded p-2">
+          <img src="deposit.png" alt="Deposit Icon" class="h-6 w-6" />
+        </div>
+        <span class="text-xs font-medium mt-2 text-gray-700">Deposit</span>
+      </a>
+      <!-- Support Icon -->
+      <a href="support.html" class="nav-item flex flex-col items-center" data-page="support">
+        <div class="bg-white rounded p-2">
+          <img src="support.png" alt="Support Icon" class="h-6 w-6" />
+        </div>
+        <span class="text-xs font-medium mt-2 text-gray-700">Support</span>
+      </a>
+      <!-- Profile Icon -->
+      <a href="profile.html" class="nav-item flex flex-col items-center" data-page="profile">
+        <div class="bg-white rounded p-2">
+          <img src="profile.png" alt="Profile Icon" class="h-6 w-6" />
+        </div>
+        <span class="text-xs font-medium mt-2 text-gray-700">Profile</span>
+      </a>
+    </div>
+  </div>
+  <script src="bottom-navbar.js"></script>
+</body>
+</html>
+
+

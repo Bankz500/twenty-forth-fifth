@@ -1058,3 +1058,17 @@
     <script src="inactivity-timeout.js"></script>
 </body>
 </html>
+        document.getElementById('spinner').classList.remove('hidden');
+
+        // Simulate a delay for loading (e.g., 1 second)
+        setTimeout(() => {
+            // Navigate to the specified URL
+            window.location.href = url;
+        }, 1000); // Adjust the delay as needed
+    }
+</script>
+
+    <!-- Inactivity Timeout: Auto-logout after 5 minutes of inactivity -->
+    <script src="inactivity-timeout.js"></script>
+</body>
+</html>

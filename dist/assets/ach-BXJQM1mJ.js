@@ -1,1 +1,0 @@
-import"./modulepreload-polyfill-B5Qt9EMX.js";import{a as o,d as t,h as e,i,c as s,u as d,b as r,e as n,o as c}from"./firebase-client-BQD81AQz.js";import"./firebase-config-D2Ob3NcO.js";window.auth=o;window.db=t;window.firestoreHelpers={doc:n,getDoc:r,updateDoc:d,collection:s,addDoc:i,serverTimestamp:e};c(o,a=>{a||(window.location.href="login.html")});

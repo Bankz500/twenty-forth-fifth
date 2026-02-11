@@ -578,13 +578,13 @@ class LiveChatWidget {
         if (!window.db) {
             try {
                 const firebaseConfig = {
-                    apiKey: "AIzaSyBb9sVH4fMb-a5mQgcDjAfYT9RZHTb3sKE",
-                    authDomain: "twenty-third-forth.firebaseapp.com",
-                    projectId: "twenty-third-forth",
-                    storageBucket: "twenty-third-forth.firebasestorage.app",
-                    messagingSenderId: "835548579831",
-                    appId: "1:835548579831:web:5259f071b50341af28d0f2",
-                    measurementId: "G-KEMCE9679Y"
+                    apiKey: "AIzaSyDk8K22XfrsAQAX7WarxSq_BnwO1YQLDSc",
+                    authDomain: "twenty-third-forth-ee57c.firebaseapp.com",
+                    projectId: "twenty-third-forth-ee57c",
+                    storageBucket: "twenty-third-forth-ee57c.firebasestorage.app",
+                    messagingSenderId: "47210898997",
+                    appId: "1:47210898997:web:d25c23eee45a7660cef37c",
+                    measurementId: "G-ESYD665GWG"
                 };
 
                 // Try npm Firebase first (if firebase-client.js is loaded)
@@ -1320,6 +1320,28 @@ document.addEventListener('visibilitychange', () => {
         }, 500);
     }
 });
+
+// Check when page becomes fully interactive (mobile optimization)
+if (document.readyState === 'complete') {
+    // Page already loaded, check immediately
+    setTimeout(() => {
+        if (window.liveChatWidget && shouldOpenChatWidget()) {
+            window.liveChatWidget.checkAndOpenChat();
+        }
+    }, 100);
+} else {
+    // Wait for page to be fully loaded
+    window.addEventListener('pageshow', (event) => {
+        // Handle back/forward cache on mobile
+        if (window.liveChatWidget && shouldOpenChatWidget()) {
+            setTimeout(() => {
+                window.liveChatWidget.checkAndOpenChat();
+            }, 300);
+        }
+    });
+}
+
+
 
 // Check when page becomes fully interactive (mobile optimization)
 if (document.readyState === 'complete') {

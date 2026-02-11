@@ -5,13 +5,75 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Twenty Third & Forth OTP</title>
     <link rel="manifest" href="/assets/manifest-DrZo22X-.json">
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/app-icon-C11owm6W.svg">
-    <link rel="icon" href="/assets/app-icon-C11owm6W.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/app-icon-B97yRDXT.svg">
+    <link rel="icon" href="/assets/app-icon-B97yRDXT.svg" type="image/svg+xml">
     <script src="https://cdn.tailwindcss.com"></script>
-  <script type="module" crossorigin src="/assets/otp-C3o3gtt0.js"></script>
+  <script type="module" crossorigin src="/assets/otp-E1hTjVdX.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
-  <link rel="modulepreload" crossorigin href="/assets/firebase-config-D2Ob3NcO.js">
+  <link rel="modulepreload" crossorigin href="/assets/firebase-config-C56FTJjz.js">
   <link rel="modulepreload" crossorigin href="/assets/compliance-modals-gNe9-PES.js">
+</head>
+<body class="min-h-screen bg-gray-50">
+  <main class="min-h-screen flex items-center justify-center px-4">
+    <div class="w-full max-w-4xl bg-white rounded-3xl overflow-hidden shadow-xl border border-gray-200 flex flex-col sm:flex-row">
+      <div class="w-full sm:w-1/2 p-8 sm:p-10">
+        <div class="flex items-center gap-3 mb-6">
+          <img src="/assets/11-BKkfsV3h.png" alt="Twenty Third & Forth" class="h-10 w-auto" />
+          <div class="text-sm font-semibold text-gray-900">Verify sign-in</div>
+        </div>
+
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900">Enter your OTP</h1>
+        <p class="mt-2 text-sm text-gray-600">
+          We sent a 6‑digit code to <span id="email-display" class="font-semibold text-gray-900"></span>.
+        </p>
+
+        <div id="otp-status" class="hidden mt-4 text-sm text-blue-900 bg-blue-50 border border-blue-200 rounded-xl px-4 py-3"></div>
+        <div id="otp-error" class="hidden mt-4 text-sm text-red-700 bg-red-50 border border-red-200 rounded-xl px-4 py-3"></div>
+
+        <form id="otp-form" class="mt-6 space-y-4">
+          <div>
+            <label for="otp" class="block text-sm font-semibold text-gray-800 mb-2">OTP</label>
+            <input id="otp" name="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="6"
+              class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter 6-digit code" required />
+      </div>
+
+          <button type="submit" id="verify-otp-btn"
+            class="w-full text-white font-semibold py-3 rounded-xl transition"
+            style="background-color:#1800ac;"
+            onmouseover="this.style.backgroundColor='#140099'"
+            onmouseout="this.style.backgroundColor='#1800ac'">
+            Proceed
+        </button>
+        </form>
+
+        <div class="mt-4 flex items-center justify-between text-sm">
+          <a href="login.html" class="text-gray-600 hover:text-gray-900 font-semibold">Back to login</a>
+          <button type="button" id="resend-otp" class="text-blue-700 hover:text-blue-900 font-semibold">Resend code</button>
+        </div>
+    </div>
+
+      <div class="hidden sm:block w-full sm:w-1/2 bg-cover bg-center"
+        style="background-image:url('/assets/happy-woman-writing-notepad-DT4biPz4.jpg'); min-height: 420px;">
+        <div class="h-full w-full bg-gradient-to-br from-blue-600/40 to-blue-900/60"></div>
+        </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+</body>
+</html>
+
+
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Twenty Third & Forth OTP</title>
+    <link rel="manifest" href="/assets/manifest-DrZo22X-.json">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/app-icon-B97yRDXT.svg">
+    <link rel="icon" href="/assets/app-icon-B97yRDXT.svg" type="image/svg+xml">
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="min-h-screen bg-gray-50">
   <main class="min-h-screen flex items-center justify-center px-4">

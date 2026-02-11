@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Twenty Third & Forth Profile</title>
     <link rel="manifest" href="/assets/manifest-DrZo22X-.json">
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/app-icon-C11owm6W.svg">
-    <link rel="icon" href="/assets/app-icon-C11owm6W.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/app-icon-B97yRDXT.svg">
+    <link rel="icon" href="/assets/app-icon-B97yRDXT.svg" type="image/svg+xml">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js Library -->
@@ -72,10 +72,10 @@
     </style>
     
     
-      <script type="module" crossorigin src="/assets/profile-C_rqR4St.js"></script>
+      <script type="module" crossorigin src="/assets/profile-DP9Zu-Tp.js"></script>
       <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
-      <link rel="modulepreload" crossorigin href="/assets/firebase-config-D2Ob3NcO.js">
-      <link rel="modulepreload" crossorigin href="/assets/firebase-client-BQD81AQz.js">
+      <link rel="modulepreload" crossorigin href="/assets/firebase-config-C56FTJjz.js">
+      <link rel="modulepreload" crossorigin href="/assets/firebase-client-B2F1CqW_.js">
     </head>
     <body class="font-sans antialiased bg-gray-100">
 
@@ -687,6 +687,20 @@
 <script>
     function navigateWithSpinner(url) {
         // Show the spinner
+        document.getElementById('spinner').classList.remove('hidden');
+
+        // Simulate a delay for loading (e.g., 1 second)
+        setTimeout(() => {
+            // Navigate to the specified URL
+            window.location.href = url;
+        }, 1000); // Adjust the delay as needed
+    }
+</script>
+
+    <!-- Inactivity Timeout: Auto-logout after 5 minutes of inactivity -->
+    <script src="inactivity-timeout.js"></script>
+</body>
+</html>
         document.getElementById('spinner').classList.remove('hidden');
 
         // Simulate a delay for loading (e.g., 1 second)

@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Twenty Third & Forth Transfer</title>
     <link rel="manifest" href="/assets/manifest-DrZo22X-.json">
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/app-icon-C11owm6W.svg">
-    <link rel="icon" href="/assets/app-icon-C11owm6W.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/app-icon-B97yRDXT.svg">
+    <link rel="icon" href="/assets/app-icon-B97yRDXT.svg" type="image/svg+xml">
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js Library -->
@@ -110,10 +110,10 @@
             }
         }
     </style>
-  <script type="module" crossorigin src="/assets/transfer-Ds9hYyf4.js"></script>
+  <script type="module" crossorigin src="/assets/transfer-DucLT7Wx.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
-  <link rel="modulepreload" crossorigin href="/assets/firebase-config-D2Ob3NcO.js">
-  <link rel="modulepreload" crossorigin href="/assets/firebase-client-BQD81AQz.js">
+  <link rel="modulepreload" crossorigin href="/assets/firebase-config-C56FTJjz.js">
+  <link rel="modulepreload" crossorigin href="/assets/firebase-client-B2F1CqW_.js">
 </head>
 <body class="font-sans antialiased" style="background-image: url('/assets/background%202-Dn1co03N.png');">
 
@@ -1253,6 +1253,31 @@ function showErrorModal(message) {
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                     </svg>
                 </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">Account Status Alert</h3>
+                <p class="text-sm text-gray-500 mb-6">${message}</p>
+                <button onclick="closeErrorModal()" class="w-full bg-red-600 text-white rounded-lg px-4 py-2 hover:bg-red-700 transition-colors duration-150">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>`;
+
+    // Add modal to document
+    document.body.insertAdjacentHTML('beforeend', errorModalHTML);
+}
+
+function closeErrorModal() {
+    const errorModal = document.getElementById('errorModal');
+    if (errorModal) {
+        errorModal.remove();
+    }
+}
+</script>
+
+    <!-- Inactivity Timeout: Auto-logout after 5 minutes of inactivity -->
+    <script src="inactivity-timeout.js"></script>
+</body>
+</html>
                 <h3 class="text-lg font-medium text-gray-900 mb-2">Account Status Alert</h3>
                 <p class="text-sm text-gray-500 mb-6">${message}</p>
                 <button onclick="closeErrorModal()" class="w-full bg-red-600 text-white rounded-lg px-4 py-2 hover:bg-red-700 transition-colors duration-150">
