@@ -1155,19 +1155,3 @@
     <script src="inactivity-timeout.js"></script>
 </body>
 </html>
-
-                // Clean up listeners when user signs out
-                if (window.chatModal.unreadListener) {
-                    window.chatModal.unreadListener();
-                    window.chatModal.unreadListener = null;
-                }
-                updateUnreadBadge(0);
-            }
-        });
-    })();
-</script>
-
-    <!-- Inactivity Timeout: Auto-logout after 5 minutes of inactivity -->
-    <script src="inactivity-timeout.js"></script>
-</body>
-</html>
