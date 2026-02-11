@@ -12,10 +12,10 @@
     "generate-favicons": "node generate-favicons.js"
   },
   "devDependencies": {
-    "tailwindcss": "^3.4.16",
-    "vite": "^5.4.11",
+    "serve": "^14.2.0",
     "sharp": "^0.33.2",
-    "serve": "^14.2.0"
+    "tailwindcss": "^3.4.16",
+    "vite": "^5.4.11"
   },
   "dependencies": {
     "@cloudinary/url-gen": "^1.21.0",
@@ -24,16 +24,15 @@
     "cloudinary": "^2.5.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "emailjs-com": "^3.2.0",
     "express": "^4.21.1",
     "firebase": "^11.1.0",
     "firebase-admin": "^13.0.2",
-    "multer": "^1.4.5-lts.1",
+    "multer": "^2.0.2",
     "nodemailer": "^6.9.15",
-    "workbox-window": "^7.0.0",
     "workbox-core": "^7.0.0",
     "workbox-precaching": "^7.0.0",
     "workbox-routing": "^7.0.0",
-    "workbox-strategies": "^7.0.0"
+    "workbox-strategies": "^7.0.0",
+    "workbox-window": "^7.0.0"
   }
 }
