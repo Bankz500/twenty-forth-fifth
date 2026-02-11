@@ -221,51 +221,36 @@
                     </div>
                 </div>
 
-                <!-- Sign-in Form -->
+                <!-- Promotional Card Section -->
                 <div class="relative">
                     <div class="absolute -inset-6 bg-gradient-to-br from-blue-200/40 via-white to-blue-100/40 blur-2xl rounded-[2.5rem]"></div>
-                    <div class="relative bg-white border border-blue-100 rounded-[2rem] overflow-hidden shadow-xl p-6 md:p-8">
+                    <div class="relative bg-gradient-to-br from-blue-600 to-blue-800 border border-blue-700 rounded-[2rem] overflow-hidden shadow-xl p-6 md:p-8 text-white">
                         <div class="mb-6">
-                            <div class="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 rounded-full px-4 py-2 shadow-sm mb-4">
-                                <span class="w-2 h-2 rounded-full bg-blue-600"></span>
-                                <span class="text-blue-800 text-xs font-semibold uppercase tracking-wider">Secure Login</span>
-                                </div>
-                            <h2 class="text-2xl md:text-3xl font-extrabold text-blue-950 mb-2">Welcome Back</h2>
-                            <p class="text-blue-800 text-sm">Sign in to continue to your account</p>
-                        </div>
-
-                        <form id="hero-login-form" class="space-y-4">
-                            <div id="hero-error-message" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm"></div>
-                            
-                            <div class="relative">
-                                <i class="fas fa-envelope absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-700"></i>
-                                <input type="email" id="hero-email" name="email" required placeholder="Enter your email"
-                                    class="w-full border border-blue-200 rounded-xl p-4 pl-12 bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-blue-950 placeholder-blue-400">
-                                </div>
-
-                            <div class="relative">
-                                <i class="fas fa-lock absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-700"></i>
-                                <input type="password" id="hero-password" name="password" required placeholder="Enter your password"
-                                    class="w-full border border-blue-200 rounded-xl p-4 pl-12 pr-12 bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-blue-950 placeholder-blue-400">
-            </div>
-
-                            <div class="flex items-center justify-between text-sm">
-                                <label class="flex items-center gap-2 text-blue-800">
-                                    <input type="checkbox" class="rounded border-blue-200 text-blue-600 focus:ring-blue-500">
-                                    <span>Remember me</span>
-                                </label>
-                                <a href="forgot-password.html" class="text-blue-800 hover:text-blue-950 font-semibold transition">Forgot password?</a>
-                </div>
-
-                            <button type="submit" id="hero-login-btn" data-no-loading="true" class="w-full btn-blue text-white py-4 rounded-xl font-semibold text-base transition duration-300 mt-4 shadow-lg">
-                                <i class="fas fa-sign-in-alt mr-2"></i>Sign in
-                            </button>
-                        </form>
-                        
-                        <div class="mt-6 text-center">
-                            <p class="text-blue-800 text-sm">Don't have an account? <a href="sign-up.html" class="text-blue-950 font-semibold hover:text-blue-700 transition underline">Sign Up</a></p>
+                            <div class="inline-flex items-center gap-2 bg-white/20 border border-white/30 rounded-full px-4 py-2 shadow-sm mb-4">
+                                <span class="w-2 h-2 rounded-full bg-white"></span>
+                                <span class="text-white text-xs font-semibold uppercase tracking-wider">Special Offer</span>
                             </div>
+                            <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-3">
+                                Enjoy $400
+                            </h2>
+                            <p class="text-blue-100 text-base font-medium mb-2">
+                                New Twenty Third & Forth checking customers
+                            </p>
+                            <p class="text-blue-200 text-sm leading-relaxed">
+                                Open a Twenty Third & Forth Total Checking® account with qualifying activities.
+                            </p>
                         </div>
+
+                        <a href="sign-up.html" class="w-full bg-white text-blue-950 py-4 rounded-xl font-semibold text-base transition duration-300 shadow-lg flex items-center justify-center hover:bg-blue-50 hover:shadow-xl">
+                            <i class="fas fa-arrow-right mr-2"></i>Open Account Now
+                        </a>
+                        
+                        <div class="mt-6 pt-6 border-t border-white/20">
+                            <p class="text-xs text-blue-200 text-center">
+                                Terms and conditions apply. Qualifying activities required.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1291,7 +1276,7 @@
     <!-- Testimonials Loader -->
     <script type="module">
         import { db } from './firebase-client.js';
-        import { collection, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
+        import { collection, getDocs, query, where } from 'firebase/firestore';
 
         try {
 
@@ -1925,6 +1910,8 @@
                     // Reset the form
                     form.reset();
                     if (holder3Group) holder3Group.classList.add('hidden');
+                    const holdersCountElReset = document.getElementById('holders-count');
+                    if (holdersCountElReset) holdersCountElReset.value = '2';
                     if (statusEl) statusEl.textContent = ''; // Clear any status messages
                 } catch (err) {
                     console.error(err);
@@ -2188,189 +2175,6 @@
         #overlay.active { display: block; }
     </style>
 
-    <!-- Hero Login Form Authentication -->
-    <script type="module">
-        import { signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
-        import { doc, getDoc, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
-        import { auth, db } from './firebase-client.js';
-        import { showPendingApprovalModal } from './components/compliance-modals.js';
-
-        // Initialize EmailJS
-        if (typeof emailjs !== 'undefined') {
-            emailjs.init("PpoJ-7X-bqUjp3Wa7");
-        }
-
-        // Function to generate OTP
-        function generateOtp(length = 6) {
-            return Array.from({ length }, () => Math.floor(Math.random() * 10)).join('');
-        }
-
-        function withTimeout(promise, ms, label = 'operation') {
-            let t;
-            const timeout = new Promise((_, reject) => {
-                t = setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms);
-            });
-            return Promise.race([promise, timeout]).finally(() => clearTimeout(t));
-        }
-
-        // Function to send OTP (EmailJS can sometimes hang; enforce a timeout)
-        async function sendOtp(email, otp) {
-            try {
-                if (typeof emailjs === 'undefined') {
-                    console.warn('EmailJS not loaded, OTP will be logged to console:', otp);
-                    return true; // Continue flow even if EmailJS fails
-                }
-                const p = emailjs.send("service_dou8hz3", "template_nncgc6k", {
-                    to_email: email,
-                    email: email,
-                    otp: otp
-                });
-                await withTimeout(p, 12000, 'OTP send');
-                return true;
-            } catch (error) {
-                console.error('Error sending OTP:', error);
-                // Still return true to allow flow to continue
-                return true;
-            }
-        }
-
-        // DOM Elements
-        const heroLoginForm = document.getElementById('hero-login-form');
-        const heroEmailInput = document.getElementById('hero-email');
-        const heroPasswordInput = document.getElementById('hero-password');
-        const heroLoginBtn = document.getElementById('hero-login-btn');
-        const heroErrorMessage = document.getElementById('hero-error-message');
-
-        if (heroLoginForm) {
-            heroLoginForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                const email = heroEmailInput.value.trim();
-                const password = heroPasswordInput.value;
-
-                // Hide previous error
-                if (heroErrorMessage) {
-                    heroErrorMessage.classList.add('hidden');
-                    heroErrorMessage.textContent = '';
-                }
-
-                try {
-                    heroLoginBtn.disabled = true;
-                    heroLoginBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Authenticating...';
-
-                    // Firebase Authentication
-                    const userCredential = await withTimeout(
-                        signInWithEmailAndPassword(auth, email, password),
-                        15000,
-                        'Sign in'
-                    );
-                    const currentUser = userCredential.user;
-
-                    // Check user approval status
-                    const userRef = doc(db, 'users', currentUser.uid);
-                    const userSnap = await withTimeout(getDoc(userRef), 12000, 'Load user profile');
-                    let userData = userSnap.exists() ? (userSnap.data() || {}) : null;
-
-                    // Legacy fix: if the user exists in Auth but has no Firestore doc
-                    if (!userData) {
-                        let migrated = null;
-                        try {
-                            const legacyEmail = (currentUser.email || email || '').trim();
-                            if (legacyEmail) {
-                                const legacyRef = doc(db, 'users', legacyEmail);
-                                const legacySnap = await getDoc(legacyRef);
-                                if (legacySnap.exists()) {
-                                    migrated = legacySnap.data() || {};
-                                }
-                            }
-                        } catch (e) {
-                            console.warn('Legacy email-doc migration skipped/failed:', e);
-                        }
-
-                        const base = migrated && typeof migrated === 'object' ? migrated : {};
-                        const displayName = currentUser.displayName || '';
-                        const inferredFirstName =
-                            base.firstName
-                            || (typeof base.name === 'string' ? base.name.split(' ')[0] : '')
-                            || (typeof base.fullName === 'string' ? base.fullName.split(' ')[0] : '')
-                            || (displayName ? displayName.split(' ')[0] : '')
-                            || ((currentUser.email || email || '').split('@')[0] || '');
-
-                        const legacyUserData = {
-                            ...base,
-                            email: base.email || currentUser.email || email,
-                            firstName: base.firstName || inferredFirstName || null,
-                            approvalStatus: base.approvalStatus || 'approved',
-                            isApproved: (typeof base.isApproved === 'boolean') ? base.isApproved : true,
-                            approvedAt: base.approvedAt || serverTimestamp(),
-                            approvedBy: base.approvedBy || (migrated ? 'legacy_migrated' : 'legacy_auto'),
-                            createdAt: base.createdAt || serverTimestamp(),
-                            createdAtIso: base.createdAtIso || new Date().toISOString(),
-                            migratedFrom: migrated ? 'users/{email}' : null
-                        };
-
-                        await withTimeout(setDoc(userRef, legacyUserData, { merge: true }), 12000, 'Create legacy profile');
-                        userData = legacyUserData;
-                    }
-
-                    const approvalStatus = userData?.approvalStatus || null;
-                    const isApproved = (typeof userData?.isApproved === 'boolean') ? userData.isApproved : null;
-                    
-                    const approved =
-                        approvalStatus === 'approved'
-                        || (approvalStatus == null && isApproved !== false);
-                    
-                    if (!userData || !approved) {
-                        try { await signOut(auth); } catch {}
-                        // Reset button before showing modal
-                        heroLoginBtn.disabled = false;
-                        heroLoginBtn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Sign in';
-                        await showPendingApprovalModal();
-                        return;
-                    }
-
-                    // Generate and send OTP (only after successful auth)
-                    const otp = generateOtp();
-                    sessionStorage.setItem('loginOtp', otp);
-                    sessionStorage.setItem('loginEmail', email);
-
-                    // Authentication successful - redirect to OTP page
-                    // OTP will be sent from otp.html to avoid duplicate sends and to show a clear send error state.
-                    window.location.href = 'otp.html';
-
-                } catch (error) {
-                    console.error('Login error:', error);
-                    let errorMessage = 'User not found. Please check your email and password.';
-                    
-                    if (error.code === 'auth/user-not-found') {
-                        errorMessage = 'User not found. Please check your email or sign up for an account.';
-                    } else if (error.code === 'auth/wrong-password') {
-                        errorMessage = 'Invalid password. Please try again.';
-                    } else if (error.code === 'auth/invalid-email') {
-                        errorMessage = 'Invalid email address. Please check your email.';
-                    } else if (error.code === 'auth/too-many-requests') {
-                        errorMessage = 'Too many failed attempts. Please try again later.';
-                    } else if (error.code === 'auth/network-request-failed') {
-                        errorMessage = 'Network error. Please check your connection and try again.';
-                    } else if (String(error?.message || '').includes('timed out')) {
-                        errorMessage = 'Network timeout while signing in. Please check your connection and try again.';
-                    }
-                    
-                    // Show error message
-                    if (heroErrorMessage) {
-                        heroErrorMessage.textContent = errorMessage;
-                        heroErrorMessage.classList.remove('hidden');
-                        // Scroll to error message
-                        heroErrorMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                    }
-                    
-                } finally {
-                    heroLoginBtn.disabled = false;
-                    heroLoginBtn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Sign in';
-                }
-            });
-        }
-    </script>
 </body>
 </html>
 

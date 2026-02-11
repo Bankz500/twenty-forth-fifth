@@ -34,6 +34,8 @@ export default defineConfig({
         terms: './terms.html',
         privacy: './privacy.html',
         policy: './policy.html',
+        debitCard: './debit-card.html',
+        onboarding: './onboarding.html',
       },
     },
   },

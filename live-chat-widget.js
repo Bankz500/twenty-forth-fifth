@@ -587,21 +587,43 @@ class LiveChatWidget {
                     measurementId: "G-KEMCE9679Y"
                 };
 
-                const { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js');
-                const { getFirestore } = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
-                const { getAuth } = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js');
-                const { getAnalytics } = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js');
+                // Try npm Firebase first (if firebase-client.js is loaded)
+                try {
+                    const { db, auth } = await import('./firebase-client.js');
+                    window.db = db;
+                    window.auth = auth;
+                    return true;
+                } catch (npmError) {
+                    // Fallback to CDN Firebase
+                    const { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js');
+                    const { getFirestore } = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+                    const { getAuth } = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js');
+                    const { getAnalytics } = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js');
 
-                const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
-                window.db = getFirestore(app);
-                window.auth = getAuth(app);
-                window.analytics = typeof window !== 'undefined' ? getAnalytics(app) : null;
+                    const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+                    window.db = getFirestore(app);
+                    window.auth = getAuth(app);
+                    window.analytics = typeof window !== 'undefined' ? getAnalytics(app) : null;
+                }
             } catch (error) {
                 console.error('Error initializing Firebase:', error);
                 return false;
             }
         }
         return true;
+    }
+    
+    // Helper to get Firebase functions - uses npm Firebase if window.db exists from firebase-client.js
+    async getFirestoreFunctions() {
+        // If window.db exists, it's likely from firebase-client.js (npm Firebase)
+        // Check if we can use npm Firebase imports
+        try {
+            const firestoreModule = await import('firebase/firestore');
+            return firestoreModule;
+        } catch {
+            // Fallback to CDN
+            return await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+        }
     }
 
     async loadUserAuth() {
@@ -667,8 +689,8 @@ class LiveChatWidget {
         }
 
         try {
-            // Use modular Firebase SDK
-            const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+            // Use Firebase SDK (npm or CDN depending on what's available)
+            const firestoreModule = await this.getFirestoreFunctions();
             const { collection, query, where, getDocs } = firestoreModule;
             
             // For anonymous users, skip loading existing chats - they'll create new ones
@@ -696,7 +718,7 @@ class LiveChatWidget {
         if (!this.currentChatId || !window.db) return;
 
         try {
-            const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+            const firestoreModule = await this.getFirestoreFunctions();
             const { collection, query, orderBy, getDocs } = firestoreModule;
             const messagesRef = collection(window.db, 'live_chats', this.currentChatId, 'messages');
             const q = query(messagesRef, orderBy('timestamp', 'asc')); // Oldest first
@@ -752,7 +774,7 @@ class LiveChatWidget {
         }
 
         try {
-            const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+            const firestoreModule = await this.getFirestoreFunctions();
             const { collection, query, orderBy, onSnapshot } = firestoreModule;
             const messagesRef = collection(window.db, 'live_chats', this.currentChatId, 'messages');
             const q = query(messagesRef, orderBy('timestamp', 'asc')); // Changed to asc to maintain order
@@ -954,7 +976,7 @@ class LiveChatWidget {
         }
 
         try {
-            const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+            const firestoreModule = await this.getFirestoreFunctions();
             const { collection, addDoc, serverTimestamp, updateDoc, doc } = firestoreModule;
             
             let imageBase64 = null;
@@ -1134,7 +1156,7 @@ class LiveChatWidget {
         }
 
         try {
-            const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+            const firestoreModule = await this.getFirestoreFunctions();
             const { collection, addDoc, serverTimestamp } = firestoreModule;
             
             // Get user name - authenticated user email or anonymous identifier
@@ -1193,7 +1215,7 @@ class LiveChatWidget {
         if (!this.currentChatId || !window.db) return;
         
         try {
-            const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+            const firestoreModule = await this.getFirestoreFunctions();
             const { collection, query, where, getDocs, updateDoc, doc } = firestoreModule;
             const messagesRef = collection(window.db, 'live_chats', this.currentChatId, 'messages');
             const q = query(messagesRef, where('read', '==', false), where('sender', '==', 'admin'));

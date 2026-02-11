@@ -161,11 +161,10 @@
             display: none;
         }
     </style>
-  <script type="module" crossorigin src="/assets/main-ynilYXwb.js"></script>
+  <script type="module" crossorigin src="/assets/main-CVchyM5w.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
   <link rel="modulepreload" crossorigin href="/assets/firebase-config-D2Ob3NcO.js">
-  <link rel="modulepreload" crossorigin href="/assets/firebase-client-Drf6QgQf.js">
-  <link rel="modulepreload" crossorigin href="/assets/compliance-modals-gNe9-PES.js">
+  <link rel="modulepreload" crossorigin href="/assets/firebase-client-BQD81AQz.js">
   <link rel="stylesheet" crossorigin href="/assets/site-BJuhXFeC.css">
 </head>
 
@@ -297,51 +296,36 @@
                     </div>
                 </div>
 
-                <!-- Sign-in Form -->
+                <!-- Promotional Card Section -->
                 <div class="relative">
                     <div class="absolute -inset-6 bg-gradient-to-br from-blue-200/40 via-white to-blue-100/40 blur-2xl rounded-[2.5rem]"></div>
-                    <div class="relative bg-white border border-blue-100 rounded-[2rem] overflow-hidden shadow-xl p-6 md:p-8">
+                    <div class="relative bg-gradient-to-br from-blue-600 to-blue-800 border border-blue-700 rounded-[2rem] overflow-hidden shadow-xl p-6 md:p-8 text-white">
                         <div class="mb-6">
-                            <div class="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 rounded-full px-4 py-2 shadow-sm mb-4">
-                                <span class="w-2 h-2 rounded-full bg-blue-600"></span>
-                                <span class="text-blue-800 text-xs font-semibold uppercase tracking-wider">Secure Login</span>
-                                </div>
-                            <h2 class="text-2xl md:text-3xl font-extrabold text-blue-950 mb-2">Welcome Back</h2>
-                            <p class="text-blue-800 text-sm">Sign in to continue to your account</p>
-                        </div>
-
-                        <form id="hero-login-form" class="space-y-4">
-                            <div id="hero-error-message" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm"></div>
-                            
-                            <div class="relative">
-                                <i class="fas fa-envelope absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-700"></i>
-                                <input type="email" id="hero-email" name="email" required placeholder="Enter your email"
-                                    class="w-full border border-blue-200 rounded-xl p-4 pl-12 bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-blue-950 placeholder-blue-400">
-                                </div>
-
-                            <div class="relative">
-                                <i class="fas fa-lock absolute left-4 top-1/2 transform -translate-y-1/2 text-blue-700"></i>
-                                <input type="password" id="hero-password" name="password" required placeholder="Enter your password"
-                                    class="w-full border border-blue-200 rounded-xl p-4 pl-12 pr-12 bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-blue-950 placeholder-blue-400">
-            </div>
-
-                            <div class="flex items-center justify-between text-sm">
-                                <label class="flex items-center gap-2 text-blue-800">
-                                    <input type="checkbox" class="rounded border-blue-200 text-blue-600 focus:ring-blue-500">
-                                    <span>Remember me</span>
-                                </label>
-                                <a href="forgot-password.html" class="text-blue-800 hover:text-blue-950 font-semibold transition">Forgot password?</a>
-                </div>
-
-                            <button type="submit" id="hero-login-btn" data-no-loading="true" class="w-full btn-blue text-white py-4 rounded-xl font-semibold text-base transition duration-300 mt-4 shadow-lg">
-                                <i class="fas fa-sign-in-alt mr-2"></i>Sign in
-                            </button>
-                        </form>
-                        
-                        <div class="mt-6 text-center">
-                            <p class="text-blue-800 text-sm">Don't have an account? <a href="sign-up.html" class="text-blue-950 font-semibold hover:text-blue-700 transition underline">Sign Up</a></p>
+                            <div class="inline-flex items-center gap-2 bg-white/20 border border-white/30 rounded-full px-4 py-2 shadow-sm mb-4">
+                                <span class="w-2 h-2 rounded-full bg-white"></span>
+                                <span class="text-white text-xs font-semibold uppercase tracking-wider">Special Offer</span>
                             </div>
+                            <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-3">
+                                Enjoy $400
+                            </h2>
+                            <p class="text-blue-100 text-base font-medium mb-2">
+                                New Twenty Third & Forth checking customers
+                            </p>
+                            <p class="text-blue-200 text-sm leading-relaxed">
+                                Open a Twenty Third & Forth Total Checking® account with qualifying activities.
+                            </p>
                         </div>
+
+                        <a href="sign-up.html" class="w-full bg-white text-blue-950 py-4 rounded-xl font-semibold text-base transition duration-300 shadow-lg flex items-center justify-center hover:bg-blue-50 hover:shadow-xl">
+                            <i class="fas fa-arrow-right mr-2"></i>Open Account Now
+                        </a>
+                        
+                        <div class="mt-6 pt-6 border-t border-white/20">
+                            <p class="text-xs text-blue-200 text-center">
+                                Terms and conditions apply. Qualifying activities required.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2007,6 +1991,8 @@
                     // Reset the form
                     form.reset();
                     if (holder3Group) holder3Group.classList.add('hidden');
+                    const holdersCountElReset = document.getElementById('holders-count');
+                    if (holdersCountElReset) holdersCountElReset.value = '2';
                     if (statusEl) statusEl.textContent = ''; // Clear any status messages
                 } catch (err) {
                     console.error(err);
@@ -2270,7 +2256,6 @@
         #overlay.active { display: block; }
     </style>
 
-    <!-- Hero Login Form Authentication -->
 </body>
 </html>
 
