@@ -214,3 +214,4 @@ Vercel is configured to:
 - **Firebase errors**: Verify Firebase credentials in `firebase-config.js`
 
 
+

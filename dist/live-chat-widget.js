@@ -353,9 +353,10 @@ class LiveChatWidget {
                             <i class="fas fa-image"></i>
                         </button>
                         <div class="flex-1 relative">
-                            <input type="text" id="chatMessageInput" placeholder="Type your message..." 
-                                class="w-full px-4 py-3 pr-12 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50"
-                                style="font-size: 16px !important;">
+                            <textarea id="chatMessageInput" placeholder="Type your message..." 
+                                class="w-full px-4 py-3 pr-12 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 resize-none"
+                                style="font-size: 16px !important; min-height: 48px; max-height: 150px;"
+                                rows="1"></textarea>
                         </div>
                         <button id="sendMessageBtn" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 py-3 rounded-xl transition-all shadow-lg hover:shadow-xl hover:scale-105">
                             <i class="fas fa-paper-plane"></i>
@@ -373,8 +374,19 @@ class LiveChatWidget {
         document.getElementById('closeChatBtn').addEventListener('click', () => this.closeChat());
         document.getElementById('startLiveChatBtn').addEventListener('click', () => this.startLiveChat());
         document.getElementById('sendMessageBtn').addEventListener('click', () => this.sendMessage());
-        document.getElementById('chatMessageInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') this.sendMessage();
+        
+        // Handle textarea auto-resize and prevent Enter from sending
+        const chatInput = document.getElementById('chatMessageInput');
+        chatInput.addEventListener('keydown', (e) => {
+            // Prevent Enter from sending, allow Shift+Enter for new line
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+            }
+        });
+        chatInput.addEventListener('input', () => {
+            // Auto-resize textarea
+            chatInput.style.height = 'auto';
+            chatInput.style.height = Math.min(chatInput.scrollHeight, 150) + 'px';
         });
         document.getElementById('attachImageBtn').addEventListener('click', () => {
             document.getElementById('imageInput').click();
