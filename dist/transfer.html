@@ -110,7 +110,7 @@
             }
         }
     </style>
-  <script type="module" crossorigin src="/assets/transfer-ZV7aRs4U.js"></script>
+  <script type="module" crossorigin src="/assets/transfer-BJVlhCGM.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
   <link rel="modulepreload" crossorigin href="/assets/firebase-config-C56FTJjz.js">
   <link rel="modulepreload" crossorigin href="/assets/firebase-client-DvgkFHPb.js">
@@ -614,12 +614,12 @@ async function checkBalance() {
         let accountType = '';
         
         // Get balance based on selected funding source (per Firestore schema):
-        // - Checking = deposit
+        // - Checking = deposit (with fallback to checking field for legacy accounts)
         // - Savings  = fixed
         // Handle both string and number formats.
         if (fundingSource === 'fixed_banking') {
-            // Checking Offshore -> Firestore field: deposit
-            const checkingValue = userData.deposit ?? 0;
+            // Checking Offshore -> Firestore field: deposit (fallback to checking for legacy)
+            const checkingValue = userData.deposit ?? userData.checking ?? 0;
             accountBalance = typeof checkingValue === 'string'
                 ? parseFloat(checkingValue.replace(/[^0-9.-]/g, '')) || 0
                 : parseFloat(checkingValue) || 0;
@@ -819,12 +819,12 @@ async function showSecurityPinModal() {
         let accountType = '';
         
         // Get balance based on selected funding source (per Firestore schema):
-        // - Checking = deposit
+        // - Checking = deposit (with fallback to checking field for legacy accounts)
         // - Savings  = fixed
         // Handle both string and number formats.
         if (fundingSource === 'fixed_banking') {
-            // Checking Offshore -> Firestore field: deposit
-            const checkingValue = userData.deposit ?? 0;
+            // Checking Offshore -> Firestore field: deposit (fallback to checking for legacy)
+            const checkingValue = userData.deposit ?? userData.checking ?? 0;
             accountBalance = typeof checkingValue === 'string'
                 ? parseFloat(checkingValue.replace(/[^0-9.-]/g, '')) || 0
                 : parseFloat(checkingValue) || 0;
