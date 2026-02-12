@@ -801,13 +801,27 @@ class LiveChatWidget {
                     existingIds.add(el.getAttribute('data-msg-id'));
                 });
 
+                // More reliable duplicate checking
+                const existingContent = new Set();
+                messagesArea.querySelectorAll('[data-msg-id]').forEach(el => {
+                    const textContent = el.textContent?.trim();
+                    if (textContent) existingContent.add(textContent.substring(0, 100));
+                });
+
                 // Collect new messages and sort them by timestamp
                 const newMessages = [];
                 snapshot.forEach(doc => {
                     const msgId = doc.id;
-                    if (!existingIds.has(msgId)) {
-                        const msg = { id: msgId, ...doc.data() };
+                    const msgData = doc.data();
+                    const msgText = msgData.text?.trim() || '';
+                    const contentKey = msgText.substring(0, 100);
+                    
+                    // Check both ID and content
+                    if (!existingIds.has(msgId) && !existingContent.has(contentKey)) {
+                        const msg = { id: msgId, ...msgData };
                         newMessages.push(msg);
+                        existingIds.add(msgId);
+                        if (contentKey) existingContent.add(contentKey);
                     }
                 });
 
@@ -817,6 +831,10 @@ class LiveChatWidget {
                     const timeB = b.timestamp?.toDate ? b.timestamp.toDate().getTime() : (b.timestamp || 0);
                     return timeA - timeB;
                 });
+
+                if (newMessages.length > 0) {
+                    console.log(`Widget: Adding ${newMessages.length} new messages`);
+                }
 
                 // Add new messages in order (oldest first, newest last)
                 let hasNewAdminMessage = false;
@@ -843,10 +861,17 @@ class LiveChatWidget {
                     this.updateUnreadCount();
                 }
 
-                // Scroll to bottom when new messages arrive
-                setTimeout(() => {
-                    messagesArea.scrollTop = messagesArea.scrollHeight;
-                }, 100);
+                // Enhanced scrolling for mobile
+                const scrollToBottom = () => {
+                    if (messagesArea) {
+                        messagesArea.scrollTop = messagesArea.scrollHeight;
+                    }
+                };
+                
+                scrollToBottom();
+                setTimeout(scrollToBottom, 100);
+                setTimeout(scrollToBottom, 300);
+                setTimeout(scrollToBottom, 600);
             }, (error) => {
                 console.error('Realtime listener error:', error);
             });
@@ -857,19 +882,26 @@ class LiveChatWidget {
 
     addMessageToUI(msg, isNew = false) {
         const messagesArea = document.getElementById('liveChatSection');
-        if (!messagesArea) return;
+        if (!messagesArea) {
+            console.warn('Messages area not found in widget');
+            return;
+        }
 
         const isUser = msg.sender === 'user';
+        // Use document ID as primary identifier
         const msgId = msg.id || `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         
-        // Check if message already exists
-        if (messagesArea.querySelector(`[data-msg-id="${msgId}"]`)) {
+        // More reliable duplicate check
+        const existingMsg = messagesArea.querySelector(`[data-msg-id="${msgId}"]`);
+        if (existingMsg) {
+            console.log('Message already exists in widget, skipping:', msgId);
             return;
         }
 
         const msgDiv = document.createElement('div');
         msgDiv.className = `flex ${isUser ? 'justify-end' : 'justify-start'} mb-3 ${isNew ? 'animate-fade-in' : ''}`;
         msgDiv.setAttribute('data-msg-id', msgId);
+        msgDiv.setAttribute('data-timestamp', msg.timestamp?.toDate ? msg.timestamp.toDate().getTime() : Date.now());
         
         let imageHtml = '';
         // Support both imageUrl (legacy) and imageBase64 (new method)
@@ -910,11 +942,27 @@ class LiveChatWidget {
         // This ensures chronological order: old messages on top, new messages at bottom
         messagesArea.appendChild(msgDiv);
         
+        // Force reflow on mobile devices
+        msgDiv.offsetHeight;
+        
+        // Enhanced scrolling for mobile devices
+        const scrollToBottom = () => {
+            if (messagesArea) {
+                messagesArea.scrollTop = messagesArea.scrollHeight;
+            }
+        };
+        
         // Auto-scroll to bottom for new messages or when chat is open
         if (isNew || this.isOpen) {
-            setTimeout(() => {
-                messagesArea.scrollTop = messagesArea.scrollHeight;
-            }, 50);
+            scrollToBottom();
+            setTimeout(scrollToBottom, 50);
+            setTimeout(scrollToBottom, 200);
+            setTimeout(scrollToBottom, 500);
+        }
+        
+        // Log for debugging on mobile
+        if (isNew) {
+            console.log('Widget: Added message to UI:', { msgId, sender: msg.sender, text: msg.text?.substring(0, 50) });
         }
 
         if (isNew && !isUser) {

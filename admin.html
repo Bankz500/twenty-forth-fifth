@@ -113,6 +113,14 @@
                     <span class="font-medium text-sm">Loan Requests</span>
                     <span id="adminLoanBadge" class="ml-auto text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5 hidden shadow-lg" style="background-color: #1800ac;">0</span>
                 </a>
+                <a href="#transfers" onclick="showSection('transfers'); return false;" 
+                   class="nav-item relative flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 cursor-pointer group">
+                    <div class="w-5 flex justify-center">
+                        <i class="fas fa-exchange-alt text-slate-300 group-hover:text-white transition-colors"></i>
+                    </div>
+                    <span class="font-medium text-sm">Transfers</span>
+                    <span id="adminTransferBadge" class="ml-auto text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5 hidden shadow-lg" style="background-color: #1800ac;">0</span>
+                </a>
                 <a href="#debit-cards" onclick="showSection('debitCards'); return false;" 
                    class="nav-item relative flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 cursor-pointer group">
                     <div class="w-5 flex justify-center">
@@ -370,6 +378,53 @@
             </h2>
             <div id="loansList" class="space-y-4">
                 <p class="text-gray-500 text-center py-8">Loading loan requests...</p>
+            </div>
+        </div>
+
+        <!-- Transfers Management Section -->
+        <div id="transfersSection" class="hidden bg-white border border-gray-200 rounded-xl shadow-sm p-6">
+            <div class="flex items-start justify-between gap-4 mb-5">
+                <div>
+                    <h2 class="text-xl font-semibold text-gray-950 mb-1">
+                        <i class="fas fa-exchange-alt text-gray-800 mr-2"></i>
+                        Transfer Management
+                    </h2>
+                    <p class="text-sm text-gray-600">
+                        Review, approve, and edit pending transfers. Approved transfers move to user history.
+                    </p>
+                </div>
+                <span id="transferBadge" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200">
+                    0 pending
+                </span>
+            </div>
+
+            <!-- Pending Transfers -->
+            <div class="mb-6 bg-white border border-gray-200 rounded-xl p-4">
+                <h3 class="text-sm font-semibold text-gray-950 mb-3">
+                    <i class="fas fa-clock text-gray-800 mr-2"></i>
+                    Pending Transfers
+                </h3>
+                <div id="pendingTransfersList" class="space-y-3">
+                    <p class="text-gray-500 text-center py-4 text-sm">Loading pending transfers...</p>
+                </div>
+            </div>
+
+            <!-- History Management -->
+            <div class="bg-white border border-gray-200 rounded-xl p-4">
+                <h3 class="text-sm font-semibold text-gray-950 mb-3">
+                    <i class="fas fa-history text-gray-800 mr-2"></i>
+                    Edit History Entries
+                </h3>
+                <div class="mb-3">
+                    <label class="block text-sm font-medium text-gray-800 mb-1">Select user to edit history</label>
+                    <select id="transferHistoryUserSelect"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 text-sm bg-white">
+                        <option value="">Select user...</option>
+                    </select>
+                </div>
+                <div id="transferHistoryList" class="space-y-2 max-h-96 overflow-y-auto border border-gray-200 rounded-lg p-3">
+                    <p class="text-xs text-gray-500 text-center py-4">Select a user to view/edit their history entries</p>
+                </div>
             </div>
         </div>
 
@@ -2223,6 +2278,10 @@
             document.getElementById('chatSection').classList.add('hidden');
             document.getElementById('kycSection').classList.add('hidden');
             document.getElementById('loansSection').classList.add('hidden');
+            const transfersSection = document.getElementById('transfersSection');
+            if (transfersSection) {
+                transfersSection.classList.add('hidden');
+            }
             const debitCardsSection = document.getElementById('debitCardsSection');
             if (debitCardsSection) {
                 debitCardsSection.classList.add('hidden');
@@ -2268,6 +2327,16 @@
                 if (document.getElementById('loansList').innerHTML.includes('Loading')) {
                     loadLoanRequests();
                 }
+            } else if (section === 'transfers') {
+                document.getElementById('transfersSection').classList.remove('hidden');
+                document.querySelector('a[onclick*="transfers"]').classList.add('active');
+                document.getElementById('pageTitle').textContent = 'Transfer Management';
+                // Load pending transfers if not already loaded
+                if (document.getElementById('pendingTransfersList').innerHTML.includes('Loading')) {
+                    loadPendingTransfers();
+                }
+                // Load user selector for history editing
+                loadTransferHistoryUserSelect();
             } else if (section === 'debitCards') {
                 if (debitCardsSection) {
                     debitCardsSection.classList.remove('hidden');
@@ -4408,6 +4477,543 @@
 
         // Expose functions globally
         window.showSection = showSection;
+        // ========== TRANSFER MANAGEMENT FUNCTIONS ==========
+        
+        // Load all pending transfers from all users
+        async function loadPendingTransfers() {
+            try {
+                const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+                const { collection, getDocs } = firestoreModule;
+                
+                const usersRef = collection(db, 'users');
+                const usersSnapshot = await getDocs(usersRef);
+                
+                const pendingTransfers = [];
+                
+                usersSnapshot.forEach(userDoc => {
+                    const userData = userDoc.data();
+                    const userId = userDoc.id;
+                    
+                    // Check all pending slots
+                    for (let i = 1; i <= 5; i++) {
+                        const pendingField = `pending${i}`;
+                        const pendingValue = userData[pendingField];
+                        
+                        if (pendingValue && pendingValue.trim() !== '') {
+                            // Parse transfer string: "Bank Name - Twenty Third & Forth  |  Transfer-Intl  |  $Amount |  Time  |  Date  |  FundingSource  |  Pending"
+                            // Backward compatible: old format doesn't have funding source
+                            const parts = pendingValue.split('|').map(p => p.trim());
+                            const fundingSource = parts.length >= 7 ? parts[5] : (parts.length === 6 ? null : null); // New format has 7 parts, old has 6
+                            const statusIndex = parts.length >= 7 ? 6 : 5; // Status is last part
+                            
+                            pendingTransfers.push({
+                                userId: userId,
+                                userName: userData.name || userData.firstName || userData.email || 'Unknown',
+                                userEmail: userData.email || 'N/A',
+                                pendingField: pendingField,
+                                transferString: pendingValue,
+                                bankName: parts[0]?.replace(' - Twenty Third & Forth', '').trim() || '',
+                                transferType: parts[1] || '',
+                                amount: parts[2] || '',
+                                time: parts[3] || '',
+                                date: parts[4] || '',
+                                fundingSource: fundingSource || 'Unknown', // Store funding source
+                                status: parts[statusIndex] || 'Pending'
+                            });
+                        }
+                    }
+                });
+                
+                renderPendingTransfers(pendingTransfers);
+                updateTransferBadge(pendingTransfers.length);
+            } catch (error) {
+                console.error('Error loading pending transfers:', error);
+                document.getElementById('pendingTransfersList').innerHTML = 
+                    '<p class="text-red-500 text-center py-4 text-sm">Error loading transfers: ' + error.message + '</p>';
+            }
+        }
+        
+        // Render pending transfers list
+        function renderPendingTransfers(transfers) {
+            const listEl = document.getElementById('pendingTransfersList');
+            
+            if (transfers.length === 0) {
+                listEl.innerHTML = '<p class="text-gray-500 text-center py-4 text-sm">No pending transfers found.</p>';
+                return;
+            }
+            
+            listEl.innerHTML = transfers.map((transfer, index) => `
+                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-3">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <h4 class="font-semibold text-gray-900">${transfer.userName}</h4>
+                                <span class="text-xs text-gray-500">(${transfer.userEmail})</span>
+                            </div>
+                            <p class="text-sm text-gray-600"><span class="font-medium">Bank:</span> ${transfer.bankName}</p>
+                            <p class="text-sm text-gray-600"><span class="font-medium">Amount:</span> ${transfer.amount}</p>
+                            <p class="text-sm text-gray-600"><span class="font-medium">Type:</span> ${transfer.transferType}</p>
+                            <p class="text-sm text-gray-600"><span class="font-medium">Funding:</span> ${transfer.fundingSource !== 'Unknown' ? transfer.fundingSource : 'Not specified (will ask on approval)'}</p>
+                            <p class="text-sm text-gray-600"><span class="font-medium">Date:</span> ${transfer.date} ${transfer.time}</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="editPendingTransfer('${transfer.userId}', '${transfer.pendingField}', ${index})" 
+                                    class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg transition">
+                                <i class="fas fa-edit mr-1"></i>Edit
+                            </button>
+                            <button onclick="approveTransfer('${transfer.userId}', '${transfer.pendingField}', ${index})" 
+                                    class="px-3 py-1.5 text-white text-xs font-semibold rounded-lg transition" 
+                                    style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
+                                <i class="fas fa-check mr-1"></i>Approve
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Approve transfer - move from pending to history
+        window.approveTransfer = async function(userId, pendingField, index) {
+            if (!confirm('Approve this transfer? It will be moved to the user\'s history and the amount will be deducted from their account.')) {
+                return;
+            }
+            
+            try {
+                const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+                const { doc, getDoc, updateDoc } = firestoreModule;
+                
+                const userRef = doc(db, 'users', userId);
+                const userDoc = await getDoc(userRef);
+                
+                if (!userDoc.exists()) {
+                    showError('User not found.');
+                    return;
+                }
+                
+                const userData = userDoc.data();
+                const pendingValue = userData[pendingField];
+                
+                if (!pendingValue || pendingValue.trim() === '') {
+                    showError('Transfer not found.');
+                    return;
+                }
+                
+                // Parse transfer string to extract amount and funding source
+                const parts = pendingValue.split('|').map(p => p.trim());
+                // Format: "Bank Name - Twenty Third & Forth  |  Transfer-Intl  |  $Amount |  Time  |  Date  |  FundingSource  |  Pending"
+                // Old format (backward compatible): "Bank Name - Twenty Third & Forth  |  Transfer-Intl  |  $Amount |  Time  |  Date  |  Pending"
+                const amountStr = parts[2] || ''; // Amount is 3rd part (index 2)
+                const fundingSourceStr = parts.length >= 7 ? parts[5] : null; // Funding source is 6th part in new format
+                const statusIndex = parts.length >= 7 ? 6 : 5; // Status is last part
+                
+                // Parse amount (remove $ and commas)
+                const transferAmount = parseFloat(amountStr.replace(/[^0-9.-]/g, '')) || 0;
+                
+                if (transferAmount <= 0) {
+                    showError('Invalid transfer amount.');
+                    return;
+                }
+                
+                // Determine funding source (Checking or Savings)
+                // New format includes it, old format we need to ask or default
+                let fundingSource = null;
+                if (fundingSourceStr && (fundingSourceStr.toLowerCase().includes('checking') || fundingSourceStr.toLowerCase().includes('savings'))) {
+                    fundingSource = fundingSourceStr.toLowerCase().includes('checking') ? 'checking' : 'savings';
+                } else {
+                    // For old format transfers, ask admin which account to deduct from
+                    const accountChoice = confirm('This is an older transfer format.\n\nClick OK to deduct from Checking account, or Cancel to deduct from Savings account.');
+                    fundingSource = accountChoice ? 'checking' : 'savings';
+                }
+                
+                // Get current account balance
+                let currentBalance = 0;
+                let accountField = '';
+                let useDepositField = true; // Track which field to update
+                
+                if (fundingSource === 'checking') {
+                    // Checking account -> prefer deposit field, fallback to checking for legacy
+                    const depositValue = userData.deposit;
+                    const checkingValue = userData.checking;
+                    
+                    if (depositValue !== undefined && depositValue !== null && depositValue !== '') {
+                        accountField = 'deposit';
+                        useDepositField = true;
+                        currentBalance = typeof depositValue === 'string'
+                            ? parseFloat(depositValue.replace(/[^0-9.-]/g, '')) || 0
+                            : parseFloat(depositValue) || 0;
+                    } else if (checkingValue !== undefined && checkingValue !== null && checkingValue !== '') {
+                        accountField = 'checking';
+                        useDepositField = false;
+                        currentBalance = typeof checkingValue === 'string'
+                            ? parseFloat(checkingValue.replace(/[^0-9.-]/g, '')) || 0
+                            : parseFloat(checkingValue) || 0;
+                    } else {
+                        currentBalance = 0;
+                        accountField = 'deposit'; // Default to deposit
+                        useDepositField = true;
+                    }
+                } else {
+                    // Savings account -> fixed field
+                    accountField = 'fixed';
+                    useDepositField = false;
+                    const savingsValue = userData.fixed ?? 0;
+                    currentBalance = typeof savingsValue === 'string'
+                        ? parseFloat(savingsValue.replace(/[^0-9.-]/g, '')) || 0
+                        : parseFloat(savingsValue) || 0;
+                }
+                
+                // Check if sufficient balance
+                if (transferAmount > currentBalance) {
+                    showError(`Insufficient balance. User has $${currentBalance.toFixed(2)} but transfer is for $${transferAmount.toFixed(2)}.`);
+                    return;
+                }
+                
+                // Calculate new balance
+                const newBalance = currentBalance - transferAmount;
+                const formattedNewBalance = new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                }).format(newBalance);
+                
+                // Update status from "Pending" to "Completed"
+                const updatedTransferString = pendingValue.replace('| Pending', '| Completed').replace('|Pending', '|Completed');
+                
+                // Check if history is full (check first 15 entries as user mentioned)
+                const historyEntries = [];
+                for (let i = 1; i <= 15; i++) {
+                    const historyField = `history${i}`;
+                    const historyValue = userData[historyField];
+                    if (historyValue && historyValue.trim() !== '') {
+                        historyEntries.push({ field: historyField, value: historyValue });
+                    }
+                }
+                
+                const isHistoryFull = historyEntries.length >= 15;
+                
+                // Prepare update data
+                const updateData = {
+                    [pendingField]: '', // Clear pending field
+                };
+                
+                // Update account balance - update the field that exists
+                if (fundingSource === 'checking' && !useDepositField) {
+                    // Legacy account using 'checking' field
+                    updateData.checking = formattedNewBalance;
+                } else {
+                    // Standard account using 'deposit' or 'fixed' field
+                    updateData[accountField] = formattedNewBalance;
+                }
+                
+                if (isHistoryFull) {
+                    // Rotate history: shift all entries down, put new one in history1
+                    // history1 -> history2, history2 -> history3, ..., history14 -> history15, new -> history1
+                    for (let i = 14; i >= 1; i--) {
+                        const currentField = `history${i}`;
+                        const nextField = `history${i + 1}`;
+                        const currentValue = userData[currentField];
+                        if (currentValue && currentValue.trim() !== '') {
+                            updateData[nextField] = currentValue;
+                        } else {
+                            updateData[nextField] = '';
+                        }
+                    }
+                    // Put new approved transfer in history1
+                    updateData.history1 = updatedTransferString;
+                } else {
+                    // Find first available history slot (1-15)
+                    let historySlot = null;
+                    for (let i = 1; i <= 15; i++) {
+                        const historyField = `history${i}`;
+                        if (!userData[historyField] || userData[historyField].trim() === '') {
+                            historySlot = historyField;
+                            break;
+                        }
+                    }
+                    
+                    if (historySlot) {
+                        updateData[historySlot] = updatedTransferString;
+                    } else {
+                        // Fallback: use history1 if somehow all are full
+                        updateData.history1 = updatedTransferString;
+                    }
+                }
+                
+                await updateDoc(userRef, updateData);
+                
+                const accountName = fundingSource === 'checking' ? 'Checking' : 'Savings';
+                showSuccess(`Transfer approved! $${transferAmount.toFixed(2)} deducted from ${accountName} account. New balance: ${formattedNewBalance}`);
+                loadPendingTransfers(); // Reload list
+            } catch (error) {
+                console.error('Error approving transfer:', error);
+                showError('Failed to approve transfer: ' + error.message);
+            }
+        };
+        
+        // Edit pending transfer
+        window.editPendingTransfer = function(userId, pendingField, index) {
+            const listEl = document.getElementById('pendingTransfersList');
+            const transferDiv = listEl.children[index];
+            
+            if (!transferDiv) return;
+            
+            // Get current transfer string from Firebase (we'll need to fetch it)
+            // For now, show edit modal
+            showEditTransferModal(userId, pendingField, 'pending');
+        };
+        
+        // Edit history entry
+        window.editHistoryEntry = function(userId, historyField, index) {
+            showEditTransferModal(userId, historyField, 'history');
+        };
+        
+        // Show edit transfer modal
+        function showEditTransferModal(userId, fieldName, type) {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 flex items-center justify-center z-50 p-4';
+            modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+            modal.id = 'editTransferModal';
+            
+            modal.innerHTML = `
+                <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                    <div class="p-6 border-b border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-semibold text-gray-900">Edit ${type === 'pending' ? 'Pending Transfer' : 'History Entry'}</h3>
+                            <button onclick="document.getElementById('editTransferModal').remove()" class="text-gray-400 hover:text-gray-600">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Transfer String</label>
+                                <textarea id="editTransferString" 
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 text-sm font-mono"
+                                          rows="5"></textarea>
+                                <p class="text-xs text-gray-500 mt-1">
+                                    <strong>Format:</strong> Bank Name - Twenty Third & Forth | Transfer-Type | $Amount | Time | Date | Funding Source | Status<br>
+                                    <strong>Example:</strong> Chase Bank - Twenty Third & Forth | Transfer-Intl | $1,000.00 | 10:30 AM | 12/25/2024 | Checking | Completed
+                                </p>
+                            </div>
+                            <div class="flex gap-2 justify-end">
+                                <button onclick="document.getElementById('editTransferModal').remove()" 
+                                        class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg transition">
+                                    Cancel
+                                </button>
+                                <button onclick="saveTransferEdit('${userId}', '${fieldName}', '${type}')" 
+                                        class="px-4 py-2 text-white rounded-lg transition" 
+                                        style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
+                                    Save Changes
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Load current value
+            loadTransferValue(userId, fieldName).then(value => {
+                document.getElementById('editTransferString').value = value || '';
+            });
+        }
+        
+        // Load transfer value from Firebase
+        async function loadTransferValue(userId, fieldName) {
+            try {
+                const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+                const { doc, getDoc } = firestoreModule;
+                
+                const userRef = doc(db, 'users', userId);
+                const userDoc = await getDoc(userRef);
+                
+                if (userDoc.exists()) {
+                    return userDoc.data()[fieldName] || '';
+                }
+                return '';
+            } catch (error) {
+                console.error('Error loading transfer value:', error);
+                return '';
+            }
+        }
+        
+        // Save transfer edit
+        window.saveTransferEdit = async function(userId, fieldName, type) {
+            const newValue = document.getElementById('editTransferString').value.trim();
+            
+            if (!newValue) {
+                showError('Transfer string cannot be empty.');
+                return;
+            }
+            
+            try {
+                const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+                const { doc, updateDoc } = firestoreModule;
+                
+                const userRef = doc(db, 'users', userId);
+                await updateDoc(userRef, { [fieldName]: newValue });
+                
+                document.getElementById('editTransferModal').remove();
+                showSuccess(`${type === 'pending' ? 'Pending transfer' : 'History entry'} updated successfully.`);
+                
+                if (type === 'pending') {
+                    loadPendingTransfers();
+                } else {
+                    loadTransferHistory(userId);
+                }
+            } catch (error) {
+                console.error('Error saving transfer edit:', error);
+                showError('Failed to save changes: ' + error.message);
+            }
+        };
+        
+        // Load user selector for history editing
+        async function loadTransferHistoryUserSelect() {
+            try {
+                const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+                const { collection, getDocs } = firestoreModule;
+                
+                const usersRef = collection(db, 'users');
+                const usersSnapshot = await getDocs(usersRef);
+                
+                const selectEl = document.getElementById('transferHistoryUserSelect');
+                selectEl.innerHTML = '<option value="">Select user...</option>';
+                
+                usersSnapshot.forEach(userDoc => {
+                    const userData = userDoc.data();
+                    const userName = userData.name || userData.firstName || userData.email || 'Unknown';
+                    const option = document.createElement('option');
+                    option.value = userDoc.id;
+                    option.textContent = `${userName} (${userData.email || 'N/A'})`;
+                    selectEl.appendChild(option);
+                });
+                
+                selectEl.addEventListener('change', function() {
+                    if (this.value) {
+                        loadTransferHistory(this.value);
+                    } else {
+                        document.getElementById('transferHistoryList').innerHTML = 
+                            '<p class="text-xs text-gray-500 text-center py-4">Select a user to view/edit their history entries</p>';
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading users for history:', error);
+            }
+        }
+        
+        // Load transfer history for a user
+        async function loadTransferHistory(userId) {
+            try {
+                const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+                const { doc, getDoc } = firestoreModule;
+                
+                const userRef = doc(db, 'users', userId);
+                const userDoc = await getDoc(userRef);
+                
+                if (!userDoc.exists()) {
+                    document.getElementById('transferHistoryList').innerHTML = 
+                        '<p class="text-xs text-red-500 text-center py-4">User not found</p>';
+                    return;
+                }
+                
+                const userData = userDoc.data();
+                const historyEntries = [];
+                
+                for (let i = 1; i <= 20; i++) {
+                    const historyField = `history${i}`;
+                    const historyValue = userData[historyField];
+                    
+                    if (historyValue && historyValue.trim() !== '') {
+                        historyEntries.push({
+                            field: historyField,
+                            value: historyValue,
+                            index: i
+                        });
+                    }
+                }
+                
+                renderTransferHistory(historyEntries, userId);
+            } catch (error) {
+                console.error('Error loading transfer history:', error);
+                document.getElementById('transferHistoryList').innerHTML = 
+                    '<p class="text-xs text-red-500 text-center py-4">Error loading history: ' + error.message + '</p>';
+            }
+        }
+        
+        // Render transfer history list
+        function renderTransferHistory(entries, userId) {
+            const listEl = document.getElementById('transferHistoryList');
+            
+            if (entries.length === 0) {
+                listEl.innerHTML = '<p class="text-xs text-gray-500 text-center py-4">No history entries found for this user.</p>';
+                return;
+            }
+            
+            listEl.innerHTML = entries.map((entry, index) => {
+                // Parse the entry to show details
+                const parts = entry.value.split('|').map(p => p.trim());
+                const bankName = parts[0]?.replace(' - Twenty Third & Forth', '').trim() || '';
+                const transferType = parts[1] || '';
+                const amount = parts[2] || '';
+                const time = parts[3] || '';
+                const date = parts[4] || '';
+                const fundingSource = parts.length >= 7 ? parts[5] : '';
+                const status = parts.length >= 7 ? parts[6] : (parts[5] || '');
+                
+                return `
+                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow bg-white">
+                    <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800 border border-gray-200">
+                                    History ${entry.index}
+                                </span>
+                                ${status ? `<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${status.toLowerCase().includes('completed') ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">${status}</span>` : ''}
+                            </div>
+                            <div class="space-y-1 text-sm">
+                                ${bankName ? `<p class="text-gray-700"><span class="font-medium">Bank:</span> ${bankName}</p>` : ''}
+                                ${amount ? `<p class="text-gray-700"><span class="font-medium">Amount:</span> ${amount}</p>` : ''}
+                                ${transferType ? `<p class="text-gray-600"><span class="font-medium">Type:</span> ${transferType}</p>` : ''}
+                                ${date && time ? `<p class="text-gray-600"><span class="font-medium">Date:</span> ${date} ${time}</p>` : ''}
+                                ${fundingSource ? `<p class="text-gray-600"><span class="font-medium">Funding:</span> ${fundingSource}</p>` : ''}
+                            </div>
+                            <div class="mt-2 pt-2 border-t border-gray-200">
+                                <p class="text-xs font-mono text-gray-500 break-all">${entry.value}</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <button onclick="editHistoryEntry('${userId}', '${entry.field}', ${index})" 
+                                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition flex items-center gap-2 whitespace-nowrap">
+                                <i class="fas fa-edit"></i>
+                                <span>Edit Entry</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            }).join('');
+        }
+        
+        // Update transfer badge
+        function updateTransferBadge(count) {
+            const badge = document.getElementById('adminTransferBadge');
+            const headerBadge = document.getElementById('transferBadge');
+            if (badge) {
+                if (count > 0) {
+                    badge.textContent = count;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            }
+            if (headerBadge) {
+                headerBadge.textContent = `${count} pending`;
+            }
+        }
+        
         window.selectChat = selectChat;
         window.sendAdminReply = sendAdminReply;
         window.closeChatView = closeChatView;
@@ -4415,6 +5021,8 @@
         window.approveKYC = approveKYC;
         window.rejectKYC = rejectKYC;
         window.reviewKYC = reviewKYC;
+        window.loadPendingTransfers = loadPendingTransfers;
+        // editHistoryEntry, saveTransferEdit, and loadTransferHistory are already defined as window functions above
     </script>
 </body>
 </html>

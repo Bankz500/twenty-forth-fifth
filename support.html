@@ -677,18 +677,34 @@
 
             window.chatModal.realtimeUnsubscribe = onSnapshot(q, (snapshot) => {
                 const messagesArea = document.getElementById('liveChatMessages');
-                if (!messagesArea) return;
+                if (!messagesArea) {
+                    console.warn('Messages area not found in realtime listener');
+                    return;
+                }
 
+                // More reliable duplicate checking - check both data-msg-id and content
                 const existingIds = new Set();
+                const existingContent = new Set();
                 messagesArea.querySelectorAll('[data-msg-id]').forEach(el => {
-                    existingIds.add(el.getAttribute('data-msg-id'));
+                    const id = el.getAttribute('data-msg-id');
+                    if (id) existingIds.add(id);
+                    // Also check content for mobile reliability
+                    const textContent = el.textContent?.trim();
+                    if (textContent) existingContent.add(textContent.substring(0, 100));
                 });
 
                 const newMessages = [];
                 snapshot.forEach(doc => {
                     const msgId = doc.id;
-                    if (!existingIds.has(msgId)) {
-                        newMessages.push({ id: msgId, ...doc.data() });
+                    const msgData = doc.data();
+                    const msgText = msgData.text?.trim() || '';
+                    
+                    // Check both ID and content to avoid duplicates
+                    const contentKey = msgText.substring(0, 100);
+                    if (!existingIds.has(msgId) && !existingContent.has(contentKey)) {
+                        newMessages.push({ id: msgId, ...msgData });
+                        existingIds.add(msgId);
+                        if (contentKey) existingContent.add(contentKey);
                     }
                 });
 
@@ -697,6 +713,10 @@
                     const timeB = b.timestamp?.toDate ? b.timestamp.toDate().getTime() : (b.timestamp || 0);
                     return timeA - timeB;
                 });
+
+                if (newMessages.length > 0) {
+                    console.log(`Adding ${newMessages.length} new messages to UI`);
+                }
 
                 newMessages.forEach(msg => {
                     addMessageToUI(msg, true);
@@ -708,9 +728,19 @@
                     }
                 });
 
-                setTimeout(() => {
-                    messagesArea.scrollTop = messagesArea.scrollHeight;
-                }, 100);
+                // Enhanced scrolling for mobile
+                const scrollToBottom = () => {
+                    if (messagesArea) {
+                        messagesArea.scrollTop = messagesArea.scrollHeight;
+                    }
+                };
+                
+                scrollToBottom();
+                setTimeout(scrollToBottom, 100);
+                setTimeout(scrollToBottom, 300);
+                setTimeout(scrollToBottom, 600);
+            }, (error) => {
+                console.error('Realtime listener error:', error);
             });
         } catch (error) {
             console.error('Error setting up realtime listener:', error);
@@ -720,18 +750,27 @@
     // Add message to UI
     function addMessageToUI(msg, isNew = false) {
         const messagesArea = document.getElementById('liveChatMessages');
-        if (!messagesArea) return;
+        if (!messagesArea) {
+            console.warn('Messages area not found');
+            return;
+        }
 
         const isUser = msg.sender === 'user';
+        // Use document ID as primary identifier, fallback to generated ID
         const msgId = msg.id || `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         
-        if (messagesArea.querySelector(`[data-msg-id="${msgId}"]`)) {
+        // Check if message already exists - use more reliable check
+        const existingMsg = messagesArea.querySelector(`[data-msg-id="${msgId}"]`);
+        if (existingMsg) {
+            console.log('Message already exists, skipping:', msgId);
             return;
         }
 
         const msgDiv = document.createElement('div');
         msgDiv.className = `flex ${isUser ? 'justify-end' : 'justify-start'} mb-3`;
         msgDiv.setAttribute('data-msg-id', msgId);
+        // Add timestamp attribute for debugging
+        msgDiv.setAttribute('data-timestamp', msg.timestamp?.toDate ? msg.timestamp.toDate().getTime() : Date.now());
         
         let imageHtml = '';
         const imageSrc = msg.imageBase64 || msg.imageUrl;
@@ -769,9 +808,28 @@
         
         messagesArea.appendChild(msgDiv);
         
-        setTimeout(() => {
-            messagesArea.scrollTop = messagesArea.scrollHeight;
-        }, 50);
+        // Force reflow on mobile devices
+        msgDiv.offsetHeight;
+        
+        // Scroll to bottom with multiple attempts for mobile
+        const scrollToBottom = () => {
+            if (messagesArea) {
+                messagesArea.scrollTop = messagesArea.scrollHeight;
+            }
+        };
+        
+        // Immediate scroll
+        scrollToBottom();
+        
+        // Delayed scrolls for mobile devices that need time to render
+        setTimeout(scrollToBottom, 50);
+        setTimeout(scrollToBottom, 200);
+        setTimeout(scrollToBottom, 500);
+        
+        // Log for debugging on mobile
+        if (isNew) {
+            console.log('Added message to UI:', { msgId, sender: msg.sender, text: msg.text?.substring(0, 50) });
+        }
     }
 
     function escapeHtml(text) {

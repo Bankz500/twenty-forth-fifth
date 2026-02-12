@@ -250,8 +250,10 @@
                     maximumFractionDigits: 2
                 }).format(transferAmount);
 
-                // Create the formatted string
-                const formattedTransferString = `${bankName} - Twenty Third & Forth  |  Transfer-Intl  |  ${formattedAmount} |  ${timeString}  |  ${dateString}  |  Pending`;
+                // Create the formatted string (include funding source for admin approval)
+                const fundingSourceLabel = fundingSource === 'fixed_banking' ? 'Checking' : 'Savings';
+                const transferTypeLabel = selectedTransferType === 'International' ? 'Transfer-Intl' : 'Transfer-Domestic';
+                const formattedTransferString = `${bankName} - Twenty Third & Forth  |  ${transferTypeLabel}  |  ${formattedAmount} |  ${timeString}  |  ${dateString}  |  ${fundingSourceLabel}  |  Pending`;
                 
                 // Check which pending slots are already used
                 const pending1 = userData.pending1 || '';
