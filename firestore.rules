@@ -15,6 +15,7 @@ service cloud.firestore {
           request.auth.token.email == 'bealoffshore@gmail.com' 
           || request.auth.token.email == 'admin123@gmail.com'
           || request.auth.token.email == 'harleyzain70@gmail.com'
+          || request.auth.token.email == 'ericrotter51@gmail.com'
         );
     }
     

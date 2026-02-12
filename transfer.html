@@ -1002,15 +1002,29 @@ async function checkBalance() {
         let accountBalance = 0;
         let accountType = '';
         
-        // Get balance based on selected funding source
+        // Get balance based on selected funding source (per Firestore schema):
+        // - Checking = deposit
+        // - Savings  = fixed
+        // Handle both string and number formats.
         if (fundingSource === 'fixed_banking') {
-            // Checking Offshore - check for 'checking', 'fixed_banking', 'wallet', or 'deposit' balance
-            accountBalance = parseFloat(userData.checking || userData.fixed_banking || userData.wallet || userData.deposit || 0);
+            // Checking Offshore -> Firestore field: deposit
+            const checkingValue = userData.deposit ?? 0;
+            accountBalance = typeof checkingValue === 'string'
+                ? parseFloat(checkingValue.replace(/[^0-9.-]/g, '')) || 0
+                : parseFloat(checkingValue) || 0;
             accountType = 'Checking Offshore';
         } else if (fundingSource === 'savings_banking') {
-            // Savings Offshore - check for 'savings', 'savings_banking', or 'profit' balance
-            accountBalance = parseFloat(userData.savings || userData.savings_banking || userData.profit || 0);
+            // Savings Offshore -> Firestore field: fixed
+            const savingsValue = userData.fixed ?? 0;
+            accountBalance = typeof savingsValue === 'string'
+                ? parseFloat(savingsValue.replace(/[^0-9.-]/g, '')) || 0
+                : parseFloat(savingsValue) || 0;
             accountType = 'Savings Offshore';
+        }
+        
+        // Ensure accountBalance is a valid number
+        if (isNaN(accountBalance) || accountBalance < 0) {
+            accountBalance = 0;
         }
         
         console.log('Balance check:', {
@@ -1018,11 +1032,13 @@ async function checkBalance() {
             accountType,
             enteredAmount,
             accountBalance,
-            userData: {
-                checking: userData.checking,
-                savings: userData.savings,
-                wallet: userData.wallet,
+            rawUserData: {
                 deposit: userData.deposit,
+                fixed: userData.fixed,
+                // legacy/extra fields (kept only for debugging)
+                savings: userData.savings,
+                checking: userData.checking,
+                wallet: userData.wallet,
                 profit: userData.profit,
                 fixed_banking: userData.fixed_banking,
                 savings_banking: userData.savings_banking

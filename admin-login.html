@@ -112,6 +112,9 @@
                             <i id="passwordEyeIcon" class="fas fa-eye"></i>
                         </button>
                     </div>
+                    <div class="mt-2 text-right">
+                        <a href="#" onclick="showForgotPassword(); return false;" class="text-sm text-gray-600 hover:text-gray-900 font-semibold transition duration-200 hover:underline">Forgot password?</a>
+                    </div>
                 </div>
 
                 <button 
@@ -120,6 +123,38 @@
                     class="w-full btn-gradient text-white font-semibold py-3 px-4 rounded-lg transition-all"
                 >
                     <i class="fas fa-sign-in-alt mr-2"></i>Sign In to Admin Dashboard
+                </button>
+            </form>
+
+            <!-- Forgot Password Form -->
+            <form id="forgotPasswordForm" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-envelope mr-2 text-gray-500"></i>Email Address
+                    </label>
+                    <input 
+                        type="email" 
+                        id="forgotPasswordEmail" 
+                        required
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900"
+                        placeholder="admin@example.com"
+                    >
+                </div>
+
+                <button 
+                    type="submit" 
+                    id="forgotPasswordBtn"
+                    class="w-full btn-gradient text-white font-semibold py-3 px-4 rounded-lg transition-all"
+                >
+                    <i class="fas fa-paper-plane mr-2"></i>Send Reset Link
+                </button>
+
+                <button 
+                    type="button"
+                    onclick="hideForgotPassword()"
+                    class="w-full text-gray-600 hover:text-gray-900 font-semibold py-2 px-4 rounded-lg transition-all"
+                >
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Login
                 </button>
             </form>
 
@@ -204,7 +239,7 @@
 
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
 
         const firebaseConfig = {
             apiKey: "AIzaSyDk8K22XfrsAQAX7WarxSq_BnwO1YQLDSc",
@@ -292,6 +327,25 @@
                 passwordEyeIcon.classList.remove('fa-eye-slash');
                 passwordEyeIcon.classList.add('fa-eye');
             }
+        };
+
+        // Show forgot password form
+        window.showForgotPassword = function() {
+            document.getElementById('adminLoginForm').classList.add('hidden');
+            document.getElementById('forgotPasswordForm').classList.remove('hidden');
+            document.getElementById('subtitleText').textContent = 'Reset your admin password';
+            document.getElementById('errorMessage').classList.add('hidden');
+            document.getElementById('successMessage').classList.add('hidden');
+        };
+
+        // Hide forgot password form
+        window.hideForgotPassword = function() {
+            document.getElementById('forgotPasswordForm').classList.add('hidden');
+            document.getElementById('adminLoginForm').classList.remove('hidden');
+            document.getElementById('subtitleText').textContent = 'Sign in to manage testimonials';
+            document.getElementById('errorMessage').classList.add('hidden');
+            document.getElementById('successMessage').classList.add('hidden');
+            document.getElementById('forgotPasswordEmail').value = '';
         };
 
         // Handle login form submission
@@ -407,6 +461,61 @@
             } finally {
                 signupBtn.disabled = false;
                 signupBtn.innerHTML = '<i class="fas fa-user-plus mr-2"></i>Create Admin Account';
+            }
+        });
+
+        // Handle forgot password form submission
+        document.getElementById('forgotPasswordForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('forgotPasswordEmail').value.trim();
+            const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+            const errorText = document.getElementById('errorText');
+            const successText = document.getElementById('successText');
+
+            // Hide messages
+            errorMessage.classList.add('hidden');
+            successMessage.classList.add('hidden');
+
+            try {
+                forgotPasswordBtn.disabled = true;
+                forgotPasswordBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Sending reset link...';
+
+                // Send password reset email
+                await sendPasswordResetEmail(auth, email, {
+                    url: window.location.origin + '/admin-login.html',
+                    handleCodeInApp: false
+                });
+                
+                // Success - show success message
+                successText.textContent = 'Password reset link sent! Check your email. The link will expire in 30 minutes.';
+                successMessage.classList.remove('hidden');
+                
+                // Clear email field
+                document.getElementById('forgotPasswordEmail').value = '';
+                
+            } catch (error) {
+                console.error('Password reset error:', error);
+                let errorMessageText = 'An error occurred while sending the reset link.';
+                
+                if (error.code === 'auth/user-not-found') {
+                    errorMessageText = 'No account found with this email address.';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessageText = 'Invalid email address.';
+                } else if (error.code === 'auth/too-many-requests') {
+                    errorMessageText = 'Too many requests. Please try again later.';
+                } else if (error.code === 'auth/network-request-failed') {
+                    errorMessageText = 'Network error. Please check your connection.';
+                }
+                
+                errorText.textContent = errorMessageText;
+                errorMessage.classList.remove('hidden');
+                
+            } finally {
+                forgotPasswordBtn.disabled = false;
+                forgotPasswordBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Send Reset Link';
             }
         });
     </script>
