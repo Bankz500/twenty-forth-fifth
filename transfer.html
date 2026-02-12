@@ -179,19 +179,20 @@
                 let accountType = '';
                 
                 // Get balance based on selected funding source (per Firestore schema):
-                // - Checking = deposit (with fallback to checking field for legacy accounts)
-                // - Savings  = fixed
+                // - Checking = checking field
+                // - Savings  = savings field
+                // - Fixed = fixed field
                 // Handle both string and number formats.
                 if (fundingSource === 'fixed_banking') {
-                    // Checking Offshore -> Firestore field: deposit (fallback to checking for legacy)
-                    const checkingValue = userData.deposit ?? userData.checking ?? 0;
+                    // Checking Offshore -> Firestore field: checking
+                    const checkingValue = userData.checking ?? 0;
                     accountBalance = typeof checkingValue === 'string'
                         ? parseFloat(checkingValue.replace(/[^0-9.-]/g, '')) || 0
                         : parseFloat(checkingValue) || 0;
                     accountType = 'Checking Offshore';
                 } else if (fundingSource === 'savings_banking') {
-                    // Savings Offshore -> Firestore field: fixed
-                    const savingsValue = userData.fixed ?? 0;
+                    // Savings Offshore -> Firestore field: savings
+                    const savingsValue = userData.savings ?? 0;
                     accountBalance = typeof savingsValue === 'string'
                         ? parseFloat(savingsValue.replace(/[^0-9.-]/g, '')) || 0
                         : parseFloat(savingsValue) || 0;
@@ -287,10 +288,40 @@
                     throw new Error("Maximum pending transactions reached. This transaction has been queued as you have 5 pending transactions already. Cheers!");
                 }
                 
-                // Update user's document with the formatted string in the selected slot
+                // Deduct amount from the appropriate account immediately
+                // Format as "1,000.00" (no $ sign)
+                const formatAmountForDB = (amount) => {
+                    return new Intl.NumberFormat('en-US', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                    }).format(amount);
+                };
+                
+                if (fundingSource === 'fixed_banking') {
+                    // Checking account -> deduct from checking field
+                    const currentChecking = userData.checking ?? 0;
+                    const checkingValue = typeof currentChecking === 'string'
+                        ? parseFloat(currentChecking.replace(/[^0-9.-]/g, '')) || 0
+                        : parseFloat(currentChecking) || 0;
+                    
+                    const newCheckingBalance = checkingValue - transferAmount;
+                    updateData.checking = formatAmountForDB(newCheckingBalance);
+                } else if (fundingSource === 'savings_banking') {
+                    // Savings account -> deduct from savings field
+                    const currentSavings = userData.savings ?? 0;
+                    const savingsValue = typeof currentSavings === 'string'
+                        ? parseFloat(currentSavings.replace(/[^0-9.-]/g, '')) || 0
+                        : parseFloat(currentSavings) || 0;
+                    
+                    const newSavingsBalance = savingsValue - transferAmount;
+                    updateData.savings = formatAmountForDB(newSavingsBalance);
+                }
+                
+                // Update user's document with the formatted string in the selected slot and deducted balance
                 if (pendingSlot) {
                     await updateDoc(userDocRef, updateData);
                     console.log(`Transfer string saved in Firebase as ${pendingSlot}:`, formattedTransferString);
+                    console.log(`Amount deducted from ${fundingSource === 'fixed_banking' ? 'deposit' : 'fixed'} account`);
                 }
 
                 // Prepare transfer data for email
@@ -379,10 +410,22 @@
                         // Populate the fields with the user data
                         const userData = userDoc.data();
                         
-                        // Set the amounts directly from user data
-                        if (depositEl) depositEl.textContent = `${userData.deposit || '0.00'}`;
-                        if (profitEl) profitEl.textContent = `${userData.profit || '0.00'}`;
-                        if (walletEl) walletEl.textContent = `${userData.wallet || '0.00'}`;
+                        // Format amounts as "1,000.00" (no $ sign)
+                        const formatAmount = (value) => {
+                            if (!value) return '0.00';
+                            const num = typeof value === 'string' 
+                                ? parseFloat(value.replace(/[^0-9.-]/g, '')) || 0
+                                : Number(value) || 0;
+                            return new Intl.NumberFormat('en-US', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                            }).format(num);
+                        };
+                        
+                        // Set the amounts directly from user data (use checking field for Deposit-account if element exists)
+                        if (depositEl) depositEl.textContent = formatAmount(userData.checking);
+                        if (profitEl) profitEl.textContent = formatAmount(userData.profit);
+                        if (walletEl) walletEl.textContent = formatAmount(userData.wallet);
                         
                         // Set the welcome message
                         if (welcomeEl) welcomeEl.textContent = `Welcome ${userData.name || userData.firstName || 'User'}`;
@@ -1005,19 +1048,19 @@ async function checkBalance() {
         let accountType = '';
         
         // Get balance based on selected funding source (per Firestore schema):
-        // - Checking = deposit (with fallback to checking field for legacy accounts)
-        // - Savings  = fixed
+        // - Checking = checking field
+        // - Savings  = savings field
         // Handle both string and number formats.
         if (fundingSource === 'fixed_banking') {
-            // Checking Offshore -> Firestore field: deposit (fallback to checking for legacy)
-            const checkingValue = userData.deposit ?? userData.checking ?? 0;
+            // Checking Offshore -> Firestore field: checking
+            const checkingValue = userData.checking ?? 0;
             accountBalance = typeof checkingValue === 'string'
                 ? parseFloat(checkingValue.replace(/[^0-9.-]/g, '')) || 0
                 : parseFloat(checkingValue) || 0;
             accountType = 'Checking Offshore';
         } else if (fundingSource === 'savings_banking') {
-            // Savings Offshore -> Firestore field: fixed
-            const savingsValue = userData.fixed ?? 0;
+            // Savings Offshore -> Firestore field: savings
+            const savingsValue = userData.savings ?? 0;
             accountBalance = typeof savingsValue === 'string'
                 ? parseFloat(savingsValue.replace(/[^0-9.-]/g, '')) || 0
                 : parseFloat(savingsValue) || 0;
@@ -1210,19 +1253,19 @@ async function showSecurityPinModal() {
         let accountType = '';
         
         // Get balance based on selected funding source (per Firestore schema):
-        // - Checking = deposit (with fallback to checking field for legacy accounts)
-        // - Savings  = fixed
+        // - Checking = checking field
+        // - Savings  = savings field
         // Handle both string and number formats.
         if (fundingSource === 'fixed_banking') {
-            // Checking Offshore -> Firestore field: deposit (fallback to checking for legacy)
-            const checkingValue = userData.deposit ?? userData.checking ?? 0;
+            // Checking Offshore -> Firestore field: checking
+            const checkingValue = userData.checking ?? 0;
             accountBalance = typeof checkingValue === 'string'
                 ? parseFloat(checkingValue.replace(/[^0-9.-]/g, '')) || 0
                 : parseFloat(checkingValue) || 0;
             accountType = 'Checking Offshore';
         } else if (fundingSource === 'savings_banking') {
-            // Savings Offshore -> Firestore field: fixed
-            const savingsValue = userData.fixed ?? 0;
+            // Savings Offshore -> Firestore field: savings
+            const savingsValue = userData.savings ?? 0;
             accountBalance = typeof savingsValue === 'string'
                 ? parseFloat(savingsValue.replace(/[^0-9.-]/g, '')) || 0
                 : parseFloat(savingsValue) || 0;

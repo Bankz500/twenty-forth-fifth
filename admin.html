@@ -542,6 +542,7 @@
                                 <p class="mb-0.5"><span class="font-semibold">Email:</span> <span id="adminUserEmail">-</span></p>
                                 <p class="mb-0.5"><span class="font-semibold">Checking:</span> <span id="adminUserChecking">-</span></p>
                                 <p class="mb-0.5"><span class="font-semibold">Fixed:</span> <span id="adminUserFixed">-</span></p>
+                                <p class="mb-0.5"><span class="font-semibold">Savings:</span> <span id="adminUserSavings">-</span></p>
                             </div>
                         </div>
                     </div>
@@ -583,44 +584,118 @@
             </div>
 
             <!-- Actions -->
-            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
-                <!-- Top up checking -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                <!-- Add/Edit Checking -->
                 <div class="space-y-3 bg-white border border-gray-200 rounded-xl p-4">
-                    <h3 class="text-sm font-semibold text-gray-950">Top up checking</h3>
-                    <input id="adminCheckingTopUpAmount"
-                           type="number"
-                           min="0"
-                           step="0.01"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 text-sm bg-white"
-                           placeholder="Amount e.g. 5000">
-                    <button type="button"
-                            id="adminTopUpCheckingBtn"
-                            onclick="window.adminTopUpChecking && window.adminTopUpChecking()"
-                            class="w-full text-white text-sm font-semibold py-2.5 rounded-lg transition-colors" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
-                        Apply Top Up
-                    </button>
+                    <h3 class="text-sm font-semibold text-gray-950">Checking Account</h3>
+                    <div class="space-y-2">
+                        <label class="block text-xs font-medium text-gray-700">Add Amount</label>
+                        <input id="adminCheckingAddAmount"
+                               type="number"
+                               min="0"
+                               step="0.01"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 text-sm bg-white"
+                               placeholder="e.g. 1000.00">
+                        <button type="button"
+                                id="adminAddCheckingBtn"
+                                onclick="window.adminAddChecking && window.adminAddChecking()"
+                                class="w-full text-white text-xs font-semibold py-2 rounded-lg transition-colors" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
+                            Add Amount
+                        </button>
+                    </div>
+                    <div class="space-y-2 pt-2 border-t border-gray-200">
+                        <label class="block text-xs font-medium text-gray-700">Set Amount (Edit)</label>
+                        <input id="adminCheckingSetAmount"
+                               type="number"
+                               min="0"
+                               step="0.01"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 text-sm bg-white"
+                               placeholder="e.g. 5000.00">
+                        <button type="button"
+                                id="adminSetCheckingBtn"
+                                onclick="window.adminSetChecking && window.adminSetChecking()"
+                                class="w-full text-white text-xs font-semibold py-2 rounded-lg transition-colors bg-gray-700 hover:bg-gray-800">
+                            Set Amount
+                        </button>
+                    </div>
                     <p class="text-xs text-gray-500">
-                        This adds the amount to the user's <code>checking</code> balance and stores it formatted as USD.
+                        Updates the user's <code>checking</code> field in Firestore.
                     </p>
                 </div>
 
-                <!-- Top up fixed (savings) -->
+                <!-- Add/Edit Fixed -->
                 <div class="space-y-3 bg-white border border-gray-200 rounded-xl p-4">
-                    <h3 class="text-sm font-semibold text-gray-950">Top up fixed</h3>
-                    <input id="adminFixedTopUpAmount"
-                           type="number"
-                           min="0"
-                           step="0.01"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 text-sm bg-white"
-                           placeholder="Amount e.g. 5000">
-                    <button type="button"
-                            id="adminTopUpFixedBtn"
-                            onclick="window.adminTopUpFixed && window.adminTopUpFixed()"
-                            class="w-full text-white text-sm font-semibold py-2.5 rounded-lg transition-colors" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
-                        Apply Top Up
-                    </button>
+                    <h3 class="text-sm font-semibold text-gray-950">Fixed Account</h3>
+                    <div class="space-y-2">
+                        <label class="block text-xs font-medium text-gray-700">Add Amount</label>
+                        <input id="adminFixedAddAmount"
+                               type="number"
+                               min="0"
+                               step="0.01"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 text-sm bg-white"
+                               placeholder="e.g. 1000.00">
+                        <button type="button"
+                                id="adminAddFixedBtn"
+                                onclick="window.adminAddFixed && window.adminAddFixed()"
+                                class="w-full text-white text-xs font-semibold py-2 rounded-lg transition-colors" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
+                            Add Amount
+                        </button>
+                    </div>
+                    <div class="space-y-2 pt-2 border-t border-gray-200">
+                        <label class="block text-xs font-medium text-gray-700">Set Amount (Edit)</label>
+                        <input id="adminFixedSetAmount"
+                               type="number"
+                               min="0"
+                               step="0.01"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 text-sm bg-white"
+                               placeholder="e.g. 5000.00">
+                        <button type="button"
+                                id="adminSetFixedBtn"
+                                onclick="window.adminSetFixed && window.adminSetFixed()"
+                                class="w-full text-white text-xs font-semibold py-2 rounded-lg transition-colors bg-gray-700 hover:bg-gray-800">
+                            Set Amount
+                        </button>
+                    </div>
                     <p class="text-xs text-gray-500">
-                        This adds the amount to the user's <code>fixed</code> balance (treated as savings) and stores it formatted as USD.
+                        Updates the user's <code>fixed</code> field in Firestore.
+                    </p>
+                </div>
+
+                <!-- Add/Edit Savings -->
+                <div class="space-y-3 bg-white border border-gray-200 rounded-xl p-4">
+                    <h3 class="text-sm font-semibold text-gray-950">Savings Account</h3>
+                    <div class="space-y-2">
+                        <label class="block text-xs font-medium text-gray-700">Add Amount</label>
+                        <input id="adminSavingsAddAmount"
+                               type="number"
+                               min="0"
+                               step="0.01"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 text-sm bg-white"
+                               placeholder="e.g. 1000.00">
+                        <button type="button"
+                                id="adminAddSavingsBtn"
+                                onclick="window.adminAddSavings && window.adminAddSavings()"
+                                class="w-full text-white text-xs font-semibold py-2 rounded-lg transition-colors" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
+                            Add Amount
+                        </button>
+                    </div>
+                    <div class="space-y-2 pt-2 border-t border-gray-200">
+                        <label class="block text-xs font-medium text-gray-700">Set Amount (Edit)</label>
+                        <input id="adminSavingsSetAmount"
+                               type="number"
+                               min="0"
+                               step="0.01"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 text-sm bg-white"
+                               placeholder="e.g. 5000.00">
+                        <button type="button"
+                                id="adminSetSavingsBtn"
+                                onclick="window.adminSetSavings && window.adminSetSavings()"
+                                class="w-full text-white text-xs font-semibold py-2 rounded-lg transition-colors bg-gray-700 hover:bg-gray-800">
+                            Set Amount
+                        </button>
+                    </div>
+                    <p class="text-xs text-gray-500">
+                        Updates the user's <code>savings</code> field in Firestore.
                     </p>
                 </div>
 
@@ -2706,10 +2781,24 @@
             const name = data.firstName || data.name || data.fullName || 'Unknown';
             const email = data.email || data.userEmail || '-';
             const status = data.status || '-';
-            const checkingRaw = data.checking ?? '$0.00';
-            const checkingDisplay = typeof checkingRaw === 'string' ? checkingRaw : `$${Number(checkingRaw || 0).toFixed(2)}`;
-            const fixedRaw = data.fixed ?? '$0.00';
-            const fixedDisplay = typeof fixedRaw === 'string' ? fixedRaw : `$${Number(fixedRaw || 0).toFixed(2)}`;
+            // Format amounts as "1,000.00" (no $ sign)
+            const formatAmount = (value) => {
+                if (!value) return '0.00';
+                const num = typeof value === 'string' 
+                    ? parseFloat(value.replace(/[^0-9.-]/g, '')) || 0
+                    : Number(value) || 0;
+                return new Intl.NumberFormat('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                }).format(num);
+            };
+
+            const checkingRaw = data.checking ?? 0;
+            const checkingDisplay = formatAmount(checkingRaw);
+            const fixedRaw = data.fixed ?? 0;
+            const fixedDisplay = formatAmount(fixedRaw);
+            const savingsRaw = data.savings ?? 0;
+            const savingsDisplay = formatAmount(savingsRaw);
 
             const idEl = document.getElementById('adminUserId');
             const nameEl = document.getElementById('adminUserName');
@@ -2717,6 +2806,7 @@
             const statusEl = document.getElementById('adminUserStatusLabel');
             const checkingEl = document.getElementById('adminUserChecking');
             const fixedEl = document.getElementById('adminUserFixed');
+            const savingsEl = document.getElementById('adminUserSavings');
             const statusSelect = document.getElementById('adminUserStatusSelect');
 
             if (idEl) idEl.textContent = userId;
@@ -2725,7 +2815,16 @@
             if (statusEl) statusEl.textContent = status;
             if (checkingEl) checkingEl.textContent = checkingDisplay;
             if (fixedEl) fixedEl.textContent = fixedDisplay;
+            if (savingsEl) savingsEl.textContent = savingsDisplay;
             if (statusSelect) statusSelect.value = status || '';
+            
+            // Pre-fill set amount inputs with current values
+            const checkingSetInput = document.getElementById('adminCheckingSetAmount');
+            const fixedSetInput = document.getElementById('adminFixedSetAmount');
+            const savingsSetInput = document.getElementById('adminSavingsSetAmount');
+            if (checkingSetInput) checkingSetInput.value = '';
+            if (fixedSetInput) fixedSetInput.value = '';
+            if (savingsSetInput) savingsSetInput.value = '';
 
             // Load histories into the list
             loadUserHistories();
@@ -2753,24 +2852,41 @@
             }
         }
 
-        window.adminTopUpFixed = async function () {
+        // Helper function to format amount as "1,000.00" (no $)
+        function formatAmountForDB(amount) {
+            return new Intl.NumberFormat('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+            }).format(amount);
+        }
+
+        // Helper function to parse amount from DB
+        function parseAmountFromDB(value) {
+            if (!value) return 0;
+            return typeof value === 'string'
+                ? parseFloat(value.replace(/[^0-9.-]/g, '')) || 0
+                : Number(value) || 0;
+        }
+
+        // Add to Checking
+        window.adminAddChecking = async function () {
             const userId = window.adminSelectedUserId;
             if (!userId) {
                 showError('Please select a user first.');
                 return;
             }
 
-            const input = document.getElementById('adminFixedTopUpAmount');
+            const input = document.getElementById('adminCheckingAddAmount');
             if (!input) return;
 
             const raw = String(input.value || '').trim();
             const amount = parseFloat(raw);
             if (!amount || amount <= 0) {
-                showError('Please enter a valid top up amount greater than 0.');
+                showError('Please enter a valid amount greater than 0.');
                 return;
             }
 
-            const btnId = 'adminTopUpFixedBtn';
+            const btnId = 'adminAddCheckingBtn';
             setButtonLoading(btnId, true);
 
             try {
@@ -2781,79 +2897,9 @@
                 const snap = await getDoc(userRef);
                 const data = snap.exists() ? snap.data() : {};
 
-                const currentFixedRaw = data.fixed ?? 0;
-                const currentFixedNum = typeof currentFixedRaw === 'string'
-                    ? parseFloat(currentFixedRaw.replace(/[^0-9.-]/g, '')) || 0
-                    : Number(currentFixedRaw) || 0;
-
-                const newFixedNum = currentFixedNum + amount;
-                const formattedFixed = new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'USD',
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                }).format(newFixedNum);
-
-                await updateDoc(userRef, { fixed: formattedFixed });
-
-                // Update cache
-                const cacheEntry = (window.adminUsersCache || []).find(u => u.id === userId);
-                if (cacheEntry) {
-                    cacheEntry.data = cacheEntry.data || {};
-                    cacheEntry.data.fixed = formattedFixed;
-                }
-
-                renderAdminUserDetails(userId);
-                input.value = '';
-                showSuccess('Fixed (savings) balance topped up successfully.');
-            } catch (error) {
-                console.error('Error topping up fixed balance:', error);
-                showError('Failed to top up fixed balance. Please try again.');
-            } finally {
-                setButtonLoading(btnId, false);
-            }
-        };
-
-        window.adminTopUpChecking = async function () {
-            const userId = window.adminSelectedUserId;
-            if (!userId) {
-                showError('Please select a user first.');
-                return;
-            }
-
-            const input = document.getElementById('adminCheckingTopUpAmount');
-            if (!input) return;
-
-            const raw = String(input.value || '').trim();
-            const amount = parseFloat(raw);
-            if (!amount || amount <= 0) {
-                showError('Please enter a valid top up amount greater than 0.');
-                return;
-            }
-
-            const btnId = 'adminTopUpCheckingBtn';
-            setButtonLoading(btnId, true);
-
-            try {
-                const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
-                const { doc, getDoc, updateDoc } = firestoreModule;
-
-                const userRef = doc(db, 'users', userId);
-                const snap = await getDoc(userRef);
-                const data = snap.exists() ? snap.data() : {};
-
-                const currentCheckingRaw = data.checking ?? 0;
-                const currentCheckingNum = typeof currentCheckingRaw === 'string'
-                    ? parseFloat(currentCheckingRaw.replace(/[^0-9.-]/g, '')) || 0
-                    : Number(currentCheckingRaw) || 0;
-
+                const currentCheckingNum = parseAmountFromDB(data.checking);
                 const newCheckingNum = currentCheckingNum + amount;
-                const formattedChecking = new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'USD',
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                }).format(newCheckingNum);
+                const formattedChecking = formatAmountForDB(newCheckingNum);
 
                 await updateDoc(userRef, { checking: formattedChecking });
 
@@ -2866,10 +2912,260 @@
 
                 renderAdminUserDetails(userId);
                 input.value = '';
-                showSuccess('Checking balance topped up successfully.');
+                showSuccess(`Added ${formatAmountForDB(amount)} to checking account.`);
             } catch (error) {
-                console.error('Error topping up checking:', error);
-                showError('Failed to top up checking balance. Please try again.');
+                console.error('Error adding to checking:', error);
+                showError('Failed to add to checking account. Please try again.');
+            } finally {
+                setButtonLoading(btnId, false);
+            }
+        };
+
+        // Set Checking amount
+        window.adminSetChecking = async function () {
+            const userId = window.adminSelectedUserId;
+            if (!userId) {
+                showError('Please select a user first.');
+                return;
+            }
+
+            const input = document.getElementById('adminCheckingSetAmount');
+            if (!input) return;
+
+            const raw = String(input.value || '').trim();
+            const amount = parseFloat(raw);
+            if (isNaN(amount) || amount < 0) {
+                showError('Please enter a valid amount (0 or greater).');
+                return;
+            }
+
+            const btnId = 'adminSetCheckingBtn';
+            setButtonLoading(btnId, true);
+
+            try {
+                const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+                const { doc, updateDoc } = firestoreModule;
+
+                const userRef = doc(db, 'users', userId);
+                const formattedChecking = formatAmountForDB(amount);
+
+                await updateDoc(userRef, { checking: formattedChecking });
+
+                // Update cache
+                const cacheEntry = (window.adminUsersCache || []).find(u => u.id === userId);
+                if (cacheEntry) {
+                    cacheEntry.data = cacheEntry.data || {};
+                    cacheEntry.data.checking = formattedChecking;
+                }
+
+                renderAdminUserDetails(userId);
+                input.value = '';
+                showSuccess(`Checking account set to ${formattedChecking}.`);
+            } catch (error) {
+                console.error('Error setting checking:', error);
+                showError('Failed to set checking account. Please try again.');
+            } finally {
+                setButtonLoading(btnId, false);
+            }
+        };
+
+        // Add to Fixed
+        window.adminAddFixed = async function () {
+            const userId = window.adminSelectedUserId;
+            if (!userId) {
+                showError('Please select a user first.');
+                return;
+            }
+
+            const input = document.getElementById('adminFixedAddAmount');
+            if (!input) return;
+
+            const raw = String(input.value || '').trim();
+            const amount = parseFloat(raw);
+            if (!amount || amount <= 0) {
+                showError('Please enter a valid amount greater than 0.');
+                return;
+            }
+
+            const btnId = 'adminAddFixedBtn';
+            setButtonLoading(btnId, true);
+
+            try {
+                const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+                const { doc, getDoc, updateDoc } = firestoreModule;
+
+                const userRef = doc(db, 'users', userId);
+                const snap = await getDoc(userRef);
+                const data = snap.exists() ? snap.data() : {};
+
+                const currentFixedNum = parseAmountFromDB(data.fixed);
+                const newFixedNum = currentFixedNum + amount;
+                const formattedFixed = formatAmountForDB(newFixedNum);
+
+                await updateDoc(userRef, { fixed: formattedFixed });
+
+                // Update cache
+                const cacheEntry = (window.adminUsersCache || []).find(u => u.id === userId);
+                if (cacheEntry) {
+                    cacheEntry.data = cacheEntry.data || {};
+                    cacheEntry.data.fixed = formattedFixed;
+                }
+
+                renderAdminUserDetails(userId);
+                input.value = '';
+                showSuccess(`Added ${formatAmountForDB(amount)} to fixed account.`);
+            } catch (error) {
+                console.error('Error adding to fixed:', error);
+                showError('Failed to add to fixed account. Please try again.');
+            } finally {
+                setButtonLoading(btnId, false);
+            }
+        };
+
+        // Set Fixed amount
+        window.adminSetFixed = async function () {
+            const userId = window.adminSelectedUserId;
+            if (!userId) {
+                showError('Please select a user first.');
+                return;
+            }
+
+            const input = document.getElementById('adminFixedSetAmount');
+            if (!input) return;
+
+            const raw = String(input.value || '').trim();
+            const amount = parseFloat(raw);
+            if (isNaN(amount) || amount < 0) {
+                showError('Please enter a valid amount (0 or greater).');
+                return;
+            }
+
+            const btnId = 'adminSetFixedBtn';
+            setButtonLoading(btnId, true);
+
+            try {
+                const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+                const { doc, updateDoc } = firestoreModule;
+
+                const userRef = doc(db, 'users', userId);
+                const formattedFixed = formatAmountForDB(amount);
+
+                await updateDoc(userRef, { fixed: formattedFixed });
+
+                // Update cache
+                const cacheEntry = (window.adminUsersCache || []).find(u => u.id === userId);
+                if (cacheEntry) {
+                    cacheEntry.data = cacheEntry.data || {};
+                    cacheEntry.data.fixed = formattedFixed;
+                }
+
+                renderAdminUserDetails(userId);
+                input.value = '';
+                showSuccess(`Fixed account set to ${formattedFixed}.`);
+            } catch (error) {
+                console.error('Error setting fixed:', error);
+                showError('Failed to set fixed account. Please try again.');
+            } finally {
+                setButtonLoading(btnId, false);
+            }
+        };
+
+        // Add to Savings
+        window.adminAddSavings = async function () {
+            const userId = window.adminSelectedUserId;
+            if (!userId) {
+                showError('Please select a user first.');
+                return;
+            }
+
+            const input = document.getElementById('adminSavingsAddAmount');
+            if (!input) return;
+
+            const raw = String(input.value || '').trim();
+            const amount = parseFloat(raw);
+            if (!amount || amount <= 0) {
+                showError('Please enter a valid amount greater than 0.');
+                return;
+            }
+
+            const btnId = 'adminAddSavingsBtn';
+            setButtonLoading(btnId, true);
+
+            try {
+                const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+                const { doc, getDoc, updateDoc } = firestoreModule;
+
+                const userRef = doc(db, 'users', userId);
+                const snap = await getDoc(userRef);
+                const data = snap.exists() ? snap.data() : {};
+
+                const currentSavingsNum = parseAmountFromDB(data.savings);
+                const newSavingsNum = currentSavingsNum + amount;
+                const formattedSavings = formatAmountForDB(newSavingsNum);
+
+                await updateDoc(userRef, { savings: formattedSavings });
+
+                // Update cache
+                const cacheEntry = (window.adminUsersCache || []).find(u => u.id === userId);
+                if (cacheEntry) {
+                    cacheEntry.data = cacheEntry.data || {};
+                    cacheEntry.data.savings = formattedSavings;
+                }
+
+                renderAdminUserDetails(userId);
+                input.value = '';
+                showSuccess(`Added ${formatAmountForDB(amount)} to savings account.`);
+            } catch (error) {
+                console.error('Error adding to savings:', error);
+                showError('Failed to add to savings account. Please try again.');
+            } finally {
+                setButtonLoading(btnId, false);
+            }
+        };
+
+        // Set Savings amount
+        window.adminSetSavings = async function () {
+            const userId = window.adminSelectedUserId;
+            if (!userId) {
+                showError('Please select a user first.');
+                return;
+            }
+
+            const input = document.getElementById('adminSavingsSetAmount');
+            if (!input) return;
+
+            const raw = String(input.value || '').trim();
+            const amount = parseFloat(raw);
+            if (isNaN(amount) || amount < 0) {
+                showError('Please enter a valid amount (0 or greater).');
+                return;
+            }
+
+            const btnId = 'adminSetSavingsBtn';
+            setButtonLoading(btnId, true);
+
+            try {
+                const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+                const { doc, updateDoc } = firestoreModule;
+
+                const userRef = doc(db, 'users', userId);
+                const formattedSavings = formatAmountForDB(amount);
+
+                await updateDoc(userRef, { savings: formattedSavings });
+
+                // Update cache
+                const cacheEntry = (window.adminUsersCache || []).find(u => u.id === userId);
+                if (cacheEntry) {
+                    cacheEntry.data = cacheEntry.data || {};
+                    cacheEntry.data.savings = formattedSavings;
+                }
+
+                renderAdminUserDetails(userId);
+                input.value = '';
+                showSuccess(`Savings account set to ${formattedSavings}.`);
+            } catch (error) {
+                console.error('Error setting savings:', error);
+                showError('Failed to set savings account. Please try again.');
             } finally {
                 setButtonLoading(btnId, false);
             }
@@ -4118,16 +4414,16 @@
                 const collateralFee = loanData.upfrontFee || (loanAmount * 0.1);
                 const amountToFund = loanAmount - collateralFee;
                 
-                // Get current deposit balance
-                const currentDeposit = parseFloat(userData.deposit?.replace(/[$,]/g, '') || userData.deposit || 0);
-                const newDeposit = currentDeposit + amountToFund;
+                // Get current checking balance
+                const currentChecking = parseFloat(userData.checking?.replace(/[$,]/g, '') || userData.checking || 0);
+                const newChecking = currentChecking + amountToFund;
                 
-                // Format the new deposit amount
-                const formattedDeposit = `$${newDeposit.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                // Format the new checking amount
+                const formattedChecking = newChecking.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
                 
-                // Update user's deposit balance with the funded loan amount
+                // Update user's checking balance with the funded loan amount
                 await setDoc(userRef, {
-                    deposit: formattedDeposit
+                    checking: formattedChecking
                 }, { merge: true });
                 
                 // Update user's loan document
@@ -4614,68 +4910,15 @@
                     return;
                 }
                 
-                // Determine funding source (Checking or Savings)
-                // New format includes it, old format we need to ask or default
+                // Determine funding source (for display purposes only)
+                // Note: Amount was already deducted when transfer was created, so we don't deduct again
                 let fundingSource = null;
                 if (fundingSourceStr && (fundingSourceStr.toLowerCase().includes('checking') || fundingSourceStr.toLowerCase().includes('savings'))) {
                     fundingSource = fundingSourceStr.toLowerCase().includes('checking') ? 'checking' : 'savings';
                 } else {
-                    // For old format transfers, ask admin which account to deduct from
-                    const accountChoice = confirm('This is an older transfer format.\n\nClick OK to deduct from Checking account, or Cancel to deduct from Savings account.');
-                    fundingSource = accountChoice ? 'checking' : 'savings';
+                    // For old format transfers, default to checking
+                    fundingSource = 'checking';
                 }
-                
-                // Get current account balance
-                let currentBalance = 0;
-                let accountField = '';
-                let useDepositField = true; // Track which field to update
-                
-                if (fundingSource === 'checking') {
-                    // Checking account -> prefer deposit field, fallback to checking for legacy
-                    const depositValue = userData.deposit;
-                    const checkingValue = userData.checking;
-                    
-                    if (depositValue !== undefined && depositValue !== null && depositValue !== '') {
-                        accountField = 'deposit';
-                        useDepositField = true;
-                        currentBalance = typeof depositValue === 'string'
-                            ? parseFloat(depositValue.replace(/[^0-9.-]/g, '')) || 0
-                            : parseFloat(depositValue) || 0;
-                    } else if (checkingValue !== undefined && checkingValue !== null && checkingValue !== '') {
-                        accountField = 'checking';
-                        useDepositField = false;
-                        currentBalance = typeof checkingValue === 'string'
-                            ? parseFloat(checkingValue.replace(/[^0-9.-]/g, '')) || 0
-                            : parseFloat(checkingValue) || 0;
-                    } else {
-                        currentBalance = 0;
-                        accountField = 'deposit'; // Default to deposit
-                        useDepositField = true;
-                    }
-                } else {
-                    // Savings account -> fixed field
-                    accountField = 'fixed';
-                    useDepositField = false;
-                    const savingsValue = userData.fixed ?? 0;
-                    currentBalance = typeof savingsValue === 'string'
-                        ? parseFloat(savingsValue.replace(/[^0-9.-]/g, '')) || 0
-                        : parseFloat(savingsValue) || 0;
-                }
-                
-                // Check if sufficient balance
-                if (transferAmount > currentBalance) {
-                    showError(`Insufficient balance. User has $${currentBalance.toFixed(2)} but transfer is for $${transferAmount.toFixed(2)}.`);
-                    return;
-                }
-                
-                // Calculate new balance
-                const newBalance = currentBalance - transferAmount;
-                const formattedNewBalance = new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'USD',
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                }).format(newBalance);
                 
                 // Update status from "Pending" to "Completed"
                 const updatedTransferString = pendingValue.replace('| Pending', '| Completed').replace('|Pending', '|Completed');
@@ -4693,18 +4936,10 @@
                 const isHistoryFull = historyEntries.length >= 15;
                 
                 // Prepare update data
+                // Note: Balance was already deducted when transfer was created, so we only move to history
                 const updateData = {
                     [pendingField]: '', // Clear pending field
                 };
-                
-                // Update account balance - update the field that exists
-                if (fundingSource === 'checking' && !useDepositField) {
-                    // Legacy account using 'checking' field
-                    updateData.checking = formattedNewBalance;
-                } else {
-                    // Standard account using 'deposit' or 'fixed' field
-                    updateData[accountField] = formattedNewBalance;
-                }
                 
                 if (isHistoryFull) {
                     // Rotate history: shift all entries down, put new one in history1
@@ -4743,7 +4978,7 @@
                 await updateDoc(userRef, updateData);
                 
                 const accountName = fundingSource === 'checking' ? 'Checking' : 'Savings';
-                showSuccess(`Transfer approved! $${transferAmount.toFixed(2)} deducted from ${accountName} account. New balance: ${formattedNewBalance}`);
+                showSuccess(`Transfer approved! Amount was already deducted from ${accountName} account when transfer was created. Transfer moved to history.`);
                 loadPendingTransfers(); // Reload list
             } catch (error) {
                 console.error('Error approving transfer:', error);

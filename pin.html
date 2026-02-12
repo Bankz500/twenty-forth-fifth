@@ -31,10 +31,22 @@
                     document.getElementById('firstName').value = userData.firstName || '';
                     document.getElementById('firstName').placeholder = userData.firstName || 'First Name';
 
+                    // Format amounts as "1,000.00" (no $ sign)
+                    const formatAmount = (value) => {
+                        if (!value) return '0.00';
+                        const num = typeof value === 'string' 
+                            ? parseFloat(value.replace(/[^0-9.-]/g, '')) || 0
+                            : Number(value) || 0;
+                        return new Intl.NumberFormat('en-US', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                        }).format(num);
+                    };
+                    
                     document.getElementById('profileUsername').textContent = userData.firstName || '@syndicate';
-                    document.getElementById('Deposit-account').textContent = userData.deposit || '0.00';
-                    document.getElementById('Profit-wallet').textContent = userData.profit || '0.00';
-                    document.getElementById('wallet').textContent = userData.wallet || '0.00';
+                    document.getElementById('Deposit-account').textContent = formatAmount(userData.checking);
+                    document.getElementById('Profit-wallet').textContent = formatAmount(userData.profit);
+                    document.getElementById('wallet').textContent = formatAmount(userData.wallet);
                     document.getElementById('welcome-message').textContent = `Welcome ${userData.firstName}`;
                     document.getElementById('displayEmail').textContent = user.email;
                 } else {

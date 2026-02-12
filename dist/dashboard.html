@@ -821,7 +821,7 @@
         }
     </style>
     
-  <script type="module" crossorigin src="/assets/dashboard-DCGZzt9j.js"></script>
+  <script type="module" crossorigin src="/assets/dashboard-CI_Y1yhG.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
   <link rel="modulepreload" crossorigin href="/assets/firebase-config-C56FTJjz.js">
   <link rel="modulepreload" crossorigin href="/assets/firebase-client-DvgkFHPb.js">
@@ -910,7 +910,7 @@
                             <span class="account-type">CHECKING</span>
                             <h3 class="account-name">Checking Account</h3>
                         </div>
-                        <div class="account-balance" id="Deposit-account">$0.00</div>
+                        <div class="account-balance" id="checking">0.00</div>
                         <div class="account-actions">
                             <a href="transfer.html" class="action-button rounded-full">
                                 <i class="fas fa-exchange-alt"></i> Transfer
@@ -930,7 +930,7 @@
                             <span class="account-type">SAVINGS</span>
                             <h3 class="account-name">Savings Account</h3>
                         </div>
-                        <div class="account-balance" id="fixed">$0.00</div>
+                        <div class="account-balance" id="savings">0.00</div>
                         <div class="account-actions">
                             <a href="transfer.html" class="action-button rounded-full">
                                 <i class="fas fa-exchange-alt"></i> Transfer
@@ -950,7 +950,7 @@
                             <span class="account-type">FIXED DEPOSIT</span>
                             <h3 class="account-name">Fixed Deposit</h3>
                         </div>
-                        <div class="account-balance" id="savings">$0.00</div>
+                        <div class="account-balance" id="fixed">0.00</div>
                         <div class="account-actions">
                             <a href="transfer.html" class="action-button rounded-full">
                                 <i class="fas fa-exchange-alt"></i> Transfer
@@ -2259,7 +2259,7 @@
                     const toggleChecking = document.getElementById('toggle-checking');
                     if (toggleChecking) {
                         toggleChecking.addEventListener('click', function() {
-                    const balance = document.getElementById('Deposit-account');
+                    const balance = document.getElementById('checking');
                     const icon = this.querySelector('i');
                     
                             if (balance && balance.classList.contains('hide-balance')) {
@@ -2276,7 +2276,7 @@
                     const toggleSavings = document.getElementById('toggle-savings');
                     if (toggleSavings) {
                         toggleSavings.addEventListener('click', function() {
-                            const balance = document.getElementById('fixed');
+                            const balance = document.getElementById('savings');
                     const icon = this.querySelector('i');
                     
                             if (balance && balance.classList.contains('hide-balance')) {
@@ -2293,7 +2293,7 @@
                     const toggleFixed = document.getElementById('toggle-fixed');
                     if (toggleFixed) {
                         toggleFixed.addEventListener('click', function() {
-                            const balance = document.getElementById('savings');
+                            const balance = document.getElementById('fixed');
                     const icon = this.querySelector('i');
                     
                             if (balance && balance.classList.contains('hide-balance')) {
@@ -2483,7 +2483,7 @@
 
             function toggleBalance() {
                 const wallet = document.getElementById('wallet');
-                const Deposit = document.getElementById('Deposit-account');
+                const Deposit = document.getElementById('checking');
                 const toggleIcon = document.getElementById('toggle-icon');
 
                 if (wallet.textContent === '****') {

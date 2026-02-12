@@ -85,10 +85,22 @@
                     // Populate the fields with the user data
                     const userData = userDoc.data();
                     
-                    // Set the amounts directly from user data
-                    document.getElementById('Deposit-account').textContent = `${userData.deposit || '0.00'}`;
-                    document.getElementById('Profit-wallet').textContent = `${userData.profit || '0.00'}`;
-                    document.getElementById('wallet').textContent = `${userData.wallet || '0.00'}`;
+                    // Format amounts as "1,000.00" (no $ sign)
+                    const formatAmount = (value) => {
+                        if (!value) return '0.00';
+                        const num = typeof value === 'string' 
+                            ? parseFloat(value.replace(/[^0-9.-]/g, '')) || 0
+                            : Number(value) || 0;
+                        return new Intl.NumberFormat('en-US', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                        }).format(num);
+                    };
+                    
+                    // Set the amounts directly from user data (use checking field for Deposit-account)
+                    document.getElementById('Deposit-account').textContent = formatAmount(userData.checking);
+                    document.getElementById('Profit-wallet').textContent = formatAmount(userData.profit);
+                    document.getElementById('wallet').textContent = formatAmount(userData.wallet);
                     
                     // Set the welcome message
                     document.getElementById('welcome-message').textContent = `Welcome ${userData.name}`; // Set welcome message

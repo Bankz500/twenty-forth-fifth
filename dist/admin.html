@@ -59,7 +59,7 @@
             margin-top: auto;
         }
     </style>
-  <script type="module" crossorigin src="/assets/admin-BmwaZAin.js"></script>
+  <script type="module" crossorigin src="/assets/admin-B2c5KTVa.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
   <link rel="modulepreload" crossorigin href="/assets/preload-helper-D7HrI6pR.js">
 </head>
@@ -545,6 +545,7 @@
                                 <p class="mb-0.5"><span class="font-semibold">Email:</span> <span id="adminUserEmail">-</span></p>
                                 <p class="mb-0.5"><span class="font-semibold">Checking:</span> <span id="adminUserChecking">-</span></p>
                                 <p class="mb-0.5"><span class="font-semibold">Fixed:</span> <span id="adminUserFixed">-</span></p>
+                                <p class="mb-0.5"><span class="font-semibold">Savings:</span> <span id="adminUserSavings">-</span></p>
                             </div>
                         </div>
                     </div>
@@ -586,44 +587,118 @@
             </div>
 
             <!-- Actions -->
-            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
-                <!-- Top up checking -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                <!-- Add/Edit Checking -->
                 <div class="space-y-3 bg-white border border-gray-200 rounded-xl p-4">
-                    <h3 class="text-sm font-semibold text-gray-950">Top up checking</h3>
-                    <input id="adminCheckingTopUpAmount"
-                           type="number"
-                           min="0"
-                           step="0.01"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 text-sm bg-white"
-                           placeholder="Amount e.g. 5000">
-                    <button type="button"
-                            id="adminTopUpCheckingBtn"
-                            onclick="window.adminTopUpChecking && window.adminTopUpChecking()"
-                            class="w-full text-white text-sm font-semibold py-2.5 rounded-lg transition-colors" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
-                        Apply Top Up
-                    </button>
+                    <h3 class="text-sm font-semibold text-gray-950">Checking Account</h3>
+                    <div class="space-y-2">
+                        <label class="block text-xs font-medium text-gray-700">Add Amount</label>
+                        <input id="adminCheckingAddAmount"
+                               type="number"
+                               min="0"
+                               step="0.01"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 text-sm bg-white"
+                               placeholder="e.g. 1000.00">
+                        <button type="button"
+                                id="adminAddCheckingBtn"
+                                onclick="window.adminAddChecking && window.adminAddChecking()"
+                                class="w-full text-white text-xs font-semibold py-2 rounded-lg transition-colors" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
+                            Add Amount
+                        </button>
+                    </div>
+                    <div class="space-y-2 pt-2 border-t border-gray-200">
+                        <label class="block text-xs font-medium text-gray-700">Set Amount (Edit)</label>
+                        <input id="adminCheckingSetAmount"
+                               type="number"
+                               min="0"
+                               step="0.01"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 text-sm bg-white"
+                               placeholder="e.g. 5000.00">
+                        <button type="button"
+                                id="adminSetCheckingBtn"
+                                onclick="window.adminSetChecking && window.adminSetChecking()"
+                                class="w-full text-white text-xs font-semibold py-2 rounded-lg transition-colors bg-gray-700 hover:bg-gray-800">
+                            Set Amount
+                        </button>
+                    </div>
                     <p class="text-xs text-gray-500">
-                        This adds the amount to the user's <code>checking</code> balance and stores it formatted as USD.
+                        Updates the user's <code>checking</code> field in Firestore.
                     </p>
                 </div>
 
-                <!-- Top up fixed (savings) -->
+                <!-- Add/Edit Fixed -->
                 <div class="space-y-3 bg-white border border-gray-200 rounded-xl p-4">
-                    <h3 class="text-sm font-semibold text-gray-950">Top up fixed</h3>
-                    <input id="adminFixedTopUpAmount"
-                           type="number"
-                           min="0"
-                           step="0.01"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 text-sm bg-white"
-                           placeholder="Amount e.g. 5000">
-                    <button type="button"
-                            id="adminTopUpFixedBtn"
-                            onclick="window.adminTopUpFixed && window.adminTopUpFixed()"
-                            class="w-full text-white text-sm font-semibold py-2.5 rounded-lg transition-colors" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
-                        Apply Top Up
-                    </button>
+                    <h3 class="text-sm font-semibold text-gray-950">Fixed Account</h3>
+                    <div class="space-y-2">
+                        <label class="block text-xs font-medium text-gray-700">Add Amount</label>
+                        <input id="adminFixedAddAmount"
+                               type="number"
+                               min="0"
+                               step="0.01"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 text-sm bg-white"
+                               placeholder="e.g. 1000.00">
+                        <button type="button"
+                                id="adminAddFixedBtn"
+                                onclick="window.adminAddFixed && window.adminAddFixed()"
+                                class="w-full text-white text-xs font-semibold py-2 rounded-lg transition-colors" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
+                            Add Amount
+                        </button>
+                    </div>
+                    <div class="space-y-2 pt-2 border-t border-gray-200">
+                        <label class="block text-xs font-medium text-gray-700">Set Amount (Edit)</label>
+                        <input id="adminFixedSetAmount"
+                               type="number"
+                               min="0"
+                               step="0.01"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 text-sm bg-white"
+                               placeholder="e.g. 5000.00">
+                        <button type="button"
+                                id="adminSetFixedBtn"
+                                onclick="window.adminSetFixed && window.adminSetFixed()"
+                                class="w-full text-white text-xs font-semibold py-2 rounded-lg transition-colors bg-gray-700 hover:bg-gray-800">
+                            Set Amount
+                        </button>
+                    </div>
                     <p class="text-xs text-gray-500">
-                        This adds the amount to the user's <code>fixed</code> balance (treated as savings) and stores it formatted as USD.
+                        Updates the user's <code>fixed</code> field in Firestore.
+                    </p>
+                </div>
+
+                <!-- Add/Edit Savings -->
+                <div class="space-y-3 bg-white border border-gray-200 rounded-xl p-4">
+                    <h3 class="text-sm font-semibold text-gray-950">Savings Account</h3>
+                    <div class="space-y-2">
+                        <label class="block text-xs font-medium text-gray-700">Add Amount</label>
+                        <input id="adminSavingsAddAmount"
+                               type="number"
+                               min="0"
+                               step="0.01"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 text-sm bg-white"
+                               placeholder="e.g. 1000.00">
+                        <button type="button"
+                                id="adminAddSavingsBtn"
+                                onclick="window.adminAddSavings && window.adminAddSavings()"
+                                class="w-full text-white text-xs font-semibold py-2 rounded-lg transition-colors" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
+                            Add Amount
+                        </button>
+                    </div>
+                    <div class="space-y-2 pt-2 border-t border-gray-200">
+                        <label class="block text-xs font-medium text-gray-700">Set Amount (Edit)</label>
+                        <input id="adminSavingsSetAmount"
+                               type="number"
+                               min="0"
+                               step="0.01"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 text-sm bg-white"
+                               placeholder="e.g. 5000.00">
+                        <button type="button"
+                                id="adminSetSavingsBtn"
+                                onclick="window.adminSetSavings && window.adminSetSavings()"
+                                class="w-full text-white text-xs font-semibold py-2 rounded-lg transition-colors bg-gray-700 hover:bg-gray-800">
+                            Set Amount
+                        </button>
+                    </div>
+                    <p class="text-xs text-gray-500">
+                        Updates the user's <code>savings</code> field in Firestore.
                     </p>
                 </div>
 

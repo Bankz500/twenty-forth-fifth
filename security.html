@@ -31,6 +31,18 @@
                 if (userDoc.exists()) {
                     const userData = userDoc.data();
 
+                    // Format amounts as "1,000.00" (no $ sign)
+                    const formatAmount = (value) => {
+                        if (!value) return '0.00';
+                        const num = typeof value === 'string' 
+                            ? parseFloat(value.replace(/[^0-9.-]/g, '')) || 0
+                            : Number(value) || 0;
+                        return new Intl.NumberFormat('en-US', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                        }).format(num);
+                    };
+                    
                     // Populate the UI with user's first name and other information
                     const profileUsername = document.getElementById('profileUsername');
                     const depositAccount = document.getElementById('Deposit-account');
@@ -40,9 +52,9 @@
                     const displayEmail = document.getElementById('displayEmail');
 
                     if (profileUsername) profileUsername.textContent = userData.firstName || '@syndicate';
-                    if (depositAccount) depositAccount.textContent = userData.deposit || '0.00';
-                    if (profitWallet) profitWallet.textContent = userData.profit || '0.00';
-                    if (wallet) wallet.textContent = userData.wallet || '0.00';
+                    if (depositAccount) depositAccount.textContent = formatAmount(userData.checking);
+                    if (profitWallet) profitWallet.textContent = formatAmount(userData.profit);
+                    if (wallet) wallet.textContent = formatAmount(userData.wallet);
                     if (welcomeMessage) welcomeMessage.textContent = `Welcome ${userData.firstName}`;
                     if (displayEmail) displayEmail.textContent = user.email;
 

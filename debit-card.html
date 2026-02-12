@@ -113,13 +113,13 @@
       let balance = 0;
       if ($("cardAccountBalance")) {
         if (linkedAccount === "checking") {
-          balance = typeof userData.deposit === 'string' 
-            ? parseFloat(userData.deposit.replace(/[^0-9.-]/g, '')) || 0 
-            : (userData.deposit || 0);
+          balance = typeof userData.checking === 'string' 
+            ? parseFloat(userData.checking.replace(/[^0-9.-]/g, '')) || 0 
+            : (userData.checking || 0);
         } else if (linkedAccount === "savings") {
-          balance = typeof userData.fixed === 'string' 
-            ? parseFloat(userData.fixed.replace(/[^0-9.-]/g, '')) || 0 
-            : (userData.fixed || 0);
+          balance = typeof userData.savings === 'string' 
+            ? parseFloat(userData.savings.replace(/[^0-9.-]/g, '')) || 0 
+            : (userData.savings || 0);
         }
         $("cardAccountBalance").textContent = formatCurrency(balance);
       }

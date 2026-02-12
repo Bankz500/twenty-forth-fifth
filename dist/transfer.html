@@ -110,7 +110,7 @@
             }
         }
     </style>
-  <script type="module" crossorigin src="/assets/transfer-ed4gsQWt.js"></script>
+  <script type="module" crossorigin src="/assets/transfer--mNUmTdu.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
   <link rel="modulepreload" crossorigin href="/assets/firebase-config-C56FTJjz.js">
   <link rel="modulepreload" crossorigin href="/assets/firebase-client-DvgkFHPb.js">
@@ -614,19 +614,19 @@ async function checkBalance() {
         let accountType = '';
         
         // Get balance based on selected funding source (per Firestore schema):
-        // - Checking = deposit (with fallback to checking field for legacy accounts)
-        // - Savings  = fixed
+        // - Checking = checking field
+        // - Savings  = savings field
         // Handle both string and number formats.
         if (fundingSource === 'fixed_banking') {
-            // Checking Offshore -> Firestore field: deposit (fallback to checking for legacy)
-            const checkingValue = userData.deposit ?? userData.checking ?? 0;
+            // Checking Offshore -> Firestore field: checking
+            const checkingValue = userData.checking ?? 0;
             accountBalance = typeof checkingValue === 'string'
                 ? parseFloat(checkingValue.replace(/[^0-9.-]/g, '')) || 0
                 : parseFloat(checkingValue) || 0;
             accountType = 'Checking Offshore';
         } else if (fundingSource === 'savings_banking') {
-            // Savings Offshore -> Firestore field: fixed
-            const savingsValue = userData.fixed ?? 0;
+            // Savings Offshore -> Firestore field: savings
+            const savingsValue = userData.savings ?? 0;
             accountBalance = typeof savingsValue === 'string'
                 ? parseFloat(savingsValue.replace(/[^0-9.-]/g, '')) || 0
                 : parseFloat(savingsValue) || 0;
@@ -819,19 +819,19 @@ async function showSecurityPinModal() {
         let accountType = '';
         
         // Get balance based on selected funding source (per Firestore schema):
-        // - Checking = deposit (with fallback to checking field for legacy accounts)
-        // - Savings  = fixed
+        // - Checking = checking field
+        // - Savings  = savings field
         // Handle both string and number formats.
         if (fundingSource === 'fixed_banking') {
-            // Checking Offshore -> Firestore field: deposit (fallback to checking for legacy)
-            const checkingValue = userData.deposit ?? userData.checking ?? 0;
+            // Checking Offshore -> Firestore field: checking
+            const checkingValue = userData.checking ?? 0;
             accountBalance = typeof checkingValue === 'string'
                 ? parseFloat(checkingValue.replace(/[^0-9.-]/g, '')) || 0
                 : parseFloat(checkingValue) || 0;
             accountType = 'Checking Offshore';
         } else if (fundingSource === 'savings_banking') {
-            // Savings Offshore -> Firestore field: fixed
-            const savingsValue = userData.fixed ?? 0;
+            // Savings Offshore -> Firestore field: savings
+            const savingsValue = userData.savings ?? 0;
             accountBalance = typeof savingsValue === 'string'
                 ? parseFloat(savingsValue.replace(/[^0-9.-]/g, '')) || 0
                 : parseFloat(savingsValue) || 0;
