@@ -61,4 +61,4 @@ const m="beal-compliance-modal-root",p="beal-modal-open";function v(){let e=docu
           If you believe this is a mistake, please contact support.
         </p>
       </div>
-    `,primary:{label:"OK",onClick:e},secondary:null,closeOnBackdrop:!1})}export{x as a,w as s};
+    `,primary:{label:"OK",onClick:e},secondary:null,closeOnBackdrop:!1})}export{w as a,x as s};

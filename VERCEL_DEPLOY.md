@@ -213,3 +213,4 @@ Vercel is configured to:
 - **404 errors**: Ensure `vercel.json` routing is correct
 - **Firebase errors**: Verify Firebase credentials in `firebase-config.js`
 
+

@@ -1,4 +1,4 @@
-import"./modulepreload-polyfill-B5Qt9EMX.js";/* empty css             */import{a as w,q as y,c as T,d as L,w as C,g as $}from"./firebase-client-B2F1CqW_.js";import{onAuthStateChanged as A}from"https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";import"./firebase-config-C56FTJjz.js";function v(l){const m=document.getElementById("auth-nav-button"),a=document.getElementById("auth-nav-button-mobile");!m||!a||(l?(m.innerHTML=`
+import"./modulepreload-polyfill-B5Qt9EMX.js";/* empty css             */import{b as w,q as y,h as T,a as L,w as C,k as $}from"./firebase-client-DvgkFHPb.js";import{onAuthStateChanged as A}from"https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";import"./firebase-config-C56FTJjz.js";function v(l){const m=document.getElementById("auth-nav-button"),a=document.getElementById("auth-nav-button-mobile");!m||!a||(l?(m.innerHTML=`
               <a href="dashboard.html" class="btn-blue px-5 py-2.5 rounded-xl font-semibold inline-flex items-center shadow-sm">
                 Dashboard
               </a>

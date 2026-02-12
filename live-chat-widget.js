@@ -1241,9 +1241,10 @@ class LiveChatWidget {
         if (!this.currentChatId || !window.db) return;
 
         try {
-            const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
-            const { collection, query, where, getDocs } = firestoreModule;
-            const messagesRef = collection(window.db, 'live_chats', this.currentChatId, 'messages');
+            const firestoreModule = await this.getFirestoreFunctions();
+            const { collection, doc, query, where, getDocs } = firestoreModule;
+            const chatDocRef = doc(window.db, 'live_chats', this.currentChatId);
+            const messagesRef = collection(chatDocRef, 'messages');
             const q = query(messagesRef, where('read', '==', false), where('sender', '==', 'admin'));
             
             const snapshot = await getDocs(q);

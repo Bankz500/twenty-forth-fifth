@@ -17,6 +17,15 @@
     <style>
         body {
             background: #f5f5f5;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: pan-y;
+        }
+        input, textarea, button, a {
+            -webkit-user-select: auto;
+            user-select: auto;
+            touch-action: auto;
         }
     </style>
     <style>
@@ -31,10 +40,10 @@
         .bg-black { background-color: rgba(24, 0, 172, 0.55) !important; }
     </style>
 
-  <script type="module" crossorigin src="/assets/security-BBKuFzYh.js"></script>
+  <script type="module" crossorigin src="/assets/security-XEgvmdWd.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
   <link rel="modulepreload" crossorigin href="/assets/firebase-config-C56FTJjz.js">
-  <link rel="modulepreload" crossorigin href="/assets/firebase-client-B2F1CqW_.js">
+  <link rel="modulepreload" crossorigin href="/assets/firebase-client-DvgkFHPb.js">
 </head>
 
 <body class="font-sans antialiased">
@@ -43,10 +52,31 @@
 <nav class="bg-white border-b border-gray-300 p-4 shadow-sm">
     <div class="container mx-auto flex items-center justify-between">
         <img src="/assets/11-BKkfsV3h.png" alt="Twenty Third & Forth Logo" class="h-14 md:h-16 w-auto">
-        <button onclick="signOut()"
-            class="bg-white border border-gray-400 text-xs text-gray-800 px-4 md:px-6 py-2 rounded-full hover:bg-gray-50 transition">Sign Out</button>
+        <div class="flex items-center gap-3">
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-button" class="md:hidden text-gray-800 focus:outline-none" aria-label="Open menu">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+            <button onclick="signOut()"
+                class="bg-white border border-gray-400 text-xs text-gray-800 px-4 md:px-6 py-2 rounded-full hover:bg-gray-50 transition">Sign Out</button>
+        </div>
     </div>
 </nav>
+
+<!-- Mobile Menu -->
+<div id="mobile-menu" class="fixed inset-0 bg-white shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out md:hidden z-50">
+    <div class="p-6">
+        <button id="close-menu" class="absolute top-4 right-4 text-2xl text-gray-800" aria-label="Close menu">✖</button>
+        <nav class="w-full flex flex-col items-center space-y-4 mt-10">
+            <a href="dashboard.html" class="w-4/5 py-3 text-center border border-gray-300 text-gray-900 text-sm font-medium bg-white rounded hover:bg-gray-50 transition">Home</a>
+            <a href="deposit.html" class="w-4/5 py-3 text-center border border-gray-300 text-gray-900 text-sm font-medium bg-white rounded hover:bg-gray-50 transition">Deposit</a>
+            <a href="support.html" class="w-4/5 py-3 text-center border border-gray-300 text-gray-900 text-sm font-medium bg-white rounded hover:bg-gray-50 transition">Support</a>
+            <a href="profile.html" class="w-4/5 py-3 text-center border border-gray-300 text-gray-900 text-sm font-medium bg-white rounded hover:bg-gray-50 transition">Profile</a>
+            <a href="security.html" class="w-4/5 py-3 text-center border border-gray-300 text-gray-900 text-sm font-medium bg-white rounded hover:bg-gray-50 transition">Security</a>
+        </nav>
+    </div>
+</div>
+<div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40"></div>
 
 <!-- Main Content -->
 <div class="min-h-screen bg-gray-100 py-6 md:py-12 px-4 sm:px-6 lg:px-8 pb-48 md:pb-20"> 
@@ -316,13 +346,6 @@
             </a>
         </div>
     </div>
-
-    <!-- Inactivity Timeout: Auto-logout after 5 minutes of inactivity -->
-    <script src="inactivity-timeout.js"></script>
-</body>
-
-</html>
-
 
     <!-- Inactivity Timeout: Auto-logout after 5 minutes of inactivity -->
     <script src="inactivity-timeout.js"></script>

@@ -92,16 +92,47 @@
       return `${m}/${y}`;
     }
 
+    function formatCurrency(amount) {
+      const num = typeof amount === 'string' ? parseFloat(amount.replace(/[^0-9.-]/g, '')) || 0 : (amount || 0);
+      return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 }).format(num);
+    }
+
     function renderCard() {
       const userData = cachedUserDoc || {};
       const name = [userData.firstName, userData.lastName].filter(Boolean).join(" ").trim() || "Cardholder";
       const last4 = cachedCard?.last4 || "";
       const expMonth = cachedCard?.expMonth || "";
       const expYear = cachedCard?.expYear || "";
+      const linkedAccount = cachedCard?.linkedAccount || cachedApplication?.linkedAccount || "";
 
       if ($("cardHolderName")) $("cardHolderName").textContent = name.toUpperCase();
       if ($("cardNumberMasked")) $("cardNumberMasked").textContent = formatCardNumberMasked(last4);
       if ($("cardExp")) $("cardExp").textContent = formatExp(expMonth, expYear);
+      
+      // Display account balance based on linked account
+      let balance = 0;
+      if ($("cardAccountBalance")) {
+        if (linkedAccount === "checking") {
+          balance = typeof userData.deposit === 'string' 
+            ? parseFloat(userData.deposit.replace(/[^0-9.-]/g, '')) || 0 
+            : (userData.deposit || 0);
+        } else if (linkedAccount === "savings") {
+          balance = typeof userData.fixed === 'string' 
+            ? parseFloat(userData.fixed.replace(/[^0-9.-]/g, '')) || 0 
+            : (userData.fixed || 0);
+        }
+        $("cardAccountBalance").textContent = formatCurrency(balance);
+      }
+
+      // Update deposit requirement visibility based on balance
+      const depositRequirementItem = $("depositRequirementItem");
+      if (depositRequirementItem) {
+        if (balance < 2) {
+          show(depositRequirementItem);
+        } else {
+          hide(depositRequirementItem);
+        }
+      }
     }
 
     async function loadDebitCardState(user) {
@@ -130,38 +161,135 @@
         const badge = $("cardStatusBadge");
         const viewBtn = $("viewDetailsBtn");
         const warn = $("cardStatusNote");
+        const infoSidebar = $("infoSidebar");
+        const freezeBtn = $("freezeCardBtn");
+        const freezeBtnText = $("freezeCardBtnText");
+        const depositRequirementItem = $("depositRequirementItem");
 
-        if (badge) {
-          badge.className = "inline-flex items-center gap-2 text-xs px-3 py-1 rounded-full border";
-          if (status === "active") {
-            badge.classList.add("bg-green-50", "text-green-700", "border-green-200");
-            badge.textContent = "Active";
-          } else if (status === "hold") {
-            badge.classList.add("bg-amber-50", "text-amber-700", "border-amber-200");
-            badge.textContent = "On hold";
+        // Show sidebar with card information
+        if (infoSidebar) {
+          show(infoSidebar);
+        }
+
+        // Check if balance is less than $2 and show deposit requirement
+        if (depositRequirementItem) {
+          const userData = cachedUserDoc || {};
+          const linkedAccount = cachedCard?.linkedAccount || "";
+          let balance = 0;
+          
+          if (linkedAccount === "checking") {
+            balance = typeof userData.deposit === 'string' 
+              ? parseFloat(userData.deposit.replace(/[^0-9.-]/g, '')) || 0 
+              : (userData.deposit || 0);
+          } else if (linkedAccount === "savings") {
+            balance = typeof userData.fixed === 'string' 
+              ? parseFloat(userData.fixed.replace(/[^0-9.-]/g, '')) || 0 
+              : (userData.fixed || 0);
+          }
+          
+          // Show deposit requirement only if balance is less than $2
+          if (balance < 2) {
+            show(depositRequirementItem);
           } else {
-            badge.classList.add("bg-gray-100", "text-gray-700", "border-gray-200");
-            badge.textContent = "Suspended";
+            hide(depositRequirementItem);
           }
         }
 
-        const allowDetails = status === "active";
+        // Update freeze button based on card status
+        if (freezeBtn && freezeBtnText) {
+          if (status === "active") {
+            freezeBtnText.textContent = "Freeze card";
+            freezeBtn.onclick = () => freezeCard(true);
+          } else if (status === "hold" || status === "frozen") {
+            freezeBtnText.textContent = "Unfreeze card";
+            freezeBtn.onclick = () => freezeCard(false);
+          }
+        }
+
+        if (badge) {
+          badge.className = "inline-flex items-center gap-2 text-xs px-3 py-1 rounded-full border font-medium";
+          if (status === "active") {
+            badge.classList.add("bg-green-50", "text-green-700", "border-green-200");
+            badge.innerHTML = '<i class="fas fa-check-circle"></i> Active';
+          } else if (status === "frozen") {
+            badge.classList.add("bg-blue-50", "text-blue-700", "border-blue-200");
+            badge.innerHTML = '<i class="fas fa-snowflake"></i> Frozen';
+          } else if (status === "hold") {
+            badge.classList.add("bg-amber-50", "text-amber-700", "border-amber-200");
+            badge.innerHTML = '<i class="fas fa-pause-circle"></i> On hold';
+          } else {
+            badge.classList.add("bg-gray-100", "text-gray-700", "border-gray-200");
+            badge.innerHTML = '<i class="fas fa-ban"></i> Suspended';
+          }
+        }
+
+        const allowDetails = status === "active" || status === "frozen";
+        const cardDisplay = document.querySelector('#approvedPanel .rounded-2xl.p-5.text-white.shadow-lg') || 
+                           document.querySelector('#approvedPanel [style*="radial-gradient"]');
+        
+        // Update card visual appearance for frozen state
+        if (cardDisplay) {
+          if (status === "frozen") {
+            cardDisplay.style.opacity = "0.6";
+            cardDisplay.style.filter = "grayscale(40%)";
+            cardDisplay.classList.add("relative");
+            // Add frozen overlay indicator
+            if (!cardDisplay.querySelector('.frozen-overlay')) {
+              const overlay = document.createElement('div');
+              overlay.className = 'frozen-overlay absolute inset-0 rounded-2xl flex items-center justify-center';
+              overlay.style.background = 'rgba(0, 0, 0, 0.1)';
+              overlay.innerHTML = '<div class="bg-white/90 px-4 py-2 rounded-lg border-2 border-blue-500"><span class="text-blue-900 font-bold text-sm">FROZEN</span></div>';
+              cardDisplay.appendChild(overlay);
+            }
+          } else {
+            cardDisplay.style.opacity = "1";
+            cardDisplay.style.filter = "none";
+            const overlay = cardDisplay.querySelector('.frozen-overlay');
+            if (overlay) overlay.remove();
+          }
+        }
+        
         if (viewBtn) {
           viewBtn.disabled = !allowDetails;
           viewBtn.classList.toggle("opacity-50", !allowDetails);
           viewBtn.classList.toggle("cursor-not-allowed", !allowDetails);
         }
-        if (warn) {
-          if (allowDetails) {
-            hide(warn);
+        
+        // Update freeze button styling for frozen state
+        if (freezeBtn) {
+          if (status === "frozen") {
+            freezeBtn.classList.remove("border-gray-300", "text-gray-800", "hover:bg-gray-50");
+            freezeBtn.classList.add("bg-blue-600", "text-white", "hover:bg-blue-700", "border-blue-600");
           } else {
-            warn.textContent = status === "hold"
-              ? "Your debit card is currently on hold. Contact support if you need help."
-              : "Your debit card is suspended. Contact support to resolve this.";
+            freezeBtn.classList.remove("bg-blue-600", "text-white", "hover:bg-blue-700", "border-blue-600");
+            freezeBtn.classList.add("border-gray-300", "text-gray-800", "hover:bg-gray-50");
+          }
+        }
+        
+        if (warn) {
+          if (status === "frozen") {
+            warn.className = "text-sm text-gray-700 bg-gray-50 border border-gray-200 rounded-lg px-4 py-3";
+            warn.innerHTML = '<div class="flex items-start gap-3"><i class="fas fa-snowflake text-gray-600 mt-0.5"></i><div><div class="font-semibold mb-1 text-gray-900">Card Frozen</div><div class="text-gray-700">Your card is currently frozen and cannot be used for transactions. Click "Unfreeze card" to activate it again.</div></div></div>';
             show(warn);
+          } else if (status === "hold") {
+            warn.className = "text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-4 py-3";
+            warn.innerHTML = '<div class="flex items-start gap-3"><i class="fas fa-pause-circle text-amber-600 mt-0.5"></i><div><div class="font-semibold mb-1">Card On Hold</div><div>Your debit card is currently on hold. Contact support if you need help.</div></div></div>';
+            show(warn);
+          } else if (status === "suspended") {
+            warn.className = "text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-4 py-3";
+            warn.innerHTML = '<div class="flex items-start gap-3"><i class="fas fa-ban text-red-600 mt-0.5"></i><div><div class="font-semibold mb-1">Card Suspended</div><div>Your debit card is suspended. Contact support to resolve this.</div></div></div>';
+            show(warn);
+          } else {
+            hide(warn);
           }
         }
         return;
+      }
+
+      // Show sidebar when no active card
+      const infoSidebar = $("infoSidebar");
+      if (infoSidebar) {
+        show(infoSidebar);
       }
 
       const status = (cachedApplication?.status || "").toLowerCase();
@@ -244,9 +372,71 @@
       }
     }
 
+    async function freezeCard(freeze) {
+      const user = auth.currentUser;
+      if (!user) {
+        setStatus("error", "You must be signed in.");
+        return;
+      }
+
+      try {
+        const { updateDoc } = await import("firebase/firestore");
+        const cardRef = doc(db, "debit_cards", user.uid);
+        await updateDoc(cardRef, {
+          status: freeze ? "frozen" : "active",
+          updatedAt: serverTimestamp()
+        });
+        
+        // Reload card state
+        await loadDebitCardState(user);
+        setStatus("success", freeze ? "Card frozen successfully." : "Card unfrozen successfully.");
+      } catch (e) {
+        console.error("Freeze card error", e);
+        setStatus("error", "Unable to update card status. Please try again.");
+      }
+    }
+
+    function updateAccountBalanceDisplay() {
+      const linkedAccount = $("linkedAccount")?.value || "";
+      const balanceDisplay = $("accountBalanceDisplay");
+      const accountTypeLabel = $("accountTypeLabel");
+      const accountBalanceAmount = $("accountBalanceAmount");
+      
+      if (!balanceDisplay || !accountTypeLabel || !accountBalanceAmount) return;
+      
+      if (!linkedAccount || !cachedUserDoc) {
+        hide(balanceDisplay);
+        return;
+      }
+      
+      let balance = 0;
+      let accountType = "";
+      
+      if (linkedAccount === "checking") {
+        balance = typeof cachedUserDoc.deposit === 'string' 
+          ? parseFloat(cachedUserDoc.deposit.replace(/[^0-9.-]/g, '')) || 0 
+          : (cachedUserDoc.deposit || 0);
+        accountType = "Checking Offshore";
+      } else if (linkedAccount === "savings") {
+        balance = typeof cachedUserDoc.fixed === 'string' 
+          ? parseFloat(cachedUserDoc.fixed.replace(/[^0-9.-]/g, '')) || 0 
+          : (cachedUserDoc.fixed || 0);
+        accountType = "Savings Offshore";
+      }
+      
+      if (accountType) {
+        accountTypeLabel.textContent = accountType;
+        accountBalanceAmount.textContent = formatCurrency(balance);
+        show(balanceDisplay);
+      } else {
+        hide(balanceDisplay);
+      }
+    }
+
     window.addEventListener("DOMContentLoaded", () => {
       $("submitBtn")?.addEventListener("click", submit);
       $("closeSuccessModalBtn")?.addEventListener("click", () => hide($("successModal")));
+      $("linkedAccount")?.addEventListener("change", updateAccountBalanceDisplay);
       $("viewDetailsBtn")?.addEventListener("click", () => {
         setStatus("", "");
         $("pinInput").value = "";
@@ -305,6 +495,10 @@
       cachedUser = user;
       await loadUser(user);
       await loadDebitCardState(user);
+      // Update account balance display if form is visible
+      if ($("requestPanel") && !$("requestPanel").classList.contains("hidden")) {
+        updateAccountBalanceDisplay();
+      }
     });
 
     // For inline onclick on the shared dashboard header button
@@ -375,6 +569,19 @@
                   <option value="checking">Checking Offshore</option>
                   <option value="savings">Savings Offshore</option>
                 </select>
+                <div id="accountBalanceDisplay" class="hidden mt-3 rounded-xl border border-gray-200 bg-gray-50 p-4">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                      <div class="flex items-center justify-center w-16 h-10 bg-white rounded px-2">
+                        <span class="text-blue-900 font-bold text-xl tracking-tight" style="font-family: 'Arial', sans-serif; letter-spacing: -1px;">VISA</span>
+                      </div>
+                      <div>
+                        <div class="text-xs text-gray-500 uppercase tracking-wide" id="accountTypeLabel">Account Type</div>
+                        <div class="text-lg font-semibold text-gray-900 mt-1" id="accountBalanceAmount">$0.00</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div>
@@ -442,10 +649,18 @@
               <div class="mt-4 rounded-2xl p-5 text-white shadow-lg" style="background: radial-gradient(1200px circle at 10% 10%, rgba(255,255,255,.22), transparent 40%), linear-gradient(135deg, #1800ac, #4f46e5 60%, #7c3aed);">
                 <div class="flex items-start justify-between">
                   <div class="text-sm font-semibold tracking-wide">Twenty Third &amp; Forth</div>
-                  <div class="text-xs opacity-90">VIRTUAL</div>
+                  <div class="flex items-center gap-2">
+                    <div class="bg-white rounded px-2 py-1">
+                      <span class="text-blue-900 font-bold text-sm tracking-tight" style="font-family: 'Arial', sans-serif; letter-spacing: -0.5px;">VISA</span>
+                    </div>
+                  </div>
                 </div>
                 <div class="mt-6 flex items-center justify-between">
                   <div class="text-2xl md:text-3xl font-semibold tracking-widest" id="cardNumberMasked">•••• •••• •••• ••••</div>
+                </div>
+                <div class="mt-4">
+                  <div class="text-xs opacity-80 uppercase tracking-wider">Account Balance</div>
+                  <div class="text-lg font-semibold mt-1" id="cardAccountBalance">$0.00</div>
                 </div>
                 <div class="mt-6 flex items-end justify-between gap-4">
                   <div>
@@ -459,27 +674,44 @@
                 </div>
               </div>
 
-              <div class="mt-4 flex flex-col sm:flex-row gap-2">
-                <button id="viewDetailsBtn" type="button" class="w-full sm:w-auto px-5 py-3 rounded-full text-sm font-semibold text-white brand-bg brand-bg-hover transition shadow-sm" data-no-loading="true">
-                  View card details
-                </button>
-                <p id="cardStatusNote" class="hidden text-sm text-gray-700 self-center sm:self-auto sm:ml-2"></p>
-                <a href="pin.html" class="w-full sm:w-auto px-5 py-3 rounded-full text-sm font-semibold border border-gray-300 text-gray-800 hover:bg-gray-50 text-center">
-                  Change PIN
-                </a>
+              <div class="mt-4 space-y-3">
+                <div id="cardStatusNote" class="hidden"></div>
+                <div class="flex flex-col sm:flex-row gap-2">
+                  <button id="viewDetailsBtn" type="button" class="w-full sm:w-auto px-5 py-3 rounded-full text-sm font-semibold text-white brand-bg brand-bg-hover transition shadow-sm" data-no-loading="true">
+                    View card details
+                  </button>
+                  <button id="freezeCardBtn" type="button" class="w-full sm:w-auto px-5 py-3 rounded-full text-sm font-semibold border border-gray-300 text-gray-800 hover:bg-gray-50 transition" data-no-loading="true">
+                    <span id="freezeCardBtnText">Freeze card</span>
+                  </button>
+                  <a href="pin.html" class="w-full sm:w-auto px-5 py-3 rounded-full text-sm font-semibold border border-gray-300 text-gray-800 hover:bg-gray-50 text-center">
+                    Change PIN
+                  </a>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <aside class="lg:col-span-5">
+      <aside id="infoSidebar" class="lg:col-span-5">
         <div class="rounded-2xl border border-gray-200 bg-white shadow-sm p-5 md:p-6">
-          <h2 class="text-base font-semibold">What happens next</h2>
-          <ul class="mt-3 space-y-2 text-sm text-gray-700">
-            <li class="flex gap-2"><span style="color:#1800ac" class="font-semibold">1.</span> Your request is submitted as <span class="font-medium">pending</span>.</li>
-            <li class="flex gap-2"><span style="color:#1800ac" class="font-semibold">2.</span> Admin reviews and approves.</li>
-            <li class="flex gap-2"><span style="color:#1800ac" class="font-semibold">3.</span> You’ll be notified after approval.</li>
+          <h2 class="text-base font-semibold">Card Information</h2>
+          <ul class="mt-3 space-y-3 text-sm text-gray-700">
+            <li id="depositRequirementItem" class="hidden flex gap-2 items-start">
+              <span style="color:#1800ac" class="font-semibold flex-shrink-0">1.</span>
+              <div class="flex-1">
+                <span>Account must have a <span class="font-medium">$2 fixed deposit</span> before use.</span>
+                <a href="deposit.html" class="block mt-1 text-blue-600 hover:underline font-medium">Deposit →</a>
+              </div>
+            </li>
+            <li class="flex gap-2 items-start">
+              <span style="color:#1800ac" class="font-semibold flex-shrink-0">2.</span>
+              <span>Freeze card when not in use (add the freeze feature for the card).</span>
+            </li>
+            <li class="flex gap-2 items-start">
+              <span style="color:#1800ac" class="font-semibold flex-shrink-0">3.</span>
+              <span>Want a card shipped to you? <a href="support.html" class="text-blue-600 hover:underline">Contact support</a>.</span>
+            </li>
           </ul>
         </div>
       </aside>
