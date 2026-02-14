@@ -1247,6 +1247,70 @@
                 }
         });
         
+        // Store currency sign globally for reuse
+        let globalCurrencySign = '$';
+        
+        // Global function to format amounts with currency sign
+        window.formatAmountWithCurrency = function(value) {
+            const currencySign = globalCurrencySign || '$';
+            if (!value && value !== 0) return currencySign + '0.00';
+            const num = typeof value === 'string' 
+                ? parseFloat(value.replace(/[^0-9.-]/g, '')) || 0
+                : Number(value) || 0;
+            const formatted = new Intl.NumberFormat('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+            }).format(num);
+            return currencySign + formatted;
+        };
+        
+        // Function to load currency setting and format account balances
+        async function loadCurrencyAndFormatBalances(userData) {
+            let currencySign = '$'; // Default to $ if not set
+            
+            try {
+                // Load currency setting from Firestore
+                const settingsRef = doc(db, 'settings', 'currency');
+                const settingsSnap = await getDoc(settingsRef);
+                if (settingsSnap.exists() && settingsSnap.data().currencySign) {
+                    currencySign = settingsSnap.data().currencySign;
+                    console.log('Currency sign loaded from settings:', currencySign);
+                } else {
+                    console.log('Currency setting not found, using default: $');
+                }
+            } catch (error) {
+                console.error('Error loading currency setting:', error);
+                // Continue with default '$'
+            }
+            
+            // Store globally for other functions to use
+            globalCurrencySign = currencySign;
+            
+            // Set the amounts directly from user data using correct field mappings
+            // Checking → checking field
+            // Savings → savings field
+            // Fixed → fixed field
+            const checkingEl = document.getElementById('checking');
+            const savingsEl = document.getElementById('savings');
+            const fixedEl = document.getElementById('fixed');
+            
+            if (checkingEl) {
+                const formatted = window.formatAmountWithCurrency(userData.checking);
+                checkingEl.textContent = formatted;
+                console.log('Checking balance formatted:', formatted);
+            }
+            if (savingsEl) {
+                const formatted = window.formatAmountWithCurrency(userData.savings);
+                savingsEl.textContent = formatted;
+                console.log('Savings balance formatted:', formatted);
+            }
+            if (fixedEl) {
+                const formatted = window.formatAmountWithCurrency(userData.fixed);
+                fixedEl.textContent = formatted;
+                console.log('Fixed balance formatted:', formatted);
+            }
+        }
+        
         // Function to load user data from Firestore
         async function loadUserDataFromFirestore(user) {
             const userDocRef = doc(db, 'users', user.uid);
@@ -1316,25 +1380,8 @@
                 // Store user data for other pages (tag with uid to prevent cross-user cache bleed)
                 cacheUserData({ ...(userData || {}), __uid: user.uid, __email: user.email || userData?.email || null });
                     
-                // Format amounts as "1,000.00" (no $ sign)
-                const formatAmount = (value) => {
-                    if (!value) return '0.00';
-                    const num = typeof value === 'string' 
-                        ? parseFloat(value.replace(/[^0-9.-]/g, '')) || 0
-                        : Number(value) || 0;
-                    return new Intl.NumberFormat('en-US', {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                    }).format(num);
-                };
-                
-                // Set the amounts directly from user data using correct field mappings
-                // Checking → checking field
-                // Savings → savings field
-                // Fixed → fixed field
-                document.getElementById('checking').textContent = formatAmount(userData.checking);
-                document.getElementById('savings').textContent = formatAmount(userData.savings);
-                document.getElementById('fixed').textContent = formatAmount(userData.fixed);
+                // Load currency setting and format amounts
+                await loadCurrencyAndFormatBalances(userData);
                 
                 // Update KYC notification based on status
                 updateKYCNotification(userData);
@@ -1552,26 +1599,13 @@
         }
         
         // Function to load user data from cache
-        function loadUserDataFromCache(userData) {
+        async function loadUserDataFromCache(userData) {
             // Safety: only use cache for the currently signed-in user
             const currentUid = auth.currentUser?.uid || null;
             if (currentUid && userData?.__uid && userData.__uid !== currentUid) return;
-            // Format amounts as "1,000.00" (no $ sign)
-            const formatAmount = (value) => {
-                if (!value) return '0.00';
-                const num = typeof value === 'string' 
-                    ? parseFloat(value.replace(/[^0-9.-]/g, '')) || 0
-                    : Number(value) || 0;
-                return new Intl.NumberFormat('en-US', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                }).format(num);
-            };
             
-            // Set the amounts directly from cached user data using correct field mappings
-            document.getElementById('checking').textContent = formatAmount(userData.checking);
-            document.getElementById('savings').textContent = formatAmount(userData.savings);
-            document.getElementById('fixed').textContent = formatAmount(userData.fixed);
+            // Load currency setting and format balances
+            await loadCurrencyAndFormatBalances(userData);
             
             // Update KYC notification from cache
             updateKYCNotification(userData);
