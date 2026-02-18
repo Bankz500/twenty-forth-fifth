@@ -53,6 +53,35 @@ chatStyles.textContent = `
         -webkit-text-size-adjust: 100% !important;
         text-size-adjust: 100% !important;
     }
+    /* Mobile-specific chat fixes */
+    @media (max-width: 768px) {
+        #chatWindow {
+            width: calc(100vw - 24px) !important;
+            max-width: 400px !important;
+            height: calc(100vh - 120px) !important;
+            max-height: 600px !important;
+            bottom: 80px !important;
+            right: 12px !important;
+            left: auto !important;
+        }
+        #liveChatSection {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        #liveChatSection.hidden {
+            display: none !important;
+        }
+        #liveChatSection > div {
+            display: flex !important;
+            visibility: visible !important;
+        }
+        #liveChatSection [data-msg-id] {
+            display: flex !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+    }
 `;
 document.head.appendChild(chatStyles);
 
@@ -738,6 +767,14 @@ class LiveChatWidget {
 
             const messagesArea = document.getElementById('liveChatSection');
             if (messagesArea) {
+                // CRITICAL MOBILE FIX: Ensure section is visible before loading messages
+                messagesArea.classList.remove('hidden');
+                const faqSection = document.getElementById('faqSection');
+                if (faqSection) faqSection.classList.add('hidden');
+                const chatInputArea = document.getElementById('chatInputArea');
+                if (chatInputArea) chatInputArea.classList.remove('hidden');
+                this.chatMode = 'live';
+                
                 // Clear and show welcome message first
                 messagesArea.innerHTML = '';
                 this.showWelcomeMessage();
@@ -816,8 +853,42 @@ class LiveChatWidget {
                     const msgText = msgData.text?.trim() || '';
                     const contentKey = msgText.substring(0, 100);
                     
-                    // Check both ID and content
-                    if (!existingIds.has(msgId) && !existingContent.has(contentKey)) {
+                    // Check if message exists in DOM
+                    const existingMsgEl = messagesArea.querySelector(`[data-msg-id="${msgId}"]`);
+                    const msgExistsInDOM = existingMsgEl !== null;
+                    
+                    // Less aggressive duplicate check for mobile - only skip if truly visible
+                    let shouldSkip = false;
+                    if (msgExistsInDOM) {
+                        const computedStyle = window.getComputedStyle(existingMsgEl);
+                        // Only skip if element is actually visible
+                        if (computedStyle.display !== 'none' && computedStyle.visibility !== 'hidden' && 
+                            !existingMsgEl.classList.contains('hidden')) {
+                            shouldSkip = true;
+                        } else {
+                            // Element exists but is hidden - remove it so we can re-add
+                            console.log('Removing hidden duplicate message:', msgId);
+                            existingMsgEl.remove();
+                        }
+                    }
+                    
+                    // Also check ID and content sets (for messages that might not be in DOM yet)
+                    if (!shouldSkip && !existingIds.has(msgId)) {
+                        // Only check content if message text is substantial (avoid false positives)
+                        if (msgText.length > 0 && existingContent.has(contentKey)) {
+                            // Content match found - check if it's actually visible
+                            const contentMatch = Array.from(messagesArea.querySelectorAll('[data-msg-id]'))
+                                .find(el => el.textContent?.trim().substring(0, 100) === contentKey);
+                            if (contentMatch) {
+                                const matchStyle = window.getComputedStyle(contentMatch);
+                                if (matchStyle.display !== 'none' && matchStyle.visibility !== 'hidden') {
+                                    shouldSkip = true;
+                                }
+                            }
+                        }
+                    }
+                    
+                    if (!shouldSkip) {
                         const msg = { id: msgId, ...msgData };
                         newMessages.push(msg);
                         existingIds.add(msgId);
@@ -834,6 +905,19 @@ class LiveChatWidget {
 
                 if (newMessages.length > 0) {
                     console.log(`Widget: Adding ${newMessages.length} new messages`);
+                }
+
+                // CRITICAL: Ensure liveChatSection is visible before adding messages
+                if (newMessages.length > 0) {
+                    if (messagesArea.classList.contains('hidden')) {
+                        console.log('Widget: Making liveChatSection visible for new messages');
+                        messagesArea.classList.remove('hidden');
+                        const faqSection = document.getElementById('faqSection');
+                        if (faqSection) faqSection.classList.add('hidden');
+                        const chatInputArea = document.getElementById('chatInputArea');
+                        if (chatInputArea) chatInputArea.classList.remove('hidden');
+                        this.chatMode = 'live';
+                    }
                 }
 
                 // Add new messages in order (oldest first, newest last)
@@ -887,15 +971,37 @@ class LiveChatWidget {
             return;
         }
 
+        // CRITICAL FIX: Ensure liveChatSection is visible when adding messages
+        // This fixes the mobile issue where messages aren't visible
+        if (messagesArea.classList.contains('hidden')) {
+            console.log('Widget: Making liveChatSection visible for message display');
+            messagesArea.classList.remove('hidden');
+            // Also ensure FAQ is hidden and input area is visible
+            const faqSection = document.getElementById('faqSection');
+            if (faqSection) faqSection.classList.add('hidden');
+            const chatInputArea = document.getElementById('chatInputArea');
+            if (chatInputArea) chatInputArea.classList.remove('hidden');
+            // Set chat mode to live
+            this.chatMode = 'live';
+        }
+
         const isUser = msg.sender === 'user';
         // Use document ID as primary identifier
         const msgId = msg.id || `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         
-        // More reliable duplicate check
+        // More reliable duplicate check - but less aggressive for mobile
         const existingMsg = messagesArea.querySelector(`[data-msg-id="${msgId}"]`);
         if (existingMsg) {
-            console.log('Message already exists in widget, skipping:', msgId);
-            return;
+            // On mobile, sometimes elements exist but aren't visible - check visibility
+            const computedStyle = window.getComputedStyle(existingMsg);
+            if (computedStyle.display !== 'none' && computedStyle.visibility !== 'hidden') {
+                console.log('Message already exists and is visible in widget, skipping:', msgId);
+                return;
+            } else {
+                // Element exists but is hidden - remove it and re-add (mobile fix)
+                console.log('Message exists but is hidden, removing and re-adding:', msgId);
+                existingMsg.remove();
+            }
         }
 
         const msgDiv = document.createElement('div');
@@ -942,8 +1048,23 @@ class LiveChatWidget {
         // This ensures chronological order: old messages on top, new messages at bottom
         messagesArea.appendChild(msgDiv);
         
-        // Force reflow on mobile devices
+        // CRITICAL MOBILE FIX: Ensure message is visible after appending
+        // Force reflow and ensure visibility
         msgDiv.offsetHeight;
+        
+        // Double-check visibility on mobile - sometimes elements are added but not visible
+        const computedStyle = window.getComputedStyle(msgDiv);
+        if (computedStyle.display === 'none' || computedStyle.visibility === 'hidden') {
+            console.warn('Widget: Message element is hidden after append, forcing visibility:', msgId);
+            msgDiv.style.display = 'flex';
+            msgDiv.style.visibility = 'visible';
+        }
+        
+        // Ensure parent container is also visible
+        if (messagesArea.classList.contains('hidden')) {
+            console.warn('Widget: Parent container was hidden, making visible');
+            messagesArea.classList.remove('hidden');
+        }
         
         // Enhanced scrolling for mobile devices
         const scrollToBottom = () => {
@@ -958,6 +1079,26 @@ class LiveChatWidget {
             setTimeout(scrollToBottom, 50);
             setTimeout(scrollToBottom, 200);
             setTimeout(scrollToBottom, 500);
+        }
+        
+        // CRITICAL MOBILE FIX: Periodic visibility check for mobile devices
+        // Sometimes mobile browsers hide elements after render - check and fix
+        if (isNew) {
+            setTimeout(() => {
+                const computedStyle = window.getComputedStyle(msgDiv);
+                if (computedStyle.display === 'none' || computedStyle.visibility === 'hidden' || 
+                    msgDiv.classList.contains('hidden')) {
+                    console.warn('Widget: Message became hidden after render, fixing:', msgId);
+                    msgDiv.style.display = 'flex';
+                    msgDiv.style.visibility = 'visible';
+                    msgDiv.classList.remove('hidden');
+                }
+                // Also check parent
+                if (messagesArea.classList.contains('hidden')) {
+                    console.warn('Widget: Parent became hidden, fixing');
+                    messagesArea.classList.remove('hidden');
+                }
+            }, 100);
         }
         
         // Log for debugging on mobile
@@ -991,6 +1132,18 @@ class LiveChatWidget {
         // Validate input
         if (!text && !hasImage) {
             return;
+        }
+        
+        // CRITICAL MOBILE FIX: Ensure liveChatSection is visible before sending
+        const messagesArea = document.getElementById('liveChatSection');
+        if (messagesArea && messagesArea.classList.contains('hidden')) {
+            console.log('Widget: Making liveChatSection visible before sending message');
+            messagesArea.classList.remove('hidden');
+            const faqSection = document.getElementById('faqSection');
+            if (faqSection) faqSection.classList.add('hidden');
+            const chatInputArea = document.getElementById('chatInputArea');
+            if (chatInputArea) chatInputArea.classList.remove('hidden');
+            this.chatMode = 'live';
         }
         
         // Ensure Firebase is initialized

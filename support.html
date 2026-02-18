@@ -634,6 +634,13 @@
 
             const messagesArea = document.getElementById('liveChatMessages');
             if (messagesArea) {
+                // CRITICAL MOBILE FIX: Ensure section is visible before loading messages
+                messagesArea.classList.remove('hidden');
+                const faqSection = document.getElementById('faqTopicsSection');
+                if (faqSection) faqSection.classList.add('hidden');
+                const chatInputArea = document.getElementById('chatInputArea');
+                if (chatInputArea) chatInputArea.classList.remove('hidden');
+                
                 messagesArea.innerHTML = '';
                 showWelcomeMessage();
 
@@ -693,17 +700,62 @@
                     if (textContent) existingContent.add(textContent.substring(0, 100));
                 });
 
+                // CRITICAL: Ensure liveChatMessages is visible before adding messages
+                if (messagesArea.classList.contains('hidden')) {
+                    console.log('Support: Making liveChatMessages visible for new messages');
+                    messagesArea.classList.remove('hidden');
+                    const faqSection = document.getElementById('faqTopicsSection');
+                    if (faqSection) faqSection.classList.add('hidden');
+                    const chatInputArea = document.getElementById('chatInputArea');
+                    if (chatInputArea) chatInputArea.classList.remove('hidden');
+                }
+
                 const newMessages = [];
                 snapshot.forEach(doc => {
                     const msgId = doc.id;
                     const msgData = doc.data();
                     const msgText = msgData.text?.trim() || '';
                     
-                    // Check both ID and content to avoid duplicates
-                    const contentKey = msgText.substring(0, 100);
-                    if (!existingIds.has(msgId) && !existingContent.has(contentKey)) {
+                    // Check if message exists in DOM
+                    const existingMsgEl = messagesArea.querySelector(`[data-msg-id="${msgId}"]`);
+                    const msgExistsInDOM = existingMsgEl !== null;
+                    
+                    // Less aggressive duplicate check for mobile - only skip if truly visible
+                    let shouldSkip = false;
+                    if (msgExistsInDOM) {
+                        const computedStyle = window.getComputedStyle(existingMsgEl);
+                        // Only skip if element is actually visible
+                        if (computedStyle.display !== 'none' && computedStyle.visibility !== 'hidden' && 
+                            !existingMsgEl.classList.contains('hidden')) {
+                            shouldSkip = true;
+                        } else {
+                            // Element exists but is hidden - remove it so we can re-add
+                            console.log('Support: Removing hidden duplicate message:', msgId);
+                            existingMsgEl.remove();
+                        }
+                    }
+                    
+                    // Also check ID and content sets (for messages that might not be in DOM yet)
+                    if (!shouldSkip && !existingIds.has(msgId)) {
+                        // Only check content if message text is substantial (avoid false positives)
+                        const contentKey = msgText.substring(0, 100);
+                        if (msgText.length > 0 && existingContent.has(contentKey)) {
+                            // Content match found - check if it's actually visible
+                            const contentMatch = Array.from(messagesArea.querySelectorAll('[data-msg-id]'))
+                                .find(el => el.textContent?.trim().substring(0, 100) === contentKey);
+                            if (contentMatch) {
+                                const matchStyle = window.getComputedStyle(contentMatch);
+                                if (matchStyle.display !== 'none' && matchStyle.visibility !== 'hidden') {
+                                    shouldSkip = true;
+                                }
+                            }
+                        }
+                    }
+                    
+                    if (!shouldSkip) {
                         newMessages.push({ id: msgId, ...msgData });
                         existingIds.add(msgId);
+                        const contentKey = msgText.substring(0, 100);
                         if (contentKey) existingContent.add(contentKey);
                     }
                 });
@@ -755,15 +807,34 @@
             return;
         }
 
+        // CRITICAL MOBILE FIX: Ensure liveChatMessages is visible when adding messages
+        if (messagesArea.classList.contains('hidden')) {
+            console.log('Support: Making liveChatMessages visible for message display');
+            messagesArea.classList.remove('hidden');
+            // Also ensure FAQ is hidden and input area is visible
+            const faqSection = document.getElementById('faqTopicsSection');
+            if (faqSection) faqSection.classList.add('hidden');
+            const chatInputArea = document.getElementById('chatInputArea');
+            if (chatInputArea) chatInputArea.classList.remove('hidden');
+        }
+
         const isUser = msg.sender === 'user';
         // Use document ID as primary identifier, fallback to generated ID
         const msgId = msg.id || `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         
-        // Check if message already exists - use more reliable check
+        // Check if message already exists - less aggressive for mobile
         const existingMsg = messagesArea.querySelector(`[data-msg-id="${msgId}"]`);
         if (existingMsg) {
-            console.log('Message already exists, skipping:', msgId);
-            return;
+            // On mobile, check if element is actually visible
+            const computedStyle = window.getComputedStyle(existingMsg);
+            if (computedStyle.display !== 'none' && computedStyle.visibility !== 'hidden') {
+                console.log('Message already exists and is visible, skipping:', msgId);
+                return;
+            } else {
+                // Element exists but is hidden - remove it and re-add (mobile fix)
+                console.log('Message exists but is hidden, removing and re-adding:', msgId);
+                existingMsg.remove();
+            }
         }
 
         const msgDiv = document.createElement('div');
@@ -808,8 +879,23 @@
         
         messagesArea.appendChild(msgDiv);
         
+        // CRITICAL MOBILE FIX: Ensure message is visible after appending
         // Force reflow on mobile devices
         msgDiv.offsetHeight;
+        
+        // Double-check visibility on mobile - sometimes elements are added but not visible
+        const computedStyle = window.getComputedStyle(msgDiv);
+        if (computedStyle.display === 'none' || computedStyle.visibility === 'hidden') {
+            console.warn('Support: Message element is hidden after append, forcing visibility:', msgId);
+            msgDiv.style.display = 'flex';
+            msgDiv.style.visibility = 'visible';
+        }
+        
+        // Ensure parent container is also visible
+        if (messagesArea.classList.contains('hidden')) {
+            console.warn('Support: Parent container was hidden, making visible');
+            messagesArea.classList.remove('hidden');
+        }
         
         // Scroll to bottom with multiple attempts for mobile
         const scrollToBottom = () => {
@@ -825,6 +911,26 @@
         setTimeout(scrollToBottom, 50);
         setTimeout(scrollToBottom, 200);
         setTimeout(scrollToBottom, 500);
+        
+        // CRITICAL MOBILE FIX: Periodic visibility check for mobile devices
+        // Sometimes mobile browsers hide elements after render - check and fix
+        if (isNew) {
+            setTimeout(() => {
+                const computedStyle = window.getComputedStyle(msgDiv);
+                if (computedStyle.display === 'none' || computedStyle.visibility === 'hidden' || 
+                    msgDiv.classList.contains('hidden')) {
+                    console.warn('Support: Message became hidden after render, fixing:', msgId);
+                    msgDiv.style.display = 'flex';
+                    msgDiv.style.visibility = 'visible';
+                    msgDiv.classList.remove('hidden');
+                }
+                // Also check parent
+                if (messagesArea.classList.contains('hidden')) {
+                    console.warn('Support: Parent became hidden, fixing');
+                    messagesArea.classList.remove('hidden');
+                }
+            }, 100);
+        }
         
         // Log for debugging on mobile
         if (isNew) {
@@ -918,6 +1024,18 @@
         const hasImage = window.chatModal.selectedImageBase64 !== null;
         
         if (!text && !hasImage) return;
+        
+        // CRITICAL MOBILE FIX: Ensure liveChatMessages is visible before sending
+        const messagesArea = document.getElementById('liveChatMessages');
+        if (messagesArea && messagesArea.classList.contains('hidden')) {
+            console.log('Support: Making liveChatMessages visible before sending message');
+            messagesArea.classList.remove('hidden');
+            const faqSection = document.getElementById('faqTopicsSection');
+            if (faqSection) faqSection.classList.add('hidden');
+            const chatInputArea = document.getElementById('chatInputArea');
+            if (chatInputArea) chatInputArea.classList.remove('hidden');
+            window.chatModal.chatMode = 'live';
+        }
         
         if (!window.chatModal.currentChatId) {
             try {
