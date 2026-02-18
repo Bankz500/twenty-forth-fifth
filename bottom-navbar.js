@@ -26,7 +26,7 @@
             const icon = item.querySelector('div');
             const text = item.querySelector('span');
             if (icon) {
-                icon.classList.remove('bg-gray-800', 'text-white');
+                icon.classList.remove('bg-green-600', 'text-white');
                 icon.classList.add('bg-white');
             }
             if (text) {
@@ -59,11 +59,11 @@
             const text = activeItem.querySelector('span');
             if (icon) {
                 icon.classList.remove('bg-white');
-                icon.classList.add('bg-gray-800', 'text-white');
+                icon.classList.add('bg-green-600', 'text-white');
             }
             if (text) {
                 text.classList.remove('text-gray-700');
-                text.classList.add('text-gray-900', 'font-bold');
+                text.classList.add('text-green-600', 'font-bold');
             }
         }
     }
@@ -97,11 +97,11 @@
             const text = this.querySelector('span');
             if (icon) {
                 icon.classList.remove('bg-white');
-                icon.classList.add('bg-gray-800', 'text-white');
+                icon.classList.add('bg-green-600', 'text-white');
             }
             if (text) {
                 text.classList.remove('text-gray-700');
-                text.classList.add('text-gray-900', 'font-bold');
+                text.classList.add('text-green-600', 'font-bold');
             }
         });
     });

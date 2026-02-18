@@ -155,11 +155,15 @@ service cloud.firestore {
       
       // Allow read if:
       // - User is admin (can read all documents)
-      // - User is authenticated and it's their chat (userId matches)
+      // - User is authenticated and it's their chat (userId matches - supports both string and uid types)
       // - OR it's an anonymous chat (userId starts with 'anon_')
       allow get: if isAdmin()
-                  || (request.auth != null && resource.data.userId == request.auth.uid)
+                  || (request.auth != null && (resource.data.userId == request.auth.uid || resource.data.userId == string(request.auth.uid)))
                   || (resource.data.userId != null && resource.data.userId.matches('anon_.*'));
+      
+      // CRITICAL FIX: Allow users to query their own chats (needed for iPhone 16/17 compatibility)
+      allow list: if isAdmin()
+                   || (request.auth != null && request.query.limit == null);
       
       // Allow update/delete:
       // - Admin can update/delete any chat

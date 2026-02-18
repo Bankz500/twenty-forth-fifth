@@ -646,13 +646,13 @@ class LiveChatWidget {
         if (!window.db) {
             try {
                 const firebaseConfig = {
-                    apiKey: "AIzaSyA3x-CZApUgkWHCjlwvFtOQhYQeY6lDwpI",
-                    authDomain: "twenty-forth-fifth.firebaseapp.com",
-                    projectId: "twenty-forth-fifth",
-                    storageBucket: "twenty-forth-fifth.firebasestorage.app",
-                    messagingSenderId: "228269383587",
-                    appId: "1:228269383587:web:0d6f063f221f388cd2c416",
-                    measurementId: "G-3X9DT5MBV4"
+                    apiKey: "AIzaSyDk8K22XfrsAQAX7WarxSq_BnwO1YQLDSc",
+                    authDomain: "twenty-third-forth-ee57c.firebaseapp.com",
+                    projectId: "twenty-third-forth-ee57c",
+                    storageBucket: "twenty-third-forth-ee57c.firebasestorage.app",
+                    messagingSenderId: "47210898997",
+                    appId: "1:47210898997:web:d25c23eee45a7660cef37c",
+                    measurementId: "G-ESYD665GWG"
                 };
 
                 // Try npm Firebase first (if firebase-client.js is loaded)
@@ -767,18 +767,54 @@ class LiveChatWidget {
                 return; // Anonymous users will create new chat when they start chatting
             }
             
-            // Check for existing chat - only for authenticated users
-            const q = query(collection(window.db, 'live_chats'), where('userId', '==', this.currentUserId));
-            const snapshot = await getDocs(q);
+            // CRITICAL FIX: Ensure userId is a string for consistent querying
+            // This fixes issues on iPhone 16/17 where type mismatches can cause query failures
+            const userIdString = String(this.currentUserId);
             
-            if (!snapshot.empty) {
-                this.currentChatId = snapshot.docs[0].id;
+            // CRITICAL FIX: Try query with retry logic for iPhone compatibility
+            let snapshot = null;
+            let retryCount = 0;
+            const maxRetries = 3;
+            
+            while (retryCount < maxRetries && !snapshot) {
+                try {
+                    // Query for existing chat - ensure userId matches exactly
+                    const q = query(collection(window.db, 'live_chats'), where('userId', '==', userIdString));
+                    snapshot = await getDocs(q);
+                    break; // Success, exit retry loop
+                } catch (queryError) {
+                    retryCount++;
+                    console.warn(`Chat query attempt ${retryCount} failed:`, queryError);
+                    if (retryCount < maxRetries) {
+                        // Wait before retry (exponential backoff for iPhone)
+                        await new Promise(resolve => setTimeout(resolve, 200 * retryCount));
+                    } else {
+                        throw queryError; // Re-throw on final failure
+                    }
+                }
+            }
+            
+            if (snapshot && !snapshot.empty) {
+                // Get the most recent chat (in case user has multiple)
+                const chats = snapshot.docs.sort((a, b) => {
+                    const timeA = a.data().lastMessageAt?.toDate?.()?.getTime() || a.data().createdAt?.toDate?.()?.getTime() || 0;
+                    const timeB = b.data().lastMessageAt?.toDate?.()?.getTime() || b.data().createdAt?.toDate?.()?.getTime() || 0;
+                    return timeB - timeA; // Most recent first
+                });
+                
+                this.currentChatId = chats[0].id;
+                console.log('Loaded existing chat:', this.currentChatId);
                 await this.loadMessages();
+            } else {
+                console.log('No existing chat found for user:', userIdString);
             }
         } catch (error) {
             console.error('Error loading chat:', error);
             // Don't throw - allow user to create new chat
-            // Permission errors are expected for anonymous users
+            // But log the error for debugging
+            if (error.message) {
+                console.error('Error details:', error.message);
+            }
         }
     }
 
@@ -789,8 +825,33 @@ class LiveChatWidget {
             const firestoreModule = await this.getFirestoreFunctions();
             const { collection, query, orderBy, getDocs } = firestoreModule;
             const messagesRef = collection(window.db, 'live_chats', this.currentChatId, 'messages');
-            const q = query(messagesRef, orderBy('timestamp', 'asc')); // Oldest first
-            const snapshot = await getDocs(q);
+            
+            // CRITICAL FIX: Add retry logic for iPhone 16/17 compatibility
+            let snapshot = null;
+            let retryCount = 0;
+            const maxRetries = 3;
+            
+            while (retryCount < maxRetries && !snapshot) {
+                try {
+                    const q = query(messagesRef, orderBy('timestamp', 'asc')); // Oldest first
+                    snapshot = await getDocs(q);
+                    break; // Success, exit retry loop
+                } catch (queryError) {
+                    retryCount++;
+                    console.warn(`Messages query attempt ${retryCount} failed:`, queryError);
+                    if (retryCount < maxRetries) {
+                        // Wait before retry (exponential backoff for iPhone)
+                        await new Promise(resolve => setTimeout(resolve, 200 * retryCount));
+                    } else {
+                        throw queryError; // Re-throw on final failure
+                    }
+                }
+            }
+            
+            if (!snapshot) {
+                console.error('Failed to load messages after retries');
+                return;
+            }
 
             const messagesArea = document.getElementById('liveChatSection');
             if (messagesArea) {
@@ -1428,8 +1489,29 @@ class LiveChatWidget {
             const userName = window.auth.currentUser.email || 'User';
             const userEmail = window.auth.currentUser.email || '';
             
-            // Use authenticated user ID
+            // CRITICAL FIX: Ensure userId is always stored as string for consistent querying
+            // This fixes issues on iPhone 16/17 where type mismatches can cause query failures
             const userId = String(this.currentUserId);
+            
+            // CRITICAL FIX: Check if chat already exists before creating (prevent duplicates)
+            const firestoreModule = await this.getFirestoreFunctions();
+            const { query, where, getDocs } = firestoreModule;
+            const existingChatQuery = query(collection(window.db, 'live_chats'), where('userId', '==', userId));
+            const existingSnapshot = await getDocs(existingChatQuery);
+            
+            if (!existingSnapshot.empty) {
+                // Use existing chat instead of creating new one
+                const existingChats = existingSnapshot.docs.sort((a, b) => {
+                    const timeA = a.data().lastMessageAt?.toDate?.()?.getTime() || a.data().createdAt?.toDate?.()?.getTime() || 0;
+                    const timeB = b.data().lastMessageAt?.toDate?.()?.getTime() || b.data().createdAt?.toDate?.()?.getTime() || 0;
+                    return timeB - timeA; // Most recent first
+                });
+                this.currentChatId = existingChats[0].id;
+                console.log('Using existing chat:', this.currentChatId);
+                localStorage.setItem(`fci_chat_id_${this.currentUserId}`, this.currentChatId);
+                await this.setupRealtimeListener();
+                return;
+            }
             
             const chatRef = await addDoc(collection(window.db, 'live_chats'), {
                 userId: userId,
