@@ -6,6 +6,16 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 export { analytics };
 
+// Debug: confirm which Firebase project this page is connected to.
+// (This helps diagnose "Missing or insufficient permissions" caused by deploying rules to the wrong project.)
+try {
+  if (typeof window !== 'undefined') {
+    console.log('[Firebase] projectId:', app?.options?.projectId);
+  }
+} catch {
+  // ignore
+}
+
 // Lightweight cross-page cache for user profile document (optional, but speeds up navigation)
 const USER_DATA_KEY = 'beal_offshore_user_data';
 
