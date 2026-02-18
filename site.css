@@ -4,8 +4,8 @@
   --ink: #0b1f3b;
   --muted: rgba(11, 31, 59, 0.72);
   --border: rgba(11, 31, 59, 0.12);
-  --brand: #1f66e5;       /* blue-600 */
-  --brand-hover: #1c4fb8; /* blue-700 */
+  --brand: #16a34a;       /* green-600 */
+  --brand-hover: #15803d; /* green-700 */
   /* Match the logo background (1.png) to avoid visible seams */
   --nav-bg: #fcfcfc;
 }
@@ -156,28 +156,6 @@ p, span, div[role="textbox"], .selectable {
   background: var(--surface);
   border: 1px solid rgba(11, 31, 59, 0.12);
   border-radius: 1rem;
-  box-shadow: 0 28px 70px rgba(0,0,0,0.14);
-  padding: 0.5rem;
-  z-index: 60;
-}
-.dropdown-item {
-  display: flex;
-  gap: 0.75rem;
-  padding: 0.75rem 0.75rem;
-  border-radius: 0.75rem;
-  color: var(--ink);
-  text-decoration: none;
-  transition: background-color 0.15s ease;
-}
-.dropdown-item:hover { background: rgba(16, 43, 99, 0.06); }
-.dropdown-item .title { font-weight: 650; }
-.dropdown-item .desc { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
-
-/* Mobile overlay toggle helpers (existing JS often toggles `.active`) */
-#overlay.active { display: block !important; }
-
-
-
   box-shadow: 0 28px 70px rgba(0,0,0,0.14);
   padding: 0.5rem;
   z-index: 60;

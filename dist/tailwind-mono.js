@@ -23,20 +23,20 @@ window.tailwind.config = {
       },
       colors: {
         blue: {
-          // Light backgrounds + subtle borders
-          50: "#f6f9ff",
-          100: "#eef4ff",
-          200: "#d9e7ff",
-          300: "#b7d1ff",
-          400: "#86b2ff",
-          // Brand blues
-          500: "#4f86ff",
-          600: "#1f66e5",
-          700: "#1c4fb8",
-          800: "#183f93",
-          // Navy
-          900: "#102b63",
-          950: "#0b1f3b",
+          // Light backgrounds + subtle borders (green equivalents)
+          50: "#f0fdf4",
+          100: "#dcfce7",
+          200: "#bbf7d0",
+          300: "#86efac",
+          400: "#4ade80",
+          // Brand greens
+          500: "#22c55e",
+          600: "#16a34a",
+          700: "#15803d",
+          800: "#166534",
+          // Dark green
+          900: "#14532d",
+          950: "#052e16",
         },
       },
       boxShadow: {

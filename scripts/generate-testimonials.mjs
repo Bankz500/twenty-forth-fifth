@@ -83,22 +83,22 @@ function renderPage({ reviews, schemaJson }) {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Client Testimonials & Reviews | Twenty Third & Forth - Verified Customer Experiences</title>
-    <meta name="description" content="Read verified client testimonials and reviews for Twenty Third & Forth. Real customer experiences from businesses worldwide praising our offshore banking services, compliance expertise, and professional operations." />
-    <meta name="keywords" content="Twenty Third & Forth testimonials, offshore banking reviews, client testimonials, verified reviews, customer experiences, offshore banking services, international banking reviews" />
+    <title>Client Testimonials & Reviews | Twenty Forth & Fifth - Verified Customer Experiences</title>
+    <meta name="description" content="Read verified client testimonials and reviews for Twenty Forth & Fifth. Real customer experiences from businesses worldwide praising our banking services, compliance expertise, and professional operations." />
+    <meta name="keywords" content="Twenty Forth & Fifth testimonials, banking reviews, client testimonials, verified reviews, customer experiences, banking services, international banking reviews" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-    <link rel="canonical" href="https://twentythirdforth.com/testimonials" />
+    <link rel="canonical" href="https://twentyforthfifth.com/testimonials" />
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" sizes="180x180" href="app-icon.svg">
     <link rel="icon" href="app-icon.svg" type="image/png">
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://twentythirdforth.com/testimonials" />
-    <meta property="og:title" content="Client Testimonials & Reviews | Twenty Third & Forth" />
-    <meta property="og:description" content="Read verified client testimonials and reviews for Twenty Third & Forth. Real customer experiences from businesses worldwide." />
-    <meta property="og:image" content="https://twentythirdforth.com/11.png" />
+    <meta property="og:url" content="https://twentyforthfifth.com/testimonials" />
+    <meta property="og:title" content="Client Testimonials & Reviews | Twenty Forth & Fifth" />
+    <meta property="og:description" content="Read verified client testimonials and reviews for Twenty Forth & Fifth. Real customer experiences from businesses worldwide." />
+    <meta property="og:image" content="https://twentyforthfifth.com/11.png" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Client Testimonials & Reviews | Twenty Third & Forth" />
-    <meta name="twitter:description" content="Read verified client testimonials and reviews for Twenty Third & Forth." />
+    <meta name="twitter:title" content="Client Testimonials & Reviews | Twenty Forth & Fifth" />
+    <meta name="twitter:description" content="Read verified client testimonials and reviews for Twenty Forth & Fifth." />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
@@ -106,8 +106,8 @@ function renderPage({ reviews, schemaJson }) {
       ${schemaTag ? schemaJson : JSON.stringify({
         "@context": "https://schema.org",
         "@type": "Organization",
-        "name": "Twenty Third & Forth",
-        "url": "https://twentythirdforth.com"
+        "name": "Twenty Forth & Fifth",
+        "url": "https://twentyforthfifth.com"
       })}
     </script>
   </head>
@@ -117,8 +117,8 @@ function renderPage({ reviews, schemaJson }) {
         <div class="flex justify-between items-center h-16">
           <div class="flex items-center">
             <a href="/" class="flex items-center space-x-3">
-              <img src="11.png" alt="Twenty Third & Forth" class="h-10 w-auto">
-              <span class="text-xl font-bold text-gray-900" style="font-family: 'Playfair Display', serif;">Twenty Third & Forth</span>
+              <img src="11.png" alt="Twenty Forth & Fifth" class="h-10 w-auto">
+              <span class="text-xl font-bold text-gray-900" style="font-family: 'Playfair Display', serif;">Twenty Forth & Fifth</span>
             </a>
           </div>
         </div>
@@ -127,9 +127,9 @@ function renderPage({ reviews, schemaJson }) {
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <header class="mb-12 text-center">
         <div class="flex items-center justify-center mb-6">
-          <img src="11.png" alt="Twenty Third & Forth" class="h-20 w-auto mr-4">
+          <img src="11.png" alt="Twenty Forth & Fifth" class="h-20 w-auto mr-4">
           <div class="text-left">
-            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-2" style="font-family: 'Playfair Display', serif;">Twenty Third & Forth</h1>
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-2" style="font-family: 'Playfair Display', serif;">Twenty Forth & Fifth</h1>
             <p class="text-lg text-purple-600 font-semibold">Client Testimonials & Reviews</p>
           </div>
         </div>
@@ -145,13 +145,13 @@ function renderPage({ reviews, schemaJson }) {
       import { getFirestore, collection, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
 
       const firebaseConfig = {
-        apiKey: "AIzaSyA7Nw-PhSrJVrO5nl2M9Elin0OZnLLXOwM",
-        authDomain: "forth-citizen.firebaseapp.com",
-        projectId: "forth-citizen",
-        storageBucket: "forth-citizen.firebasestorage.app",
-        messagingSenderId: "1058388832999",
-        appId: "1:1058388832999:web:d685aa9aed4fae8ba6a842",
-        measurementId: "G-XMRK5XK70J"
+        apiKey: "AIzaSyA3x-CZApUgkWHCjlwvFtOQhYQeY6lDwpI",
+        authDomain: "twenty-forth-fifth.firebaseapp.com",
+        projectId: "twenty-forth-fifth",
+        storageBucket: "twenty-forth-fifth.firebasestorage.app",
+        messagingSenderId: "228269383587",
+        appId: "1:228269383587:web:0d6f063f221f388cd2c416",
+        measurementId: "G-3X9DT5MBV4"
       };
 
       try {
@@ -208,8 +208,8 @@ function renderPage({ reviews, schemaJson }) {
             const schema = {
               "@context": "https://schema.org",
               "@type": "Organization",
-              "name": "Twenty Third & Forth",
-              "url": "https://twentythirdforth.com",
+              "name": "Twenty Forth & Fifth",
+              "url": "https://twentyforthfifth.com",
               "aggregateRating": {
                 "@type": "AggregateRating",
                 "ratingValue": avgRating.toFixed(1),
@@ -364,8 +364,8 @@ async function main() {
       const schema = {
         '@context': 'https://schema.org',
         '@type': 'Organization',
-        name: 'Twenty Third & Forth',
-        url: 'https://twentythirdforth.com',
+        name: 'Twenty Forth & Fifth',
+        url: 'https://twentyforthfifth.com',
         aggregateRating: {
           '@type': 'AggregateRating',
           ratingValue: avgRating.toFixed(1),

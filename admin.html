@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Admin - Manage Testimonials | Twenty Third & Forth</title>
+    <title>Admin - Manage Testimonials | Twenty Forth & Fifth</title>
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" sizes="180x180" href="app-icon.svg">
-    <link rel="icon" href="app-icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon.png">
+    <link rel="icon" href="favicon.png" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -67,12 +67,12 @@
             <!-- Sidebar Header -->
             <div class="flex items-center justify-between p-6 border-b border-slate-700/50">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-lg">
+                    <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center shadow-lg">
                         <i class="fas fa-shield-alt text-white text-lg"></i>
                     </div>
                 <div>
                         <h1 class="text-lg font-bold text-white">Admin Panel</h1>
-                        <p class="text-xs text-slate-400">Twenty Third & Forth</p>
+                        <p class="text-xs text-slate-400">Twenty Forth & Fifth</p>
                 </div>
                 </div>
                 <button id="closeSidebar" class="md:hidden text-slate-400 hover:text-white transition-colors">
@@ -95,7 +95,7 @@
                         <i class="fas fa-comments text-slate-300 group-hover:text-white transition-colors"></i>
                     </div>
                     <span class="font-medium text-sm">Live Chat</span>
-                    <span id="adminChatBadge" class="ml-auto text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5 hidden shadow-lg" style="background-color: #1800ac;">0</span>
+                    <span id="adminChatBadge" class="ml-auto text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5 hidden shadow-lg" style="background-color: #15803d;">0</span>
                 </a>
                 <a href="#kyc" onclick="showSection('kyc'); return false;" 
                    class="nav-item relative flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 cursor-pointer group">
@@ -103,7 +103,7 @@
                         <i class="fas fa-id-card text-slate-300 group-hover:text-white transition-colors"></i>
                     </div>
                     <span class="font-medium text-sm">KYC Verification</span>
-                    <span id="adminKYCBadge" class="ml-auto text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5 hidden shadow-lg" style="background-color: #1800ac;">0</span>
+                    <span id="adminKYCBadge" class="ml-auto text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5 hidden shadow-lg" style="background-color: #15803d;">0</span>
                 </a>
                 <a href="#loans" onclick="showSection('loans'); return false;" 
                    class="nav-item relative flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 cursor-pointer group">
@@ -111,7 +111,7 @@
                         <i class="fas fa-money-bill-wave text-slate-300 group-hover:text-white transition-colors"></i>
                     </div>
                     <span class="font-medium text-sm">Loan Requests</span>
-                    <span id="adminLoanBadge" class="ml-auto text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5 hidden shadow-lg" style="background-color: #1800ac;">0</span>
+                    <span id="adminLoanBadge" class="ml-auto text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5 hidden shadow-lg" style="background-color: #15803d;">0</span>
                 </a>
                 <a href="#transfers" onclick="showSection('transfers'); return false;" 
                    class="nav-item relative flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 cursor-pointer group">
@@ -119,7 +119,7 @@
                         <i class="fas fa-exchange-alt text-slate-300 group-hover:text-white transition-colors"></i>
                     </div>
                     <span class="font-medium text-sm">Transfers</span>
-                    <span id="adminTransferBadge" class="ml-auto text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5 hidden shadow-lg" style="background-color: #1800ac;">0</span>
+                    <span id="adminTransferBadge" class="ml-auto text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5 hidden shadow-lg" style="background-color: #15803d;">0</span>
                 </a>
                 <a href="#debit-cards" onclick="showSection('debitCards'); return false;" 
                    class="nav-item relative flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 cursor-pointer group">
@@ -127,7 +127,7 @@
                         <i class="fas fa-credit-card text-slate-300 group-hover:text-white transition-colors"></i>
                     </div>
                     <span class="font-medium text-sm">Debit Cards</span>
-                    <span id="adminDebitCardBadge" class="ml-auto text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5 hidden shadow-lg" style="background-color: #1800ac;">0</span>
+                    <span id="adminDebitCardBadge" class="ml-auto text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5 hidden shadow-lg" style="background-color: #15803d;">0</span>
                 </a>
                 <a href="#users" onclick="showSection('users'); return false;"
                    class="nav-item relative flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 cursor-pointer group">
@@ -280,7 +280,7 @@
 
                 <div class="flex gap-2">
                   <button type="submit" id="submitBtn"
-                          class="flex-1 text-white font-semibold py-2 px-4 rounded-lg transition-colors" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
+                          class="flex-1 text-white font-semibold py-2 px-4 rounded-lg transition-colors" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
                         <i class="fas fa-save mr-2"></i><span id="submitBtnText">Add Testimonial</span>
                     </button>
                     <button type="button" id="cancelEditBtn" onclick="cancelEdit()" class="hidden bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors">
@@ -299,7 +299,7 @@
             <p class="text-gray-600 text-sm mb-4">Add realistic sample testimonials to get started quickly.</p>
             <div class="flex flex-col sm:flex-row gap-2">
             <button id="addSamplesBtn"
-                class="text-white font-semibold py-2 px-4 rounded-lg transition-colors" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
+                class="text-white font-semibold py-2 px-4 rounded-lg transition-colors" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
                 <i class="fas fa-sparkles mr-2"></i>Add Sample Testimonials
             </button>
                 <button id="backfillLikesBtn"
@@ -346,7 +346,7 @@
                     </div>
                     <button type="button"
                             id="startChatBtn"
-                            class="px-4 py-2.5 rounded-lg text-white text-sm font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'"
+                            class="px-4 py-2.5 rounded-lg text-white text-sm font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'"
                             onclick="window.startChatForSelectedUser && window.startChatForSelectedUser()"
                             disabled>
                         Start chat
@@ -495,7 +495,7 @@
                         </label>
                         <button type="button"
                                 id="approveSelectedAccountsBtn"
-                                class="px-3 py-1.5 rounded-lg text-white text-xs font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'"
+                                class="px-3 py-1.5 rounded-lg text-white text-xs font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'"
                                 disabled>
                             Approve selected
                         </button>
@@ -577,7 +577,7 @@
                             type="button"
                             id="adminSaveCurrencyBtn"
                             onclick="window.adminSaveCurrency && window.adminSaveCurrency()"
-                            class="w-full text-white text-sm font-semibold py-2.5 rounded-lg transition-colors" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
+                            class="w-full text-white text-sm font-semibold py-2.5 rounded-lg transition-colors" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
                             <i class="fas fa-save mr-2"></i>
                             Save Currency
                         </button>
@@ -611,7 +611,7 @@
                             type="button"
                             id="adminGenerateHistoryBtn"
                             onclick="window.adminGenerateHistory && window.adminGenerateHistory()"
-                            class="w-full text-white text-sm font-semibold py-2.5 rounded-lg transition-colors" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
+                            class="w-full text-white text-sm font-semibold py-2.5 rounded-lg transition-colors" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
                             <i class="fas fa-sync-alt mr-2"></i>
                             Generate 15 Histories
                         </button>
@@ -634,7 +634,7 @@
                         <button type="button"
                                 id="adminAddCheckingBtn"
                                 onclick="window.adminAddChecking && window.adminAddChecking()"
-                                class="w-full text-white text-xs font-semibold py-2 rounded-lg transition-colors" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
+                                class="w-full text-white text-xs font-semibold py-2 rounded-lg transition-colors" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
                             Add Amount
                         </button>
                     </div>
@@ -668,7 +668,7 @@
                         <button type="button"
                                 id="adminAddFixedBtn"
                                 onclick="window.adminAddFixed && window.adminAddFixed()"
-                                class="w-full text-white text-xs font-semibold py-2 rounded-lg transition-colors" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
+                                class="w-full text-white text-xs font-semibold py-2 rounded-lg transition-colors" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
                             Add Amount
                         </button>
                     </div>
@@ -702,7 +702,7 @@
                         <button type="button"
                                 id="adminAddSavingsBtn"
                                 onclick="window.adminAddSavings && window.adminAddSavings()"
-                                class="w-full text-white text-xs font-semibold py-2 rounded-lg transition-colors" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
+                                class="w-full text-white text-xs font-semibold py-2 rounded-lg transition-colors" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
                             Add Amount
                         </button>
                     </div>
@@ -743,7 +743,7 @@
                         <button type="button"
                                 id="adminSaveHistoryBtn"
                                 onclick="window.adminSaveHistory && window.adminSaveHistory()"
-                                class="flex-1 text-white text-sm font-semibold py-2.5 rounded-lg transition-colors" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
+                                class="flex-1 text-white text-sm font-semibold py-2.5 rounded-lg transition-colors" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
                             Save History 1–15
                         </button>
                         <button type="button"
@@ -774,7 +774,7 @@
                     <button type="button"
                             id="adminSaveStatusBtn"
                             onclick="window.adminSaveStatus && window.adminSaveStatus()"
-                            class="w-full text-white text-sm font-semibold py-2.5 rounded-lg transition-colors" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
+                            class="w-full text-white text-sm font-semibold py-2.5 rounded-lg transition-colors" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
                         Update Status
                     </button>
                     <p class="text-xs text-gray-500">
@@ -791,13 +791,13 @@
         import { getFirestore, collection, addDoc, getDocs, getDoc, setDoc, serverTimestamp, deleteDoc, doc } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
 
         const firebaseConfig = {
-            apiKey: "AIzaSyDk8K22XfrsAQAX7WarxSq_BnwO1YQLDSc",
-            authDomain: "twenty-third-forth-ee57c.firebaseapp.com",
-            projectId: "twenty-third-forth-ee57c",
-            storageBucket: "twenty-third-forth-ee57c.firebasestorage.app",
-            messagingSenderId: "47210898997",
-            appId: "1:47210898997:web:d25c23eee45a7660cef37c",
-            measurementId: "G-ESYD665GWG"
+            apiKey: "AIzaSyA3x-CZApUgkWHCjlwvFtOQhYQeY6lDwpI",
+            authDomain: "twenty-forth-fifth.firebaseapp.com",
+            projectId: "twenty-forth-fifth",
+            storageBucket: "twenty-forth-fifth.firebasestorage.app",
+            messagingSenderId: "228269383587",
+            appId: "1:228269383587:web:0d6f063f221f388cd2c416",
+            measurementId: "G-3X9DT5MBV4"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -992,7 +992,7 @@
                 company: "Global Trade Solutions Inc.",
                 country: "Singapore",
                 rating: 5,
-                reviewText: "Twenty Third & Forth has been instrumental in our international expansion across Southeast Asia. Their expertise in banking solutions and regulatory compliance has saved us significant time and resources. The team is professional, responsive, and truly understands the complexities of cross-border transactions. We've processed over $2M in international transfers through their platform with zero issues. Their compliance team ensured we met all regulatory requirements for our operations in multiple jurisdictions. Highly recommended for any business looking to expand internationally.",
+                reviewText: "Twenty Forth & Fifth has been instrumental in our international expansion across Southeast Asia. Their expertise in banking solutions and regulatory compliance has saved us significant time and resources. The team is professional, responsive, and truly understands the complexities of cross-border transactions. We've processed over $2M in international transfers through their platform with zero issues. Their compliance team ensured we met all regulatory requirements for our operations in multiple jurisdictions. Highly recommended for any business looking to expand internationally.",
                 verified: true,
                 published: true
             },
@@ -1001,7 +1001,7 @@
                 company: "Williams Financial Group",
                 country: "United Kingdom",
                 rating: 5,
-                reviewText: "Outstanding service from Twenty Third & Forth. They helped us set up our banking account structure efficiently when we were establishing our presence in the European market. Their attention to detail and commitment to compliance is impressive - they walked us through every step of the KYC process and made it seamless. The online dashboard is intuitive, and their customer support team responds within hours, not days. We've been with them for 18 months now and couldn't be happier. Highly recommended for anyone looking for reliable banking services with a personal touch.",
+                reviewText: "Outstanding service from Twenty Forth & Fifth. They helped us set up our banking account structure efficiently when we were establishing our presence in the European market. Their attention to detail and commitment to compliance is impressive - they walked us through every step of the KYC process and made it seamless. The online dashboard is intuitive, and their customer support team responds within hours, not days. We've been with them for 18 months now and couldn't be happier. Highly recommended for anyone looking for reliable banking services with a personal touch.",
                 verified: true,
                 published: true
             },
@@ -1010,7 +1010,7 @@
                 company: "Rodriguez Holdings",
                 country: "United States",
                 rating: 5,
-                reviewText: "We've been working with Twenty Third & Forth for over two years now, and they've consistently exceeded our expectations. As a family office managing assets across multiple countries, we needed a bank that understood international wealth management. Their team is knowledgeable, professional, and always available when we need assistance - even during off-hours. The platform is user-friendly and the transaction processing is seamless. What impressed us most was their proactive approach to compliance - they keep us informed about regulatory changes that might affect our accounts. This level of service is rare in banking.",
+                reviewText: "We've been working with Twenty Forth & Fifth for over two years now, and they've consistently exceeded our expectations. As a family office managing assets across multiple countries, we needed a bank that understood international wealth management. Their team is knowledgeable, professional, and always available when we need assistance - even during off-hours. The platform is user-friendly and the transaction processing is seamless. What impressed us most was their proactive approach to compliance - they keep us informed about regulatory changes that might affect our accounts. This level of service is rare in banking.",
                 verified: true,
                 published: true
             },
@@ -1019,7 +1019,7 @@
                 company: "Thompson Enterprises",
                 country: "Canada",
                 rating: 5,
-                reviewText: "Twenty Third & Forth has transformed how we manage our international finances. The banking account setup was straightforward, and their compliance team ensured everything was done correctly from day one. We were initially concerned about the complexity of banking, but their team made the entire process transparent and easy to understand. Their customer support is top-notch - they've helped us navigate currency conversions, international wire transfers, and even provided advice on tax-efficient structures. We appreciate their transparency throughout the process. After 3 years, we still feel like valued clients, not just account numbers.",
+                reviewText: "Twenty Forth & Fifth has transformed how we manage our international finances. The banking account setup was straightforward, and their compliance team ensured everything was done correctly from day one. We were initially concerned about the complexity of banking, but their team made the entire process transparent and easy to understand. Their customer support is top-notch - they've helped us navigate currency conversions, international wire transfers, and even provided advice on tax-efficient structures. We appreciate their transparency throughout the process. After 3 years, we still feel like valued clients, not just account numbers.",
                 verified: true,
                 published: true
             },
@@ -1028,7 +1028,7 @@
                 company: "Kim Capital Management",
                 country: "South Korea",
                 rating: 5,
-                reviewText: "Excellent banking services. Twenty Third & Forth understands the needs of international businesses and provides tailored solutions. Their platform is secure, reliable, and their team is always ready to help. We've processed millions in transactions through their system without a single security concern. The multi-currency accounts have been particularly useful for our operations across Asia-Pacific. Their compliance documentation is thorough, which gives us confidence when dealing with auditors. We've had a great experience working with them and plan to expand our relationship.",
+                reviewText: "Excellent banking services. Twenty Forth & Fifth understands the needs of international businesses and provides tailored solutions. Their platform is secure, reliable, and their team is always ready to help. We've processed millions in transactions through their system without a single security concern. The multi-currency accounts have been particularly useful for our operations across Asia-Pacific. Their compliance documentation is thorough, which gives us confidence when dealing with auditors. We've had a great experience working with them and plan to expand our relationship.",
                 verified: true,
                 published: true
             },
@@ -1037,7 +1037,7 @@
                 company: "Anderson & Associates",
                 country: "Australia",
                 rating: 5,
-                reviewText: "I've worked with several banks over the past decade, and Twenty Third & Forth stands out for their professionalism and reliability. Their online banking platform is modern and secure - I can manage all my accounts from anywhere in the world. The transaction fees are competitive, and more importantly, they're transparent about all costs upfront. Their support team has helped me with everything from setting up beneficiary accounts to understanding tax implications. The fact that they're fully licensed and regulated gives me peace of mind. I've recommended them to several colleagues in the financial services industry.",
+                reviewText: "I've worked with several banks over the past decade, and Twenty Forth & Fifth stands out for their professionalism and reliability. Their online banking platform is modern and secure - I can manage all my accounts from anywhere in the world. The transaction fees are competitive, and more importantly, they're transparent about all costs upfront. Their support team has helped me with everything from setting up beneficiary accounts to understanding tax implications. The fact that they're fully licensed and regulated gives me peace of mind. I've recommended them to several colleagues in the financial services industry.",
                 verified: true,
                 published: true
             },
@@ -1046,7 +1046,7 @@
                 company: "Garcia International Trading",
                 country: "Spain",
                 rating: 5,
-                reviewText: "Twenty Third & Forth has been our banking partner for our import-export business for the past 3 years. Their multi-currency accounts have been essential for our operations across Europe and Latin America. The wire transfer process is fast and reliable - we've never experienced delays or issues. Their compliance team is thorough but efficient, which is exactly what we need. The online platform allows us to track all transactions in real-time, and the reporting features help us with our accounting. Their customer service is exceptional - they speak multiple languages and understand international business needs. We couldn't operate our business as efficiently without them.",
+                reviewText: "Twenty Forth & Fifth has been our banking partner for our import-export business for the past 3 years. Their multi-currency accounts have been essential for our operations across Europe and Latin America. The wire transfer process is fast and reliable - we've never experienced delays or issues. Their compliance team is thorough but efficient, which is exactly what we need. The online platform allows us to track all transactions in real-time, and the reporting features help us with our accounting. Their customer service is exceptional - they speak multiple languages and understand international business needs. We couldn't operate our business as efficiently without them.",
                 verified: true,
                 published: true
             },
@@ -1055,7 +1055,7 @@
                 company: "Müller Tech Solutions",
                 country: "Germany",
                 rating: 5,
-                reviewText: "As a technology company expanding globally, we needed a banking partner that could keep up with our fast-paced growth. Twenty Third & Forth has been exactly that. They set up our corporate accounts quickly and have supported us through multiple funding rounds. Their platform integrates well with our accounting software, saving us hours of manual work. The team understands the unique needs of tech companies - they've helped us with everything from investor relations to payroll for our international team. Their security measures are top-tier, which is crucial for a tech company. Highly professional and reliable.",
+                reviewText: "As a technology company expanding globally, we needed a banking partner that could keep up with our fast-paced growth. Twenty Forth & Fifth has been exactly that. They set up our corporate accounts quickly and have supported us through multiple funding rounds. Their platform integrates well with our accounting software, saving us hours of manual work. The team understands the unique needs of tech companies - they've helped us with everything from investor relations to payroll for our international team. Their security measures are top-tier, which is crucial for a tech company. Highly professional and reliable.",
                 verified: true,
                 published: true
             },
@@ -1064,7 +1064,7 @@
                 company: "Lee Investment Partners",
                 country: "Hong Kong",
                 rating: 5,
-                reviewText: "Twenty Third & Forth has been our preferred banking partner for managing our clients' investments. Their expertise in wealth management and their understanding of different regulatory environments is impressive. The platform is sophisticated yet user-friendly, and their reporting capabilities are excellent for our compliance requirements. They've helped us structure accounts for clients across multiple jurisdictions while ensuring full regulatory compliance. Their team is responsive and always willing to go the extra mile. We've been with them for 4 years and have never had a reason to look elsewhere. They truly understand the needs of investment professionals.",
+                reviewText: "Twenty Forth & Fifth has been our preferred banking partner for managing our clients' investments. Their expertise in wealth management and their understanding of different regulatory environments is impressive. The platform is sophisticated yet user-friendly, and their reporting capabilities are excellent for our compliance requirements. They've helped us structure accounts for clients across multiple jurisdictions while ensuring full regulatory compliance. Their team is responsive and always willing to go the extra mile. We've been with them for 4 years and have never had a reason to look elsewhere. They truly understand the needs of investment professionals.",
                 verified: true,
                 published: true
             },
@@ -1073,7 +1073,7 @@
                 company: "Hassan Trading Group",
                 country: "United Arab Emirates",
                 rating: 5,
-                reviewText: "Twenty Third & Forth has been instrumental in our business expansion across the Middle East and Africa. Their understanding of regional banking requirements and their ability to facilitate transactions across different currencies has been invaluable. The account setup process was smooth, and their compliance team ensured we met all regulatory requirements. Their online platform works perfectly even with slower internet connections, which is important for our operations in remote areas. The customer support team is available 24/7 and has helped us resolve issues quickly. Their commitment to security and compliance gives us confidence in every transaction. Excellent service overall.",
+                reviewText: "Twenty Forth & Fifth has been instrumental in our business expansion across the Middle East and Africa. Their understanding of regional banking requirements and their ability to facilitate transactions across different currencies has been invaluable. The account setup process was smooth, and their compliance team ensured we met all regulatory requirements. Their online platform works perfectly even with slower internet connections, which is important for our operations in remote areas. The customer support team is available 24/7 and has helped us resolve issues quickly. Their commitment to security and compliance gives us confidence in every transaction. Excellent service overall.",
                 verified: true,
                 published: true
             },
@@ -1082,7 +1082,7 @@
                 company: "Martin Real Estate Holdings",
                 country: "France",
                 rating: 5,
-                reviewText: "We've been using Twenty Third & Forth for our international real estate investments for over 5 years. Their expertise in handling large transactions and their understanding of property investment structures is outstanding. They've facilitated transactions in multiple countries and currencies without any issues. The platform is secure and user-friendly, and their reporting features help us track all our investments. Their compliance team has been particularly helpful in ensuring we meet all regulatory requirements across different jurisdictions. The level of service we receive is exceptional - they treat us like partners, not just clients. We've recommended them to many colleagues in the real estate industry.",
+                reviewText: "We've been using Twenty Forth & Fifth for our international real estate investments for over 5 years. Their expertise in handling large transactions and their understanding of property investment structures is outstanding. They've facilitated transactions in multiple countries and currencies without any issues. The platform is secure and user-friendly, and their reporting features help us track all our investments. Their compliance team has been particularly helpful in ensuring we meet all regulatory requirements across different jurisdictions. The level of service we receive is exceptional - they treat us like partners, not just clients. We've recommended them to many colleagues in the real estate industry.",
                 verified: true,
                 published: true
             },
@@ -1091,7 +1091,7 @@
                 company: "Silva Manufacturing Corp",
                 country: "Brazil",
                 rating: 5,
-                reviewText: "Twenty Third & Forth has transformed our international operations. As a manufacturing company with suppliers and customers across multiple continents, we needed a banking partner that could handle complex international transactions. They've exceeded our expectations in every way. Their multi-currency accounts have saved us significant money on currency conversions, and their wire transfer service is fast and reliable. The online platform is excellent - we can manage all our accounts and transactions from our office in São Paulo. Their customer support team speaks Portuguese, which makes communication much easier. They've been our banking partner for 2 years, and we plan to continue working with them as we expand further.",
+                reviewText: "Twenty Forth & Fifth has transformed our international operations. As a manufacturing company with suppliers and customers across multiple continents, we needed a banking partner that could handle complex international transactions. They've exceeded our expectations in every way. Their multi-currency accounts have saved us significant money on currency conversions, and their wire transfer service is fast and reliable. The online platform is excellent - we can manage all our accounts and transactions from our office in São Paulo. Their customer support team speaks Portuguese, which makes communication much easier. They've been our banking partner for 2 years, and we plan to continue working with them as we expand further.",
                 verified: true,
                 published: true
             }
@@ -1273,36 +1273,36 @@
             ];
             // Short 2-line testimonials
             const shortTestimonials = [
-                'Twenty Third & Forth has been excellent for our international banking needs. Highly professional and reliable service.',
-                'Great experience with Twenty Third & Forth. Their platform is user-friendly and customer support is responsive.',
-                'We\'ve been using Twenty Third & Forth for banking and are very satisfied. Fast transactions and excellent service.',
-                'Twenty Third & Forth made our banking account setup seamless. The team is knowledgeable and always available to help.',
-                'Outstanding service from Twenty Third & Forth. Their compliance guidance and international transfer capabilities are top-notch.',
-                'We chose Twenty Third & Forth for our global operations and couldn\'t be happier. Professional, secure, and efficient.',
-                'Twenty Third & Forth provides excellent banking solutions. The platform is intuitive and transactions are processed quickly.',
-                'Highly recommend Twenty Third & Forth for international banking. Their customer service is exceptional and the process is transparent.',
-                'Our experience with Twenty Third & Forth has been outstanding. They understand international business needs and deliver consistently.',
-                'Twenty Third & Forth has been our trusted banking partner for banking operations. Reliable, secure, and professional service.',
-                'Excellent banking services from Twenty Third & Forth. The account setup was smooth and ongoing support is great.',
-                'We\'ve been working with Twenty Third & Forth for international transactions. Their platform is secure and easy to use.',
-                'Twenty Third & Forth offers reliable banking with excellent customer support. Highly satisfied with their services.',
-                'Great banking partner. Twenty Third & Forth provides fast, secure transactions and professional guidance.',
-                'Twenty Third & Forth has exceeded our expectations. Their international banking solutions are comprehensive and reliable.',
-                'Professional and efficient service from Twenty Third & Forth. The banking account management is seamless and user-friendly.',
-                'We appreciate Twenty Third & Forth\'s expertise in banking. Their compliance support and platform are excellent.',
-                'Twenty Third & Forth provides outstanding banking services. Fast processing, secure platform, and great support.',
-                'Our banking experience with Twenty Third & Forth has been excellent. They make international operations easy.',
-                'Twenty Third & Forth is a reliable banking partner. Their team is professional and the platform is intuitive.',
-                'Excellent service from Twenty Third & Forth. They handle our international banking needs with professionalism and efficiency.',
-                'Twenty Third & Forth offers top-tier banking solutions. The account setup was quick and the service is outstanding.',
-                'We\'ve been very satisfied with Twenty Third & Forth. Their banking platform is secure and transactions are fast.',
-                'Twenty Third & Forth provides excellent international banking services. Highly professional team and reliable platform.',
-                'Great banking experience with Twenty Third & Forth. Their customer support is responsive and the service is excellent.',
-                'Twenty Third & Forth has been instrumental in our international operations. Professional service and secure platform.',
-                'Outstanding banking partner. Twenty Third & Forth offers reliable services with excellent customer support.',
-                'We highly recommend Twenty Third & Forth for banking. Their platform is user-friendly and service is professional.',
-                'Twenty Third & Forth provides comprehensive banking solutions. Fast, secure, and reliable international transactions.',
-                'Excellent banking services from Twenty Third & Forth. The team is knowledgeable and always ready to assist.',
+                'Twenty Forth & Fifth has been excellent for our international banking needs. Highly professional and reliable service.',
+                'Great experience with Twenty Forth & Fifth. Their platform is user-friendly and customer support is responsive.',
+                'We\'ve been using Twenty Forth & Fifth for banking and are very satisfied. Fast transactions and excellent service.',
+                'Twenty Forth & Fifth made our banking account setup seamless. The team is knowledgeable and always available to help.',
+                'Outstanding service from Twenty Forth & Fifth. Their compliance guidance and international transfer capabilities are top-notch.',
+                'We chose Twenty Forth & Fifth for our global operations and couldn\'t be happier. Professional, secure, and efficient.',
+                'Twenty Forth & Fifth provides excellent banking solutions. The platform is intuitive and transactions are processed quickly.',
+                'Highly recommend Twenty Forth & Fifth for international banking. Their customer service is exceptional and the process is transparent.',
+                'Our experience with Twenty Forth & Fifth has been outstanding. They understand international business needs and deliver consistently.',
+                'Twenty Forth & Fifth has been our trusted banking partner for banking operations. Reliable, secure, and professional service.',
+                'Excellent banking services from Twenty Forth & Fifth. The account setup was smooth and ongoing support is great.',
+                'We\'ve been working with Twenty Forth & Fifth for international transactions. Their platform is secure and easy to use.',
+                'Twenty Forth & Fifth offers reliable banking with excellent customer support. Highly satisfied with their services.',
+                'Great banking partner. Twenty Forth & Fifth provides fast, secure transactions and professional guidance.',
+                'Twenty Forth & Fifth has exceeded our expectations. Their international banking solutions are comprehensive and reliable.',
+                'Professional and efficient service from Twenty Forth & Fifth. The banking account management is seamless and user-friendly.',
+                'We appreciate Twenty Forth & Fifth\'s expertise in banking. Their compliance support and platform are excellent.',
+                'Twenty Forth & Fifth provides outstanding banking services. Fast processing, secure platform, and great support.',
+                'Our banking experience with Twenty Forth & Fifth has been excellent. They make international operations easy.',
+                'Twenty Forth & Fifth is a reliable banking partner. Their team is professional and the platform is intuitive.',
+                'Excellent service from Twenty Forth & Fifth. They handle our international banking needs with professionalism and efficiency.',
+                'Twenty Forth & Fifth offers top-tier banking solutions. The account setup was quick and the service is outstanding.',
+                'We\'ve been very satisfied with Twenty Forth & Fifth. Their banking platform is secure and transactions are fast.',
+                'Twenty Forth & Fifth provides excellent international banking services. Highly professional team and reliable platform.',
+                'Great banking experience with Twenty Forth & Fifth. Their customer support is responsive and the service is excellent.',
+                'Twenty Forth & Fifth has been instrumental in our international operations. Professional service and secure platform.',
+                'Outstanding banking partner. Twenty Forth & Fifth offers reliable services with excellent customer support.',
+                'We highly recommend Twenty Forth & Fifth for banking. Their platform is user-friendly and service is professional.',
+                'Twenty Forth & Fifth provides comprehensive banking solutions. Fast, secure, and reliable international transactions.',
+                'Excellent banking services from Twenty Forth & Fifth. The team is knowledgeable and always ready to assist.',
             ];
 
             // Mix long + short for better variety
@@ -2057,7 +2057,7 @@
                             <p class="text-sm">${msg}</p>
                             <p class="text-xs text-gray-500 mt-4">Admin Email: ${currentUser?.email || 'Not available'}</p>
                             <p class="text-xs text-gray-500">Admin UID: ${currentUser?.uid || 'Not available'}</p>
-                            <button onclick="loadChats()" class="mt-4 px-4 py-2 text-white rounded-lg" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
+                            <button onclick="loadChats()" class="mt-4 px-4 py-2 text-white rounded-lg" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
                                 Retry
                             </button>
                         </div>
@@ -2106,7 +2106,7 @@
                                 <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border border-gray-200 bg-gray-100 text-gray-800">
                                     ${chat.status || 'open'}
                                 </span>
-                                <span id="unreadBadge-${chat.id}" class="text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center hidden" style="background-color: #1800ac;">0</span>
+                                <span id="unreadBadge-${chat.id}" class="text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center hidden" style="background-color: #15803d;">0</span>
                                 <button onclick="event.stopPropagation(); deleteChat('${chat.id}')" class="text-gray-500 hover:text-gray-900 p-1" title="Delete Chat">
                                     <i class="fas fa-trash"></i>
                                 </button>
@@ -2197,7 +2197,7 @@
                             class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 bg-white"
                             style="font-size: 16px !important;"
                             onkeypress="if(event.key === 'Enter') sendAdminReply('${chatId}')">
-                        <button onclick="sendAdminReply('${chatId}')" class="text-white px-6 py-2 rounded-lg" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
+                        <button onclick="sendAdminReply('${chatId}')" class="text-white px-6 py-2 rounded-lg" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
                             <i class="fas fa-paper-plane mr-2"></i>Send
                         </button>
                     </div>
@@ -2308,11 +2308,11 @@
             msgDiv.className = `flex ${isAdmin ? 'justify-end' : 'justify-start'} mb-3 group relative`;
             msgDiv.setAttribute('data-msg-id', msgId);
             msgDiv.innerHTML = `
-                <div class="max-w-[80%] ${isAdmin ? 'text-white' : 'bg-white text-gray-900 border border-gray-200'} rounded-lg p-3 shadow-sm relative" ${isAdmin ? 'style="background-color: #1800ac;"' : ''}>
+                <div class="max-w-[80%] ${isAdmin ? 'text-white' : 'bg-white text-gray-900 border border-gray-200'} rounded-lg p-3 shadow-sm relative" ${isAdmin ? 'style="background-color: #15803d;"' : ''}>
                     ${imageHtml}
                     ${msg.text ? `<div class="text-sm ${isAdmin ? 'text-white' : 'text-gray-800'}">${escapeHtml(msg.text)}</div>` : ''}
                     <div class="flex items-center justify-between mt-1.5">
-                        <div class="text-xs ${isAdmin ? 'text-blue-100 opacity-80' : 'text-gray-500'}">${formatChatTime(msg.timestamp)}</div>
+                        <div class="text-xs ${isAdmin ? 'text-green-100 opacity-80' : 'text-gray-500'}">${formatChatTime(msg.timestamp)}</div>
                         <button onclick="deleteSingleMessage('${chatId}', '${msgId}')" 
                                 class="ml-2 text-red-500 hover:text-red-700 opacity-0 group-hover:opacity-100 transition-opacity" 
                                 title="Delete message">
@@ -2824,7 +2824,7 @@
                                 </div>
                               </div>
                               <div class="flex gap-2 shrink-0">
-                                <button data-approve="${u.id}" class="approveAccountBtn px-4 py-2 rounded-lg text-white text-sm font-semibold transition" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
+                                <button data-approve="${u.id}" class="approveAccountBtn px-4 py-2 rounded-lg text-white text-sm font-semibold transition" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
                                   <i class="fas fa-check mr-2"></i>Approve
                                 </button>
                               </div>
@@ -3595,7 +3595,7 @@
                 // Show success message
                 if (statusEl) {
                     statusEl.textContent = '✓ Generated 15 history entries successfully!';
-                    statusEl.className = 'text-xs text-blue-600';
+                    statusEl.className = 'text-xs text-green-600';
                 }
 
                 showSuccess('Generated 15 history entries. Review and click "Save History 1–15" to apply.');
@@ -3851,7 +3851,7 @@
                         '<p class="text-sm">' + errorMessage + '</p>' +
                         '<p class="text-xs text-gray-500 mt-4">Admin Email: ' + adminEmail + '</p>' +
                         '<p class="text-xs text-gray-500">Admin UID: ' + adminUid + '</p>' +
-                        '<button onclick="loadKYCRequests()" class="mt-4 px-4 py-2 text-white rounded-lg" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor=\'#140099\'" onmouseout="this.style.backgroundColor=\'#1800ac\'">' +
+                        '<button onclick="loadKYCRequests()" class="mt-4 px-4 py-2 text-white rounded-lg" style="background-color: #15803d;" onmouseover="this.style.backgroundColor=\'#140099\'" onmouseout="this.style.backgroundColor=\'#15803d\'">' +
                         'Retry' +
                         '</button>' +
                         '</div>';
@@ -3905,7 +3905,7 @@
                         ${kyc.status === 'pending' || kyc.status === 'reviewed' ? `
                             <div class="flex gap-2">
                                 <button onclick="approveKYC('${kyc.id}', '${kyc.userId}')" 
-                                    class="flex-1 text-white font-semibold py-2 px-4 rounded-lg transition-colors" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
+                                    class="flex-1 text-white font-semibold py-2 px-4 rounded-lg transition-colors" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
                                     <i class="fas fa-check mr-2"></i>Approve
                                 </button>
                                 <button onclick="rejectKYC('${kyc.id}', '${kyc.userId}')" 
@@ -4193,7 +4193,7 @@
                             showError(
                                 'Missing permissions to issue debit cards. ' +
                                 `Signed in as: ${email}. ` +
-                                'Fix: (1) deploy the updated `firestore.rules` to the `twenty-third-forth` project, and (2) ensure this email is listed in `isAdmin()`.'
+                                'Fix: (1) deploy the updated `firestore.rules` to the `twenty-forth-fifth` project, and (2) ensure this email is listed in `isAdmin()`.'
                             );
                         } else {
                             showError('Failed to approve/issue debit card: ' + (err.message || 'Please try again.'));
@@ -4292,7 +4292,7 @@
                                   </div>
                                   <div class="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
                                     <button type="button"
-                                        class="px-3 py-2 rounded-lg text-white text-xs font-semibold transition" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'"
+                                        class="px-3 py-2 rounded-lg text-white text-xs font-semibold transition" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'"
                                         onclick="approveAndIssueDebitCard('${app.id}', '${uid}')">
                                       Approve &amp; Issue
                                     </button>
@@ -4444,7 +4444,7 @@
                             <p class="font-semibold mb-2">Failed to load loan requests</p>
                             <p class="text-sm">${err.message}</p>
                             <p class="text-xs text-gray-500 mt-4">Admin Email: ${currentUser?.email || 'Not available'}</p>
-                            <button onclick="loadLoanRequests()" class="mt-4 px-4 py-2 text-white rounded-lg" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
+                            <button onclick="loadLoanRequests()" class="mt-4 px-4 py-2 text-white rounded-lg" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
                                 Retry
                             </button>
                         </div>
@@ -4510,7 +4510,7 @@
                         ${loan.status === 'pending' ? `
                             <div class="flex gap-2 mt-4">
                                 <button onclick="window.approveLoan('${loan.id}', '${loan.userId}')" 
-                                    class="flex-1 text-white font-semibold py-2 px-4 rounded-lg transition-colors" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
+                                    class="flex-1 text-white font-semibold py-2 px-4 rounded-lg transition-colors" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
                                     <i class="fas fa-check mr-2"></i>Approve
                                 </button>
                                 <button onclick="window.rejectLoan('${loan.id}', '${loan.userId}')" 
@@ -4521,7 +4521,7 @@
                         ` : loan.status === 'approved' ? `
                             <div class="mt-4 pt-4 border-t border-gray-200">
                                 <button onclick="window.viewLoanPayments('${loan.userId}')" 
-                                    class="w-full text-white font-semibold py-2 px-4 rounded-lg transition-colors" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
+                                    class="w-full text-white font-semibold py-2 px-4 rounded-lg transition-colors" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
                                     <i class="fas fa-calendar-check mr-2"></i>Manage Payments
                                 </button>
                             </div>
@@ -4704,7 +4704,7 @@
                     paymentScheduleHTML += `
                         <div class="flex items-center justify-between p-4 rounded-lg border bg-white border-gray-200">
                             <div class="flex items-center gap-3 flex-1">
-                                <div class="w-10 h-10 rounded-full flex items-center justify-center" style="${isPaid ? 'background-color: #1800ac;' : isDefaulted ? 'background-color: #140099;' : isOverdue ? 'background-color: #0d0066;' : 'background-color: #d1d5db;'}">
+                                <div class="w-10 h-10 rounded-full flex items-center justify-center" style="${isPaid ? 'background-color: #15803d;' : isDefaulted ? 'background-color: #140099;' : isOverdue ? 'background-color: #0d0066;' : 'background-color: #d1d5db;'}">
                                     <i class="fas ${isPaid ? 'fa-check' : isDefaulted ? 'fa-times' : isOverdue ? 'fa-exclamation' : 'fa-clock'} text-white"></i>
                                 </div>
                                 <div class="flex-1">
@@ -4721,7 +4721,7 @@
                                 </div>
                                 ${!isPaid && !isDefaulted ? `
                                     <button onclick="window.markPaymentPaid('${userId}', ${i}, ${paymentAmount})" 
-                                        class="text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
+                                        class="text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
                                         <i class="fas fa-check mr-1"></i>Paid
                                     </button>
                                     <button onclick="window.markPaymentDefaulted('${userId}', ${i}, ${paymentAmount})" 
@@ -4960,7 +4960,7 @@
                         const pendingValue = userData[pendingField];
                         
                         if (pendingValue && pendingValue.trim() !== '') {
-                            // Parse transfer string: "Bank Name - Twenty Third & Forth  |  Transfer-Intl  |  $Amount |  Time  |  Date  |  FundingSource  |  Pending"
+                            // Parse transfer string: "Bank Name - Twenty Forth & Fifth  |  Transfer-Intl  |  $Amount |  Time  |  Date  |  FundingSource  |  Pending"
                             // Backward compatible: old format doesn't have funding source
                             const parts = pendingValue.split('|').map(p => p.trim());
                             const fundingSource = parts.length >= 7 ? parts[5] : (parts.length === 6 ? null : null); // New format has 7 parts, old has 6
@@ -4972,7 +4972,7 @@
                                 userEmail: userData.email || 'N/A',
                                 pendingField: pendingField,
                                 transferString: pendingValue,
-                                bankName: parts[0]?.replace(' - Twenty Third & Forth', '').trim() || '',
+                                bankName: parts[0]?.replace(' - Twenty Forth & Fifth', '').trim() || '',
                                 transferType: parts[1] || '',
                                 amount: parts[2] || '',
                                 time: parts[3] || '',
@@ -5018,12 +5018,12 @@
                         </div>
                         <div class="flex gap-2">
                             <button onclick="editPendingTransfer('${transfer.userId}', '${transfer.pendingField}', ${index})" 
-                                    class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg transition">
+                                    class="px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold rounded-lg transition">
                                 <i class="fas fa-edit mr-1"></i>Edit
                             </button>
                             <button onclick="approveTransfer('${transfer.userId}', '${transfer.pendingField}', ${index})" 
                                     class="px-3 py-1.5 text-white text-xs font-semibold rounded-lg transition" 
-                                    style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
+                                    style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
                                 <i class="fas fa-check mr-1"></i>Approve
                             </button>
                         </div>
@@ -5060,8 +5060,8 @@
                 
                 // Parse transfer string to extract amount and funding source
                 const parts = pendingValue.split('|').map(p => p.trim());
-                // Format: "Bank Name - Twenty Third & Forth  |  Transfer-Intl  |  $Amount |  Time  |  Date  |  FundingSource  |  Pending"
-                // Old format (backward compatible): "Bank Name - Twenty Third & Forth  |  Transfer-Intl  |  $Amount |  Time  |  Date  |  Pending"
+                // Format: "Bank Name - Twenty Forth & Fifth  |  Transfer-Intl  |  $Amount |  Time  |  Date  |  FundingSource  |  Pending"
+                // Old format (backward compatible): "Bank Name - Twenty Forth & Fifth  |  Transfer-Intl  |  $Amount |  Time  |  Date  |  Pending"
                 const amountStr = parts[2] || ''; // Amount is 3rd part (index 2)
                 const fundingSourceStr = parts.length >= 7 ? parts[5] : null; // Funding source is 6th part in new format
                 const statusIndex = parts.length >= 7 ? 6 : 5; // Status is last part
@@ -5192,8 +5192,8 @@
                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 text-sm font-mono"
                                           rows="5"></textarea>
                                 <p class="text-xs text-gray-500 mt-1">
-                                    <strong>Format:</strong> Bank Name - Twenty Third & Forth | Transfer-Type | $Amount | Time | Date | Funding Source | Status<br>
-                                    <strong>Example:</strong> Chase Bank - Twenty Third & Forth | Transfer-Intl | $1,000.00 | 10:30 AM | 12/25/2024 | Checking | Completed
+                                    <strong>Format:</strong> Bank Name - Twenty Forth & Fifth | Transfer-Type | $Amount | Time | Date | Funding Source | Status<br>
+                                    <strong>Example:</strong> Chase Bank - Twenty Forth & Fifth | Transfer-Intl | $1,000.00 | 10:30 AM | 12/25/2024 | Checking | Completed
                                 </p>
                             </div>
                             <div class="flex gap-2 justify-end">
@@ -5203,7 +5203,7 @@
                                 </button>
                                 <button onclick="saveTransferEdit('${userId}', '${fieldName}', '${type}')" 
                                         class="px-4 py-2 text-white rounded-lg transition" 
-                                        style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'">
+                                        style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
                                     Save Changes
                                 </button>
                             </div>
@@ -5354,7 +5354,7 @@
             listEl.innerHTML = entries.map((entry, index) => {
                 // Parse the entry to show details
                 const parts = entry.value.split('|').map(p => p.trim());
-                const bankName = parts[0]?.replace(' - Twenty Third & Forth', '').trim() || '';
+                const bankName = parts[0]?.replace(' - Twenty Forth & Fifth', '').trim() || '';
                 const transferType = parts[1] || '';
                 const amount = parts[2] || '';
                 const time = parts[3] || '';
@@ -5385,7 +5385,7 @@
                         </div>
                         <div class="flex flex-col gap-2">
                             <button onclick="editHistoryEntry('${userId}', '${entry.field}', ${index})" 
-                                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition flex items-center gap-2 whitespace-nowrap">
+                                    class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-lg transition flex items-center gap-2 whitespace-nowrap">
                                 <i class="fas fa-edit"></i>
                                 <span>Edit Entry</span>
                             </button>

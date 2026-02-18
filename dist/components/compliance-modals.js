@@ -1,5 +1,5 @@
 /**
- * Twenty Third & Forth - Compliance / Account Status Modals
+ * Twenty Forth & Fifth - Compliance / Account Status Modals
  * Lightweight, monochrome, Tailwind-friendly (Tailwind CDN on pages).
  */
 const ROOT_ID = 'beal-compliance-modal-root';
@@ -130,7 +130,7 @@ export function showAmlNoticeModal({ onContinue } = {}) {
     bodyHtml: `
       <div class="space-y-3">
         <p>
-          Twenty Third & Forth maintains a strict Anti‑Money Laundering (AML) and Counter‑Terrorist Financing (CFT) compliance program.
+          Twenty Forth & Fifth maintains a strict Anti‑Money Laundering (AML) and Counter‑Terrorist Financing (CFT) compliance program.
           We follow applicable regulations in the Cayman Islands (Camana Bay, Grand Cayman) and internationally.
         </p>
         <div class="rounded-xl border border-gray-200 bg-white p-4">

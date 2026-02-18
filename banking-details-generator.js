@@ -1,4 +1,4 @@
-// Banking Details Generator for Twenty Third & Forth
+// Banking Details Generator for Twenty Forth & Fifth
 // This module generates unique banking details for each user
 
 class BankingDetailsGenerator {
@@ -21,13 +21,13 @@ class BankingDetailsGenerator {
         try {
             // Initialize Firebase
             const firebaseConfig = {
-                apiKey: "AIzaSyBb9sVH4fMb-a5mQgcDjAfYT9RZHTb3sKE",
-                authDomain: "twenty-third-forth.firebaseapp.com",
-                projectId: "twenty-third-forth",
-                storageBucket: "twenty-third-forth.firebasestorage.app",
-                messagingSenderId: "835548579831",
-                appId: "1:835548579831:web:5259f071b50341af28d0f2",
-                measurementId: "G-KEMCE9679Y"
+                apiKey: "AIzaSyA3x-CZApUgkWHCjlwvFtOQhYQeY6lDwpI",
+                authDomain: "twenty-forth-fifth.firebaseapp.com",
+                projectId: "twenty-forth-fifth",
+                storageBucket: "twenty-forth-fifth.firebasestorage.app",
+                messagingSenderId: "228269383587",
+                appId: "1:228269383587:web:0d6f063f221f388cd2c416",
+                measurementId: "G-3X9DT5MBV4"
             };
             
             // Check if Firebase is already initialized
@@ -105,7 +105,7 @@ class BankingDetailsGenerator {
             accountNumber: this.generateAccountNumber(),
             swiftCode: this.generateSwiftCode(),
             routingNumber: this.generateRoutingNumber(),
-            bankName: 'Twenty Third & Forth',
+            bankName: 'Twenty Forth & Fifth',
             accountType: 'Personal Account',
             generatedAt: new Date().toISOString()
         };

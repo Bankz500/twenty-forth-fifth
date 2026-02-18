@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Twenty Third & Forth Financial Platform",
+  "description": "Twenty Forth & Fifth Financial Platform",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
