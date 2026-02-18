@@ -1,4 +1,4 @@
-# Twenty Third & Forth - Dynamic Banking Details System
+# Twenty Forth & Fifth - Dynamic Banking Details System
 
 ## Overview
 
@@ -116,7 +116,7 @@ generateBankingDetails() {
         accountNumber: this.generateAccountNumber(),
         swiftCode: this.generateSwiftCode(),
         routingNumber: this.generateRoutingNumber(),
-        bankName: 'Twenty Third & Forth',
+        bankName: 'Twenty Forth & Fifth',
         accountType: 'Personal Account',
         // Add new fields here
         branchCode: this.generateBranchCode(),
