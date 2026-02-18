@@ -1225,7 +1225,8 @@
     <div data-include="components/cookie-consent.html"></div>
 
     <!-- Live Chat Widget -->
-    <script src="live-chat-widget.js"></script>
+    <!-- IMPORTANT: must be type="module" so Vite includes it in production build (dist/) -->
+    <script type="module" src="live-chat-widget.js"></script>
 
     <script src="./components/site-shell.js"></script>
 

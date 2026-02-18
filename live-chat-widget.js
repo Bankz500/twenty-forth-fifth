@@ -1494,7 +1494,6 @@ class LiveChatWidget {
             const userId = String(this.currentUserId);
             
             // CRITICAL FIX: Check if chat already exists before creating (prevent duplicates)
-            const firestoreModule = await this.getFirestoreFunctions();
             const { query, where, getDocs } = firestoreModule;
             const existingChatQuery = query(collection(window.db, 'live_chats'), where('userId', '==', userId));
             const existingSnapshot = await getDocs(existingChatQuery);
