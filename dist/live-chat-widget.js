@@ -399,10 +399,37 @@ class LiveChatWidget {
     }
 
     attachEventListeners() {
-        document.getElementById('chatToggleBtn').addEventListener('click', () => this.toggleChat());
+        document.getElementById('chatToggleBtn').addEventListener('click', () => {
+            // CRITICAL: Redirect to login then support.html for authenticated chat
+            // Check if user is authenticated
+            if (!window.auth || !window.auth.currentUser) {
+                // Store redirect intent and go to login
+                sessionStorage.setItem('redirectAfterLogin', 'support.html?openChat=true');
+                window.location.href = 'login.html';
+                return;
+            }
+            // If authenticated, toggle chat normally
+            this.toggleChat();
+        });
         document.getElementById('closeChatBtn').addEventListener('click', () => this.closeChat());
-        document.getElementById('startLiveChatBtn').addEventListener('click', () => this.startLiveChat());
-        document.getElementById('sendMessageBtn').addEventListener('click', () => this.sendMessage());
+        document.getElementById('startLiveChatBtn').addEventListener('click', () => {
+            // CRITICAL: Ensure authentication before starting live chat
+            if (!window.auth || !window.auth.currentUser) {
+                sessionStorage.setItem('redirectAfterLogin', 'support.html?openChat=true');
+                window.location.href = 'login.html';
+                return;
+            }
+            this.startLiveChat();
+        });
+        document.getElementById('sendMessageBtn').addEventListener('click', () => {
+            // CRITICAL: Ensure authentication before sending messages
+            if (!window.auth || !window.auth.currentUser) {
+                sessionStorage.setItem('redirectAfterLogin', 'support.html?openChat=true');
+                window.location.href = 'login.html';
+                return;
+            }
+            this.sendMessage();
+        });
         
         // Handle textarea auto-resize and prevent Enter from sending
         const chatInput = document.getElementById('chatMessageInput');
@@ -1124,6 +1151,13 @@ class LiveChatWidget {
     }
 
     async sendMessage() {
+        // CRITICAL: Require authentication - no anonymous messages
+        if (!window.auth || !window.auth.currentUser) {
+            sessionStorage.setItem('redirectAfterLogin', 'support.html?openChat=true');
+            window.location.href = 'login.html';
+            return;
+        }
+        
         const input = document.getElementById('chatMessageInput');
         const sendBtn = document.getElementById('sendMessageBtn');
         const text = input.value.trim();
@@ -1153,9 +1187,10 @@ class LiveChatWidget {
             return;
         }
         
-        // Ensure we have a user ID (anonymous or authenticated)
+        // Ensure we have a user ID from authenticated user
         if (!this.currentUserId) {
-            this.setupAnonymousUser();
+            this.currentUserId = window.auth.currentUser.uid;
+            this.isAuthenticated = true;
         }
         
         // Ensure we have a chat ID - create one if needed
@@ -1292,9 +1327,17 @@ class LiveChatWidget {
     }
 
     async startLiveChat() {
-        // Ensure we have a user ID (authenticated or anonymous)
+        // CRITICAL: Require authentication - no anonymous users
+        if (!window.auth || !window.auth.currentUser) {
+            sessionStorage.setItem('redirectAfterLogin', 'support.html?openChat=true');
+            window.location.href = 'login.html';
+            return;
+        }
+        
+        // Ensure we have a user ID from authenticated user
         if (!this.currentUserId) {
-            this.setupAnonymousUser();
+            this.currentUserId = window.auth.currentUser.uid;
+            this.isAuthenticated = true;
         }
 
         this.chatMode = 'live';
@@ -1358,8 +1401,17 @@ class LiveChatWidget {
     }
 
     async createNewChat() {
+        // CRITICAL: Require authentication - no anonymous chats
+        if (!window.auth || !window.auth.currentUser) {
+            sessionStorage.setItem('redirectAfterLogin', 'support.html?openChat=true');
+            window.location.href = 'login.html';
+            throw new Error('User not authenticated');
+        }
+        
+        // Ensure we have a user ID from authenticated user
         if (!this.currentUserId) {
-            this.setupAnonymousUser();
+            this.currentUserId = window.auth.currentUser.uid;
+            this.isAuthenticated = true;
         }
         
         // Ensure Firebase is initialized
@@ -1372,21 +1424,18 @@ class LiveChatWidget {
             const firestoreModule = await this.getFirestoreFunctions();
             const { collection, addDoc, serverTimestamp } = firestoreModule;
             
-            // Get user name - authenticated user email or anonymous identifier
-            let userName = 'Guest User';
-            if (this.isAuthenticated && window.auth?.currentUser?.email) {
-                userName = window.auth.currentUser.email;
-            } else if (this.userName) {
-                userName = this.userName;
-            }
+            // Get user name and email from authenticated user
+            const userName = window.auth.currentUser.email || 'User';
+            const userEmail = window.auth.currentUser.email || '';
             
-            // Ensure userId is a string
-            const userId = String(this.currentUserId || 'anon_guest');
+            // Use authenticated user ID
+            const userId = String(this.currentUserId);
             
             const chatRef = await addDoc(collection(window.db, 'live_chats'), {
                 userId: userId,
                 userName: userName,
-                isAnonymous: !this.isAuthenticated,
+                userEmail: userEmail,
+                isAnonymous: false,
                 status: 'open',
                 createdAt: serverTimestamp(),
                 lastMessageAt: serverTimestamp()
@@ -1400,7 +1449,9 @@ class LiveChatWidget {
         } catch (error) {
             console.error('Error creating chat:', error);
             if (error.message && error.message.includes('permission')) {
-                alert('Permission denied. Please refresh the page and try again.');
+                alert('Please log in to start a chat.');
+                sessionStorage.setItem('redirectAfterLogin', 'support.html?openChat=true');
+                window.location.href = 'login.html';
             } else {
                 alert('Failed to start chat. Please try again.');
             }

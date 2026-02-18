@@ -1878,28 +1878,87 @@
                 const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
                 const { collection, query, where, getDocs, addDoc, serverTimestamp } = firestoreModule;
 
-                // If chat already exists for this user, open the most recent one.
+                // CRITICAL FIX: Check for existing chats by BOTH userId AND userEmail
+                // This prevents duplicate chats for the same user even if userId differs
                 let existingChatId = null;
                 try {
                     const chatsRef = collection(db, 'live_chats');
-                    const q = query(chatsRef, where('userId', '==', userId));
-                    const snap = await getDocs(q);
-                    if (!snap.empty) {
-                        // Prefer the newest by lastMessageAt if present; otherwise first.
-                        const docs = snap.docs.slice();
+                    
+                    // First, try to find by userId (most reliable)
+                    let snap = null;
+                    try {
+                        const q1 = query(chatsRef, where('userId', '==', userId));
+                        snap = await getDocs(q1);
+                    } catch (e) {
+                        console.warn('Query by userId failed:', e);
+                    }
+                    
+                    // If no results by userId, also check by userEmail (to catch duplicates)
+                    if (!snap || snap.empty) {
+                        if (userEmail) {
+                            try {
+                                const q2 = query(chatsRef, where('userEmail', '==', userEmail));
+                                snap = await getDocs(q2);
+                            } catch (e) {
+                                console.warn('Query by userEmail failed:', e);
+                            }
+                        }
+                    }
+                    
+                    // If still no results, get all chats and filter client-side by email
+                    // This is a fallback for cases where email might be stored differently
+                    if (!snap || snap.empty) {
+                        try {
+                            const allChats = await getDocs(chatsRef);
+                            const matchingChats = [];
+                            allChats.forEach(doc => {
+                                const data = doc.data();
+                                // Match by email (case-insensitive) or userId
+                                const emailMatch = userEmail && data.userEmail && 
+                                    data.userEmail.toLowerCase() === userEmail.toLowerCase();
+                                const userIdMatch = data.userId === userId;
+                                if (emailMatch || userIdMatch) {
+                                    matchingChats.push(doc);
+                                }
+                            });
+                            if (matchingChats.length > 0) {
+                                snap = { docs: matchingChats, empty: false };
+                            }
+                        } catch (e) {
+                            console.warn('Fallback query failed:', e);
+                        }
+                    }
+                    
+                    if (snap && !snap.empty) {
+                        // Prefer the newest by lastMessageAt if present; otherwise by createdAt
+                        const docs = Array.from(snap.docs);
                         docs.sort((a, b) => {
-                            const aa = a.data()?.lastMessageAt?.toDate ? a.data().lastMessageAt.toDate().getTime() : 0;
-                            const bb = b.data()?.lastMessageAt?.toDate ? b.data().lastMessageAt.toDate().getTime() : 0;
-                            return bb - aa;
+                            const aData = a.data();
+                            const bData = b.data();
+                            
+                            // Sort by lastMessageAt first (most recent activity)
+                            const aLastMsg = aData?.lastMessageAt?.toDate ? aData.lastMessageAt.toDate().getTime() : 0;
+                            const bLastMsg = bData?.lastMessageAt?.toDate ? bData.lastMessageAt.toDate().getTime() : 0;
+                            if (aLastMsg !== bLastMsg) {
+                                return bLastMsg - aLastMsg; // Newest first
+                            }
+                            
+                            // Fallback to createdAt if lastMessageAt is equal
+                            const aCreated = aData?.createdAt?.toDate ? aData.createdAt.toDate().getTime() : 0;
+                            const bCreated = bData?.createdAt?.toDate ? bData.createdAt.toDate().getTime() : 0;
+                            return bCreated - aCreated; // Newest first
                         });
                         existingChatId = docs[0].id;
+                        console.log('Found existing chat for user:', { userId, userEmail, chatId: existingChatId });
                     }
                 } catch (e) {
-                    // ignore and create new
+                    console.error('Error checking for existing chat:', e);
+                    // Don't ignore - log the error but continue to create new chat if needed
                 }
 
                 let chatId = existingChatId;
                 if (!chatId) {
+                    console.log('Creating new chat for user:', { userId, userEmail });
                     const docRef = await addDoc(collection(db, 'live_chats'), {
                         userId,
                         userName,
@@ -1911,6 +1970,8 @@
                         startedBy: adminUser.email || 'admin'
                     });
                     chatId = docRef.id;
+                } else {
+                    console.log('Reusing existing chat:', chatId);
                 }
 
                 // Select/open the chat in the UI

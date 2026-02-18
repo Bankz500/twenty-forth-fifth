@@ -510,11 +510,15 @@
 
     // Initialize user
     async function initializeChatUser() {
-        if (auth.currentUser) {
-            window.chatModal.currentUserId = auth.currentUser.uid;
-            await loadOrCreateChat();
-            await setupUnreadListener();
+        // CRITICAL: Only initialize if user is authenticated
+        if (!auth.currentUser) {
+            console.warn('Cannot initialize chat: User not authenticated');
+            return;
         }
+        
+        window.chatModal.currentUserId = auth.currentUser.uid;
+        await loadOrCreateChat();
+        await setupUnreadListener();
     }
 
     // Setup unread messages listener
@@ -991,6 +995,14 @@
 
     // Create new chat
     async function createNewChat() {
+        // CRITICAL: Ensure user is authenticated before creating chat
+        if (!auth.currentUser) {
+            alert('Please log in to start a chat.');
+            sessionStorage.setItem('redirectAfterLogin', 'support.html?openChat=true');
+            window.location.href = 'login.html';
+            throw new Error('User not authenticated');
+        }
+        
         if (!window.chatModal.currentUserId) {
             window.chatModal.currentUserId = auth.currentUser.uid;
         }
@@ -1001,6 +1013,7 @@
             const chatRef = await addDoc(collection(db, 'live_chats'), {
                 userId: window.chatModal.currentUserId,
                 userName: userName,
+                userEmail: auth.currentUser.email || '',
                 isAnonymous: false,
                 status: 'open',
                 createdAt: serverTimestamp(),
@@ -1018,6 +1031,14 @@
 
     // Send message
     window.sendChatMessage = async function() {
+        // CRITICAL: Ensure user is authenticated before sending messages
+        if (!auth.currentUser) {
+            alert('Please log in to send messages.');
+            sessionStorage.setItem('redirectAfterLogin', 'support.html?openChat=true');
+            window.location.href = 'login.html';
+            return;
+        }
+        
         const input = document.getElementById('chatMessageInput');
         const sendBtn = document.getElementById('sendMessageBtn');
         const text = input.value.trim();
@@ -1089,6 +1110,14 @@
 
     // Start live chat
     window.startLiveChat = function() {
+        // CRITICAL: Ensure user is authenticated before starting live chat
+        if (!auth.currentUser) {
+            alert('Please log in to start a live chat.');
+            sessionStorage.setItem('redirectAfterLogin', 'support.html?openChat=true');
+            window.location.href = 'login.html';
+            return;
+        }
+        
         window.chatModal.chatMode = 'live';
         document.getElementById('faqTopicsSection').classList.add('hidden');
         document.getElementById('liveChatMessages').classList.remove('hidden');
@@ -1267,6 +1296,14 @@
 
     // Open/Close modal functions
     window.openChatModal = function() {
+        // CRITICAL: Ensure user is authenticated before opening chat
+        if (!auth.currentUser) {
+            // Store the intent to open chat, then redirect to login
+            sessionStorage.setItem('redirectAfterLogin', 'support.html?openChat=true');
+            window.location.href = 'login.html';
+            return;
+        }
+        
         document.getElementById('chatModal').classList.remove('hidden');
         document.body.style.overflow = 'hidden';
         initializeChatUser();
@@ -1310,6 +1347,17 @@
         // Initialize on page load
         if (auth.currentUser) {
             initializeChatUser();
+            
+            // Check if we should auto-open chat modal (from redirect after login)
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('openChat') === 'true') {
+                // Remove query param from URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+                // Auto-open chat modal
+                setTimeout(() => {
+                    window.openChatModal();
+                }, 500);
+            }
         }
 
         // Also listen for auth state changes
@@ -1317,6 +1365,17 @@
             if (user) {
                 window.chatModal.currentUserId = user.uid;
                 initializeChatUser();
+                
+                // Check if we should auto-open chat modal (from redirect after login)
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('openChat') === 'true') {
+                    // Remove query param from URL
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    // Auto-open chat modal
+                    setTimeout(() => {
+                        window.openChatModal();
+                    }, 500);
+                }
             } else {
                 // Clean up listeners when user signs out
                 if (window.chatModal.unreadListener) {

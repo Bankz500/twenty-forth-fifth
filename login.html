@@ -791,6 +791,16 @@ window.togglePasswordVisibility = togglePasswordVisibility;
 
             if (enteredOtp === storedOtp) {
                 sessionStorage.removeItem('loginOtp');
+                
+                // Check if there's a redirect after login (e.g., from chat button)
+                const redirectAfterLogin = sessionStorage.getItem('redirectAfterLogin');
+                if (redirectAfterLogin) {
+                    sessionStorage.removeItem('redirectAfterLogin');
+                    // Redirect to the intended page (e.g., support.html?openChat=true)
+                    window.location.href = redirectAfterLogin;
+                    return;
+                }
+                
                 // AML notice before dashboard redirect (do NOT await the modal promise)
                 showAmlNoticeModal({
                     onContinue: () => {
