@@ -1558,6 +1558,21 @@
     <!-- Install Button -->
     <button id="install-button" style="display: none;">Install App</button>
 
+    <!-- Suppress harmless Google API callback errors (from Firebase Analytics) -->
+    <script>
+        window.addEventListener('error', function(e) {
+            // Suppress Google API callback errors that are harmless
+            if (e.message && (
+                e.message.includes('u[v] is not a function') ||
+                e.message.includes('__iframefcb') ||
+                e.message.includes('api.js?onload')
+            )) {
+                e.preventDefault();
+                return true;
+            }
+        }, true);
+    </script>
+
     <!-- Firebase config (env-injected by Vite) -->
     <script type="module" src="./firebase-runtime-config.js"></script>
 

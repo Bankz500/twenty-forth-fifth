@@ -1,3 +1,31 @@
+// Suppress harmless Google API callback errors (from Firebase Analytics)
+(function() {
+  if (typeof window === 'undefined') return;
+  
+  window.addEventListener('error', function(e) {
+    // Suppress Google API callback errors that are harmless
+    if (e.message && (
+      e.message.includes('u[v] is not a function') ||
+      e.message.includes('__iframefcb') ||
+      e.message.includes('api.js?onload') ||
+      (e.filename && e.filename.includes('api.js') && e.filename.includes('onload'))
+    )) {
+      e.preventDefault();
+      e.stopPropagation();
+      return true;
+    }
+  }, true);
+  
+  // Also catch unhandled promise rejections from Google APIs
+  window.addEventListener('unhandledrejection', function(e) {
+    const reason = e.reason?.message || String(e.reason || '');
+    if (reason.includes('__iframefcb') || reason.includes('api.js')) {
+      e.preventDefault();
+      return true;
+    }
+  });
+})();
+
 async function includeFragments() {
   const nodes = Array.from(document.querySelectorAll("[data-include]"));
   await Promise.all(
