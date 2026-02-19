@@ -2,8 +2,8 @@ import { app, analytics } from './firebase-config.js';
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-export const auth = getAuth(app);
-export const db = getFirestore(app);
+export const auth = app ? getAuth(app) : null;
+export const db = app ? getFirestore(app) : null;
 export { analytics };
 
 // Debug: confirm which Firebase project this page is connected to.
@@ -46,8 +46,8 @@ export function clearCachedUserData() {
 
 // Back-compat for pages/scripts that expect globals
 if (typeof window !== 'undefined') {
-  window.auth = auth;
-  window.db = db;
+  if (auth) window.auth = auth;
+  if (db) window.db = db;
 }
 
 
