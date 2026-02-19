@@ -1384,11 +1384,22 @@ window.onload = function () {
     if (!firebaseCompatConfig || !firebaseCompatConfig.apiKey) {
       console.error('Missing Firebase config. Ensure Vercel env vars (VITE_FIREBASE_*) are set.');
     }
-    if (firebaseCompatConfig && firebaseCompatConfig.apiKey && !firebase.apps.length) {
-        firebase.initializeApp(firebaseCompatConfig);
+    let authCompat = null;
+    let dbCompat = null;
+    if (firebaseCompatConfig && firebaseCompatConfig.apiKey) {
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseCompatConfig);
+            }
+            // Only call auth/firestore if app was successfully initialized
+            if (firebase.apps.length > 0) {
+                authCompat = firebase.auth();
+                dbCompat = firebase.firestore();
+            }
+        } catch (e) {
+            console.error('Firebase initialization failed:', e);
+        }
     }
-    const authCompat = firebase?.auth?.() || null;
-    const dbCompat = firebase?.firestore?.() || null;
 </script>
 
 <!-- Joint Account Modal Script -->

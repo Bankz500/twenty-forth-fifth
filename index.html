@@ -1591,12 +1591,25 @@
     }
 
     // Initialize Firebase (compat) - using different variable names to avoid conflicts
-    if (typeof firebase !== 'undefined' && firebaseCompatConfig && firebaseCompatConfig.apiKey && !firebase.apps.length) {
-        firebase.initializeApp(firebaseCompatConfig);
+    let firebaseCompatAuth = null;
+    let firebaseCompatDb = null;
+    let firebaseCompatAnalytics = null;
+    
+    if (typeof firebase !== 'undefined' && firebaseCompatConfig && firebaseCompatConfig.apiKey) {
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseCompatConfig);
+            }
+            // Only call auth/firestore/analytics if app was successfully initialized
+            if (firebase.apps.length > 0) {
+                firebaseCompatAuth = firebase.auth();
+                firebaseCompatDb = firebase.firestore();
+                firebaseCompatAnalytics = firebase.analytics();
+            }
+        } catch (e) {
+            console.error('Firebase initialization failed:', e);
+        }
     }
-    const firebaseCompatAuth = firebase?.auth?.() || null;
-    const firebaseCompatDb = firebase?.firestore?.() || null;
-    const firebaseCompatAnalytics = firebase?.analytics?.() || null;
 
     // Function to sign up a user (kept for compatibility if used elsewhere)
     function signUp(email, password) {

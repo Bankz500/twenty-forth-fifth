@@ -301,10 +301,20 @@
         }
 
         // Initialize Firebase (compat)
-        if (typeof firebase !== 'undefined' && firebaseCompatConfig && firebaseCompatConfig.apiKey && !firebase.apps.length) {
-            firebase.initializeApp(firebaseCompatConfig);
+        let firebaseCompatAuth = null;
+        if (typeof firebase !== 'undefined' && firebaseCompatConfig && firebaseCompatConfig.apiKey) {
+            try {
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(firebaseCompatConfig);
+                }
+                // Only call auth if app was successfully initialized
+                if (firebase.apps.length > 0) {
+                    firebaseCompatAuth = firebase.auth();
+                }
+            } catch (e) {
+                console.error('Firebase initialization failed:', e);
+            }
         }
-        const firebaseCompatAuth = firebase?.auth?.() || null;
     
         // Function to sign up a user
         function signUp(email, password) {
