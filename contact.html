@@ -283,6 +283,7 @@
     <div data-include="components/site-footer.html"></div>
 
     <!-- Live Chat Widget -->
+    <script type="module" src="./firebase-runtime-config.js"></script>
     <script src="live-chat-widget.js"></script>
 
     <!-- Firebase Configuration -->
@@ -292,15 +293,12 @@
         // Header/footer are injected by components/site-shell.js
 
         // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-        const firebaseConfig = {
-            apiKey: "AIzaSyA3x-CZApUgkWHCjlwvFtOQhYQeY6lDwpI",
-            authDomain: "twenty-forth-fifth.firebaseapp.com",
-            projectId: "twenty-forth-fifth",
-            storageBucket: "twenty-forth-fifth.firebasestorage.app",
-            messagingSenderId: "228269383587",
-            appId: "1:228269383587:web:0d6f063f221f388cd2c416",
-            measurementId: "G-3X9DT5MBV4"
-        };
+        const firebaseConfig = (typeof window !== 'undefined' && window.__FIREBASE_CONFIG__)
+          ? window.__FIREBASE_CONFIG__
+          : null;
+        if (!firebaseConfig || !firebaseConfig.apiKey) {
+          console.error('Missing Firebase config. Ensure Vercel env vars (VITE_FIREBASE_*) are set.');
+        }
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);

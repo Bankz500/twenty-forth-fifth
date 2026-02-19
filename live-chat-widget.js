@@ -645,15 +645,12 @@ class LiveChatWidget {
         // Initialize Firebase if not already available
         if (!window.db) {
             try {
-                const firebaseConfig = {
-                    apiKey: "AIzaSyA3x-CZApUgkWHCjlwvFtOQhYQeY6lDwpI",
-                    authDomain: "twenty-forth-fifth.firebaseapp.com",
-                    projectId: "twenty-forth-fifth",
-                    storageBucket: "twenty-forth-fifth.firebasestorage.app",
-                    messagingSenderId: "228269383587",
-                    appId: "1:228269383587:web:0d6f063f221f388cd2c416",
-                    measurementId: "G-3X9DT5MBV4"
-                };
+                const firebaseConfig = (typeof window !== 'undefined' && window.__FIREBASE_CONFIG__)
+                  ? window.__FIREBASE_CONFIG__
+                  : null;
+                if (!firebaseConfig || !firebaseConfig.apiKey) {
+                  throw new Error('Missing Firebase config. Ensure firebase-runtime-config.js is loaded before live-chat-widget.js');
+                }
 
                 // Try npm Firebase first (if firebase-client.js is loaded)
                 try {

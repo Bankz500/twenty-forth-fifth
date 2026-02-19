@@ -1226,6 +1226,7 @@
 
     <!-- Live Chat Widget -->
     <!-- IMPORTANT: must be type="module" so Vite includes it in production build (dist/) -->
+    <script type="module" src="./firebase-runtime-config.js"></script>
     <script type="module" src="live-chat-widget.js"></script>
 
     <script src="./components/site-shell.js"></script>
@@ -1557,6 +1558,9 @@
     <!-- Install Button -->
     <button id="install-button" style="display: none;">Install App</button>
 
+    <!-- Firebase config (env-injected by Vite) -->
+    <script type="module" src="./firebase-runtime-config.js"></script>
+
     <!-- Firebase Configuration (compat) -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
@@ -1564,15 +1568,12 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
     <script>
     // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-    const firebaseCompatConfig = {
-      apiKey: "AIzaSyA3x-CZApUgkWHCjlwvFtOQhYQeY6lDwpI",
-      authDomain: "twenty-forth-fifth.firebaseapp.com",
-      projectId: "twenty-forth-fifth",
-      storageBucket: "twenty-forth-fifth.firebasestorage.app",
-      messagingSenderId: "228269383587",
-      appId: "1:228269383587:web:0d6f063f221f388cd2c416",
-      measurementId: "G-3X9DT5MBV4"
-    };
+    const firebaseCompatConfig = (typeof window !== 'undefined' && window.__FIREBASE_CONFIG__)
+      ? window.__FIREBASE_CONFIG__
+      : null;
+    if (!firebaseCompatConfig || !firebaseCompatConfig.apiKey) {
+      console.error('Missing Firebase config. Ensure Vercel env vars (VITE_FIREBASE_*) are set.');
+    }
 
     // Initialize Firebase (compat) - using different variable names to avoid conflicts
     if (typeof firebase !== 'undefined' && !firebase.apps.length) {

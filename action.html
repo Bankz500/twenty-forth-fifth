@@ -259,17 +259,15 @@ overlay.onclick = closeMenu;
             <p id="status-message" class="mt-4 text-center hidden"></p>
         </div>
     
+        <script type="module" src="./firebase-runtime-config.js"></script>
         <script>
             // Initialize Firebase
-            const firebaseConfig = {
-            apiKey: "AIzaSyA3x-CZApUgkWHCjlwvFtOQhYQeY6lDwpI",
-            authDomain: "twenty-forth-fifth.firebaseapp.com",
-            projectId: "twenty-forth-fifth",
-            storageBucket: "twenty-forth-fifth.firebasestorage.app",
-            messagingSenderId: "228269383587",
-            appId: "1:228269383587:web:0d6f063f221f388cd2c416",
-            measurementId: "G-3X9DT5MBV4"
-            };
+            const firebaseConfig = (typeof window !== 'undefined' && window.__FIREBASE_CONFIG__)
+              ? window.__FIREBASE_CONFIG__
+              : null;
+            if (!firebaseConfig || !firebaseConfig.apiKey) {
+              console.error('Missing Firebase config. Ensure Vercel env vars (VITE_FIREBASE_*) are set.');
+            }
 
     
             firebase.initializeApp(firebaseConfig);

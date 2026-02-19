@@ -84,29 +84,24 @@ vercel link --project twenty-forth-fifth-fccu
 ## Important Notes
 
 ### Firebase Configuration
-- Your Firebase credentials are already configured in `firebase-config.js`
+- Firebase config is loaded from **Vercel/Vite environment variables** (so API keys are not committed to Git)
 - Firebase will work from Vercel since it's client-side
-- No additional environment variables needed for Firebase (credentials are in the code)
 
 ### Environment Variables (Optional)
-If you want to use environment variables for Firebase (more secure), you can:
+You should set these in Vercel Dashboard → Project Settings → Environment Variables (set them for **Production / Preview / Development** as needed):
 
-1. Add them in Vercel Dashboard → Project Settings → Environment Variables:
+1. Add these variables:
    ```
-   VITE_FIREBASE_API_KEY=your-api-key
-   VITE_FIREBASE_AUTH_DOMAIN=your-auth-domain
-   VITE_FIREBASE_PROJECT_ID=your-project-id
+   VITE_FIREBASE_API_KEY=...
+   VITE_FIREBASE_AUTH_DOMAIN=...
+   VITE_FIREBASE_PROJECT_ID=...
+   VITE_FIREBASE_STORAGE_BUCKET=...
+   VITE_FIREBASE_MESSAGING_SENDER_ID=...
+   VITE_FIREBASE_APP_ID=...
+   VITE_FIREBASE_MEASUREMENT_ID=...   # optional
    ```
 
-2. Update `firebase-config.js` to use them:
-   ```javascript
-   const firebaseConfig = {
-     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-     authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-     projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-     // ... rest of config
-   };
-   ```
+2. Redeploy (Vercel will rebuild and inject the values into the client bundle).
 
 ### Custom Domain
 After deployment, you can add a custom domain in Vercel Dashboard → Project Settings → Domains

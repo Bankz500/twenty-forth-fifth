@@ -50,6 +50,9 @@ build/Release
 # Dependency directories
 node_modules/
 
+# Build output (Vercel builds this from source)
+dist/
+
 # Optional npm cache directory
 .npm
 
