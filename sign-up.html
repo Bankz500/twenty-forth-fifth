@@ -941,17 +941,33 @@ window.onload = function () {
 
     // Initialize Firebase
     console.log("Initializing Firebase with config:", firebaseConfig);
+    console.log("API Key being used:", firebaseConfig?.apiKey ? `${firebaseConfig.apiKey.substring(0, 10)}...` : 'MISSING');
+    console.log("Expected API Key:", "AIzaSyA3x...");
+    console.log("Project ID:", firebaseConfig?.projectId);
+    console.log("Expected Project ID:", "twenty-forth-fifth");
+    
     let app, auth, db;
     try {
         if (!firebaseConfig || !firebaseConfig.apiKey) {
             throw new Error('Missing Firebase config. Set VITE_FIREBASE_* env vars in Vercel and redeploy.');
         }
+        
+        // Verify the API key matches expected value
+        const expectedApiKey = "AIzaSyA3x-CZApUgkWHCjlwvFtOQhYQeY6lDwpI";
+        if (firebaseConfig.apiKey !== expectedApiKey) {
+            console.warn("⚠️ API Key mismatch! Expected:", expectedApiKey.substring(0, 15) + "...", "Got:", firebaseConfig.apiKey?.substring(0, 15) + "...");
+            console.warn("⚠️ Make sure VITE_FIREBASE_API_KEY is set in Vercel Environment Variables");
+        } else {
+            console.log("✅ API Key matches expected value");
+        }
+        
         app = initializeApp(firebaseConfig);
         auth = getAuth(app);
         db = getFirestore(app);
         console.log("Firebase initialized successfully:", { app, auth, db });
     } catch (initError) {
         console.error("Firebase initialization error:", initError);
+        console.error("Config that failed:", firebaseConfig);
         alert("Failed to initialize Firebase. Please refresh the page and try again.");
     }
 
