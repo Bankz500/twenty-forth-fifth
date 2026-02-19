@@ -457,10 +457,3 @@ class BankingDetailsGenerator {
 
 // Export the class for use in other files
 export default BankingDetailsGenerator; 
-            return null;
-        }
-    }
-}
-
-// Export the class for use in other files
-export default BankingDetailsGenerator; 
