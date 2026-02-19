@@ -9,18 +9,19 @@
   <link rel="apple-touch-icon" sizes="180x180" href="favicon.png" />
   <link rel="icon" href="favicon.png" type="image/png" />
 
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="tailwind-mono.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <style>
     :root {
-      --ttf-brand: #16a34a;
-      --ttf-brand-hover: #15803d;
+      --ttf-brand: #1e40af;
+      --ttf-brand-hover: #1e3a8a;
     }
     html, body { overscroll-behavior: none; }
     .brand-bg { background-color: var(--ttf-brand); }
     .brand-bg-hover:hover { background-color: var(--ttf-brand-hover); }
-    .brand-ring:focus { box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.18); }
+    .brand-ring:focus { box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.18); }
   </style>
 
   <script type="module">
@@ -622,7 +623,7 @@
                   <div class="text-sm font-semibold text-gray-900">Request pending approval</div>
                   <div class="text-sm text-gray-600 mt-1">We’re reviewing your debit card request. You’ll see your card here once approved.</div>
                 </div>
-                <span class="inline-flex items-center gap-2 text-xs px-3 py-1 rounded-full border" style="border-color: rgba(22,163,74,.25); background: rgba(22,163,74,.06); color: #16a34a;">
+                <span class="inline-flex items-center gap-2 text-xs px-3 py-1 rounded-full border" style="border-color: rgba(30,64,175,.25); background: rgba(30,64,175,.06); color: #1e40af;">
                   Pending
                 </span>
               </div>
@@ -632,7 +633,7 @@
                   <span>Pending</span>
                 </div>
                 <div class="h-2 rounded-full bg-white border border-gray-200 overflow-hidden">
-                  <div class="h-full" style="width: 60%; background: linear-gradient(90deg, #16a34a, #15803d);"></div>
+                  <div class="h-full" style="width: 60%; background: linear-gradient(90deg, #1e40af, #1e3a8a);"></div>
                 </div>
               </div>
             </div>
@@ -646,7 +647,7 @@
                 <span id="cardStatusBadge" class="inline-flex items-center gap-2 text-xs px-3 py-1 rounded-full bg-green-50 text-green-700 border border-green-200">Active</span>
               </div>
 
-              <div class="mt-4 rounded-2xl p-5 text-white shadow-lg" style="background: radial-gradient(1200px circle at 10% 10%, rgba(255,255,255,.22), transparent 40%), linear-gradient(135deg, #16a34a, #15803d 60%, #166534);">
+              <div class="mt-4 rounded-2xl p-5 text-white shadow-lg" style="background: radial-gradient(1200px circle at 10% 10%, rgba(255,255,255,.22), transparent 40%), linear-gradient(135deg, #1e40af, #1e3a8a 60%, #172554);">
                 <div class="flex items-start justify-between">
                   <div class="text-sm font-semibold tracking-wide">Twenty Forth &amp; Fifth</div>
                   <div class="flex items-center gap-2">
@@ -698,18 +699,18 @@
           <h2 class="text-base font-semibold">Card Information</h2>
           <ul class="mt-3 space-y-3 text-sm text-gray-700">
             <li id="depositRequirementItem" class="hidden flex gap-2 items-start">
-              <span style="color:#16a34a" class="font-semibold flex-shrink-0">1.</span>
+              <span style="color:#1e40af" class="font-semibold flex-shrink-0">1.</span>
               <div class="flex-1">
                 <span>Account must have a <span class="font-medium">$2 fixed deposit</span> before use.</span>
                 <a href="deposit.html" class="block mt-1 text-green-600 hover:underline font-medium">Deposit →</a>
               </div>
             </li>
             <li class="flex gap-2 items-start">
-              <span style="color:#16a34a" class="font-semibold flex-shrink-0">2.</span>
+              <span style="color:#1e40af" class="font-semibold flex-shrink-0">2.</span>
               <span>Freeze card when not in use (add the freeze feature for the card).</span>
             </li>
             <li class="flex gap-2 items-start">
-              <span style="color:#16a34a" class="font-semibold flex-shrink-0">3.</span>
+              <span style="color:#1e40af" class="font-semibold flex-shrink-0">3.</span>
               <span>Want a card shipped to you? <a href="support.html" class="text-green-600 hover:underline">Contact support</a>.</span>
             </li>
           </ul>
@@ -719,10 +720,10 @@
   </main>
 
   <!-- Success modal (after request submit) -->
-    <div id="successModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(22, 163, 74, 0.55);">
+    <div id="successModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(30, 64, 175, 0.55);">
     <div class="bg-white rounded-2xl border border-gray-200 p-6 w-full max-w-sm mx-auto text-center shadow-2xl">
-      <div class="w-14 h-14 mx-auto rounded-full flex items-center justify-center" style="background: rgba(22,163,74,.08); border: 2px solid #16a34a;">
-        <i class="fas fa-check text-xl" style="color:#16a34a;"></i>
+      <div class="w-14 h-14 mx-auto rounded-full flex items-center justify-center" style="background: rgba(30,64,175,.08); border: 2px solid #1e40af;">
+        <i class="fas fa-check text-xl" style="color:#1e40af;"></i>
       </div>
       <h3 class="text-lg font-semibold text-gray-900 mt-4">Request submitted</h3>
       <p class="text-sm text-gray-600 mt-1">Your debit card request is pending approval. You’ll see it here once approved.</p>
@@ -731,7 +732,7 @@
   </div>
 
   <!-- PIN modal (gate viewing card details) -->
-  <div id="pinModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(22, 163, 74, 0.55);">
+  <div id="pinModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(30, 64, 175, 0.55);">
     <div class="bg-white rounded-2xl border border-gray-200 p-6 w-full max-w-sm mx-auto shadow-2xl">
       <div class="flex items-start justify-between gap-3">
         <div>
@@ -749,7 +750,7 @@
   </div>
 
   <!-- Card details modal -->
-  <div id="detailsModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(22, 163, 74, 0.55);">
+  <div id="detailsModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(30, 64, 175, 0.55);">
     <div class="bg-white rounded-2xl border border-gray-200 p-6 w-full max-w-sm mx-auto shadow-2xl">
       <div class="flex items-start justify-between gap-3">
         <div>

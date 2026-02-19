@@ -31,7 +31,7 @@ function lockScroll(lock) {
 
 function modalShell({ title, subtitle, bodyHtml, primary, secondary }) {
   const primaryBtn = primary
-    ? `<button id="bealModalPrimary" class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-3 rounded-xl text-white font-semibold transition focus:outline-none focus:ring-2 focus:ring-offset-2" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'" onfocus="this.style.outlineColor='#1800ac'">${primary.label}</button>`
+    ? `<button id="bealModalPrimary" class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-3 rounded-xl text-white font-semibold transition focus:outline-none focus:ring-2 focus:ring-offset-2" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1800ac'" onfocus="this.style.outlineColor='#1800ac'">${primary.label}</button>`
     : '';
 
   const secondaryBtn = secondary

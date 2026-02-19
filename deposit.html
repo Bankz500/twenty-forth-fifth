@@ -7,7 +7,8 @@
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" sizes="180x180" href="favicon.png">
     <link rel="icon" href="favicon.png" type="image/png">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tailwind-mono.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -42,7 +43,7 @@
         }
         .loader {
             border: 8px solid rgba(0, 0, 0, 0.1);
-            border-top: 8px solid #16a34a;
+            border-top: 8px solid #1e40af;
             border-radius: 50%;
             width: 50px;
             height: 50px;
@@ -59,7 +60,7 @@
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            background: linear-gradient(45deg, #16a34a, #15803d);
+            background: linear-gradient(45deg, #1e40af, #1e3a8a);
             animation: smart-spin 1.5s linear infinite;
         }
         @keyframes smart-spin {
@@ -132,13 +133,13 @@
             vertical-align: super;
         }
         :root {
-            --ttf-brand: #16a34a;
-            --ttf-brand-hover: #15803d;
+            --ttf-brand: #1e40af;
+            --ttf-brand-hover: #1e3a8a;
         }
         .bg-gray-900 { background-color: var(--ttf-brand) !important; }
         .bg-gray-800 { background-color: var(--ttf-brand-hover) !important; }
         .hover\:bg-gray-800:hover { background-color: var(--ttf-brand-hover) !important; }
-        .bg-black { background-color: rgba(22, 163, 74, 0.55) !important; }
+        .bg-black { background-color: rgba(30, 64, 175, 0.55) !important; }
     </style>
 </head>
 <body class="font-sans antialiased bg-white">

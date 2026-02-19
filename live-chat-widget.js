@@ -233,7 +233,7 @@ class LiveChatWidget {
         widget.id = 'liveChatWidget';
         widget.innerHTML = `
             <!-- Chat Button (always visible) -->
-            <button id="chatToggleBtn" class="fixed bottom-20 right-6 w-16 h-16 bg-gradient-to-br from-green-600 to-green-800 hover:from-green-700 hover:to-green-900 rounded-full shadow-xl flex items-center justify-center transition-all z-50 group hover:scale-110 hover:shadow-2xl" style="box-shadow: 0 10px 25px rgba(22, 163, 74, 0.4);">
+            <button id="chatToggleBtn" class="fixed bottom-20 right-6 w-16 h-16 bg-gradient-to-br from-green-600 to-green-800 hover:from-green-700 hover:to-green-900 rounded-full shadow-xl flex items-center justify-center transition-all z-50 group hover:scale-110 hover:shadow-2xl" style="box-shadow: 0 10px 25px rgba(30, 64, 175, 0.4);">
                 <div class="relative">
                     <img src="chat bot.png" alt="Chat Support" class="w-10 h-10 object-contain drop-shadow-sm" onerror="this.onerror=null; this.src='chat icon.png'; this.onerror=function() { this.style.display='none'; this.nextElementSibling.style.display='block'; }">
                     <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-sm hidden">
@@ -244,9 +244,9 @@ class LiveChatWidget {
                             </linearGradient>
                         </defs>
                         <path d="M8 6C6.89543 6 6 6.89543 6 8V20L10 16H24C25.1046 16 26 15.1046 26 14V8C26 6.89543 25.1046 6 24 6H8Z" fill="url(#chatGradient)" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <circle cx="11" cy="11" r="1.2" fill="#16a34a"/>
-                        <circle cx="16" cy="11" r="1.2" fill="#16a34a"/>
-                        <circle cx="21" cy="11" r="1.2" fill="#16a34a"/>
+                        <circle cx="11" cy="11" r="1.2" fill="#1e40af"/>
+                        <circle cx="16" cy="11" r="1.2" fill="#1e40af"/>
+                        <circle cx="21" cy="11" r="1.2" fill="#1e40af"/>
                         <path d="M8 20L6 22V8C6 6.89543 6.89543 6 8 6H24C25.1046 6 26 6.89543 26 8V14C26 15.1046 25.1046 16 24 16H10L8 20Z" fill="white" opacity="0.2"/>
                     </svg>
                 </div>

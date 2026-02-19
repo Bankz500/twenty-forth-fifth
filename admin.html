@@ -7,7 +7,8 @@
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" sizes="180x180" href="favicon.png">
     <link rel="icon" href="favicon.png" type="image/png">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tailwind-mono.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         .success-message {
@@ -95,7 +96,7 @@
                         <i class="fas fa-comments text-slate-300 group-hover:text-white transition-colors"></i>
                     </div>
                     <span class="font-medium text-sm">Live Chat</span>
-                    <span id="adminChatBadge" class="ml-auto text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5 hidden shadow-lg" style="background-color: #15803d;">0</span>
+                    <span id="adminChatBadge" class="ml-auto text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5 hidden shadow-lg" style="background-color: #1e3a8a;">0</span>
                 </a>
                 <a href="#kyc" onclick="showSection('kyc'); return false;" 
                    class="nav-item relative flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 cursor-pointer group">
@@ -103,7 +104,7 @@
                         <i class="fas fa-id-card text-slate-300 group-hover:text-white transition-colors"></i>
                     </div>
                     <span class="font-medium text-sm">KYC Verification</span>
-                    <span id="adminKYCBadge" class="ml-auto text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5 hidden shadow-lg" style="background-color: #15803d;">0</span>
+                    <span id="adminKYCBadge" class="ml-auto text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5 hidden shadow-lg" style="background-color: #1e3a8a;">0</span>
                 </a>
                 <a href="#loans" onclick="showSection('loans'); return false;" 
                    class="nav-item relative flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 cursor-pointer group">
@@ -111,7 +112,7 @@
                         <i class="fas fa-money-bill-wave text-slate-300 group-hover:text-white transition-colors"></i>
                     </div>
                     <span class="font-medium text-sm">Loan Requests</span>
-                    <span id="adminLoanBadge" class="ml-auto text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5 hidden shadow-lg" style="background-color: #15803d;">0</span>
+                    <span id="adminLoanBadge" class="ml-auto text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5 hidden shadow-lg" style="background-color: #1e3a8a;">0</span>
                 </a>
                 <a href="#transfers" onclick="showSection('transfers'); return false;" 
                    class="nav-item relative flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 cursor-pointer group">
@@ -119,7 +120,7 @@
                         <i class="fas fa-exchange-alt text-slate-300 group-hover:text-white transition-colors"></i>
                     </div>
                     <span class="font-medium text-sm">Transfers</span>
-                    <span id="adminTransferBadge" class="ml-auto text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5 hidden shadow-lg" style="background-color: #15803d;">0</span>
+                    <span id="adminTransferBadge" class="ml-auto text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5 hidden shadow-lg" style="background-color: #1e3a8a;">0</span>
                 </a>
                 <a href="#debit-cards" onclick="showSection('debitCards'); return false;" 
                    class="nav-item relative flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 cursor-pointer group">
@@ -127,7 +128,7 @@
                         <i class="fas fa-credit-card text-slate-300 group-hover:text-white transition-colors"></i>
                     </div>
                     <span class="font-medium text-sm">Debit Cards</span>
-                    <span id="adminDebitCardBadge" class="ml-auto text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5 hidden shadow-lg" style="background-color: #15803d;">0</span>
+                    <span id="adminDebitCardBadge" class="ml-auto text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5 hidden shadow-lg" style="background-color: #1e3a8a;">0</span>
                 </a>
                 <a href="#users" onclick="showSection('users'); return false;"
                    class="nav-item relative flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 cursor-pointer group">
@@ -280,7 +281,7 @@
 
                 <div class="flex gap-2">
                   <button type="submit" id="submitBtn"
-                          class="flex-1 text-white font-semibold py-2 px-4 rounded-lg transition-colors" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
+                          class="flex-1 text-white font-semibold py-2 px-4 rounded-lg transition-colors" style="background-color: #1e3a8a;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1e3a8a'">
                         <i class="fas fa-save mr-2"></i><span id="submitBtnText">Add Testimonial</span>
                     </button>
                     <button type="button" id="cancelEditBtn" onclick="cancelEdit()" class="hidden bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors">
@@ -299,11 +300,11 @@
             <p class="text-gray-600 text-sm mb-4">Add realistic sample testimonials to get started quickly.</p>
             <div class="flex flex-col sm:flex-row gap-2">
             <button id="addSamplesBtn"
-                class="text-white font-semibold py-2 px-4 rounded-lg transition-colors" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
+                class="text-white font-semibold py-2 px-4 rounded-lg transition-colors" style="background-color: #1e3a8a;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1e3a8a'">
                 <i class="fas fa-sparkles mr-2"></i>Add Sample Testimonials
             </button>
                 <button id="backfillLikesBtn"
-                    class="text-white font-semibold py-2 px-4 rounded-lg transition-colors" style="background-color: #140099;" onmouseover="this.style.backgroundColor='#0d0066'" onmouseout="this.style.backgroundColor='#140099'">
+                    class="text-white font-semibold py-2 px-4 rounded-lg transition-colors" style="background-color: #172554;" onmouseover="this.style.backgroundColor='#0b1f3b'" onmouseout="this.style.backgroundColor='#172554'">
                     <i class="fas fa-thumbs-up mr-2"></i>Assign Random Like Counts
             </button>
             <button id="deleteAllTestimonialsBtn"
@@ -352,7 +353,7 @@
                     </div>
                     <button type="button"
                             id="startChatBtn"
-                            class="px-4 py-2.5 rounded-lg text-white text-sm font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'"
+                            class="px-4 py-2.5 rounded-lg text-white text-sm font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed" style="background-color: #1e3a8a;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1e3a8a'"
                             onclick="window.startChatForSelectedUser && window.startChatForSelectedUser()"
                             disabled>
                         Start chat
@@ -501,7 +502,7 @@
                         </label>
                         <button type="button"
                                 id="approveSelectedAccountsBtn"
-                                class="px-3 py-1.5 rounded-lg text-white text-xs font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'"
+                                class="px-3 py-1.5 rounded-lg text-white text-xs font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed" style="background-color: #1e3a8a;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1e3a8a'"
                                 disabled>
                             Approve selected
                         </button>
@@ -583,7 +584,7 @@
                             type="button"
                             id="adminSaveCurrencyBtn"
                             onclick="window.adminSaveCurrency && window.adminSaveCurrency()"
-                            class="w-full text-white text-sm font-semibold py-2.5 rounded-lg transition-colors" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
+                            class="w-full text-white text-sm font-semibold py-2.5 rounded-lg transition-colors" style="background-color: #1e3a8a;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1e3a8a'">
                             <i class="fas fa-save mr-2"></i>
                             Save Currency
                         </button>
@@ -617,7 +618,7 @@
                             type="button"
                             id="adminGenerateHistoryBtn"
                             onclick="window.adminGenerateHistory && window.adminGenerateHistory()"
-                            class="w-full text-white text-sm font-semibold py-2.5 rounded-lg transition-colors" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
+                            class="w-full text-white text-sm font-semibold py-2.5 rounded-lg transition-colors" style="background-color: #1e3a8a;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1e3a8a'">
                             <i class="fas fa-sync-alt mr-2"></i>
                             Generate 15 Histories
                         </button>
@@ -640,7 +641,7 @@
                         <button type="button"
                                 id="adminAddCheckingBtn"
                                 onclick="window.adminAddChecking && window.adminAddChecking()"
-                                class="w-full text-white text-xs font-semibold py-2 rounded-lg transition-colors" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
+                                class="w-full text-white text-xs font-semibold py-2 rounded-lg transition-colors" style="background-color: #1e3a8a;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1e3a8a'">
                             Add Amount
                         </button>
                     </div>
@@ -674,7 +675,7 @@
                         <button type="button"
                                 id="adminAddFixedBtn"
                                 onclick="window.adminAddFixed && window.adminAddFixed()"
-                                class="w-full text-white text-xs font-semibold py-2 rounded-lg transition-colors" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
+                                class="w-full text-white text-xs font-semibold py-2 rounded-lg transition-colors" style="background-color: #1e3a8a;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1e3a8a'">
                             Add Amount
                         </button>
                     </div>
@@ -708,7 +709,7 @@
                         <button type="button"
                                 id="adminAddSavingsBtn"
                                 onclick="window.adminAddSavings && window.adminAddSavings()"
-                                class="w-full text-white text-xs font-semibold py-2 rounded-lg transition-colors" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
+                                class="w-full text-white text-xs font-semibold py-2 rounded-lg transition-colors" style="background-color: #1e3a8a;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1e3a8a'">
                             Add Amount
                         </button>
                     </div>
@@ -749,7 +750,7 @@
                         <button type="button"
                                 id="adminSaveHistoryBtn"
                                 onclick="window.adminSaveHistory && window.adminSaveHistory()"
-                                class="flex-1 text-white text-sm font-semibold py-2.5 rounded-lg transition-colors" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
+                                class="flex-1 text-white text-sm font-semibold py-2.5 rounded-lg transition-colors" style="background-color: #1e3a8a;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1e3a8a'">
                             Save History 1–15
                         </button>
                         <button type="button"
@@ -780,7 +781,7 @@
                     <button type="button"
                             id="adminSaveStatusBtn"
                             onclick="window.adminSaveStatus && window.adminSaveStatus()"
-                            class="w-full text-white text-sm font-semibold py-2.5 rounded-lg transition-colors" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
+                            class="w-full text-white text-sm font-semibold py-2.5 rounded-lg transition-colors" style="background-color: #1e3a8a;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1e3a8a'">
                         Update Status
                     </button>
                     <p class="text-xs text-gray-500">
@@ -2109,7 +2110,7 @@
                             <p class="text-sm">${msg}</p>
                             <p class="text-xs text-gray-500 mt-4">Admin Email: ${currentUser?.email || 'Not available'}</p>
                             <p class="text-xs text-gray-500">Admin UID: ${currentUser?.uid || 'Not available'}</p>
-                            <button onclick="loadChats()" class="mt-4 px-4 py-2 text-white rounded-lg" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
+                            <button onclick="loadChats()" class="mt-4 px-4 py-2 text-white rounded-lg" style="background-color: #1e3a8a;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1e3a8a'">
                                 Retry
                             </button>
                         </div>
@@ -2158,7 +2159,7 @@
                                 <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border border-gray-200 bg-gray-100 text-gray-800">
                                     ${chat.status || 'open'}
                                 </span>
-                                <span id="unreadBadge-${chat.id}" class="text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center hidden" style="background-color: #15803d;">0</span>
+                                <span id="unreadBadge-${chat.id}" class="text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center hidden" style="background-color: #1e3a8a;">0</span>
                                 <button onclick="event.stopPropagation(); deleteChat('${chat.id}')" class="text-gray-500 hover:text-gray-900 p-1" title="Delete Chat">
                                     <i class="fas fa-trash"></i>
                                 </button>
@@ -2249,7 +2250,7 @@
                             class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 bg-white"
                             style="font-size: 16px !important;"
                             onkeypress="if(event.key === 'Enter') sendAdminReply('${chatId}')">
-                        <button onclick="sendAdminReply('${chatId}')" class="text-white px-6 py-2 rounded-lg" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
+                        <button onclick="sendAdminReply('${chatId}')" class="text-white px-6 py-2 rounded-lg" style="background-color: #1e3a8a;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1e3a8a'">
                             <i class="fas fa-paper-plane mr-2"></i>Send
                         </button>
                     </div>
@@ -2360,7 +2361,7 @@
             msgDiv.className = `flex ${isAdmin ? 'justify-end' : 'justify-start'} mb-3 group relative`;
             msgDiv.setAttribute('data-msg-id', msgId);
             msgDiv.innerHTML = `
-                <div class="max-w-[80%] ${isAdmin ? 'text-white' : 'bg-white text-gray-900 border border-gray-200'} rounded-lg p-3 shadow-sm relative" ${isAdmin ? 'style="background-color: #15803d;"' : ''}>
+                <div class="max-w-[80%] ${isAdmin ? 'text-white' : 'bg-white text-gray-900 border border-gray-200'} rounded-lg p-3 shadow-sm relative" ${isAdmin ? 'style="background-color: #1e3a8a;"' : ''}>
                     ${imageHtml}
                     ${msg.text ? `<div class="text-sm ${isAdmin ? 'text-white' : 'text-gray-800'}">${escapeHtml(msg.text)}</div>` : ''}
                     <div class="flex items-center justify-between mt-1.5">
@@ -2876,7 +2877,7 @@
                                 </div>
                               </div>
                               <div class="flex gap-2 shrink-0">
-                                <button data-approve="${u.id}" class="approveAccountBtn px-4 py-2 rounded-lg text-white text-sm font-semibold transition" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
+                                <button data-approve="${u.id}" class="approveAccountBtn px-4 py-2 rounded-lg text-white text-sm font-semibold transition" style="background-color: #1e3a8a;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1e3a8a'">
                                   <i class="fas fa-check mr-2"></i>Approve
                                 </button>
                               </div>
@@ -3903,7 +3904,7 @@
                         '<p class="text-sm">' + errorMessage + '</p>' +
                         '<p class="text-xs text-gray-500 mt-4">Admin Email: ' + adminEmail + '</p>' +
                         '<p class="text-xs text-gray-500">Admin UID: ' + adminUid + '</p>' +
-                        '<button onclick="loadKYCRequests()" class="mt-4 px-4 py-2 text-white rounded-lg" style="background-color: #15803d;" onmouseover="this.style.backgroundColor=\'#140099\'" onmouseout="this.style.backgroundColor=\'#15803d\'">' +
+                        '<button onclick="loadKYCRequests()" class="mt-4 px-4 py-2 text-white rounded-lg" style="background-color: #1e3a8a;" onmouseover="this.style.backgroundColor=\'#172554\'" onmouseout="this.style.backgroundColor=\'#1e3a8a\'">' +
                         'Retry' +
                         '</button>' +
                         '</div>';
@@ -3957,7 +3958,7 @@
                         ${kyc.status === 'pending' || kyc.status === 'reviewed' ? `
                             <div class="flex gap-2">
                                 <button onclick="approveKYC('${kyc.id}', '${kyc.userId}')" 
-                                    class="flex-1 text-white font-semibold py-2 px-4 rounded-lg transition-colors" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
+                                    class="flex-1 text-white font-semibold py-2 px-4 rounded-lg transition-colors" style="background-color: #1e3a8a;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1e3a8a'">
                                     <i class="fas fa-check mr-2"></i>Approve
                                 </button>
                                 <button onclick="rejectKYC('${kyc.id}', '${kyc.userId}')" 
@@ -4344,7 +4345,7 @@
                                   </div>
                                   <div class="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
                                     <button type="button"
-                                        class="px-3 py-2 rounded-lg text-white text-xs font-semibold transition" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'"
+                                        class="px-3 py-2 rounded-lg text-white text-xs font-semibold transition" style="background-color: #1e3a8a;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1e3a8a'"
                                         onclick="approveAndIssueDebitCard('${app.id}', '${uid}')">
                                       Approve &amp; Issue
                                     </button>
@@ -4496,7 +4497,7 @@
                             <p class="font-semibold mb-2">Failed to load loan requests</p>
                             <p class="text-sm">${err.message}</p>
                             <p class="text-xs text-gray-500 mt-4">Admin Email: ${currentUser?.email || 'Not available'}</p>
-                            <button onclick="loadLoanRequests()" class="mt-4 px-4 py-2 text-white rounded-lg" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
+                            <button onclick="loadLoanRequests()" class="mt-4 px-4 py-2 text-white rounded-lg" style="background-color: #1e3a8a;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1e3a8a'">
                                 Retry
                             </button>
                         </div>
@@ -4562,7 +4563,7 @@
                         ${loan.status === 'pending' ? `
                             <div class="flex gap-2 mt-4">
                                 <button onclick="window.approveLoan('${loan.id}', '${loan.userId}')" 
-                                    class="flex-1 text-white font-semibold py-2 px-4 rounded-lg transition-colors" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
+                                    class="flex-1 text-white font-semibold py-2 px-4 rounded-lg transition-colors" style="background-color: #1e3a8a;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1e3a8a'">
                                     <i class="fas fa-check mr-2"></i>Approve
                                 </button>
                                 <button onclick="window.rejectLoan('${loan.id}', '${loan.userId}')" 
@@ -4573,7 +4574,7 @@
                         ` : loan.status === 'approved' ? `
                             <div class="mt-4 pt-4 border-t border-gray-200">
                                 <button onclick="window.viewLoanPayments('${loan.userId}')" 
-                                    class="w-full text-white font-semibold py-2 px-4 rounded-lg transition-colors" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
+                                    class="w-full text-white font-semibold py-2 px-4 rounded-lg transition-colors" style="background-color: #1e3a8a;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1e3a8a'">
                                     <i class="fas fa-calendar-check mr-2"></i>Manage Payments
                                 </button>
                             </div>
@@ -4756,7 +4757,7 @@
                     paymentScheduleHTML += `
                         <div class="flex items-center justify-between p-4 rounded-lg border bg-white border-gray-200">
                             <div class="flex items-center gap-3 flex-1">
-                                <div class="w-10 h-10 rounded-full flex items-center justify-center" style="${isPaid ? 'background-color: #15803d;' : isDefaulted ? 'background-color: #140099;' : isOverdue ? 'background-color: #0d0066;' : 'background-color: #d1d5db;'}">
+                                <div class="w-10 h-10 rounded-full flex items-center justify-center" style="${isPaid ? 'background-color: #1e3a8a;' : isDefaulted ? 'background-color: #172554;' : isOverdue ? 'background-color: #0b1f3b;' : 'background-color: #d1d5db;'}">
                                     <i class="fas ${isPaid ? 'fa-check' : isDefaulted ? 'fa-times' : isOverdue ? 'fa-exclamation' : 'fa-clock'} text-white"></i>
                                 </div>
                                 <div class="flex-1">
@@ -4773,7 +4774,7 @@
                                 </div>
                                 ${!isPaid && !isDefaulted ? `
                                     <button onclick="window.markPaymentPaid('${userId}', ${i}, ${paymentAmount})" 
-                                        class="text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm" style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
+                                        class="text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm" style="background-color: #1e3a8a;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1e3a8a'">
                                         <i class="fas fa-check mr-1"></i>Paid
                                     </button>
                                     <button onclick="window.markPaymentDefaulted('${userId}', ${i}, ${paymentAmount})" 
@@ -5075,7 +5076,7 @@
                             </button>
                             <button onclick="approveTransfer('${transfer.userId}', '${transfer.pendingField}', ${index})" 
                                     class="px-3 py-1.5 text-white text-xs font-semibold rounded-lg transition" 
-                                    style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
+                                    style="background-color: #1e3a8a;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1e3a8a'">
                                 <i class="fas fa-check mr-1"></i>Approve
                             </button>
                         </div>
@@ -5255,7 +5256,7 @@
                                 </button>
                                 <button onclick="saveTransferEdit('${userId}', '${fieldName}', '${type}')" 
                                         class="px-4 py-2 text-white rounded-lg transition" 
-                                        style="background-color: #15803d;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#15803d'">
+                                        style="background-color: #1e3a8a;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1e3a8a'">
                                     Save Changes
                                 </button>
                             </div>

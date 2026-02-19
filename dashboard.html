@@ -7,8 +7,8 @@
     <title>Twenty Forth & Fifth Dashboard</title>
     <style>
         :root {
-            --chase-blue: #16a34a;
-            --chase-dark-blue: #15803d;
+            --chase-blue: #1e40af;
+            --chase-dark-blue: #1e3a8a;
             --chase-light-blue: #f0fdf4;
             --chase-hover: #f5f7fa;
             --chase-border: #e4e9ef;
@@ -116,7 +116,7 @@
         
         .account-card {
             flex: 0 0 320px;
-            background: linear-gradient(135deg, #15803d 0%, #166534 100%); /* footer green gradient */
+            background: linear-gradient(135deg, #1e3a8a 0%, #172554 100%); /* footer green gradient */
             border-radius: 16px;
             padding: 24px;
             position: relative !important; /* Ensure parent is positioned for absolute children */
@@ -150,7 +150,7 @@
         }
         
         .account-card.fixed {
-            background: linear-gradient(135deg, #166534 0%, #14532d 100%); /* footer green gradient */
+            background: linear-gradient(135deg, #172554 0%, #0b1f3b 100%); /* footer green gradient */
         }
         
         .card-header {
@@ -441,7 +441,7 @@
         }
         
         .mobile-transaction-amount.credit {
-            color: #10b981;
+            color: #2563eb;
         }
         
         .mobile-transaction-amount.debit {
@@ -521,7 +521,7 @@
         }
         
         .transaction-detail-amount.credit {
-            color: #10b981;
+            color: #2563eb;
         }
         
         .transaction-detail-type {
@@ -611,7 +611,7 @@
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: #10b981;
+            background: #2563eb;
         }
         
         .transaction-detail-status-text {
@@ -771,7 +771,8 @@
     <link rel="apple-touch-icon" sizes="180x180" href="favicon.png">
     <link rel="icon" href="favicon.png" type="image/png">
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tailwind-mono.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Chart.js Library -->
@@ -2036,7 +2037,7 @@
                     };
                     closeBtn.className = 'w-full text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200';
                     closeBtn.style.backgroundColor = '#1800ac';
-                    closeBtn.onmouseover = function() { this.style.backgroundColor = '#140099'; };
+                    closeBtn.onmouseover = function() { this.style.backgroundColor = '#172554'; };
                     closeBtn.onmouseout = function() { this.style.backgroundColor = '#1800ac'; };
                 }
             } else {
@@ -2059,7 +2060,7 @@
                     };
                     closeBtn.className = 'w-full text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200';
                     closeBtn.style.backgroundColor = '#1800ac';
-                    closeBtn.onmouseover = function() { this.style.backgroundColor = '#140099'; };
+                    closeBtn.onmouseover = function() { this.style.backgroundColor = '#172554'; };
                     closeBtn.onmouseout = function() { this.style.backgroundColor = '#1800ac'; };
                 }
             }
@@ -2287,7 +2288,7 @@
                         onclick="openLoanProgressModal()" 
                         class="flex-1 text-white font-semibold py-2.5 px-4 rounded-lg transition-all duration-200 text-sm"
                         style="background-color: #1800ac;"
-                        onmouseover="this.style.backgroundColor='#140099'"
+                        onmouseover="this.style.backgroundColor='#172554'"
                         onmouseout="this.style.backgroundColor='#1800ac'"
                     >
                         <i class="fas fa-info-circle mr-2"></i>See More Details
@@ -2627,7 +2628,7 @@
                         
                         <!-- Filter Actions -->
                         <div class="flex gap-3">
-                            <button id="apply-filters" class="px-4 py-2 text-white rounded-lg text-sm font-medium focus:outline-none focus:ring-2 transition-all duration-200" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'" onfocus="this.style.outlineColor='#1800ac'">
+                            <button id="apply-filters" class="px-4 py-2 text-white rounded-lg text-sm font-medium focus:outline-none focus:ring-2 transition-all duration-200" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1800ac'" onfocus="this.style.outlineColor='#1800ac'">
                                 <i class="fas fa-search mr-2"></i>Apply
                             </button>
                             <button id="clear-filters" class="px-4 py-2 bg-gray-500 text-white rounded-lg text-sm font-medium hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 transition-all duration-200">
@@ -3311,7 +3312,7 @@
 
                     <!-- See More / See Less Controls -->
                     <div class="flex items-center justify-center gap-3 mt-12 mb-6 pt-4">
-                        <button id="see-more" class="group relative inline-flex items-center justify-center px-8 py-3.5 text-base font-semibold text-white rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 hidden" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#140099'" onmouseout="this.style.backgroundColor='#1800ac'" onfocus="this.style.outlineColor='#1800ac'">
+                        <button id="see-more" class="group relative inline-flex items-center justify-center px-8 py-3.5 text-base font-semibold text-white rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 hidden" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1800ac'" onfocus="this.style.outlineColor='#1800ac'">
                             <span class="absolute inset-0 w-full h-full bg-gray-800 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                             <i class="fas fa-chevron-down mr-2 relative z-10 transform group-hover:translate-y-0.5 transition-transform duration-300"></i>
                             <span class="relative z-10">Load More Transactions</span>
@@ -4307,7 +4308,7 @@
                     onclick="closeLoanProgressModal()" 
                     class="w-full text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200"
                     style="background-color: #1800ac;"
-                    onmouseover="this.style.backgroundColor='#140099'"
+                    onmouseover="this.style.backgroundColor='#172554'"
                     onmouseout="this.style.backgroundColor='#1800ac'"
                 >
                     Close

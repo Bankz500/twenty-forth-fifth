@@ -1,7 +1,8 @@
-// Tailwind CDN config: force a clean "bank blue" palette by defining `blue-*` to Chase-like blues.
+// Tailwind CDN config: enforce a NAVY BLUE brand across the entire site.
 // Important: this file must be loaded BEFORE https://cdn.tailwindcss.com in each HTML file.
 //
-// The site uses lots of `text-blue-*`, `bg-blue-*`, `border-blue-*`, and blue-based gradients.
+// We override `blue`, `green`, and `emerald` palettes to the same navy-blue scale so any existing
+// Tailwind utilities like `text-green-700`, `bg-emerald-600`, or `from-green-600` all render as navy.
 window.tailwind = window.tailwind || {};
 window.tailwind.config = {
   theme: {
@@ -22,21 +23,46 @@ window.tailwind.config = {
         ],
       },
       colors: {
+        // Navy blue scale (Tailwind-like)
         blue: {
-          // Light backgrounds + subtle borders (green equivalents)
-          50: "#f0fdf4",
-          100: "#dcfce7",
-          200: "#bbf7d0",
-          300: "#86efac",
-          400: "#4ade80",
-          // Brand greens
-          500: "#22c55e",
-          600: "#16a34a",
-          700: "#15803d",
-          800: "#166534",
-          // Dark green
-          900: "#14532d",
-          950: "#052e16",
+          50: "#eff6ff",
+          100: "#dbeafe",
+          200: "#bfdbfe",
+          300: "#93c5fd",
+          400: "#60a5fa",
+          500: "#3b82f6",
+          600: "#2563eb",
+          700: "#1d4ed8",
+          800: "#1e40af",
+          900: "#1e3a8a",
+          950: "#172554",
+        },
+        // Override green/emerald utilities to navy so we don't have to touch every page/class.
+        green: {
+          50: "#eff6ff",
+          100: "#dbeafe",
+          200: "#bfdbfe",
+          300: "#93c5fd",
+          400: "#60a5fa",
+          500: "#3b82f6",
+          600: "#2563eb",
+          700: "#1d4ed8",
+          800: "#1e40af",
+          900: "#1e3a8a",
+          950: "#172554",
+        },
+        emerald: {
+          50: "#eff6ff",
+          100: "#dbeafe",
+          200: "#bfdbfe",
+          300: "#93c5fd",
+          400: "#60a5fa",
+          500: "#3b82f6",
+          600: "#2563eb",
+          700: "#1d4ed8",
+          800: "#1e40af",
+          900: "#1e3a8a",
+          950: "#172554",
         },
       },
       boxShadow: {
