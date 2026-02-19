@@ -15,3 +15,20 @@ VITE_FIREBASE_MEASUREMENT_ID=...  # optional
 ```
 
 
+
+
+This project reads Firebase config from **Vite env vars** (in code as `import.meta.env.VITE_*`).
+
+Set these locally (in `.env.local`) and in Vercel (Project Settings → Environment Variables):
+
+```
+VITE_FIREBASE_API_KEY=...
+VITE_FIREBASE_AUTH_DOMAIN=...
+VITE_FIREBASE_PROJECT_ID=...
+VITE_FIREBASE_STORAGE_BUCKET=...
+VITE_FIREBASE_MESSAGING_SENDER_ID=...
+VITE_FIREBASE_APP_ID=...
+VITE_FIREBASE_MEASUREMENT_ID=...  # optional
+```
+
+

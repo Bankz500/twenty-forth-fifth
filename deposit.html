@@ -250,7 +250,7 @@
           <h2 class="text-lg font-bold text-gray-800 mb-4">Deposit Instructions</h2>
           <ol class="space-y-5 text-gray-700 text-sm">
             <li class="flex gap-3 items-start">
-              <div class="bg-green-100 text-green-600 rounded-full p-1 mt-1 flex-shrink-0">
+              <div class="bg-blue-100 text-blue-600 rounded-full p-1 mt-1 flex-shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -259,7 +259,7 @@
               <p><span class="font-medium">Initiate Transfer:</span> Log into your bank's mobile or online banking portal.</p>
             </li>
             <li class="flex gap-3 items-start">
-              <div class="bg-green-100 text-green-600 rounded-full p-1 mt-1 flex-shrink-0">
+              <div class="bg-blue-100 text-blue-600 rounded-full p-1 mt-1 flex-shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -268,7 +268,7 @@
               <p><span class="font-medium">Enter Details:</span> Add Twenty Forth & Fifth as a recipient using the details provided.</p>
             </li>
             <li class="flex gap-3 items-start">
-              <div class="bg-green-100 text-green-600 rounded-full p-1 mt-1 flex-shrink-0">
+              <div class="bg-blue-100 text-blue-600 rounded-full p-1 mt-1 flex-shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
@@ -648,7 +648,7 @@
                     
                     // Reset text styling (remove prompt styling)
                     [accountNumberEl, swiftCodeEl, routingNumberEl].forEach(el => {
-                        el.classList.remove('text-green-600', 'italic');
+                        el.classList.remove('text-blue-600', 'italic');
                         el.classList.add('font-semibold', 'text-gray-800');
                     });
                     
@@ -691,7 +691,7 @@
                     
                     // Style the text to indicate it's a prompt
                     [accountNumberEl, swiftCodeEl, routingNumberEl].forEach(el => {
-                        el.classList.add('text-green-600', 'italic');
+                        el.classList.add('text-blue-600', 'italic');
                         el.classList.remove('font-semibold');
                     });
                     
@@ -705,7 +705,7 @@
                     const generateBtn = document.getElementById('refresh-banking-details');
                     if (generateBtn) {
                         generateBtn.classList.remove('hidden');
-                        generateBtn.classList.add('bg-green-500', 'hover:bg-green-600', 'text-white', 'shadow-lg');
+                        generateBtn.classList.add('bg-blue-500', 'hover:bg-blue-600', 'text-white', 'shadow-lg');
                         generateBtn.title = 'Generate Banking Details - Click to create your banking details';
                     }
                 }
@@ -865,9 +865,9 @@
                     // Create notification element
                     const notification = document.createElement('div');
                     notification.className = `fixed top-20 right-4 p-4 rounded-lg shadow-lg z-50 transition-all duration-300 ${
-                        type === 'success' ? 'bg-green-500 text-white' : 
+                        type === 'success' ? 'bg-blue-500 text-white' : 
                         type === 'error' ? 'bg-red-500 text-white' : 
-                        'bg-green-500 text-white'
+                        'bg-blue-500 text-white'
                     }`;
                     notification.textContent = message;
                     
@@ -895,7 +895,7 @@
                     const cryptoSection = document.getElementById('crypto-deposit-section');
 
                     if (method === 'bank') {
-                        bankBtn.classList.add('border-green-500', 'bg-green-50', 'text-green-700');
+                        bankBtn.classList.add('border-blue-500', 'bg-blue-50', 'text-blue-700');
                         bankBtn.classList.remove('border-gray-200', 'bg-white', 'text-gray-700');
                         cryptoBtn.classList.remove('border-orange-500', 'bg-orange-50', 'text-orange-700');
                         cryptoBtn.classList.add('border-gray-200', 'bg-white', 'text-gray-700');
@@ -904,7 +904,7 @@
                     } else {
                         cryptoBtn.classList.add('border-orange-500', 'bg-orange-50', 'text-orange-700');
                         cryptoBtn.classList.remove('border-gray-200', 'bg-white', 'text-gray-700');
-                        bankBtn.classList.remove('border-green-500', 'bg-green-50', 'text-green-700');
+                        bankBtn.classList.remove('border-blue-500', 'bg-blue-50', 'text-blue-700');
                         bankBtn.classList.add('border-gray-200', 'bg-white', 'text-gray-700');
                         bankSection.classList.add('hidden');
                         cryptoSection.classList.remove('hidden');

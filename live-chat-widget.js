@@ -233,7 +233,7 @@ class LiveChatWidget {
         widget.id = 'liveChatWidget';
         widget.innerHTML = `
             <!-- Chat Button (always visible) -->
-            <button id="chatToggleBtn" class="fixed bottom-20 right-6 w-16 h-16 bg-gradient-to-br from-green-600 to-green-800 hover:from-green-700 hover:to-green-900 rounded-full shadow-xl flex items-center justify-center transition-all z-50 group hover:scale-110 hover:shadow-2xl" style="box-shadow: 0 10px 25px rgba(30, 64, 175, 0.4);">
+            <button id="chatToggleBtn" class="fixed bottom-20 right-6 w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 rounded-full shadow-xl flex items-center justify-center transition-all z-50 group hover:scale-110 hover:shadow-2xl" style="box-shadow: 0 10px 25px rgba(30, 64, 175, 0.4);">
                 <div class="relative">
                     <img src="chat bot.png" alt="Chat Support" class="w-10 h-10 object-contain drop-shadow-sm" onerror="this.onerror=null; this.src='chat icon.png'; this.onerror=function() { this.style.display='none'; this.nextElementSibling.style.display='block'; }">
                     <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-sm hidden">
@@ -256,15 +256,15 @@ class LiveChatWidget {
             <!-- Chat Window -->
             <div id="chatWindow" class="fixed bottom-24 right-6 w-96 h-[600px] bg-white rounded-2xl shadow-2xl flex flex-col hidden z-50 border border-gray-100 overflow-hidden" style="box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);">
                 <!-- Header -->
-                <div class="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-4 flex items-center justify-between">
+                <div class="bg-gradient-to-r from-blue-600 to-blue-600 text-white p-4 flex items-center justify-between">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
                             <i class="fas fa-headset text-lg"></i>
                         </div>
                         <div>
                             <div class="font-semibold text-sm">Twenty Forth & Fifth Support</div>
-                            <div class="text-xs text-green-100 flex items-center gap-1">
-                                <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                            <div class="text-xs text-blue-100 flex items-center gap-1">
+                                <span class="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></span>
                                 Online now
                             </div>
                         </div>
@@ -279,31 +279,31 @@ class LiveChatWidget {
                     <!-- FAQ Section (shown first) -->
                     <div id="faqSection" class="space-y-2">
                         <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3 px-1">Frequently Asked Questions</div>
-                        <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-green-300 hover:shadow-md transition-all group" data-topic="account-setup">
+                        <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-blue-300 hover:shadow-md transition-all group" data-topic="account-setup">
                             <div class="flex items-start gap-3">
-                                <div class="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center text-green-600 group-hover:bg-green-100 transition-colors">
+                                <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 group-hover:bg-blue-100 transition-colors">
                                     <i class="fas fa-user-plus text-sm"></i>
                                 </div>
                                 <div class="flex-1">
                                     <div class="font-semibold text-sm text-gray-900">Account Setup</div>
                                     <div class="text-xs text-gray-500 mt-0.5">How do I open an offshore account?</div>
                                 </div>
-                                <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-green-500 transition-colors"></i>
+                                <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-blue-500 transition-colors"></i>
                             </div>
                         </div>
-                        <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-green-300 hover:shadow-md transition-all group" data-topic="transfers">
+                        <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-blue-300 hover:shadow-md transition-all group" data-topic="transfers">
                             <div class="flex items-start gap-3">
-                                <div class="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center text-green-600 group-hover:bg-green-100 transition-colors">
+                                <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 group-hover:bg-blue-100 transition-colors">
                                     <i class="fas fa-exchange-alt text-sm"></i>
                                 </div>
                                 <div class="flex-1">
                                     <div class="font-semibold text-sm text-gray-900">International Transfers</div>
                                     <div class="text-xs text-gray-500 mt-0.5">How do I make international wire transfers?</div>
                                 </div>
-                                <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-green-500 transition-colors"></i>
+                                <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-blue-500 transition-colors"></i>
                             </div>
                         </div>
-                        <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-green-300 hover:shadow-md transition-all group" data-topic="fees">
+                        <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-blue-300 hover:shadow-md transition-all group" data-topic="fees">
                             <div class="flex items-start gap-3">
                                 <div class="w-8 h-8 bg-yellow-50 rounded-lg flex items-center justify-center text-yellow-600 group-hover:bg-yellow-100 transition-colors">
                                     <i class="fas fa-dollar-sign text-sm"></i>
@@ -312,10 +312,10 @@ class LiveChatWidget {
                                     <div class="font-semibold text-sm text-gray-900">Fees & Charges</div>
                                     <div class="text-xs text-gray-500 mt-0.5">What are your financial fees?</div>
                                 </div>
-                                <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-green-500 transition-colors"></i>
+                                <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-blue-500 transition-colors"></i>
                             </div>
                         </div>
-                        <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-green-300 hover:shadow-md transition-all group" data-topic="security">
+                        <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-blue-300 hover:shadow-md transition-all group" data-topic="security">
                             <div class="flex items-start gap-3">
                                 <div class="w-8 h-8 bg-red-50 rounded-lg flex items-center justify-center text-red-600 group-hover:bg-red-100 transition-colors">
                                     <i class="fas fa-shield-alt text-sm"></i>
@@ -324,10 +324,10 @@ class LiveChatWidget {
                                     <div class="font-semibold text-sm text-gray-900">Security & Compliance</div>
                                     <div class="text-xs text-gray-500 mt-0.5">How secure is my account?</div>
                                 </div>
-                                <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-green-500 transition-colors"></i>
+                                <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-blue-500 transition-colors"></i>
                             </div>
                         </div>
-                        <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-green-300 hover:shadow-md transition-all group" data-topic="multi-currency">
+                        <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-blue-300 hover:shadow-md transition-all group" data-topic="multi-currency">
                             <div class="flex items-start gap-3">
                                 <div class="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center text-purple-600 group-hover:bg-purple-100 transition-colors">
                                     <i class="fas fa-globe text-sm"></i>
@@ -336,23 +336,23 @@ class LiveChatWidget {
                                     <div class="font-semibold text-sm text-gray-900">Multi-Currency Accounts</div>
                                     <div class="text-xs text-gray-500 mt-0.5">What currencies do you support?</div>
                                 </div>
-                                <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-green-500 transition-colors"></i>
+                                <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-blue-500 transition-colors"></i>
                             </div>
                         </div>
-                        <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-green-300 hover:shadow-md transition-all group" data-topic="investment">
+                        <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-blue-300 hover:shadow-md transition-all group" data-topic="investment">
                             <div class="flex items-start gap-3">
-                                <div class="w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-600 group-hover:bg-emerald-100 transition-colors">
+                                <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 group-hover:bg-blue-100 transition-colors">
                                     <i class="fas fa-chart-line text-sm"></i>
                                 </div>
                                 <div class="flex-1">
                                     <div class="font-semibold text-sm text-gray-900">Investment Services</div>
                                     <div class="text-xs text-gray-500 mt-0.5">What investment options are available?</div>
                                 </div>
-                                <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-green-500 transition-colors"></i>
+                                <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-blue-500 transition-colors"></i>
                             </div>
                         </div>
                         <div class="mt-4 pt-4 border-t border-gray-200">
-                            <button id="startLiveChatBtn" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-3 px-4 rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
+                            <button id="startLiveChatBtn" class="w-full bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-700 hover:to-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
                                 <i class="fas fa-comment-dots"></i>
                                 <span>Start Live Chat</span>
                             </button>
@@ -383,11 +383,11 @@ class LiveChatWidget {
                         </button>
                         <div class="flex-1 relative">
                             <textarea id="chatMessageInput" placeholder="Type your message..." 
-                                class="w-full px-4 py-3 pr-12 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-gray-50 resize-none"
+                                class="w-full px-4 py-3 pr-12 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 resize-none"
                                 style="font-size: 16px !important; min-height: 48px; max-height: 150px;"
                                 rows="1"></textarea>
                         </div>
-                        <button id="sendMessageBtn" class="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-4 py-3 rounded-xl transition-all shadow-lg hover:shadow-xl hover:scale-105">
+                        <button id="sendMessageBtn" class="bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-700 hover:to-blue-700 text-white px-4 py-3 rounded-xl transition-all shadow-lg hover:shadow-xl hover:scale-105">
                             <i class="fas fa-paper-plane"></i>
                         </button>
                     </div>
@@ -520,10 +520,10 @@ class LiveChatWidget {
 
         const faqSection = document.getElementById('faqSection');
         faqSection.innerHTML = `
-            <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded">
-                <div class="font-semibold text-green-900 mb-2">${this.getTopicTitle(topic)}</div>
+            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                <div class="font-semibold text-blue-900 mb-2">${this.getTopicTitle(topic)}</div>
                 <div class="text-sm text-gray-700">${answer}</div>
-                <button id="backToFAQ" class="mt-3 text-green-600 hover:text-green-800 text-sm font-semibold">
+                <button id="backToFAQ" class="mt-3 text-blue-600 hover:text-blue-800 text-sm font-semibold">
                     <i class="fas fa-arrow-left mr-1"></i>Back to FAQs
                 </button>
             </div>
@@ -551,31 +551,31 @@ class LiveChatWidget {
         // Use the same styling as the original FAQ section
         faqSection.innerHTML = `
             <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3 px-1">Frequently Asked Questions</div>
-            <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-green-300 hover:shadow-md transition-all group" data-topic="account-setup">
+            <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-blue-300 hover:shadow-md transition-all group" data-topic="account-setup">
                 <div class="flex items-start gap-3">
-                    <div class="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center text-green-600 group-hover:bg-green-100 transition-colors">
+                    <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 group-hover:bg-blue-100 transition-colors">
                         <i class="fas fa-user-plus text-sm"></i>
                     </div>
                     <div class="flex-1">
                         <div class="font-semibold text-sm text-gray-900">Account Setup</div>
                         <div class="text-xs text-gray-500 mt-0.5">How do I open an offshore account?</div>
                     </div>
-                    <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-green-500 transition-colors"></i>
+                    <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-blue-500 transition-colors"></i>
                 </div>
             </div>
-            <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-green-300 hover:shadow-md transition-all group" data-topic="transfers">
+            <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-blue-300 hover:shadow-md transition-all group" data-topic="transfers">
                 <div class="flex items-start gap-3">
-                    <div class="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center text-green-600 group-hover:bg-green-100 transition-colors">
+                    <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 group-hover:bg-blue-100 transition-colors">
                         <i class="fas fa-exchange-alt text-sm"></i>
                     </div>
                     <div class="flex-1">
                         <div class="font-semibold text-sm text-gray-900">International Transfers</div>
                         <div class="text-xs text-gray-500 mt-0.5">How do I make international wire transfers?</div>
                     </div>
-                    <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-green-500 transition-colors"></i>
+                    <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-blue-500 transition-colors"></i>
                 </div>
             </div>
-            <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-green-300 hover:shadow-md transition-all group" data-topic="fees">
+            <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-blue-300 hover:shadow-md transition-all group" data-topic="fees">
                 <div class="flex items-start gap-3">
                     <div class="w-8 h-8 bg-yellow-50 rounded-lg flex items-center justify-center text-yellow-600 group-hover:bg-yellow-100 transition-colors">
                         <i class="fas fa-dollar-sign text-sm"></i>
@@ -584,10 +584,10 @@ class LiveChatWidget {
                         <div class="font-semibold text-sm text-gray-900">Fees & Charges</div>
                         <div class="text-xs text-gray-500 mt-0.5">What are your banking fees?</div>
                     </div>
-                    <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-green-500 transition-colors"></i>
+                    <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-blue-500 transition-colors"></i>
                 </div>
             </div>
-            <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-green-300 hover:shadow-md transition-all group" data-topic="security">
+            <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-blue-300 hover:shadow-md transition-all group" data-topic="security">
                 <div class="flex items-start gap-3">
                     <div class="w-8 h-8 bg-red-50 rounded-lg flex items-center justify-center text-red-600 group-hover:bg-red-100 transition-colors">
                         <i class="fas fa-shield-alt text-sm"></i>
@@ -596,35 +596,35 @@ class LiveChatWidget {
                         <div class="font-semibold text-sm text-gray-900">Security & Compliance</div>
                         <div class="text-xs text-gray-500 mt-0.5">How secure is my account?</div>
                     </div>
-                    <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-green-500 transition-colors"></i>
+                    <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-blue-500 transition-colors"></i>
                 </div>
             </div>
-            <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-green-300 hover:shadow-md transition-all group" data-topic="multi-currency">
+            <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-blue-300 hover:shadow-md transition-all group" data-topic="multi-currency">
                 <div class="flex items-start gap-3">
-                    <div class="w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-600 group-hover:bg-emerald-100 transition-colors">
+                    <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 group-hover:bg-blue-100 transition-colors">
                         <i class="fas fa-globe text-sm"></i>
                     </div>
                     <div class="flex-1">
                         <div class="font-semibold text-sm text-gray-900">Multi-Currency Accounts</div>
                         <div class="text-xs text-gray-500 mt-0.5">What currencies do you support?</div>
                     </div>
-                    <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-green-500 transition-colors"></i>
+                    <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-blue-500 transition-colors"></i>
                 </div>
             </div>
-            <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-green-300 hover:shadow-md transition-all group" data-topic="investment">
+            <div class="faq-item bg-white p-3 rounded-xl border border-gray-100 cursor-pointer hover:border-blue-300 hover:shadow-md transition-all group" data-topic="investment">
                 <div class="flex items-start gap-3">
-                    <div class="w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-600 group-hover:bg-emerald-100 transition-colors">
+                    <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 group-hover:bg-blue-100 transition-colors">
                         <i class="fas fa-chart-line text-sm"></i>
                     </div>
                     <div class="flex-1">
                         <div class="font-semibold text-sm text-gray-900">Investment Services</div>
                         <div class="text-xs text-gray-500 mt-0.5">What investment options are available?</div>
                     </div>
-                    <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-green-500 transition-colors"></i>
+                    <i class="fas fa-chevron-right text-gray-300 text-xs mt-1 group-hover:text-blue-500 transition-colors"></i>
                 </div>
             </div>
             <div class="mt-4 pt-4 border-t border-gray-200">
-                <button id="startLiveChatBtn" class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold py-3 px-4 rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
+                <button id="startLiveChatBtn" class="w-full bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-700 hover:to-blue-700 text-white font-semibold py-3 px-4 rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
                     <i class="fas fa-comment-dots"></i>
                     <span>Start Live Chat</span>
                 </button>
@@ -1110,10 +1110,10 @@ class LiveChatWidget {
         
         if (isUser) {
             msgDiv.innerHTML = `
-                <div class="max-w-[75%] bg-gradient-to-br from-green-600 to-emerald-600 text-white rounded-2xl rounded-tr-sm p-3 shadow-md">
+                <div class="max-w-[75%] bg-gradient-to-br from-blue-600 to-blue-600 text-white rounded-2xl rounded-tr-sm p-3 shadow-md">
                     ${imageHtml}
                     ${messageText ? `<div class="text-sm leading-relaxed">${this.escapeHtml(messageText)}</div>` : ''}
-                    <div class="text-xs mt-1.5 text-green-100 opacity-80 flex items-center justify-end gap-1">
+                    <div class="text-xs mt-1.5 text-blue-100 opacity-80 flex items-center justify-end gap-1">
                         ${timeStr}
                         <i class="fas fa-check ml-1 text-xs"></i>
                     </div>
@@ -1425,10 +1425,10 @@ class LiveChatWidget {
         welcomeDiv.id = 'welcomeMessage';
         welcomeDiv.className = 'flex justify-center mb-4';
         welcomeDiv.innerHTML = `
-            <div class="bg-gradient-to-br from-green-50 via-emerald-50 to-purple-50 border border-green-100 rounded-2xl p-5 max-w-[90%] shadow-lg">
+            <div class="bg-gradient-to-br from-blue-50 via-blue-50 to-purple-50 border border-blue-100 rounded-2xl p-5 max-w-[90%] shadow-lg">
                 <div class="flex items-start gap-4">
                     <div class="flex-shrink-0">
-                        <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-full flex items-center justify-center shadow-md">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-md">
                             <i class="fas fa-headset text-white text-lg"></i>
                         </div>
                     </div>
@@ -1440,11 +1440,11 @@ class LiveChatWidget {
                         </p>
                         <div class="flex items-center gap-4 text-xs text-gray-600">
                             <div class="flex items-center gap-1.5">
-                                <i class="far fa-clock text-green-500"></i>
+                                <i class="far fa-clock text-blue-500"></i>
                                 <span>5-10 min response</span>
                             </div>
                             <div class="flex items-center gap-1.5">
-                                <i class="fas fa-shield-alt text-green-500"></i>
+                                <i class="fas fa-shield-alt text-blue-500"></i>
                                 <span>Secure & Private</span>
                             </div>
                         </div>

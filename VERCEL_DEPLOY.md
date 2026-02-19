@@ -131,3 +131,29 @@ Vercel is configured to:
 - **Build fails**: Check that all dependencies are in `package.json`
 - **404 errors**: Ensure `vercel.json` routing is correct
 - **Firebase errors**: Verify Firebase credentials in `firebase-config.js`
+
+## Build Configuration
+
+The project is configured with:
+- **Build Command**: `npm run build` (creates `dist/` folder)
+- **Output Directory**: `dist`
+- **Framework**: Vite
+
+## Routing
+
+Vercel is configured to:
+- Serve all HTML files directly
+- Rewrite routes like `/testimonials` to `/testimonials.html`
+- Fallback to `index.html` for SPA routing
+
+## After Deployment
+
+1. Your site will be live at: `https://your-project-name.vercel.app`
+2. Firebase database and authentication will continue to work
+3. All static assets will be served from Vercel's CDN
+
+## Troubleshooting
+
+- **Build fails**: Check that all dependencies are in `package.json`
+- **404 errors**: Ensure `vercel.json` routing is correct
+- **Firebase errors**: Verify Firebase credentials in `firebase-config.js`

@@ -663,7 +663,7 @@ window.onload = function () {
             <div class="relative h-full flex flex-col justify-center p-8 md:p-10 text-white">
                 <div class="space-y-6">
                     <div class="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-2 shadow-sm">
-                        <span class="w-2 h-2 rounded-full bg-emerald-300"></span>
+                        <span class="w-2 h-2 rounded-full bg-blue-300"></span>
                         <span class="text-xs font-semibold tracking-widest uppercase">ACCOUNT PROTECTION</span>
                     </div>
 
@@ -677,19 +677,19 @@ window.onload = function () {
                     <ul class="space-y-3 text-sm text-blue-50">
                         <li class="flex items-center gap-3">
                             <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-shield-alt text-emerald-300"></i>
+                                <i class="fas fa-shield-alt text-blue-300"></i>
                             </div>
                             <span>Verification steps during sign-up</span>
                         </li>
                         <li class="flex items-center gap-3">
                             <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-lock text-emerald-300"></i>
+                                <i class="fas fa-lock text-blue-300"></i>
                             </div>
                             <span>Secure password requirements and checks</span>
                         </li>
                         <li class="flex items-center gap-3">
                             <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
-                                <i class="fas fa-user-check text-emerald-300"></i>
+                                <i class="fas fa-user-check text-blue-300"></i>
                             </div>
                             <span>Support for KYC and compliance reviews</span>
                         </li>
@@ -1127,7 +1127,7 @@ window.onload = function () {
                 // Set success state
                 createAccountBtn.disabled = false;
                 createAccountBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Account Created!';
-                createAccountBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+                createAccountBtn.classList.add('bg-blue-600', 'hover:bg-blue-700');
             }
             
             // Show success modal
@@ -1205,7 +1205,7 @@ window.onload = function () {
                 // Reset button
                 createAccountBtn.disabled = false;
                 createAccountBtn.innerHTML = originalButtonText;
-                createAccountBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
+                createAccountBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
             }
             if (spinner) {
                 spinner.classList.add("hidden");
@@ -1797,3 +1797,4 @@ window.onload = function () {
   <div data-include="components/cookie-consent.html"></div>
 </body>
 </html>
+

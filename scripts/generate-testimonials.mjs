@@ -50,7 +50,7 @@ function renderPage({ reviews, schemaJson }) {
           .map((r) => {
             const rating = Number(r.rating) || 0;
             const stars = '⭐'.repeat(Math.max(0, Math.min(5, Math.round(rating))));
-            const verified = r.verified ? `<span class="ml-2 inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700 border border-emerald-200">Verified</span>` : '';
+            const verified = r.verified ? `<span class="ml-2 inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-semibold text-blue-700 border border-blue-200">Verified</span>` : '';
             const country = r.country ? `<div class="text-xs text-gray-500 mt-1">${escapeHtml(r.country)}</div>` : '';
             return `
               <article class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
