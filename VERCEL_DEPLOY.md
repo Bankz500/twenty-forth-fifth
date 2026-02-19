@@ -5,7 +5,7 @@ This project is configured to deploy to Vercel while using Firebase for database
 ## Prerequisites
 
 1. A Vercel account (sign up at https://vercel.com)
-2. Firebase project configured (already done - `twenty-third-forth`)
+2. Firebase project configured (already done - `twenty-forth-fifth`)
 3. Git repository (optional but recommended)
 
 ## Deployment Steps
@@ -49,6 +49,37 @@ This project is configured to deploy to Vercel while using Firebase for database
    - Install Command: `npm install`
 
 5. **Click "Deploy"**
+
+## Using Two Vercel Projects (recommended for `twenty-forth-fifth` + `twenty-forth-fifth-fccu`)
+
+If you want **two separate Vercel projects** that both deploy from Git, create a second Vercel project from the **same GitHub repo**.
+
+- **Project names**: Vercel uses a URL-safe slug for the project. If you type `twenty forth fifth fccu`, it will effectively become `twenty-forth-fifth-fccu`.
+- **Independent deployments (recommended)**: set each Vercel project to a different **Production Branch**:
+  - `twenty-forth-fifth` → production branch `main`
+  - `twenty-forth-fifth-fccu` → production branch `fccu`
+
+That way:
+- Pushing to `main` deploys only the `twenty-forth-fifth` Vercel project
+- Pushing to `fccu` deploys only the `twenty-forth-fifth-fccu` Vercel project
+
+### Dashboard steps for the second project
+
+1. Vercel Dashboard → **Add New** → **Project**
+2. Import the same Git repo again
+3. Set **Project Name** to `twenty-forth-fifth-fccu`
+4. In Project Settings → Git → set **Production Branch** to `fccu` (optional but recommended)
+5. Deploy
+
+### Note about the `.vercel/` folder (CLI only)
+
+This workspace currently has `.vercel/project.json` linked to the Vercel project `twenty-forth-fifth`.
+That file is **local-only** (should not be committed) and only affects **Vercel CLI** deploys.
+If you want to deploy from this same folder using CLI to the new project later, run:
+
+```bash
+vercel link --project twenty-forth-fifth-fccu
+```
 
 ## Important Notes
 
