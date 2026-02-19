@@ -10,10 +10,6 @@ firebase-debug.*.log*
 # macOS
 .DS_Store
 
-# Local exports / screenshots (prevent accidental commits)
-header.png
-footer.png
-
 # Firebase cache
 .firebase/
 

@@ -109,6 +109,12 @@ export default defineConfig({
         if (fs.existsSync(resolve(__dirname, '11.png'))) {
           fs.copyFileSync(resolve(__dirname, '11.png'), resolve(distDir, '11.png'));
         }
+        if (fs.existsSync(resolve(__dirname, 'header.png'))) {
+          fs.copyFileSync(resolve(__dirname, 'header.png'), resolve(distDir, 'header.png'));
+        }
+        if (fs.existsSync(resolve(__dirname, 'footer.png'))) {
+          fs.copyFileSync(resolve(__dirname, 'footer.png'), resolve(distDir, 'footer.png'));
+        }
 
         // Copy standalone JS files that aren't bundled
         if (fs.existsSync(resolve(__dirname, 'live-chat-widget.js'))) {
