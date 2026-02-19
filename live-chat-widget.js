@@ -1,5 +1,6 @@
 // Live Chat Widget for Twenty Forth & Fifth
 // Replaces WhatsApp button with FAQ + Live Chat
+import runtimeFirebaseConfig from "./firebase-runtime-config.js";
 
 // Add custom styles for animations
 const chatStyles = document.createElement('style');
@@ -645,11 +646,9 @@ class LiveChatWidget {
         // Initialize Firebase if not already available
         if (!window.db) {
             try {
-                const firebaseConfig = (typeof window !== 'undefined' && window.__FIREBASE_CONFIG__)
-                  ? window.__FIREBASE_CONFIG__
-                  : null;
+                const firebaseConfig = runtimeFirebaseConfig;
                 if (!firebaseConfig || !firebaseConfig.apiKey) {
-                  throw new Error('Missing Firebase config. Ensure firebase-runtime-config.js is loaded before live-chat-widget.js');
+                  throw new Error('Missing Firebase config. Set VITE_FIREBASE_* env vars and rebuild/redeploy.');
                 }
 
                 // Try npm Firebase first (if firebase-client.js is loaded)

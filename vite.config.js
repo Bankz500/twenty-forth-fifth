@@ -93,6 +93,10 @@ export default defineConfig({
         if (fs.existsSync(resolve(__dirname, 'manifest.json'))) {
           fs.copyFileSync(resolve(__dirname, 'manifest.json'), resolve(distDir, 'manifest.json'));
         }
+        // Copy favicon (referenced by HTML + manifest.json)
+        if (fs.existsSync(resolve(__dirname, 'favicon.png'))) {
+          fs.copyFileSync(resolve(__dirname, 'favicon.png'), resolve(distDir, 'favicon.png'));
+        }
 
         // Copy tailwind config/runtime script
         if (fs.existsSync(resolve(__dirname, 'tailwind-mono.js'))) {
