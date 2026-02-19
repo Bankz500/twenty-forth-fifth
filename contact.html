@@ -301,7 +301,14 @@
         }
 
         // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
+        let app = null;
+        try {
+          if (firebaseConfig && firebaseConfig.apiKey) {
+            app = initializeApp(firebaseConfig);
+          }
+        } catch (e) {
+          console.warn('Firebase init failed on contact page (safe to ignore if not using auth here):', e);
+        }
         // Analytics initialization would require module script or compat version
     
         // Function to sign up a user

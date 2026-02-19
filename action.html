@@ -271,7 +271,9 @@ overlay.onclick = closeMenu;
             }
 
     
-            firebase.initializeApp(firebaseConfig);
+            if (firebaseConfig && firebaseConfig.apiKey && typeof firebase !== 'undefined') {
+              firebase.initializeApp(firebaseConfig);
+            }
     
             // Get the action code from the URL
             const urlParams = new URLSearchParams(window.location.search);

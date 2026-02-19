@@ -954,6 +954,9 @@ window.onload = function () {
     console.log("Initializing Firebase with config:", firebaseConfig);
     let app, auth, db;
     try {
+        if (!firebaseConfig || !firebaseConfig.apiKey) {
+            throw new Error('Missing Firebase config. Set VITE_FIREBASE_* env vars and restart the dev server.');
+        }
         app = initializeApp(firebaseConfig);
         auth = getAuth(app);
         db = getFirestore(app);
@@ -1376,11 +1379,11 @@ window.onload = function () {
     if (!firebaseCompatConfig || !firebaseCompatConfig.apiKey) {
       console.error('Missing Firebase config. Ensure Vercel env vars (VITE_FIREBASE_*) are set.');
     }
-    if (!firebase.apps.length) {
+    if (firebaseCompatConfig && firebaseCompatConfig.apiKey && !firebase.apps.length) {
         firebase.initializeApp(firebaseCompatConfig);
     }
-    const authCompat = firebase.auth();
-    const dbCompat = firebase.firestore();
+    const authCompat = firebase?.auth?.() || null;
+    const dbCompat = firebase?.firestore?.() || null;
 </script>
 
 <!-- Joint Account Modal Script -->

@@ -182,12 +182,15 @@
   </main>
 
   <script type="module">
-    import firebaseConfig from './firebase-config.js';
+    import firebaseConfig from './firebase-runtime-config.js';
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
     import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
     import { getFirestore, doc, updateDoc, setDoc, getDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
     import { showAmlNoticeModal, showPendingApprovalModal } from './components/compliance-modals.js';
 
+    if (!firebaseConfig || !firebaseConfig.apiKey) {
+      throw new Error('Missing Firebase config. Set VITE_FIREBASE_* env vars and restart the dev server.');
+    }
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);

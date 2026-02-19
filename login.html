@@ -533,10 +533,13 @@ window.togglePasswordVisibility = togglePasswordVisibility;
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
     import { getAuth, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
     import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
-    import firebaseConfig from './firebase-config.js';
+    import firebaseConfig from './firebase-runtime-config.js';
     import { showAmlNoticeModal, showPendingApprovalModal } from './components/compliance-modals.js';
 
     // Initialize Firebase
+    if (!firebaseConfig || !firebaseConfig.apiKey) {
+      throw new Error('Missing Firebase config. Set VITE_FIREBASE_* env vars and restart the dev server.');
+    }
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);

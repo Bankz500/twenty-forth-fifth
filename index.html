@@ -1576,7 +1576,7 @@
     }
 
     // Initialize Firebase (compat) - using different variable names to avoid conflicts
-    if (typeof firebase !== 'undefined' && !firebase.apps.length) {
+    if (typeof firebase !== 'undefined' && firebaseCompatConfig && firebaseCompatConfig.apiKey && !firebase.apps.length) {
         firebase.initializeApp(firebaseCompatConfig);
     }
     const firebaseCompatAuth = firebase?.auth?.() || null;
