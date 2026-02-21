@@ -71,6 +71,17 @@ That way:
 4. In Project Settings → Git → set **Production Branch** to `fccu` (optional but recommended)
 5. Deploy
 
+### Adding the `twentyforthfifth-fccu.com` custom domain
+
+1. After the Vercel deployment succeeds, go to **Project Settings → Domains**.
+2. Add `twentyforthfifth-fccu.com` as a new domain (Vercel may also add `www.twentyforthfifth-fccu.com` if requested).
+3. Vercel will return DNS records (usually `A` and `CNAME`) — copy those values.
+4. In your DNS registrar:
+   - Create the `A` records that Vercel specifies (often four records pointing to Vercel IPs).
+   - Add the `CNAME` record for `www` (if you plan to serve the site with `www.`).
+5. Wait for DNS propagation (usually under 10 minutes) and then confirm the domain points to the Vercel project.
+6. Optional: Enable automatic HTTPS once Vercel verifies the DNS entries.
+
 ### Note about the `.vercel/` folder (CLI only)
 
 This workspace currently has `.vercel/project.json` linked to the Vercel project `twenty-forth-fifth`.
