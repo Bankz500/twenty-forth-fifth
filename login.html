@@ -588,7 +588,7 @@ window.togglePasswordVisibility = togglePasswordVisibility;
     // Function to send OTP (EmailJS can sometimes hang; enforce a timeout)
     async function sendOtp(email, otp) {
         try {
-            const p = emailjs.send("service_dou8hz3", "template_nncgc6k", {
+            const p = emailjs.send("service_a778apr", "template_38p7h6g", {
                 to_email: email,  // send to user's email
                 email: email,     // template compatibility
                 otp: otp
