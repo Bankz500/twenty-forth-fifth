@@ -228,8 +228,6 @@
         const viewBtn = $("viewDetailsBtn");
         const warn = $("cardStatusNote");
         const infoSidebar = $("infoSidebar");
-        const freezeBtn = $("freezeCardBtn");
-        const freezeBtnText = $("freezeCardBtnText");
         const depositRequirementItem = $("depositRequirementItem");
 
         // Show sidebar with card information
@@ -261,45 +259,7 @@
           }
         }
 
-        // Update freeze button based on card status
-        if (freezeBtn && freezeBtnText) {
-          // Remove existing event listeners to prevent duplicates
-          const newFreezeBtn = freezeBtn.cloneNode(true);
-          freezeBtn.parentNode.replaceChild(newFreezeBtn, freezeBtn);
-          const updatedFreezeBtn = $("freezeCardBtn");
-          const updatedFreezeBtnText = $("freezeCardBtnText");
-          
-          // Check if admin set this status (user cannot undo admin actions)
-          const adminAction = cachedCard.adminAction === true || cachedCard.frozenByAdmin === true || cachedCard.holdByAdmin === true || cachedCard.suspendedByAdmin === true;
-          const isAdminSetStatus = adminAction && (status === "hold" || status === "suspended" || status === "frozen");
-          
-          if (isAdminSetStatus) {
-            // Admin set this status - disable freeze button
-            updatedFreezeBtn.disabled = true;
-            updatedFreezeBtn.classList.add("opacity-50", "cursor-not-allowed");
-            updatedFreezeBtnText.textContent = status === "frozen" ? "Frozen by admin" : status === "hold" ? "On hold by admin" : "Suspended by admin";
-          } else if (status === "active") {
-            updatedFreezeBtn.disabled = false;
-            updatedFreezeBtn.classList.remove("opacity-50", "cursor-not-allowed");
-            updatedFreezeBtnText.textContent = "Freeze card";
-            // Use addEventListener for better mobile support (works with both click and touch)
-            updatedFreezeBtn.addEventListener("click", () => freezeCard(true), { passive: true });
-            updatedFreezeBtn.addEventListener("touchend", (e) => {
-              e.preventDefault();
-              freezeCard(true);
-            }, { passive: false });
-          } else if (status === "hold" || status === "frozen") {
-            updatedFreezeBtn.disabled = false;
-            updatedFreezeBtn.classList.remove("opacity-50", "cursor-not-allowed");
-            updatedFreezeBtnText.textContent = "Unfreeze card";
-            // Use addEventListener for better mobile support
-            updatedFreezeBtn.addEventListener("click", () => freezeCard(false), { passive: true });
-            updatedFreezeBtn.addEventListener("touchend", (e) => {
-              e.preventDefault();
-              freezeCard(false);
-            }, { passive: false });
-          }
-        }
+        // Freeze card functionality removed - only admins can freeze cards
 
         if (badge) {
           badge.className = "inline-flex items-center gap-2 text-xs px-3 py-1 rounded-full border font-medium";
@@ -500,58 +460,7 @@
       }
     }
 
-    async function freezeCard(freeze) {
-      const user = auth.currentUser;
-      if (!user) {
-        setStatus("error", "You must be signed in.");
-        return;
-      }
-
-      // Set loading state
-      setButtonLoading("freezeCardBtn", true, freeze ? "Freezing..." : "Unfreezing...");
-
-      try {
-        // Reload card to check current state
-        const cardSnap = await getDoc(doc(db, "debit_cards", user.uid));
-        if (!cardSnap.exists()) {
-          setStatus("error", "Card not found.");
-          setButtonLoading("freezeCardBtn", false);
-          return;
-        }
-        
-        const cardData = cardSnap.data();
-        // Check if admin set this status - users cannot undo admin actions
-        const adminAction = cardData.adminAction === true || cardData.frozenByAdmin === true || cardData.holdByAdmin === true || cardData.suspendedByAdmin === true;
-        const currentStatus = (cardData.status || "active").toLowerCase();
-        
-        if (adminAction && (currentStatus === "hold" || currentStatus === "suspended" || currentStatus === "frozen")) {
-          setStatus("error", "This action was set by an administrator and cannot be changed. Please contact support.");
-          setButtonLoading("freezeCardBtn", false);
-          return;
-        }
-
-        const { updateDoc } = await import("firebase/firestore");
-        const cardRef = doc(db, "debit_cards", user.uid);
-        await updateDoc(cardRef, {
-          status: freeze ? "frozen" : "active",
-          updatedAt: serverTimestamp(),
-          // Clear admin action flags when user changes status themselves
-          adminAction: false,
-          frozenByAdmin: false,
-          holdByAdmin: false,
-          suspendedByAdmin: false
-        });
-        
-        // Reload card state
-        await loadDebitCardState(user);
-        setStatus("success", freeze ? "Card frozen successfully." : "Card unfrozen successfully.");
-      } catch (e) {
-        console.error("Freeze card error", e);
-        setStatus("error", "Unable to update card status. Please try again.");
-      } finally {
-        setButtonLoading("freezeCardBtn", false);
-      }
-    }
+    // Freeze card function removed - only admins can freeze/unfreeze cards through admin panel
 
     // Delete card function
     async function deleteCard() {
@@ -981,9 +890,6 @@
                 <div class="flex flex-col sm:flex-row gap-2">
                   <button id="viewDetailsBtn" type="button" class="w-full sm:w-auto px-5 py-3 rounded-full text-sm font-semibold text-white brand-bg brand-bg-hover transition shadow-sm" data-no-loading="true">
                     View card details
-                  </button>
-                  <button id="freezeCardBtn" type="button" class="w-full sm:w-auto px-5 py-3 rounded-full text-sm font-semibold border border-gray-300 text-gray-800 hover:bg-gray-50 transition" data-no-loading="true">
-                    <span id="freezeCardBtnText">Freeze card</span>
                   </button>
                   <a href="pin.html" class="w-full sm:w-auto px-5 py-3 rounded-full text-sm font-semibold border border-gray-300 text-gray-800 hover:bg-gray-50 text-center">
                     Change PIN
