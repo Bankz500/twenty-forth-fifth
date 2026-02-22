@@ -22,6 +22,12 @@
     .brand-bg { background-color: var(--ttf-brand); }
     .brand-bg-hover:hover { background-color: var(--ttf-brand-hover); }
     .brand-ring:focus { box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.18); }
+    
+    /* Button click/active states */
+    .scale-95 {
+      transform: scale(0.95);
+      transition: transform 0.1s ease;
+    }
   </style>
 
   <script type="module">
@@ -43,6 +49,65 @@
       else if (type === "success") el.classList.add("text-blue-700");
       else el.classList.add("text-gray-600");
       el.textContent = message || "";
+    }
+
+    // Helper function to set button loading state
+    function setButtonLoading(buttonId, isLoading, loadingText = null) {
+      const btn = $(buttonId);
+      if (!btn) return;
+      
+      if (isLoading) {
+        btn.disabled = true;
+        btn.classList.add("opacity-50", "cursor-not-allowed");
+        if (loadingText && btn.querySelector("span")) {
+          const originalText = btn.querySelector("span").textContent;
+          btn.dataset.originalText = originalText;
+          btn.querySelector("span").innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i>${loadingText}`;
+        } else if (loadingText) {
+          btn.dataset.originalText = btn.textContent;
+          btn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i>${loadingText}`;
+        }
+      } else {
+        btn.disabled = false;
+        btn.classList.remove("opacity-50", "cursor-not-allowed");
+        if (btn.dataset.originalText) {
+          if (btn.querySelector("span")) {
+            btn.querySelector("span").textContent = btn.dataset.originalText;
+          } else {
+            btn.textContent = btn.dataset.originalText;
+          }
+          delete btn.dataset.originalText;
+        }
+      }
+    }
+
+    // Helper function to add click/active state
+    function addButtonClickState(buttonId) {
+      const btn = $(buttonId);
+      if (!btn) return;
+      
+      btn.addEventListener("mousedown", () => {
+        btn.classList.add("scale-95", "opacity-80");
+      }, { passive: true });
+      
+      btn.addEventListener("mouseup", () => {
+        btn.classList.remove("scale-95", "opacity-80");
+      }, { passive: true });
+      
+      btn.addEventListener("mouseleave", () => {
+        btn.classList.remove("scale-95", "opacity-80");
+      }, { passive: true });
+      
+      // Touch events for mobile
+      btn.addEventListener("touchstart", () => {
+        btn.classList.add("scale-95", "opacity-80");
+      }, { passive: true });
+      
+      btn.addEventListener("touchend", () => {
+        setTimeout(() => {
+          btn.classList.remove("scale-95", "opacity-80");
+        }, 150);
+      }, { passive: true });
     }
 
     function setLoading(isLoading) {
@@ -429,11 +494,15 @@
         return;
       }
 
+      // Set loading state
+      setButtonLoading("freezeCardBtn", true, freeze ? "Freezing..." : "Unfreezing...");
+
       try {
         // Reload card to check current state
         const cardSnap = await getDoc(doc(db, "debit_cards", user.uid));
         if (!cardSnap.exists()) {
           setStatus("error", "Card not found.");
+          setButtonLoading("freezeCardBtn", false);
           return;
         }
         
@@ -444,6 +513,7 @@
         
         if (adminAction && (currentStatus === "hold" || currentStatus === "suspended" || currentStatus === "frozen")) {
           setStatus("error", "This action was set by an administrator and cannot be changed. Please contact support.");
+          setButtonLoading("freezeCardBtn", false);
           return;
         }
 
@@ -465,6 +535,8 @@
       } catch (e) {
         console.error("Freeze card error", e);
         setStatus("error", "Unable to update card status. Please try again.");
+      } finally {
+        setButtonLoading("freezeCardBtn", false);
       }
     }
 
@@ -551,14 +623,44 @@
         hide($("pinError"));
         show($("pinModal"));
       });
+      
+      // Add click states to buttons
+      addButtonClickState("viewDetailsBtn");
+      addButtonClickState("freezeCardBtn");
+      
+      // Add click state to Change PIN link
+      const changePinLink = document.querySelector('a[href="pin.html"]');
+      if (changePinLink) {
+        changePinLink.addEventListener("mousedown", () => {
+          changePinLink.classList.add("scale-95", "opacity-80");
+        }, { passive: true });
+        changePinLink.addEventListener("mouseup", () => {
+          changePinLink.classList.remove("scale-95", "opacity-80");
+        }, { passive: true });
+        changePinLink.addEventListener("mouseleave", () => {
+          changePinLink.classList.remove("scale-95", "opacity-80");
+        }, { passive: true });
+        changePinLink.addEventListener("touchstart", () => {
+          changePinLink.classList.add("scale-95", "opacity-80");
+        }, { passive: true });
+        changePinLink.addEventListener("touchend", () => {
+          setTimeout(() => {
+            changePinLink.classList.remove("scale-95", "opacity-80");
+          }, 150);
+        }, { passive: true });
+      }
       $("closePinModalBtn")?.addEventListener("click", () => hide($("pinModal")));
       $("pinConfirmBtn")?.addEventListener("click", async () => {
+        // Set loading state on view details button
+        setButtonLoading("viewDetailsBtn", true, "Loading...");
+        
         try {
           hide($("pinError"));
           const entered = ($("pinInput").value || "").trim();
           if (!/^\d{5}$/.test(entered)) {
             $("pinError").textContent = "Enter your 5-digit PIN.";
             show($("pinError"));
+            setButtonLoading("viewDetailsBtn", false);
             return;
           }
           const user = auth.currentUser;
@@ -570,6 +672,7 @@
           if (!storedPin || storedPin !== entered) {
             $("pinError").textContent = "Incorrect PIN.";
             show($("pinError"));
+            setButtonLoading("viewDetailsBtn", false);
             return;
           }
 
@@ -578,6 +681,7 @@
           if (!sSnap.exists()) {
             $("pinError").textContent = "Card details not available yet.";
             show($("pinError"));
+            setButtonLoading("viewDetailsBtn", false);
             return;
           }
           const secrets = sSnap.data();
@@ -590,6 +694,8 @@
           console.error("View details error", err);
           $("pinError").textContent = "Unable to verify PIN. Please try again.";
           show($("pinError"));
+        } finally {
+          setButtonLoading("viewDetailsBtn", false);
         }
       });
       $("closeDetailsModalBtn")?.addEventListener("click", () => hide($("detailsModal")));
