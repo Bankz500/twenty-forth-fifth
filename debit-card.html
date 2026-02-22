@@ -764,6 +764,29 @@
           if (e.target === deleteModal) closeDeleteModal();
         }, { passive: true });
       }
+      
+      // KYC Required Modal handlers
+      const kycModal = $("kycRequiredModal");
+      const closeKYCModalBtn = $("closeKYCModalBtn");
+      
+      const closeKYCModal = () => {
+        if (kycModal) kycModal.classList.add("hidden");
+      };
+      
+      if (closeKYCModalBtn) {
+        closeKYCModalBtn.addEventListener("click", closeKYCModal, { passive: true });
+        closeKYCModalBtn.addEventListener("touchend", (e) => {
+          e.preventDefault();
+          closeKYCModal();
+        }, { passive: false });
+      }
+      
+      // Close KYC modal on backdrop click
+      if (kycModal) {
+        kycModal.addEventListener("click", (e) => {
+          if (e.target === kycModal) closeKYCModal();
+        }, { passive: true });
+      }
     });
 
     onAuthStateChanged(auth, async (user) => {
