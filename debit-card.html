@@ -27,7 +27,7 @@
   <script type="module">
     import { auth, db } from "./firebase-client.js";
     import { onAuthStateChanged, signOut } from "firebase/auth";
-    import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
+    import { doc, getDoc, serverTimestamp, setDoc, writeBatch } from "firebase/firestore";
 
     const $ = (id) => document.getElementById(id);
     let cachedUserDoc = null;
@@ -198,12 +198,41 @@
 
         // Update freeze button based on card status
         if (freezeBtn && freezeBtnText) {
-          if (status === "active") {
-            freezeBtnText.textContent = "Freeze card";
-            freezeBtn.onclick = () => freezeCard(true);
+          // Remove existing event listeners to prevent duplicates
+          const newFreezeBtn = freezeBtn.cloneNode(true);
+          freezeBtn.parentNode.replaceChild(newFreezeBtn, freezeBtn);
+          const updatedFreezeBtn = $("freezeCardBtn");
+          const updatedFreezeBtnText = $("freezeCardBtnText");
+          
+          // Check if admin set this status (user cannot undo admin actions)
+          const adminAction = cachedCard.adminAction === true || cachedCard.frozenByAdmin === true || cachedCard.holdByAdmin === true || cachedCard.suspendedByAdmin === true;
+          const isAdminSetStatus = adminAction && (status === "hold" || status === "suspended" || status === "frozen");
+          
+          if (isAdminSetStatus) {
+            // Admin set this status - disable freeze button
+            updatedFreezeBtn.disabled = true;
+            updatedFreezeBtn.classList.add("opacity-50", "cursor-not-allowed");
+            updatedFreezeBtnText.textContent = status === "frozen" ? "Frozen by admin" : status === "hold" ? "On hold by admin" : "Suspended by admin";
+          } else if (status === "active") {
+            updatedFreezeBtn.disabled = false;
+            updatedFreezeBtn.classList.remove("opacity-50", "cursor-not-allowed");
+            updatedFreezeBtnText.textContent = "Freeze card";
+            // Use addEventListener for better mobile support (works with both click and touch)
+            updatedFreezeBtn.addEventListener("click", () => freezeCard(true), { passive: true });
+            updatedFreezeBtn.addEventListener("touchend", (e) => {
+              e.preventDefault();
+              freezeCard(true);
+            }, { passive: false });
           } else if (status === "hold" || status === "frozen") {
-            freezeBtnText.textContent = "Unfreeze card";
-            freezeBtn.onclick = () => freezeCard(false);
+            updatedFreezeBtn.disabled = false;
+            updatedFreezeBtn.classList.remove("opacity-50", "cursor-not-allowed");
+            updatedFreezeBtnText.textContent = "Unfreeze card";
+            // Use addEventListener for better mobile support
+            updatedFreezeBtn.addEventListener("click", () => freezeCard(false), { passive: true });
+            updatedFreezeBtn.addEventListener("touchend", (e) => {
+              e.preventDefault();
+              freezeCard(false);
+            }, { passive: false });
           }
         }
 
@@ -381,11 +410,33 @@
       }
 
       try {
+        // Reload card to check current state
+        const cardSnap = await getDoc(doc(db, "debit_cards", user.uid));
+        if (!cardSnap.exists()) {
+          setStatus("error", "Card not found.");
+          return;
+        }
+        
+        const cardData = cardSnap.data();
+        // Check if admin set this status - users cannot undo admin actions
+        const adminAction = cardData.adminAction === true || cardData.frozenByAdmin === true || cardData.holdByAdmin === true || cardData.suspendedByAdmin === true;
+        const currentStatus = (cardData.status || "active").toLowerCase();
+        
+        if (adminAction && (currentStatus === "hold" || currentStatus === "suspended" || currentStatus === "frozen")) {
+          setStatus("error", "This action was set by an administrator and cannot be changed. Please contact support.");
+          return;
+        }
+
         const { updateDoc } = await import("firebase/firestore");
         const cardRef = doc(db, "debit_cards", user.uid);
         await updateDoc(cardRef, {
           status: freeze ? "frozen" : "active",
-          updatedAt: serverTimestamp()
+          updatedAt: serverTimestamp(),
+          // Clear admin action flags when user changes status themselves
+          adminAction: false,
+          frozenByAdmin: false,
+          holdByAdmin: false,
+          suspendedByAdmin: false
         });
         
         // Reload card state
@@ -394,6 +445,42 @@
       } catch (e) {
         console.error("Freeze card error", e);
         setStatus("error", "Unable to update card status. Please try again.");
+      }
+    }
+
+    // Delete card function
+    async function deleteCard() {
+      const user = auth.currentUser;
+      if (!user) {
+        setStatus("error", "You must be signed in.");
+        return;
+      }
+
+      try {
+        const { doc, deleteDoc, setDoc, serverTimestamp, writeBatch } = await import("firebase/firestore");
+        
+        // Delete the card, secrets, and application
+        const batch = writeBatch(db);
+        batch.delete(doc(db, "debit_cards", user.uid));
+        batch.delete(doc(db, "debit_card_secrets", user.uid));
+        batch.delete(doc(db, "debit_card_applications", user.uid));
+        
+        // Set a timestamp to prevent re-creation for 14 days
+        await setDoc(doc(db, "debit_card_deletions", user.uid), {
+          deletedAt: serverTimestamp(),
+          deletedAtIso: new Date().toISOString(),
+          canRecreateAfter: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString() // 14 days from now
+        }, { merge: true });
+        
+        await batch.commit();
+        
+        // Close modal and reload state
+        $("deleteCardModal").classList.add("hidden");
+        await loadDebitCardState(user);
+        setStatus("success", "Card deleted successfully. You can request a new card after 14 days.");
+      } catch (e) {
+        console.error("Delete card error", e);
+        setStatus("error", "Unable to delete card. Please try again.");
       }
     }
 
@@ -486,6 +573,58 @@
         }
       });
       $("closeDetailsModalBtn")?.addEventListener("click", () => hide($("detailsModal")));
+      
+      // Delete card modal handlers
+      const deleteBtn = $("deleteCardBtn");
+      const deleteModal = $("deleteCardModal");
+      const closeDeleteModalBtn = $("closeDeleteCardModalBtn");
+      const cancelDeleteBtn = $("cancelDeleteCardBtn");
+      const confirmDeleteBtn = $("confirmDeleteCardBtn");
+
+      if (deleteBtn) {
+        deleteBtn.addEventListener("click", () => {
+          if (deleteModal) deleteModal.classList.remove("hidden");
+        }, { passive: true });
+        deleteBtn.addEventListener("touchend", (e) => {
+          e.preventDefault();
+          if (deleteModal) deleteModal.classList.remove("hidden");
+        }, { passive: false });
+      }
+
+      const closeDeleteModal = () => {
+        if (deleteModal) deleteModal.classList.add("hidden");
+      };
+
+      if (closeDeleteModalBtn) {
+        closeDeleteModalBtn.addEventListener("click", closeDeleteModal, { passive: true });
+        closeDeleteModalBtn.addEventListener("touchend", (e) => {
+          e.preventDefault();
+          closeDeleteModal();
+        }, { passive: false });
+      }
+
+      if (cancelDeleteBtn) {
+        cancelDeleteBtn.addEventListener("click", closeDeleteModal, { passive: true });
+        cancelDeleteBtn.addEventListener("touchend", (e) => {
+          e.preventDefault();
+          closeDeleteModal();
+        }, { passive: false });
+      }
+
+      if (confirmDeleteBtn) {
+        confirmDeleteBtn.addEventListener("click", deleteCard, { passive: true });
+        confirmDeleteBtn.addEventListener("touchend", (e) => {
+          e.preventDefault();
+          deleteCard();
+        }, { passive: false });
+      }
+
+      // Close delete modal on backdrop click
+      if (deleteModal) {
+        deleteModal.addEventListener("click", (e) => {
+          if (e.target === deleteModal) closeDeleteModal();
+        }, { passive: true });
+      }
     });
 
     onAuthStateChanged(auth, async (user) => {
@@ -687,6 +826,9 @@
                   <a href="pin.html" class="w-full sm:w-auto px-5 py-3 rounded-full text-sm font-semibold border border-gray-300 text-gray-800 hover:bg-gray-50 text-center">
                     Change PIN
                   </a>
+                  <button id="deleteCardBtn" type="button" class="w-full sm:w-auto px-5 py-3 rounded-full text-sm font-semibold border border-red-300 text-red-700 hover:bg-red-50 transition" data-no-loading="true">
+                    Delete card
+                  </button>
                 </div>
               </div>
             </div>
@@ -728,6 +870,36 @@
       <h3 class="text-lg font-semibold text-gray-900 mt-4">Request submitted</h3>
       <p class="text-sm text-gray-600 mt-1">Your debit card request is pending approval. You’ll see it here once approved.</p>
       <button id="closeSuccessModalBtn" type="button" class="mt-5 w-full px-5 py-3 rounded-full text-sm font-semibold text-white brand-bg brand-bg-hover transition">Done</button>
+    </div>
+  </div>
+
+  <!-- Delete Card Modal -->
+  <div id="deleteCardModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(0, 0, 0, 0.5);">
+    <div class="bg-white rounded-2xl border border-gray-200 p-6 w-full max-w-md mx-auto shadow-2xl">
+      <div class="flex items-start justify-between gap-3 mb-4">
+        <div>
+          <h3 class="text-lg font-semibold text-gray-900">Delete Card</h3>
+          <p class="text-sm text-gray-600 mt-1">Are you sure you want to delete your debit card?</p>
+        </div>
+        <button id="closeDeleteCardModalBtn" type="button" class="text-gray-400 hover:text-gray-700 text-xl leading-none">&times;</button>
+      </div>
+      <div class="bg-red-50 border border-red-200 rounded-xl p-4 mb-4">
+        <div class="flex items-start gap-3">
+          <i class="fas fa-exclamation-triangle text-red-600 mt-0.5"></i>
+          <div class="flex-1">
+            <p class="text-sm font-semibold text-red-900 mb-1">Important Notice</p>
+            <p class="text-sm text-red-800">Once you delete this card, you <strong>cannot create a new one for the next 14 days</strong>. This restriction is in place for security purposes.</p>
+          </div>
+        </div>
+      </div>
+      <div class="flex gap-3">
+        <button id="cancelDeleteCardBtn" type="button" class="flex-1 px-5 py-3 rounded-full text-sm font-semibold border border-gray-300 text-gray-800 hover:bg-gray-50 transition">
+          Cancel
+        </button>
+        <button id="confirmDeleteCardBtn" type="button" class="flex-1 px-5 py-3 rounded-full text-sm font-semibold text-white bg-red-600 hover:bg-red-700 transition">
+          Delete Card
+        </button>
+      </div>
     </div>
   </div>
 

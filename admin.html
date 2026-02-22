@@ -4295,12 +4295,22 @@
                         const helpers = window.__debitCardFirestore;
                         if (!helpers) throw new Error('Firestore helpers not ready');
                         const { doc, setDoc, serverTimestamp } = helpers;
+                        
+                        // Mark as admin action so users cannot undo it
+                        const adminActionFields = {
+                            adminAction: true,
+                            frozenByAdmin: status === 'frozen',
+                            holdByAdmin: status === 'hold',
+                            suspendedByAdmin: status === 'suspended'
+                        };
+                        
                         await setDoc(doc(db, 'debit_cards', userId), {
                             status,
                             statusUpdatedAt: serverTimestamp(),
-                            statusUpdatedAtIso: new Date().toISOString()
+                            statusUpdatedAtIso: new Date().toISOString(),
+                            ...adminActionFields
                         }, { merge: true });
-                        showSuccess(`Card status updated: ${userId} → ${status}.`);
+                        showSuccess(`Card status updated: ${userId} → ${status}. User cannot undo this action.`);
                     } catch (err) {
                         console.error('setDebitCardStatus error', err);
                         showError('Failed to update card status: ' + (err.message || 'Please try again.'));
