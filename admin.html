@@ -4441,12 +4441,21 @@
                                       </button>
                                     `;
                                 } else {
-                                    // Card is not active - show Activate to undo, plus other actions
+                                    // Card is not active - show specific undo button based on status, plus other actions
+                                    let undoButtonText = 'Activate';
+                                    if (status === 'suspended') {
+                                        undoButtonText = 'Unsuspend';
+                                    } else if (status === 'hold') {
+                                        undoButtonText = 'Unhold';
+                                    } else if (status === 'frozen') {
+                                        undoButtonText = 'Unfreeze';
+                                    }
+                                    
                                     actionButtons = `
                                       <button type="button"
                                         class="px-3 py-2 rounded-lg bg-white hover:bg-gray-50 text-green-700 border border-green-200 text-xs font-semibold transition"
                                         onclick="setDebitCardStatus('${c.userId || c.id}', 'active')">
-                                        Activate
+                                        ${undoButtonText}
                                       </button>
                                       ${status !== 'hold' ? `<button type="button"
                                         class="px-3 py-2 rounded-lg bg-white hover:bg-gray-50 text-amber-700 border border-amber-200 text-xs font-semibold transition"
