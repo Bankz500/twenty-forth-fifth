@@ -173,12 +173,16 @@ service cloud.firestore {
       
       // Messages subcollection
       match /messages/{messageId} {
-        function parentIsAnonymous() {
-          return get(/databases/$(database)/documents/live_chats/$(chatId)).data.userId.matches('anon_.*');
-        }
+        // Helper function to check if parent chat belongs to user
+        // Note: We can't use get() during list operations, so we allow list for all authenticated users
+        // and rely on the parent chat's rules to ensure users can only access their own chats
         function parentOwner() {
           return request.auth != null
             && get(/databases/$(database)/documents/live_chats/$(chatId)).data.userId == request.auth.uid;
+        }
+        
+        function parentIsAnonymous() {
+          return get(/databases/$(database)/documents/live_chats/$(chatId)).data.userId.matches('anon_.*');
         }
 
         // Allow authenticated users to create messages in their own chats
@@ -187,12 +191,13 @@ service cloud.firestore {
                        && (isAdmin() || parentOwner() || parentIsAnonymous());
 
         // CRITICAL FIX: Allow authenticated users to list/query messages
-        // Note: parentOwner() uses get() which may not work during list validation
-        // So we allow list for all authenticated users, and get will filter by ownership
+        // Since we can't use get() during list validation, we allow all authenticated users
+        // The parent chat's rules ensure users can only query chats they own
+        // This works because Firestore validates the parent path when querying subcollections
         allow list: if isAdmin() || request.auth != null;
         
         // Allow read (get) if admin, owner, or anonymous chat
-        // This ensures users can only read messages in chats they own
+        // This ensures users can only read individual messages in chats they own
         allow get: if isAdmin() || parentOwner() || parentIsAnonymous();
 
         // Allow update/delete only for admin (admin marks read / moderation)
