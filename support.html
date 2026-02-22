@@ -239,31 +239,31 @@
 </div>
 
 <!-- Bottom Navbar (Mobile Friendly) -->
-<div class="mobile-nav fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-300 p-3" style="height: 100px;">
+<div class="mobile-nav fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-300 p-3" style="height: 100px; z-index: 100;">
     <div class="flex justify-around items-center h-full">
-        <!-- Wallet Icon -->
-        <a href="dashboard.html" class="nav-item flex flex-col items-center" onclick="setActive(this)">
+        <!-- Home Icon -->
+        <a href="dashboard.html" class="nav-item flex flex-col items-center" data-page="dashboard">
             <div class="bg-white rounded p-2">
                 <img src="1221.png" alt="Wallet Icon" class="h-6 w-6" />
             </div>
             <span class="text-xs font-medium mt-2 text-gray-700">Home</span>
         </a>
         <!-- Deposit Icon -->
-        <a href="deposit.html" class="nav-item flex flex-col items-center" onclick="setActive(this)">
+        <a href="deposit.html" class="nav-item flex flex-col items-center" data-page="deposit">
             <div class="bg-white rounded p-2">
-                <img src="deposit.png" alt="Redeem Icon" class="h-6 w-6" />
+                <img src="deposit.png" alt="Deposit Icon" class="h-6 w-6" />
             </div>
             <span class="text-xs font-medium mt-2 text-gray-700">Deposit</span>
         </a>
         <!-- Support Icon -->
-        <a href="support.html" class="nav-item flex flex-col items-center" onclick="setActive(this)">
+        <a href="support.html" class="nav-item flex flex-col items-center" data-page="support">
             <div class="bg-white rounded p-2">
                 <img src="support.png" alt="Support Icon" class="h-6 w-6" />
             </div>
             <span class="text-xs font-medium mt-2 text-gray-700">Support</span>
         </a>
         <!-- Profile Icon -->
-        <a href="profile.html" class="nav-item flex flex-col items-center" onclick="setActive(this)">
+        <a href="profile.html" class="nav-item flex flex-col items-center" data-page="profile">
             <div class="bg-white rounded p-2">
                 <img src="profile.png" alt="Profile Icon" class="h-6 w-6" />
             </div>
@@ -271,33 +271,7 @@
         </a>
     </div>
 </div>
-
-<!-- Script -->
-<script>
-    // Function to set the active navbar item
-    function setActive(element) {
-        // Reset all items to default styles
-        const icons = document.querySelectorAll('.nav-item div');
-        const texts = document.querySelectorAll('.nav-item span');
-        icons.forEach(icon => icon.classList.remove('bg-gray-800', 'text-white'));
-        texts.forEach(text => text.classList.remove('text-gray-900'));
-
-        // Add active styles to the clicked item
-        const icon = element.querySelector('div');
-        const text = element.querySelector('span');
-        icon.classList.add('bg-gray-800', 'text-white');
-        text.classList.add('text-gray-900');
-    }
-
-    // Set the active state on page load based on the current URL
-    const currentPath = window.location.pathname;
-    const navItems = document.querySelectorAll('.nav-item');
-    navItems.forEach(item => {
-        if (item.href.includes(currentPath)) {
-            setActive(item);
-        }
-    });
-</script>
+<script src="bottom-navbar.js"></script>
 
 <script>
     function navigateWithSpinner(url) {
