@@ -271,6 +271,15 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
     
+    // System settings collection - for admin-only system operations (e.g., force logout)
+    match /system_settings/{settingId} {
+      // Only admins can read system settings
+      allow read: if isAdmin();
+      
+      // Only admins can create, update, or delete system settings
+      allow create, update, delete: if isAdmin();
+    }
+    
     // Default deny all other access
     match /{document=**} {
       allow read, write: if false;

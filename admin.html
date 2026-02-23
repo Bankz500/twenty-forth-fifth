@@ -1007,6 +1007,13 @@
             }
 
             try {
+                // Verify admin is authenticated
+                const currentUser = auth.currentUser;
+                if (!currentUser) {
+                    showError('You must be logged in as admin to perform this action.');
+                    return;
+                }
+
                 const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
                 const { doc, setDoc, serverTimestamp, collection, getDocs, updateDoc } = firestoreModule;
                 
@@ -1018,12 +1025,19 @@
                     'ericrotter51@gmail.com'
                 ]);
 
+                // Verify current user is admin
+                const currentEmail = currentUser.email?.toLowerCase();
+                if (!currentEmail || !adminEmails.has(currentEmail)) {
+                    showError('Only administrators can perform this action.');
+                    return;
+                }
+
                 // Set global force logout timestamp
                 const systemSettingsRef = doc(db, 'system_settings', 'force_logout');
                 await setDoc(systemSettingsRef, {
                     timestamp: serverTimestamp(),
                     timestampIso: new Date().toISOString(),
-                    triggeredBy: auth.currentUser?.email || 'admin',
+                    triggeredBy: currentUser.email || 'admin',
                     triggeredAt: new Date().toISOString()
                 }, { merge: true });
 
@@ -1036,10 +1050,10 @@
                 
                 usersSnapshot.forEach((userDoc) => {
                     const userData = userDoc.data();
-                    const userEmail = userData.email || userData.userEmail || '';
+                    const userEmail = (userData.email || userData.userEmail || '').toLowerCase();
                     
                     // Skip admin users
-                    if (adminEmails.has(userEmail.toLowerCase())) {
+                    if (adminEmails.has(userEmail)) {
                         return;
                     }
                     
@@ -1054,14 +1068,21 @@
                     updatedCount++;
                 });
 
-                await Promise.all(updatePromises);
+                if (updatePromises.length > 0) {
+                    await Promise.all(updatePromises);
+                }
                 
                 showSuccess(`Force logout initiated! ${updatedCount} user(s) will be logged out on their next page load or auth check.`);
                 
                 console.log(`Force logout set for ${updatedCount} users`);
             } catch (error) {
                 console.error('Error logging out all users:', error);
-                showError('Failed to log out all users: ' + (error.message || 'Please try again.'));
+                const errorMsg = error.message || 'Please try again.';
+                if (errorMsg.includes('permission') || errorMsg.includes('Permission')) {
+                    showError('Permission denied. Please ensure you are logged in as an administrator and try again.');
+                } else {
+                    showError('Failed to log out all users: ' + errorMsg);
+                }
             }
         };
 
