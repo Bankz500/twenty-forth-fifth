@@ -1101,6 +1101,65 @@
             const modal = document.createElement('div');
             modal.id = 'logoutUsersModal';
             modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4';
+            
+            // Build user list HTML
+            let usersListHtml = '';
+            if (users.length === 0) {
+                usersListHtml = '<p class="text-gray-500 text-center py-8">No users found.</p>';
+            } else {
+                usersListHtml = `
+                    <div class="mb-4 flex items-center justify-between">
+                        <p class="text-sm text-gray-600">Found <strong>${users.length}</strong> user(s)</p>
+                        <button onclick="window.logoutAllUsersFromModal()" 
+                                class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg transition-colors">
+                            <i class="fas fa-users-slash mr-2"></i>Logout All
+                        </button>
+                    </div>
+                    <div class="mb-3 flex items-center gap-2">
+                        <button onclick="window.selectAllUsers()" 
+                                class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded-lg transition-colors">
+                            <i class="fas fa-check-square mr-1"></i>Select All
+                        </button>
+                        <button onclick="window.deselectAllUsers()" 
+                                class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded-lg transition-colors">
+                            <i class="fas fa-square mr-1"></i>Deselect All
+                        </button>
+                        <button onclick="window.logoutSelectedUsers()" 
+                                class="px-3 py-1.5 bg-orange-600 hover:bg-orange-700 text-white text-xs font-semibold rounded-lg transition-colors">
+                            <i class="fas fa-sign-out-alt mr-1"></i>Logout Selected
+                        </button>
+                    </div>
+                    <div class="space-y-2" id="logoutUsersList">
+                        ${users.map(user => {
+                            // Use existing escapeHtml function - it's defined later in the file
+                            const safeId = (user.id || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                            const safeEmail = (user.email || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                            const safeName = (user.name || 'Unknown').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                            const safeUid = (user.uid || user.id || '').substring(0, 20);
+                            return `
+                                <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                                    <div class="flex items-center gap-3 flex-1">
+                                        <input type="checkbox" 
+                                               class="user-logout-checkbox rounded border-gray-300" 
+                                               data-user-id="${safeId}"
+                                               data-user-email="${safeEmail}">
+                                        <div class="flex-1">
+                                            <div class="font-medium text-gray-900">${safeName}</div>
+                                            <div class="text-sm text-gray-500">${safeEmail}</div>
+                                            <div class="text-xs text-gray-400 font-mono">${safeUid}...</div>
+                                        </div>
+                                    </div>
+                                    <button onclick="window.logoutSingleUser('${safeId}', '${safeEmail}')" 
+                                            class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg transition-colors">
+                                        <i class="fas fa-sign-out-alt mr-1"></i>Logout
+                                    </button>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+            }
+
             modal.innerHTML = `
                 <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[80vh] flex flex-col">
                     <div class="flex items-center justify-between p-6 border-b border-gray-200">
@@ -1111,52 +1170,7 @@
                         </button>
                     </div>
                     <div class="flex-1 overflow-y-auto p-6">
-                        ${users.length === 0 ? `
-                            <p class="text-gray-500 text-center py-8">No users found.</p>
-                        ` : `
-                            <div class="mb-4 flex items-center justify-between">
-                                <p class="text-sm text-gray-600">Found <strong>${users.length}</strong> user(s)</p>
-                                <button onclick="logoutAllUsersFromModal()" 
-                                        class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg transition-colors">
-                                    <i class="fas fa-users-slash mr-2"></i>Logout All
-                                </button>
-                            </div>
-                            <div class="mb-3 flex items-center gap-2">
-                                <button onclick="selectAllUsers()" 
-                                        class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded-lg transition-colors">
-                                    <i class="fas fa-check-square mr-1"></i>Select All
-                                </button>
-                                <button onclick="deselectAllUsers()" 
-                                        class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded-lg transition-colors">
-                                    <i class="fas fa-square mr-1"></i>Deselect All
-                                </button>
-                                <button onclick="logoutSelectedUsers()" 
-                                        class="px-3 py-1.5 bg-orange-600 hover:bg-orange-700 text-white text-xs font-semibold rounded-lg transition-colors">
-                                    <i class="fas fa-sign-out-alt mr-1"></i>Logout Selected
-                                </button>
-                            </div>
-                            <div class="space-y-2">
-                                ${users.map(user => `
-                                    <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                                        <div class="flex items-center gap-3 flex-1">
-                                            <input type="checkbox" 
-                                                   class="user-logout-checkbox rounded border-gray-300" 
-                                                   data-user-id="${user.id}"
-                                                   data-user-email="${user.email}">
-                                            <div class="flex-1">
-                                                <div class="font-medium text-gray-900">${user.name}</div>
-                                                <div class="text-sm text-gray-500">${user.email}</div>
-                                                <div class="text-xs text-gray-400 font-mono">${user.uid.substring(0, 20)}...</div>
-                                            </div>
-                                        </div>
-                                        <button onclick="logoutSingleUser('${user.id}', '${user.email}')" 
-                                                class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg transition-colors">
-                                            <i class="fas fa-sign-out-alt mr-1"></i>Logout
-                                        </button>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        `}
+                        ${usersListHtml}
                     </div>
                     <div class="flex items-center justify-end gap-3 p-6 border-t border-gray-200">
                         <button onclick="document.getElementById('logoutUsersModal').remove()" 
@@ -1177,7 +1191,7 @@
         }
 
         // Logout all users from modal
-        async function logoutAllUsersFromModal() {
+        window.logoutAllUsersFromModal = async function() {
             const allCheckboxes = document.querySelectorAll('.user-logout-checkbox');
             const allUserIds = Array.from(allCheckboxes).map(cb => cb.getAttribute('data-user-id'));
             
@@ -1194,7 +1208,7 @@
         }
 
         // Logout selected users
-        async function logoutSelectedUsers() {
+        window.logoutSelectedUsers = async function() {
             const checkboxes = document.querySelectorAll('.user-logout-checkbox:checked');
             const selectedUserIds = Array.from(checkboxes).map(cb => cb.getAttribute('data-user-id'));
             
@@ -1211,7 +1225,7 @@
         }
 
         // Logout single user
-        async function logoutSingleUser(userId, userEmail) {
+        window.logoutSingleUser = async function(userId, userEmail) {
             if (!confirm(`Are you sure you want to log out ${userEmail}?`)) {
                 return;
             }
@@ -1220,13 +1234,13 @@
         }
 
         // Select all users
-        function selectAllUsers() {
+        window.selectAllUsers = function() {
             const checkboxes = document.querySelectorAll('.user-logout-checkbox');
             checkboxes.forEach(cb => cb.checked = true);
         }
 
         // Deselect all users
-        function deselectAllUsers() {
+        window.deselectAllUsers = function() {
             const checkboxes = document.querySelectorAll('.user-logout-checkbox');
             checkboxes.forEach(cb => cb.checked = false);
         }
