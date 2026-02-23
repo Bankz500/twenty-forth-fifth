@@ -1208,6 +1208,48 @@
                 authCheckComplete = true;
                 
                 console.log("User is logged in:", user.uid);
+                
+                // Check for force logout flag
+                try {
+                    // Check global system settings first
+                    const systemSettingsDoc = await getDoc(doc(db, 'system_settings', 'force_logout'));
+                    if (systemSettingsDoc.exists()) {
+                        const systemData = systemSettingsDoc.data();
+                        const forceLogoutTime = systemData.timestamp?.toDate ? systemData.timestamp.toDate().getTime() : 
+                                               (systemData.timestampIso ? new Date(systemData.timestampIso).getTime() : 0);
+                        const userMetadata = user.metadata;
+                        const lastSignInTime = userMetadata?.lastSignInTime ? new Date(userMetadata.lastSignInTime).getTime() : Date.now();
+                        
+                        // If force logout was triggered after user's last sign in, log them out
+                        if (forceLogoutTime > 0 && forceLogoutTime > lastSignInTime) {
+                            console.log('Global force logout detected, signing out user');
+                            await signOut(auth);
+                            alert('You have been logged out by an administrator.');
+                            window.location.href = 'login.html';
+                            return;
+                        }
+                    }
+                    
+                    // Check user-specific force logout flag
+                    const userDoc = await getDoc(doc(db, 'users', user.uid));
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+                        if (userData.forceLogout === true) {
+                            console.log('User-specific force logout detected, signing out user');
+                            // Clear the flag
+                            await updateDoc(doc(db, 'users', user.uid), {
+                                forceLogout: false
+                            });
+                            // Sign out
+                            await signOut(auth);
+                            alert('You have been logged out by an administrator.');
+                            window.location.href = 'login.html';
+                            return;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error checking force logout:', error);
+                }
                     
                     // Auth persistence is handled by Firebase; user data caching is handled below.
                     

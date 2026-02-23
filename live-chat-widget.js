@@ -929,7 +929,7 @@ class LiveChatWidget {
                     if (textContent) existingContent.add(textContent.substring(0, 100));
                 });
 
-                // Collect new messages and sort them by timestamp
+                // Collect new messages and update existing ones
                 const newMessages = [];
                 snapshot.forEach(doc => {
                     const msgId = doc.id;
@@ -940,6 +940,43 @@ class LiveChatWidget {
                     // Check if message exists in DOM
                     const existingMsgEl = messagesArea.querySelector(`[data-msg-id="${msgId}"]`);
                     const msgExistsInDOM = existingMsgEl !== null;
+                    
+                    if (msgExistsInDOM) {
+                        // Update read status for existing messages
+                        const isRead = msgData.read === true;
+                        const isUser = msgData.sender === 'user';
+                        
+                        // Find and update read indicator
+                        const timeElement = existingMsgEl.querySelector('.text-xs.mt-1\\.5');
+                        if (timeElement) {
+                            const readIcon = isRead 
+                                ? (isUser 
+                                    ? '<i class="fas fa-check-double text-blue-300 text-xs"></i>' 
+                                    : '<i class="fas fa-check-double text-blue-500 text-xs ml-1"></i>')
+                                : (isUser 
+                                    ? '<i class="fas fa-check text-xs"></i>' 
+                                    : '<i class="fas fa-check text-gray-400 text-xs ml-1"></i>');
+                            
+                            // Update the icon in the time element
+                            const existingIcon = timeElement.querySelector('i.fa-check, i.fa-check-double');
+                            if (existingIcon) {
+                                existingIcon.className = readIcon.match(/class="([^"]+)"/)?.[1] || '';
+                            } else {
+                                // Add icon if it doesn't exist
+                                if (isUser) {
+                                    timeElement.innerHTML = timeElement.innerHTML.replace(
+                                        /(\d{1,2}:\d{2}\s*(AM|PM)?)/,
+                                        `$1 ${readIcon}`
+                                    );
+                                } else {
+                                    timeElement.innerHTML = timeElement.innerHTML.replace(
+                                        /(\d{1,2}:\d{2}\s*(AM|PM)?)/,
+                                        `$1 ${readIcon}`
+                                    );
+                                }
+                            }
+                        }
+                    }
                     
                     // Less aggressive duplicate check for mobile - only skip if truly visible
                     let shouldSkip = false;
@@ -1108,22 +1145,37 @@ class LiveChatWidget {
         const timeStr = this.formatTime(msg.timestamp);
         
         if (isUser) {
+            // Read indicator for user messages (read by admin)
+            const isRead = msg.read === true;
+            const readIcon = isRead 
+                ? '<i class="fas fa-check-double text-blue-300 text-xs"></i>' 
+                : '<i class="fas fa-check text-xs"></i>';
+            
             msgDiv.innerHTML = `
                 <div class="max-w-[75%] bg-gradient-to-br from-blue-600 to-blue-600 text-white rounded-2xl rounded-tr-sm p-3 shadow-md">
                     ${imageHtml}
                     ${messageText ? `<div class="text-sm leading-relaxed">${this.escapeHtml(messageText)}</div>` : ''}
                     <div class="text-xs mt-1.5 text-blue-100 opacity-80 flex items-center justify-end gap-1">
                         ${timeStr}
-                        <i class="fas fa-check ml-1 text-xs"></i>
+                        ${readIcon}
                     </div>
                 </div>
             `;
         } else {
+            // Read indicator for admin messages (read by user)
+            const isRead = msg.read === true;
+            const readIcon = isRead 
+                ? '<i class="fas fa-check-double text-blue-500 text-xs ml-1"></i>' 
+                : '<i class="fas fa-check text-gray-400 text-xs ml-1"></i>';
+            
             msgDiv.innerHTML = `
                 <div class="max-w-[75%] bg-white text-gray-900 border border-gray-100 rounded-2xl rounded-tl-sm p-3 shadow-sm">
                     ${imageHtml}
                     ${messageText ? `<div class="text-sm leading-relaxed text-gray-800">${this.escapeHtml(messageText)}</div>` : ''}
-                    <div class="text-xs mt-1.5 text-gray-400">${timeStr}</div>
+                    <div class="text-xs mt-1.5 text-gray-400 flex items-center justify-start gap-1">
+                        ${timeStr}
+                        ${readIcon}
+                    </div>
                 </div>
             `;
         }
@@ -1282,7 +1334,7 @@ class LiveChatWidget {
 
         try {
             const firestoreModule = await this.getFirestoreFunctions();
-            const { collection, addDoc, serverTimestamp, updateDoc, doc } = firestoreModule;
+            const { collection, addDoc, serverTimestamp, updateDoc, doc, query, orderBy, getDocs } = firestoreModule;
             
             let imageBase64 = null;
             
@@ -1317,6 +1369,31 @@ class LiveChatWidget {
                     }
                     return;
                 }
+            }
+            
+            // Check if this is the first user message (send welcome message if needed)
+            const messagesRef = collection(window.db, 'live_chats', this.currentChatId, 'messages');
+            const messagesQuery = query(messagesRef, orderBy('timestamp', 'asc'));
+            const existingMessages = await getDocs(messagesQuery);
+            
+            // Check if there are any user messages (not just admin/system messages)
+            let hasUserMessages = false;
+            existingMessages.forEach(msgDoc => {
+                const msgData = msgDoc.data();
+                if (msgData.sender === 'user') {
+                    hasUserMessages = true;
+                }
+            });
+            
+            // If this is the first user message, send welcome message first
+            if (!hasUserMessages) {
+                const welcomeMessage = {
+                    text: 'Thank you for contacting Twenty Forth & Fifth FCCU, how can we assist you today',
+                    sender: 'admin',
+                    timestamp: serverTimestamp(),
+                    read: false
+                };
+                await addDoc(collection(window.db, 'live_chats', this.currentChatId, 'messages'), welcomeMessage);
             }
             
             // Add message
