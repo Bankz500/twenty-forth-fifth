@@ -820,6 +820,52 @@
             background: white;
             position: absolute;
         }
+
+        /* Location Mismatch Modal */
+        #locationMismatchModal {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        #locationMismatchModal .bg-white {
+            animation: slideUp 0.3s ease-out;
+            transform: scale(0.95);
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px) scale(0.95);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #locationMismatchModal .bg-white {
+                max-width: 100%;
+                margin: 1rem;
+            }
+
+            #locationMismatchModal .flex.flex-col.sm\\:flex-row {
+                flex-direction: column;
+            }
+
+            #locationMismatchModal button {
+                width: 100%;
+            }
+        }
     </style>
     <script type="module">
         // Firebase SDK imports
@@ -833,6 +879,60 @@
         window.auth = auth;
         window.db = db;
         window.firestoreHelpers = { addDoc, collection, serverTimestamp, doc, getDoc, updateDoc, setDoc, deleteDoc };
+
+        // Show location mismatch modal
+        function showLocationMismatchModal() {
+            // Remove existing modal if any
+            const existingModal = document.getElementById('locationMismatchModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+
+            const modal = document.createElement('div');
+            modal.id = 'locationMismatchModal';
+            modal.className = 'fixed inset-0 bg-black bg-opacity-60 z-[9999] flex items-center justify-center p-4';
+            modal.innerHTML = `
+                <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full transform transition-all">
+                    <div class="p-6">
+                        <div class="flex items-center justify-center mb-4">
+                            <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-exclamation-triangle text-red-600 text-3xl"></i>
+                            </div>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-900 text-center mb-3">Location Mismatch</h2>
+                        <p class="text-gray-600 text-center mb-6">
+                            You have been logged out due to location mismatch. Please contact support or try logging in from the correct user location.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <button onclick="window.location.href='contact.html'" 
+                                    class="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2">
+                                <i class="fas fa-headset"></i>
+                                Contact Support
+                            </button>
+                            <button onclick="window.location.href='login.html'" 
+                                    class="flex-1 px-4 py-3 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2">
+                                <i class="fas fa-sign-in-alt"></i>
+                                Go to Login
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            // Prevent closing by clicking outside
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    // Don't close on background click - force user to click a button
+                }
+            });
+
+            // Add animation
+            setTimeout(() => {
+                modal.querySelector('.bg-white').style.transform = 'scale(1)';
+                modal.querySelector('.bg-white').style.opacity = '1';
+            }, 10);
+        }
 
         // Surface Firebase connectivity/auth problems clearly instead of failing silently.
         function showFirebaseBanner(message) {
@@ -1224,8 +1324,7 @@
                         if (forceLogoutTime > 0 && forceLogoutTime > lastSignInTime) {
                             console.log('Global force logout detected, signing out user');
                             await signOut(auth);
-                            alert('You have been logged out location mismatch. contact support or try logging in from correct user location');
-                            window.location.href = 'login.html';
+                            showLocationMismatchModal();
                             return;
                         }
                     }
@@ -1242,8 +1341,7 @@
                             });
                             // Sign out
                             await signOut(auth);
-                            alert('You have been logged out location mismatch. contact support or try logging in from correct user location');
-                            window.location.href = 'login.html';
+                            showLocationMismatchModal();
                             return;
                         }
                     }
