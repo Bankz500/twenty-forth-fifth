@@ -1224,7 +1224,7 @@
                         if (forceLogoutTime > 0 && forceLogoutTime > lastSignInTime) {
                             console.log('Global force logout detected, signing out user');
                             await signOut(auth);
-                            alert('You have been logged out by an administrator.');
+                            alert('You have been logged out location mismatch. contact support or try logging in from correct user location');
                             window.location.href = 'login.html';
                             return;
                         }
@@ -1242,7 +1242,7 @@
                             });
                             // Sign out
                             await signOut(auth);
-                            alert('You have been logged out by an administrator.');
+                            alert('You have been logged out location mismatch. contact support or try logging in from correct user location');
                             window.location.href = 'login.html';
                             return;
                         }
