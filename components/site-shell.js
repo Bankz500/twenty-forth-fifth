@@ -30,14 +30,16 @@ async function includeFragments() {
   const nodes = Array.from(document.querySelectorAll("[data-include]"));
   await Promise.all(
     nodes.map(async (node) => {
+      if (!document.contains(node)) return;
       const url = node.getAttribute("data-include");
       if (!url) return;
       const res = await fetch(url, { cache: "no-cache" });
       if (!res.ok) {
-        node.innerHTML = "";
+        if (document.contains(node)) node.innerHTML = "";
         return;
       }
-      node.innerHTML = await res.text();
+      const html = await res.text();
+      if (document.contains(node)) node.innerHTML = html;
     })
   );
 
