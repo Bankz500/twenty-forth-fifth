@@ -1255,8 +1255,18 @@
                 }
 
                 const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
-                const { doc, updateDoc, serverTimestamp } = firestoreModule;
+                const { doc, updateDoc, setDoc, serverTimestamp } = firestoreModule;
 
+                // Set global force logout timestamp (for users who check this)
+                const systemSettingsRef = doc(db, 'system_settings', 'force_logout');
+                await setDoc(systemSettingsRef, {
+                    timestamp: serverTimestamp(),
+                    timestampIso: new Date().toISOString(),
+                    triggeredBy: currentUser.email || 'admin',
+                    triggeredAt: new Date().toISOString()
+                }, { merge: true });
+
+                // Set forceLogout flag on each user document
                 const updatePromises = userIds.map(userId => 
                     updateDoc(doc(db, 'users', userId), {
                         forceLogout: true,
@@ -1267,7 +1277,7 @@
 
                 await Promise.all(updatePromises);
                 
-                showSuccess(`${userIds.length} user(s) will be logged out on their next page load or auth check.`);
+                showSuccess(`${userIds.length} user(s) will be logged out immediately.`);
                 
                 // Close modal
                 const modal = document.getElementById('logoutUsersModal');

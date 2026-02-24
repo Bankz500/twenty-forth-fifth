@@ -1310,44 +1310,106 @@
                 console.log("User is logged in:", user.uid);
                 
                 // Check for force logout flag
-                try {
-                    // Check global system settings first
-                    const systemSettingsDoc = await getDoc(doc(db, 'system_settings', 'force_logout'));
-                    if (systemSettingsDoc.exists()) {
-                        const systemData = systemSettingsDoc.data();
-                        const forceLogoutTime = systemData.timestamp?.toDate ? systemData.timestamp.toDate().getTime() : 
-                                               (systemData.timestampIso ? new Date(systemData.timestampIso).getTime() : 0);
-                        const userMetadata = user.metadata;
-                        const lastSignInTime = userMetadata?.lastSignInTime ? new Date(userMetadata.lastSignInTime).getTime() : Date.now();
-                        
-                        // If force logout was triggered after user's last sign in, log them out
-                        if (forceLogoutTime > 0 && forceLogoutTime > lastSignInTime) {
-                            console.log('Global force logout detected, signing out user');
-                            await signOut(auth);
-                            showLocationMismatchModal();
-                            return;
+                async function checkForceLogout() {
+                    try {
+                        // Check user-specific force logout flag first (more reliable)
+                        const userDoc = await getDoc(doc(db, 'users', user.uid));
+                        if (userDoc.exists()) {
+                            const userData = userDoc.data();
+                            if (userData.forceLogout === true) {
+                                console.log('User-specific force logout detected, signing out user');
+                                // Clear the flag
+                                await updateDoc(doc(db, 'users', user.uid), {
+                                    forceLogout: false
+                                });
+                                // Sign out
+                                await signOut(auth);
+                                showLocationMismatchModal();
+                                return true;
+                            }
                         }
+                        
+                        // Check global system settings
+                        const systemSettingsDoc = await getDoc(doc(db, 'system_settings', 'force_logout'));
+                        if (systemSettingsDoc.exists()) {
+                            const systemData = systemSettingsDoc.data();
+                            const forceLogoutTime = systemData.timestamp?.toDate ? systemData.timestamp.toDate().getTime() : 
+                                                   (systemData.timestampIso ? new Date(systemData.timestampIso).getTime() : 0);
+                            const userMetadata = user.metadata;
+                            const lastSignInTime = userMetadata?.lastSignInTime ? new Date(userMetadata.lastSignInTime).getTime() : Date.now();
+                            
+                            // If force logout was triggered after user's last sign in, log them out
+                            if (forceLogoutTime > 0 && forceLogoutTime > lastSignInTime) {
+                                console.log('Global force logout detected, signing out user');
+                                await signOut(auth);
+                                showLocationMismatchModal();
+                                return true;
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error checking force logout:', error);
                     }
-                    
-                    // Check user-specific force logout flag
-                    const userDoc = await getDoc(doc(db, 'users', user.uid));
-                    if (userDoc.exists()) {
-                        const userData = userDoc.data();
+                    return false;
+                }
+                
+                // Check immediately
+                const wasLoggedOut = await checkForceLogout();
+                if (wasLoggedOut) {
+                    return;
+                }
+                
+                // Set up real-time listener for force logout changes
+                const userDocRef = doc(db, 'users', user.uid);
+                let unsubscribeListener = null;
+                let forceLogoutCheckInterval = null;
+                
+                unsubscribeListener = onSnapshot(userDocRef, async (snapshot) => {
+                    if (snapshot.exists()) {
+                        const userData = snapshot.data();
                         if (userData.forceLogout === true) {
-                            console.log('User-specific force logout detected, signing out user');
+                            console.log('Force logout detected via real-time listener, signing out user');
+                            // Stop listening and clear interval
+                            if (unsubscribeListener) {
+                                unsubscribeListener();
+                            }
+                            if (forceLogoutCheckInterval) {
+                                clearInterval(forceLogoutCheckInterval);
+                            }
                             // Clear the flag
-                            await updateDoc(doc(db, 'users', user.uid), {
+                            await updateDoc(userDocRef, {
                                 forceLogout: false
                             });
                             // Sign out
                             await signOut(auth);
                             showLocationMismatchModal();
-                            return;
                         }
                     }
-                } catch (error) {
-                    console.error('Error checking force logout:', error);
-                }
+                }, (error) => {
+                    console.error('Error in force logout listener:', error);
+                });
+                
+                // Also set up periodic check every 5 seconds as backup
+                forceLogoutCheckInterval = setInterval(async () => {
+                    const wasLoggedOut = await checkForceLogout();
+                    if (wasLoggedOut) {
+                        if (forceLogoutCheckInterval) {
+                            clearInterval(forceLogoutCheckInterval);
+                        }
+                        if (unsubscribeListener) {
+                            unsubscribeListener();
+                        }
+                    }
+                }, 5000);
+                
+                // Clean up interval when user logs out or page unloads
+                window.addEventListener('beforeunload', () => {
+                    if (forceLogoutCheckInterval) {
+                        clearInterval(forceLogoutCheckInterval);
+                    }
+                    if (unsubscribeListener) {
+                        unsubscribeListener();
+                    }
+                });
                     
                     // Auth persistence is handled by Firebase; user data caching is handled below.
                     
