@@ -2578,17 +2578,17 @@
                 }, (err) => {
                     console.error('Live chat listener error:', err);
                     const msg = err?.message || String(err);
-                    const errorHtml = `
-                        <div class="text-gray-700 text-center py-8">
-                            <p class="font-semibold mb-2">Live chat failed to load</p>
-                            <p class="text-sm">${msg}</p>
-                            <p class="text-xs text-gray-500 mt-4">Admin Email: ${currentUser?.email || 'Not available'}</p>
-                            <p class="text-xs text-gray-500">Admin UID: ${currentUser?.uid || 'Not available'}</p>
-                            <button onclick="loadChats()" class="mt-4 px-4 py-2 text-white rounded-lg" style="background-color: #1e3a8a;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1e3a8a'">
-                                Retry
-                            </button>
-                        </div>
-                    `;
+                    const adminEmail = currentUser?.email || 'Not available';
+                    const adminUid = currentUser?.uid || 'Not available';
+                    const errorHtml = '<div class="text-gray-700 text-center py-8">' +
+                        '<p class="font-semibold mb-2">Live chat failed to load</p>' +
+                        '<p class="text-sm">' + msg + '</p>' +
+                        '<p class="text-xs text-gray-500 mt-4">Admin Email: ' + adminEmail + '</p>' +
+                        '<p class="text-xs text-gray-500">Admin UID: ' + adminUid + '</p>' +
+                        '<button onclick="loadChats()" class="mt-4 px-4 py-2 text-white rounded-lg" style="background-color: #1e3a8a;" onmouseover="this.style.backgroundColor=\'#172554\'" onmouseout="this.style.backgroundColor=\'#1e3a8a\'">' +
+                        'Retry' +
+                        '</button>' +
+                        '</div>';
                     document.getElementById('chatsList').innerHTML = errorHtml;
                     showError('Live chat failed to load: ' + msg);
                 });
@@ -5095,16 +5095,16 @@
                     updateLoanBadge(pendingCount);
                 }, (err) => {
                     console.error('Loan listener error:', err);
-                    const errorHtml = `
-                        <div class="text-gray-700 text-center py-8">
-                            <p class="font-semibold mb-2">Failed to load loan requests</p>
-                            <p class="text-sm">${err.message}</p>
-                            <p class="text-xs text-gray-500 mt-4">Admin Email: ${currentUser?.email || 'Not available'}</p>
-                            <button onclick="loadLoanRequests()" class="mt-4 px-4 py-2 text-white rounded-lg" style="background-color: #1e3a8a;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1e3a8a'">
-                                Retry
-                            </button>
-                        </div>
-                    `;
+                    const adminEmail = currentUser?.email || 'Not available';
+                    const errorMsg = err.message || 'Unknown error';
+                    const errorHtml = '<div class="text-gray-700 text-center py-8">' +
+                        '<p class="font-semibold mb-2">Failed to load loan requests</p>' +
+                        '<p class="text-sm">' + errorMsg + '</p>' +
+                        '<p class="text-xs text-gray-500 mt-4">Admin Email: ' + adminEmail + '</p>' +
+                        '<button onclick="loadLoanRequests()" class="mt-4 px-4 py-2 text-white rounded-lg" style="background-color: #1e3a8a;" onmouseover="this.style.backgroundColor=\'#172554\'" onmouseout="this.style.backgroundColor=\'#1e3a8a\'">' +
+                        'Retry' +
+                        '</button>' +
+                        '</div>';
                     document.getElementById('loansList').innerHTML = errorHtml;
                 });
             } catch (error) {
