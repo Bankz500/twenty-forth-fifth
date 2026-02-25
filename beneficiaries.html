@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Beneficiaries - Twenty Forth & Fifth</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon.png">
+    <link rel="icon" href="favicon.png" type="image/png">
+    <!-- Tailwind CSS -->
+    <script src="tailwind-mono.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --ttf-brand: #1e40af;
+            --ttf-brand-hover: #1e3a8a;
+        }
+        .bg-gray-900 { background-color: var(--ttf-brand) !important; }
+        .bg-gray-800 { background-color: var(--ttf-brand-hover) !important; }
+        .hover\:bg-gray-800:hover { background-color: var(--ttf-brand-hover) !important; }
+        .border-gray-900 { border-color: var(--ttf-brand) !important; }
+    </style>
+</head>
+<body class="font-sans antialiased" style="background-image: url('background 2.png');">
+
+<!-- Navbar -->
+<nav class="bg-white border-b border-gray-300 p-4 fixed top-0 w-full z-50 shadow-sm">
+    <div class="container mx-auto flex items-center justify-between">
+        <!-- Left Logo -->
+        <a href="index.html" class="flex items-center">
+            <img src="11.png" alt="Twenty Forth & Fifth Logo" class="h-14 md:h-16 w-auto">
+        </a>
+
+        <!-- Right Logo (WhatsApp) -->
+        <a href="mailto:bealbanking@gmail.com" class="flex items-center">
+            <img src="chat.png" alt="Gift Card Brand Logo" class="h-8 w-8">
+        </a>
+    </div>
+</nav>
+
+<!-- Spacer to prevent content overlap -->
+<div class="h-20"></div>
+
+<!-- Main Content -->
+<div class="container mx-auto px-4 py-6 pb-40 md:pb-32 max-w-6xl mt-12">
+    <!-- Header Section -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Saved Beneficiaries</h1>
+                <p class="text-gray-600 text-sm md:text-base">Manage your saved transfer recipients</p>
+            </div>
+            <button 
+                onclick="openAddBeneficiaryModal()"
+                class="hidden md:flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-lg"
+            >
+                <i class="fas fa-plus"></i>
+                <span>Add New</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Beneficiaries List -->
+    <div id="beneficiariesList" class="space-y-4">
+        <!-- Loading state -->
+        <div id="loadingState" class="text-center py-12">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <p class="mt-4 text-gray-600">Loading beneficiaries...</p>
+        </div>
+        
+        <!-- Empty state -->
+        <div id="emptyState" class="hidden text-center py-12 bg-white rounded-2xl shadow-lg border border-gray-200">
+            <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-users text-blue-600 text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">No Beneficiaries Yet</h3>
+            <p class="text-gray-600 mb-6">Start by adding your first beneficiary to make transfers faster</p>
+            <button 
+                onclick="openAddBeneficiaryModal()"
+                class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-lg"
+            >
+                <i class="fas fa-plus"></i>
+                <span>Add Your First Beneficiary</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Add Beneficiary Modal -->
+<div id="addBeneficiaryModal" class="hidden fixed inset-0 flex items-center justify-center" style="background-color: rgba(30, 64, 175, 0.55); z-index: 1000;">
+    <div class="bg-white rounded-2xl shadow-lg p-6 w-11/12 md:w-1/2 max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">Add New Beneficiary</h2>
+            <button 
+                onclick="closeAddBeneficiaryModal()"
+                class="text-gray-400 hover:text-gray-600 text-2xl"
+            >
+                &times;
+            </button>
+        </div>
+        
+        <form id="addBeneficiaryForm" class="space-y-4">
+            <div>
+                <label for="modalAccountName" class="block text-sm font-medium text-gray-700 mb-2">
+                    Account Holder Name <span class="text-red-500">*</span>
+                </label>
+                <input 
+                    type="text" 
+                    id="modalAccountName" 
+                    required
+                    class="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    placeholder="Enter account holder name"
+                />
+            </div>
+            
+            <div>
+                <label for="modalAccountNumber" class="block text-sm font-medium text-gray-700 mb-2">
+                    Account Number / IBAN <span class="text-red-500">*</span>
+                </label>
+                <input 
+                    type="text" 
+                    id="modalAccountNumber" 
+                    required
+                    class="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    placeholder="Enter account number"
+                />
+            </div>
+            
+            <div>
+                <label for="modalBankName" class="block text-sm font-medium text-gray-700 mb-2">
+                    Bank Name <span class="text-red-500">*</span>
+                </label>
+                <input 
+                    type="text" 
+                    id="modalBankName" 
+                    required
+                    class="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    placeholder="Enter bank name"
+                />
+            </div>
+            
+            <div>
+                <label for="modalSwiftCode" class="block text-sm font-medium text-gray-700 mb-2">
+                    SWIFT/BIC Code <span class="text-gray-500 text-xs">(Optional)</span>
+                </label>
+                <input 
+                    type="text" 
+                    id="modalSwiftCode" 
+                    class="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    placeholder="Enter SWIFT/BIC code"
+                />
+            </div>
+            
+            <div id="addBeneficiaryError" class="hidden p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm"></div>
+            
+            <div class="flex gap-3 pt-4">
+                <button 
+                    type="button"
+                    onclick="closeAddBeneficiaryModal()"
+                    class="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                >
+                    Cancel
+                </button>
+                <button 
+                    type="submit"
+                    class="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                >
+                    Save Beneficiary
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteConfirmModal" class="hidden fixed inset-0 flex items-center justify-center" style="background-color: rgba(30, 64, 175, 0.55); z-index: 1000;">
+    <div class="bg-white rounded-2xl shadow-lg p-6 w-11/12 md:w-1/3 max-w-md">
+        <div class="text-center">
+            <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Delete Beneficiary?</h3>
+            <p class="text-gray-600 mb-6">Are you sure you want to delete this beneficiary? This action cannot be undone.</p>
+            <div class="flex gap-3">
+                <button 
+                    onclick="closeDeleteConfirmModal()"
+                    class="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                >
+                    Cancel
+                </button>
+                <button 
+                    onclick="confirmDeleteBeneficiary()"
+                    class="flex-1 px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+                >
+                    Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mobile Add Button (Fixed at bottom, above navbar) -->
+<div class="md:hidden fixed bottom-24 left-0 right-0 px-4 z-50">
+    <button 
+        onclick="openAddBeneficiaryModal()"
+        class="w-full flex items-center justify-center gap-2 px-6 py-4 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors shadow-lg font-semibold"
+    >
+        <i class="fas fa-plus"></i>
+        <span>Add New Beneficiary</span>
+    </button>
+</div>
+
+<!-- Bottom Navbar (Mobile Friendly) -->
+<div class="mobile-nav fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-300 p-3" style="height: 100px; z-index: 100;">
+    <div class="flex justify-around items-center h-full">
+        <!-- Home Icon -->
+        <a href="dashboard.html" class="nav-item flex flex-col items-center" data-page="dashboard">
+            <div class="bg-white rounded p-2">
+                <img src="1221.png" alt="Wallet Icon" class="h-6 w-6" />
+            </div>
+            <span class="text-xs font-medium mt-2 text-gray-700">Home</span>
+        </a>
+        <!-- Deposit Icon -->
+        <a href="deposit.html" class="nav-item flex flex-col items-center" data-page="deposit">
+            <div class="bg-white rounded p-2">
+                <img src="deposit.png" alt="Deposit Icon" class="h-6 w-6" />
+            </div>
+            <span class="text-xs font-medium mt-2 text-gray-700">Deposit</span>
+        </a>
+        <!-- Support Icon -->
+        <a href="support.html" class="nav-item flex flex-col items-center" data-page="support">
+            <div class="bg-white rounded p-2">
+                <img src="support.png" alt="Support Icon" class="h-6 w-6" />
+            </div>
+            <span class="text-xs font-medium mt-2 text-gray-700">Support</span>
+        </a>
+        <!-- Profile Icon -->
+        <a href="profile.html" class="nav-item flex flex-col items-center" data-page="profile">
+            <div class="bg-white rounded p-2">
+                <img src="profile.png" alt="Profile Icon" class="h-6 w-6" />
+            </div>
+            <span class="text-xs font-medium mt-2 text-gray-700">Profile</span>
+        </a>
+    </div>
+</div>
+
+<script src="bottom-navbar.js"></script>
+
+<script type="module">
+    // Shared Firebase client (auth/db are consistent across all pages)
+    import { auth, db } from './firebase-client.js';
+    import { onAuthStateChanged, signOut } from 'firebase/auth';
+    import { collection, query, where, getDocs, addDoc, deleteDoc, doc, getDoc, serverTimestamp } from 'firebase/firestore';
+
+    // Back-compat globals for any non-module code on this page
+    window.auth = auth;
+    window.db = db;
+    window.firestoreHelpers = { collection, query, where, getDocs, addDoc, deleteDoc, doc, getDoc, serverTimestamp };
+
+    // Check if the user is authenticated
+    let authCheckComplete = false;
+    let hasSeenAuthenticatedUser = false;
+    let redirectTimeout = null;
+    
+    onAuthStateChanged(window.auth, async (user) => {
+        // Clear any pending redirect timeout
+        if (redirectTimeout) {
+            clearTimeout(redirectTimeout);
+            redirectTimeout = null;
+        }
+        
+        if (user) {
+            hasSeenAuthenticatedUser = true;
+            authCheckComplete = true;
+            loadBeneficiaries();
+        } else {
+            // Only redirect if we've never seen an authenticated user
+            if (!authCheckComplete) {
+                // Wait a bit for Firebase to initialize
+                await new Promise(resolve => setTimeout(resolve, 500));
+                authCheckComplete = true;
+            }
+            
+            // Only redirect if we've never seen an authenticated user AND current user is still null
+            if (!hasSeenAuthenticatedUser) {
+                redirectTimeout = setTimeout(() => {
+                    // Final verification - check auth state one more time before redirecting
+                    const currentUser = window.auth.currentUser;
+                    if (!currentUser && !hasSeenAuthenticatedUser) {
+                        console.log('No user signed in after verification. Redirecting to sign-in page.');
+                        window.location.href = 'login.html';
+                    } else if (currentUser) {
+                        // If user became authenticated during the delay, cancel redirect
+                        console.log('Auth state changed - user is now authenticated, canceling redirect');
+                        hasSeenAuthenticatedUser = true;
+                    }
+                }, 1000); // Delay to allow Firebase to fully initialize
+            }
+        }
+    });
+
+    // Load beneficiaries from Firestore
+    async function loadBeneficiaries() {
+        try {
+            const user = window.auth.currentUser;
+            if (!user) {
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('emptyState').classList.remove('hidden');
+                return;
+            }
+
+            const { collection, query, where, getDocs } = window.firestoreHelpers;
+            const beneficiariesRef = collection(window.db, 'beneficiaries');
+            const q = query(beneficiariesRef, where('userId', '==', user.uid));
+            const querySnapshot = await getDocs(q);
+
+            const beneficiariesList = document.getElementById('beneficiariesList');
+            const loadingState = document.getElementById('loadingState');
+            const emptyState = document.getElementById('emptyState');
+
+            loadingState.classList.add('hidden');
+
+            if (querySnapshot.empty) {
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+
+            // Clear existing beneficiaries (except loading/empty states)
+            const existingCards = beneficiariesList.querySelectorAll('.beneficiary-card');
+            existingCards.forEach(card => card.remove());
+
+            // Create beneficiary cards
+            querySnapshot.docs.forEach((docSnapshot) => {
+                const data = docSnapshot.data();
+                const beneficiaryCard = createBeneficiaryCard(docSnapshot.id, data);
+                beneficiariesList.appendChild(beneficiaryCard);
+            });
+
+        } catch (error) {
+            console.error('Error loading beneficiaries:', error);
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('emptyState').classList.remove('hidden');
+        }
+    }
+
+    // Create beneficiary card element
+    function createBeneficiaryCard(beneficiaryId, data) {
+        const card = document.createElement('div');
+        card.className = 'beneficiary-card bg-white rounded-2xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-shadow';
+        
+        const createdAt = data.createdAtIso 
+            ? new Date(data.createdAtIso).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+            : 'Recently added';
+        
+        card.innerHTML = `
+            <div class="flex items-start justify-between mb-4">
+                <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-1">${escapeHtml(data.accountName || 'N/A')}</h3>
+                    <p class="text-sm text-gray-600">${escapeHtml(data.bankName || 'N/A')}</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button 
+                        onclick="useBeneficiary('${beneficiaryId}')"
+                        class="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                    >
+                        <i class="fas fa-paper-plane mr-1"></i>
+                        Use for Transfer
+                    </button>
+                    <button 
+                        onclick="deleteBeneficiary('${beneficiaryId}')"
+                        class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        title="Delete beneficiary"
+                    >
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="space-y-2 text-sm">
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-500">Account Number:</span>
+                    <span class="text-gray-900 font-medium">${escapeHtml(data.accountNumber || 'N/A')}</span>
+                </div>
+                ${data.swiftCode ? `
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-500">SWIFT Code:</span>
+                    <span class="text-gray-900 font-medium">${escapeHtml(data.swiftCode)}</span>
+                </div>
+                ` : ''}
+                <div class="flex items-center justify-between pt-2 border-t border-gray-200">
+                    <span class="text-gray-500">Added:</span>
+                    <span class="text-gray-600">${createdAt}</span>
+                </div>
+            </div>
+        `;
+        
+        return card;
+    }
+
+    // Escape HTML to prevent XSS
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Use beneficiary for transfer
+    window.useBeneficiary = async function(beneficiaryId) {
+        try {
+            const { doc, getDoc } = window.firestoreHelpers;
+            const beneficiaryRef = doc(window.db, 'beneficiaries', beneficiaryId);
+            const beneficiarySnap = await getDoc(beneficiaryRef);
+            
+            if (beneficiarySnap.exists()) {
+                const beneficiaryData = beneficiarySnap.data();
+                // Store in sessionStorage to pass to transfer page
+                sessionStorage.setItem('selectedBeneficiary', JSON.stringify(beneficiaryData));
+                // Navigate to transfer page
+                window.location.href = 'transfer.html';
+            } else {
+                alert('Beneficiary not found.');
+            }
+        } catch (error) {
+            console.error('Error loading beneficiary:', error);
+            alert('Error loading beneficiary. Please try again.');
+        }
+    };
+
+    // Delete beneficiary
+    let beneficiaryToDelete = null;
+    window.deleteBeneficiary = function(beneficiaryId) {
+        beneficiaryToDelete = beneficiaryId;
+        document.getElementById('deleteConfirmModal').classList.remove('hidden');
+    };
+
+    window.confirmDeleteBeneficiary = async function() {
+        if (!beneficiaryToDelete) return;
+
+        try {
+            const { deleteDoc, doc } = window.firestoreHelpers;
+            await deleteDoc(doc(window.db, 'beneficiaries', beneficiaryToDelete));
+            closeDeleteConfirmModal();
+            loadBeneficiaries(); // Reload the list
+        } catch (error) {
+            console.error('Error deleting beneficiary:', error);
+            alert('Error deleting beneficiary. Please try again.');
+        }
+    };
+
+    window.closeDeleteConfirmModal = function() {
+        document.getElementById('deleteConfirmModal').classList.add('hidden');
+        beneficiaryToDelete = null;
+    };
+
+    // Add beneficiary modal functions
+    window.openAddBeneficiaryModal = function() {
+        document.getElementById('addBeneficiaryModal').classList.remove('hidden');
+        document.getElementById('addBeneficiaryForm').reset();
+        document.getElementById('addBeneficiaryError').classList.add('hidden');
+    };
+
+    window.closeAddBeneficiaryModal = function() {
+        document.getElementById('addBeneficiaryModal').classList.add('hidden');
+        document.getElementById('addBeneficiaryForm').reset();
+        document.getElementById('addBeneficiaryError').classList.add('hidden');
+    };
+
+    // Handle add beneficiary form submission
+    document.getElementById('addBeneficiaryForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const accountName = document.getElementById('modalAccountName').value.trim();
+        const accountNumber = document.getElementById('modalAccountNumber').value.trim();
+        const bankName = document.getElementById('modalBankName').value.trim();
+        const swiftCode = document.getElementById('modalSwiftCode').value.trim();
+        const errorElement = document.getElementById('addBeneficiaryError');
+        
+        // Validation
+        if (!accountName || !accountNumber || !bankName) {
+            errorElement.textContent = 'Please fill in all required fields.';
+            errorElement.classList.remove('hidden');
+            return;
+        }
+
+        try {
+            const user = window.auth.currentUser;
+            if (!user) {
+                throw new Error('Please log in to continue');
+            }
+
+            // Check if beneficiary already exists
+            const { collection, query, where, getDocs } = window.firestoreHelpers;
+            const beneficiariesRef = collection(window.db, 'beneficiaries');
+            const q = query(beneficiariesRef, where('userId', '==', user.uid));
+            const querySnapshot = await getDocs(q);
+            
+            const exists = querySnapshot.docs.some(doc => {
+                const data = doc.data();
+                return data.accountName === accountName && data.accountNumber === accountNumber;
+            });
+
+            if (exists) {
+                errorElement.textContent = 'This beneficiary is already saved.';
+                errorElement.classList.remove('hidden');
+                return;
+            }
+
+            // Add beneficiary
+            const { addDoc, serverTimestamp } = window.firestoreHelpers;
+            const beneficiaryData = {
+                userId: user.uid,
+                accountName: accountName,
+                accountNumber: accountNumber,
+                bankName: bankName,
+                swiftCode: swiftCode || '',
+                createdAt: serverTimestamp(),
+                createdAtIso: new Date().toISOString()
+            };
+
+            await addDoc(collection(window.db, 'beneficiaries'), beneficiaryData);
+            
+            // Close modal and reload list
+            closeAddBeneficiaryModal();
+            loadBeneficiaries();
+
+        } catch (error) {
+            console.error('Error adding beneficiary:', error);
+            errorElement.textContent = error.message || 'Error adding beneficiary. Please try again.';
+            errorElement.classList.remove('hidden');
+        }
+    });
+
+    // Make loadBeneficiaries globally available
+    window.loadBeneficiaries = loadBeneficiaries;
+</script>
+
+<!-- Inactivity Timeout: Auto-logout after 5 minutes of inactivity -->
+<script src="inactivity-timeout.js"></script>
+</body>
+</html>
+

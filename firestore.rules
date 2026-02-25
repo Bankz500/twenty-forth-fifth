@@ -280,6 +280,27 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
     
+    // Beneficiaries collection - users can manage their own beneficiaries
+    match /beneficiaries/{beneficiaryId} {
+      // Allow authenticated users to create beneficiaries for themselves
+      allow create: if request.auth != null 
+                     && request.resource.data.userId == request.auth.uid;
+      
+      // Allow authenticated users to list/query beneficiaries
+      allow list: if isAdmin() || request.auth != null;
+      
+      // Allow users to read their own beneficiaries
+      allow get: if isAdmin()
+                  || (request.auth != null && resource.data.userId == request.auth.uid);
+      
+      // Allow users to update/delete their own beneficiaries
+      allow update, delete: if request.auth != null 
+                             && resource.data.userId == request.auth.uid;
+      
+      // Allow admins full access
+      allow update, delete: if isAdmin();
+    }
+    
     // Default deny all other access
     match /{document=**} {
       allow read, write: if false;

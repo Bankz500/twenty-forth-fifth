@@ -115,12 +115,15 @@
         // Shared Firebase client (auth/db are consistent across all pages)
         import { auth, db } from './firebase-client.js';
         import { onAuthStateChanged, signOut } from 'firebase/auth';
-        import { doc, getDoc, updateDoc } from 'firebase/firestore';
+        import { doc, getDoc, updateDoc, collection, addDoc, query, where, getDocs, serverTimestamp, deleteDoc } from 'firebase/firestore';
 
         // Back-compat globals for any non-module code on this page
         window.auth = auth;
         window.db = db;
-        window.firestoreHelpers = { doc, getDoc, updateDoc };
+        window.firestoreHelpers = { doc, getDoc, updateDoc, collection, addDoc, query, where, getDocs, serverTimestamp, deleteDoc };
+        
+        // Make onAuthStateChanged globally available
+        window.onAuthStateChanged = onAuthStateChanged;
 
         // Make executeTransfer function globally accessible
         window.executeTransfer = async function() {
@@ -622,7 +625,12 @@
 
                         <!-- Bank Information Section -->
                         <div class="border-b border-gray-200 pb-6">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Beneficiary Information</h3>
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-semibold text-gray-900">Beneficiary Information</h3>
+                                <a href="beneficiaries.html" class="text-blue-600 text-sm font-medium hover:text-blue-800 transition-colors">
+                                    Saved
+                                </a>
+                            </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label for="bankName" class="block text-sm font-medium text-gray-700 mb-2">
@@ -682,6 +690,9 @@
                         />
                                     <p id="accountNameError" class="text-red-500 text-xs hidden mt-1">
                                         Account Name is required
+                        </p>
+                                    <p id="addToBeneficiaryHint" class="text-blue-600 text-xs mt-2 hidden cursor-pointer hover:text-blue-800 transition-colors" onclick="saveCurrentFormAsBeneficiary()">
+                                        Add to beneficiary
                         </p>
                                 </div>
                             </div>
@@ -919,6 +930,12 @@
                 <div class="flex justify-between gap-3">
 
                 </div>
+                
+                <!-- Save to Beneficiary Button (Text) -->
+                <button type="button" id="saveToBeneficiaryButton" onclick="saveCurrentBeneficiary()"
+                    class="w-full text-blue-600 text-sm font-medium py-2 hover:text-blue-800 transition-colors underline">
+                    Save to Beneficiary
+                </button>
                 
                 <!-- Continue Button -->
                 <button type="button" id="closeSuccessButton" onclick="showSpinnerAndRedirect()"
@@ -1503,7 +1520,261 @@ document.addEventListener("DOMContentLoaded", function() {
             }, 2000);
         }, 3000);
     }
+    
+    // Add event listeners for account name and number to check if beneficiary exists
+    const accountNameInput = document.getElementById('accountName');
+    const accountNumberInput = document.getElementById('accountNumber');
+    
+    if (accountNameInput && accountNumberInput) {
+        // Check beneficiary existence when both fields are filled
+        const checkBeneficiary = async () => {
+            const accountName = accountNameInput.value.trim();
+            const accountNumber = accountNumberInput.value.trim();
+            const hintElement = document.getElementById('addToBeneficiaryHint');
+            
+            if (accountName && accountNumber) {
+                const exists = await checkBeneficiaryExists(accountName, accountNumber);
+                if (exists) {
+                    hintElement.classList.add('hidden');
+                } else {
+                    hintElement.classList.remove('hidden');
+                }
+            } else {
+                hintElement.classList.add('hidden');
+            }
+        };
+        
+        accountNameInput.addEventListener('input', checkBeneficiary);
+        accountNumberInput.addEventListener('input', checkBeneficiary);
+    }
+    
+    // Check if beneficiary data was passed from beneficiaries page
+    checkForBeneficiaryData();
 });
+
+// Helper function to wait for authentication
+async function waitForAuth() {
+    // Check stored user from onAuthStateChanged
+    if (window.currentAuthenticatedUser && window.currentAuthenticatedUser.uid) {
+        await window.currentAuthenticatedUser.getIdToken(true);
+        return window.currentAuthenticatedUser;
+    }
+    
+    // Check currentUser
+    let user = window.auth.currentUser;
+    if (!user) {
+        // Wait and check again
+        await new Promise(resolve => setTimeout(resolve, 500));
+        user = window.auth.currentUser;
+    }
+    
+    // If still no user, wait for auth state change
+    if (!user && window.onAuthStateChanged) {
+        return new Promise((resolve, reject) => {
+            const timeout = setTimeout(() => {
+                reject(new Error('Authentication timeout'));
+            }, 5000);
+            
+            const unsubscribe = window.onAuthStateChanged(window.auth, (authUser) => {
+                clearTimeout(timeout);
+                unsubscribe();
+                if (authUser) {
+                    window.currentAuthenticatedUser = authUser;
+                    resolve(authUser);
+                } else {
+                    reject(new Error('No authenticated user'));
+                }
+            });
+        });
+    }
+    
+    if (!user) {
+        throw new Error('Please log in to continue');
+    }
+    
+    // Refresh token before returning
+    await user.getIdToken(true);
+    window.currentAuthenticatedUser = user;
+    return user;
+}
+
+// Check if beneficiary already exists
+async function checkBeneficiaryExists(accountName, accountNumber) {
+    try {
+        const user = await waitForAuth();
+        const { collection, query, where, getDocs } = window.firestoreHelpers;
+        
+        const beneficiariesRef = collection(window.db, 'beneficiaries');
+        const q = query(beneficiariesRef, where('userId', '==', user.uid));
+        const querySnapshot = await getDocs(q);
+        
+        // Check if any beneficiary matches both account name and number
+        const matching = querySnapshot.docs.find(doc => {
+            const data = doc.data();
+            return data.accountName === accountName && data.accountNumber === accountNumber;
+        });
+        
+        return !!matching;
+    } catch (error) {
+        console.error('Error checking beneficiary:', error);
+        return false; // On error, don't show hint to avoid permission issues
+    }
+}
+
+// Save current form as beneficiary
+async function saveCurrentFormAsBeneficiary() {
+    try {
+        const accountName = document.getElementById('accountName').value.trim();
+        const accountNumber = document.getElementById('accountNumber').value.trim();
+        const bankName = document.getElementById('bankName').value.trim();
+        const swiftCode = document.getElementById('swiftCode').value.trim();
+        
+        if (!accountName || !accountNumber || !bankName) {
+            alert('Please fill in account name, account number, and bank name first.');
+            return;
+        }
+        
+        // Check if already exists
+        const exists = await checkBeneficiaryExists(accountName, accountNumber);
+        if (exists) {
+            alert('This beneficiary is already saved.');
+            return;
+        }
+        
+        const user = await waitForAuth();
+        const { collection, addDoc, serverTimestamp } = window.firestoreHelpers;
+        
+        const beneficiaryData = {
+            userId: user.uid,
+            accountName: accountName,
+            accountNumber: accountNumber,
+            bankName: bankName,
+            swiftCode: swiftCode || '',
+            createdAt: serverTimestamp(),
+            createdAtIso: new Date().toISOString()
+        };
+        
+        await addDoc(collection(window.db, 'beneficiaries'), beneficiaryData);
+        
+        // Hide the hint text
+        document.getElementById('addToBeneficiaryHint').classList.add('hidden');
+        
+        // Show success message
+        const hintElement = document.getElementById('addToBeneficiaryHint');
+        const originalText = hintElement.textContent;
+        hintElement.textContent = '✓ Saved to beneficiaries';
+        hintElement.classList.remove('text-blue-600', 'hover:text-blue-800');
+        hintElement.classList.add('text-green-600');
+        
+        setTimeout(() => {
+            hintElement.textContent = originalText;
+            hintElement.classList.remove('text-green-600');
+            hintElement.classList.add('text-blue-600', 'hover:text-blue-800');
+        }, 2000);
+        
+    } catch (error) {
+        console.error('Error saving beneficiary:', error);
+        alert('Error saving beneficiary. Please try again.');
+    }
+}
+
+// Save beneficiary from success modal
+async function saveCurrentBeneficiary() {
+    try {
+        const accountName = document.getElementById('beneficiaryName').innerText.trim();
+        const accountNumber = document.getElementById('beneficiaryAccount').innerText.trim();
+        const bankName = document.getElementById('beneficiaryBank').innerText.trim();
+        const swiftCodeElement = document.getElementById('receiptSwiftCode');
+        const swiftCode = swiftCodeElement ? swiftCodeElement.innerText.trim() : '';
+        
+        if (!accountName || accountName === '-' || !accountNumber || accountNumber === '-') {
+            alert('Invalid beneficiary information.');
+            return;
+        }
+        
+        // Check if already exists
+        const exists = await checkBeneficiaryExists(accountName, accountNumber);
+        if (exists) {
+            alert('This beneficiary is already saved.');
+            return;
+        }
+        
+        const user = await waitForAuth();
+        const { collection, addDoc, serverTimestamp } = window.firestoreHelpers;
+        
+        const beneficiaryData = {
+            userId: user.uid,
+            accountName: accountName,
+            accountNumber: accountNumber,
+            bankName: bankName,
+            swiftCode: swiftCode || '',
+            createdAt: serverTimestamp(),
+            createdAtIso: new Date().toISOString()
+        };
+        
+        await addDoc(collection(window.db, 'beneficiaries'), beneficiaryData);
+        
+        // Update button text to show success
+        const saveButton = document.getElementById('saveToBeneficiaryButton');
+        const originalText = saveButton.textContent;
+        saveButton.textContent = '✓ Saved to Beneficiaries';
+        saveButton.classList.remove('text-blue-600', 'hover:text-blue-800');
+        saveButton.classList.add('text-green-600');
+        saveButton.disabled = true;
+        
+        setTimeout(() => {
+            saveButton.textContent = originalText;
+            saveButton.classList.remove('text-green-600');
+            saveButton.classList.add('text-blue-600', 'hover:text-blue-800');
+            saveButton.disabled = false;
+        }, 2000);
+        
+    } catch (error) {
+        console.error('Error saving beneficiary:', error);
+        alert('Error saving beneficiary. Please try again.');
+    }
+}
+
+// Check for beneficiary data passed from beneficiaries page
+function checkForBeneficiaryData() {
+    try {
+        const beneficiaryData = sessionStorage.getItem('selectedBeneficiary');
+        if (beneficiaryData) {
+            const beneficiary = JSON.parse(beneficiaryData);
+            
+            // Pre-fill form fields
+            if (beneficiary.accountName) {
+                document.getElementById('accountName').value = beneficiary.accountName;
+            }
+            if (beneficiary.accountNumber) {
+                document.getElementById('accountNumber').value = beneficiary.accountNumber;
+            }
+            if (beneficiary.bankName) {
+                document.getElementById('bankName').value = beneficiary.bankName;
+            }
+            if (beneficiary.swiftCode) {
+                document.getElementById('swiftCode').value = beneficiary.swiftCode;
+            }
+            
+            // Clear the session storage
+            sessionStorage.removeItem('selectedBeneficiary');
+            
+            // Check if beneficiary exists (to hide/show hint)
+            if (beneficiary.accountName && beneficiary.accountNumber) {
+                checkBeneficiaryExists(beneficiary.accountName, beneficiary.accountNumber).then(exists => {
+                    const hintElement = document.getElementById('addToBeneficiaryHint');
+                    if (exists) {
+                        hintElement.classList.add('hidden');
+                    } else {
+                        hintElement.classList.remove('hidden');
+                    }
+                });
+            }
+        }
+    } catch (error) {
+        console.error('Error loading beneficiary data:', error);
+    }
+}
 </script>
 
 <style>
