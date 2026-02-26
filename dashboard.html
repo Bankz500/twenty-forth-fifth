@@ -1543,12 +1543,44 @@
                         if (section) section.style.opacity = '0.6';
                     });
                     
+                    // Update lastActive timestamp to track currently logged in users
+                    const updateLastActive = async () => {
+                        try {
+                            const { updateDoc, serverTimestamp } = window.firestoreHelpers;
+                            const userDocRef = doc(db, 'users', user.uid);
+                            await updateDoc(userDocRef, {
+                                lastActive: serverTimestamp(),
+                                lastActiveIso: new Date().toISOString()
+                            });
+                        } catch (error) {
+                            console.error('Error updating lastActive:', error);
+                            // Don't block if this fails
+                        }
+                    };
+                    
+                    // Update immediately
+                    await updateLastActive();
+                    
+                    // Update every 2 minutes while user is on dashboard (to track active sessions)
+                    const lastActiveInterval = setInterval(() => {
+                        if (auth.currentUser && auth.currentUser.uid === user.uid) {
+                            updateLastActive();
+                        } else {
+                            clearInterval(lastActiveInterval);
+                        }
+                    }, 2 * 60 * 1000); // Every 2 minutes
+                    
+                    // Clear interval on page unload
+                    window.addEventListener('beforeunload', () => {
+                        clearInterval(lastActiveInterval);
+                    });
+                    
                     // Fetch user data from Firestore
                     await loadUserDataFromFirestore(user);
                     
                     // Check for loan application status
                     checkLoanApplicationStatus(user);
-
+                    
                     // Debit card progress bar (pending approval)
                     setupDebitCardProgress(user);
                     

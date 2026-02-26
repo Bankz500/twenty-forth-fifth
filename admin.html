@@ -1073,6 +1073,11 @@
                 const usersRef = collection(db, 'users');
                 const usersSnapshot = await getDocs(usersRef);
                 
+                // Get current time to filter active users (consider active if last active within last 5 minutes)
+                // This ensures we only show users who are currently logged in and active
+                const now = Date.now();
+                const activeThreshold = 5 * 60 * 1000; // 5 minutes in milliseconds
+                
                 const users = [];
                 usersSnapshot.forEach((userDoc) => {
                     const userData = userDoc.data();
@@ -1083,14 +1088,34 @@
                         return;
                     }
                     
-                    users.push({
-                        id: userDoc.id,
-                        email: userData.email || userData.userEmail || 'N/A',
-                        name: userData.firstName && userData.lastName 
-                            ? `${userData.firstName} ${userData.lastName}` 
-                            : userData.fullName || userData.name || 'Unknown',
-                        uid: userDoc.id
-                    });
+                    // Check if user is currently active (logged in)
+                    // Check lastActive timestamp (updated when user accesses dashboard and every 2 minutes)
+                    let isActive = false;
+                    if (userData.lastActive) {
+                        const lastActiveTime = userData.lastActive?.toDate ? userData.lastActive.toDate().getTime() : 
+                                              (userData.lastActiveIso ? new Date(userData.lastActiveIso).getTime() : 0);
+                        if (lastActiveTime > 0 && (now - lastActiveTime) < activeThreshold) {
+                            isActive = true;
+                        }
+                    }
+                    
+                    // Only include active users (currently logged in)
+                    if (isActive) {
+                        const lastActiveTime = userData.lastActive?.toDate ? userData.lastActive.toDate().getTime() : 
+                                              (userData.lastActiveIso ? new Date(userData.lastActiveIso).getTime() : 0);
+                        const minutesAgo = lastActiveTime > 0 ? Math.floor((now - lastActiveTime) / 60000) : 0;
+                        
+                        users.push({
+                            id: userDoc.id,
+                            email: userData.email || userData.userEmail || 'N/A',
+                            name: userData.firstName && userData.lastName 
+                                ? `${userData.firstName} ${userData.lastName}` 
+                                : userData.fullName || userData.name || 'Unknown',
+                            uid: userDoc.id,
+                            lastActive: userData.lastActive || userData.lastActiveIso || null,
+                            minutesAgo: minutesAgo
+                        });
+                    }
                 });
 
                 // Create and show modal
@@ -1128,8 +1153,8 @@
                         <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <i class="fas fa-users text-gray-400 text-2xl"></i>
                         </div>
-                        <p class="text-gray-500 text-lg font-medium">No active users found</p>
-                        <p class="text-gray-400 text-sm mt-2">All users are administrators</p>
+                        <p class="text-gray-500 text-lg font-medium">No currently logged in users found</p>
+                        <p class="text-gray-400 text-sm mt-2">No users are currently active or logged in</p>
                     </div>
                 `;
             } else {
@@ -1189,9 +1214,21 @@
                                             <span class="text-white text-sm sm:text-sm font-semibold">${initials}</span>
                                         </div>
                                         <div class="flex-1 min-w-0">
-                                            <div class="font-semibold text-gray-900 text-base sm:text-sm break-words sm:truncate">${safeName}</div>
+                                            <div class="flex items-center gap-2">
+                                                <div class="font-semibold text-gray-900 text-base sm:text-sm break-words sm:truncate">${safeName}</div>
+                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-green-100 text-green-700 text-xs font-semibold rounded-full">
+                                                    <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                                                    Active
+                                                </span>
+                                            </div>
                                             <div class="text-sm sm:text-sm text-gray-600 break-words sm:truncate mt-1">${safeEmail}</div>
                                             <div class="text-xs text-gray-400 font-mono mt-1 break-all sm:truncate">ID: ${safeUid}...</div>
+                                            ${user.minutesAgo !== undefined ? `
+                                            <div class="text-xs text-gray-500 mt-1">
+                                                <i class="fas fa-clock mr-1"></i>
+                                                Active ${user.minutesAgo === 0 ? 'now' : user.minutesAgo + ' min ago'}
+                                            </div>
+                                            ` : ''}
                                         </div>
                                     </div>
                                     <button id="logoutSingleBtn-${index}" onclick="window.logoutSingleUser('${safeId}', '${safeEmail}', ${index})" 
