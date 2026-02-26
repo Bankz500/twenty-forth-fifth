@@ -61,7 +61,7 @@ chatStyles.textContent = `
             max-width: 400px !important;
             height: calc(100vh - 120px) !important;
             max-height: 600px !important;
-            bottom: 80px !important;
+            bottom: 140px !important;
             right: 12px !important;
             left: auto !important;
         }
@@ -234,7 +234,7 @@ class LiveChatWidget {
         widget.id = 'liveChatWidget';
         widget.innerHTML = `
             <!-- Chat Button (always visible) -->
-            <button id="chatToggleBtn" class="fixed bottom-20 right-6 w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 rounded-full shadow-xl flex items-center justify-center transition-all z-50 group hover:scale-110 hover:shadow-2xl" style="box-shadow: 0 10px 25px rgba(30, 64, 175, 0.4);">
+            <button id="chatToggleBtn" class="fixed bottom-32 right-6 w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 rounded-full shadow-xl flex items-center justify-center transition-all z-50 group hover:scale-110 hover:shadow-2xl" style="box-shadow: 0 10px 25px rgba(30, 64, 175, 0.4);">
                 <div class="relative">
                     <img src="chat bot.png" alt="Chat Support" class="w-10 h-10 object-contain drop-shadow-sm" onerror="this.onerror=null; this.src='chat icon.png'; this.onerror=function() { this.style.display='none'; this.nextElementSibling.style.display='block'; }">
                     <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-sm hidden">
@@ -255,7 +255,7 @@ class LiveChatWidget {
             </button>
 
             <!-- Chat Window -->
-            <div id="chatWindow" class="fixed bottom-24 right-6 w-96 h-[600px] bg-white rounded-2xl shadow-2xl flex flex-col hidden z-50 border border-gray-100 overflow-hidden" style="box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);">
+            <div id="chatWindow" class="fixed bottom-36 right-6 w-96 h-[600px] bg-white rounded-2xl shadow-2xl flex flex-col hidden z-50 border border-gray-100 overflow-hidden" style="box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);">
                 <!-- Header -->
                 <div class="bg-gradient-to-r from-blue-600 to-blue-600 text-white p-4 flex items-center justify-between">
                     <div class="flex items-center gap-3">

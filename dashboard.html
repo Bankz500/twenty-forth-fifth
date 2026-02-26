@@ -881,57 +881,181 @@
         window.firestoreHelpers = { addDoc, collection, serverTimestamp, doc, getDoc, updateDoc, setDoc, deleteDoc };
 
         // Show location mismatch modal
+        // Global flag to prevent redirect when modal is showing
+        window.locationMismatchModalShowing = false;
+
         function showLocationMismatchModal() {
+            // Set flag to prevent automatic redirect
+            window.locationMismatchModalShowing = true;
+            
+            // Clear any pending redirect timeouts
+            if (window.redirectTimeout) {
+                clearTimeout(window.redirectTimeout);
+                window.redirectTimeout = null;
+            }
+            
             // Remove existing modal if any
             const existingModal = document.getElementById('locationMismatchModal');
             if (existingModal) {
                 existingModal.remove();
             }
 
+            // Lock body scroll to keep modal as focus
+            document.body.style.overflow = 'hidden';
+            document.body.style.position = 'fixed';
+            document.body.style.width = '100%';
+
             const modal = document.createElement('div');
             modal.id = 'locationMismatchModal';
-            modal.className = 'fixed inset-0 bg-black bg-opacity-60 z-[9999] flex items-center justify-center p-4';
+            modal.className = 'fixed inset-0 bg-black bg-opacity-60 z-[9999] flex items-center justify-center p-4 animate-fadeIn';
+            modal.style.pointerEvents = 'auto';
+            modal.style.display = 'flex';
             modal.innerHTML = `
-                <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full transform transition-all">
-                    <div class="p-6">
-                        <div class="flex items-center justify-center mb-4">
-                            <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
-                                <i class="fas fa-exclamation-triangle text-red-600 text-3xl"></i>
+                <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full transform transition-all scale-100 animate-scaleIn" style="pointer-events: auto;">
+                    <div class="p-6 sm:p-8">
+                        <div class="flex items-center justify-center mb-6">
+                            <div class="w-20 h-20 bg-gradient-to-br from-red-100 to-red-50 rounded-full flex items-center justify-center shadow-lg">
+                                <i class="fas fa-exclamation-triangle text-red-600 text-4xl"></i>
                             </div>
                         </div>
-                        <h2 class="text-2xl font-bold text-gray-900 text-center mb-3">Location Mismatch</h2>
-                        <p class="text-gray-600 text-center mb-6">
-                            You have been logged out due to location mismatch. Please contact support or try logging in from the correct user location.
+                        <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-4">
+                            <span class="underline decoration-2 decoration-red-500 underline-offset-4">Location Mismatch</span>
+                        </h2>
+                        <p class="text-gray-700 text-center mb-6 text-sm sm:text-base leading-relaxed">
+                            You have been logged out due to 
+                            <span class="underline decoration-2 decoration-red-500 underline-offset-2 font-semibold cursor-pointer hover:text-red-600 transition-colors" onclick="window.location.href='contact.html'" style="pointer-events: auto;">location mismatch</span>. 
+                            Please 
+                            <a href="contact.html" class="underline decoration-2 decoration-blue-500 underline-offset-2 font-semibold text-blue-600 hover:text-blue-700 transition-colors cursor-pointer" style="pointer-events: auto;">contact support</a> 
+                            or try logging in from the correct user location.
                         </p>
                         <div class="flex flex-col sm:flex-row gap-3">
-                            <button onclick="window.location.href='contact.html'" 
-                                    class="flex-1 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2">
+                            <button id="contactSupportBtn" 
+                                    class="flex-1 px-5 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105"
+                                    style="pointer-events: auto;">
                                 <i class="fas fa-headset"></i>
-                                Contact Support
+                                <span>Contact Support</span>
                             </button>
-                            <button onclick="window.location.href='login.html'" 
-                                    class="flex-1 px-4 py-3 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2">
+                            <button id="goToLoginBtn" 
+                                    class="flex-1 px-5 py-3.5 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105"
+                                    style="pointer-events: auto;">
                                 <i class="fas fa-sign-in-alt"></i>
-                                Go to Login
+                                <span>Go to Login</span>
                             </button>
                         </div>
                     </div>
                 </div>
             `;
+            
+            // Add animation styles if not already present
+            if (!document.getElementById('locationMismatchModalStyles')) {
+                const style = document.createElement('style');
+                style.id = 'locationMismatchModalStyles';
+                style.textContent = `
+                    @keyframes fadeIn {
+                        from { opacity: 0; }
+                        to { opacity: 1; }
+                    }
+                    @keyframes scaleIn {
+                        from { transform: scale(0.95); opacity: 0; }
+                        to { transform: scale(1); opacity: 1; }
+                    }
+                    .animate-fadeIn {
+                        animation: fadeIn 0.3s ease-out;
+                    }
+                    .animate-scaleIn {
+                        animation: scaleIn 0.3s ease-out;
+                    }
+                    #locationMismatchModal {
+                        pointer-events: auto !important;
+                    }
+                    #locationMismatchModal * {
+                        pointer-events: auto !important;
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
             document.body.appendChild(modal);
 
-            // Prevent closing by clicking outside
+            // Prevent closing by clicking outside - modal stays until user clicks a button
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
                     // Don't close on background click - force user to click a button
+                    e.stopPropagation();
+                    e.preventDefault();
                 }
             });
 
+            // Prevent any automatic removal - ensure modal stays visible
+            // Make sure no other code can remove this modal automatically
+            const originalRemove = modal.remove;
+            modal.remove = function() {
+                // Only allow removal if explicitly called from button click
+                if (modal.dataset.allowRemove === 'true') {
+                    originalRemove.call(this);
+                    document.body.style.overflow = '';
+                    document.body.style.position = '';
+                    document.body.style.width = '';
+                }
+            };
+
             // Add animation
             setTimeout(() => {
-                modal.querySelector('.bg-white').style.transform = 'scale(1)';
-                modal.querySelector('.bg-white').style.opacity = '1';
+                const whiteCard = modal.querySelector('.bg-white');
+                if (whiteCard) {
+                    whiteCard.style.transform = 'scale(1)';
+                    whiteCard.style.opacity = '1';
+                }
             }, 10);
+
+            // Ensure modal stays on top and is always visible
+            modal.style.display = 'flex';
+            modal.style.visibility = 'visible';
+            modal.style.opacity = '1';
+
+            // Set up button click handlers that allow removal
+            const contactSupportBtn = modal.querySelector('#contactSupportBtn');
+            const goToLoginBtn = modal.querySelector('#goToLoginBtn');
+            
+            if (contactSupportBtn) {
+                contactSupportBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.locationMismatchModalShowing = false;
+                    modal.dataset.allowRemove = 'true';
+                    window.location.href = 'contact.html';
+                });
+            }
+            
+            if (goToLoginBtn) {
+                goToLoginBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.locationMismatchModalShowing = false;
+                    modal.dataset.allowRemove = 'true';
+                    window.location.href = 'login.html';
+                });
+            }
+
+            // Also handle clickable text links
+            const locationMismatchText = modal.querySelector('span[onclick]');
+            if (locationMismatchText) {
+                locationMismatchText.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.locationMismatchModalShowing = false;
+                    modal.dataset.allowRemove = 'true';
+                    window.location.href = 'contact.html';
+                });
+            }
+            
+            // Also handle the contact support link
+            const contactSupportLink = modal.querySelector('a[href="contact.html"]');
+            if (contactSupportLink) {
+                contactSupportLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.locationMismatchModalShowing = false;
+                    modal.dataset.allowRemove = 'true';
+                    window.location.href = 'contact.html';
+                });
+            }
         }
 
         // Surface Firebase connectivity/auth problems clearly instead of failing silently.
@@ -1434,12 +1558,38 @@
                     });
                 } else {
                     // User not authenticated
+                    // Check if location mismatch modal is showing - don't redirect if it is
+                    if (window.locationMismatchModalShowing) {
+                        console.log('Location mismatch modal is showing, preventing automatic redirect');
+                        return; // Don't redirect while modal is showing
+                    }
+                    
+                    const locationModal = document.getElementById('locationMismatchModal');
+                    if (locationModal && locationModal.style.display !== 'none' && !locationModal.classList.contains('hidden')) {
+                        console.log('Location mismatch modal is visible, preventing automatic redirect');
+                        window.locationMismatchModalShowing = true;
+                        return; // Don't redirect while modal is showing
+                    }
+                    
                     if (!authCheckComplete) {
                         await new Promise(resolve => setTimeout(resolve, 500));
                         authCheckComplete = true;
                     }
                     
                     redirectTimeout = setTimeout(() => {
+                        // Check again if modal is showing before redirecting
+                        if (window.locationMismatchModalShowing) {
+                            console.log('Location mismatch modal is showing, preventing automatic redirect');
+                            return; // Don't redirect while modal is showing
+                        }
+                        
+                        const locationModal = document.getElementById('locationMismatchModal');
+                        if (locationModal && locationModal.style.display !== 'none' && !locationModal.classList.contains('hidden')) {
+                            console.log('Location mismatch modal is visible, preventing automatic redirect');
+                            window.locationMismatchModalShowing = true;
+                            return; // Don't redirect while modal is showing
+                        }
+                        
                         const currentUser = auth.currentUser;
                         if (!currentUser) {
                             console.log('No user signed in. Redirecting to sign-in page.');
@@ -1447,6 +1597,9 @@
                             window.location.href = 'login.html';
                         }
                     }, 1000);
+                    
+                    // Store timeout reference globally so it can be cleared
+                    window.redirectTimeout = redirectTimeout;
                 }
         });
         
