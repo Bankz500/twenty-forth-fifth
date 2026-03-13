@@ -98,6 +98,9 @@ class LiveChatWidget {
         this.selectedImageFile = null;
         this.selectedImageBase64 = null;
         this.realtimeUnsubscribe = null;
+        this.presenceInterval = null;
+        this.lastPresencePing = 0;
+        this.presenceActivityHandler = null;
         
         // Store hash intent for mobile devices (in case hash is lost during navigation)
         if (window.location.hash === '#open-chat') {
@@ -707,6 +710,7 @@ class LiveChatWidget {
             if (window.auth.currentUser) {
                 this.currentUserId = window.auth.currentUser.uid;
                 this.isAuthenticated = true;
+                this.startPresenceHeartbeat();
                 await this.loadOrCreateChat();
                 this.setupRealtimeListener();
             } else {
@@ -715,6 +719,7 @@ class LiveChatWidget {
                     if (user) {
                         this.currentUserId = user.uid;
                         this.isAuthenticated = true;
+                        this.startPresenceHeartbeat();
                         this.loadOrCreateChat();
                         this.setupRealtimeListener();
                     } else {
@@ -730,6 +735,49 @@ class LiveChatWidget {
             // No Firebase auth available - use anonymous session
             this.setupAnonymousUser();
         }
+    }
+
+    async updateLastActive() {
+        if (!this.isAuthenticated || !window.auth || !window.auth.currentUser || !window.db) {
+            return;
+        }
+
+        try {
+            const firestoreModule = await this.getFirestoreFunctions();
+            const { doc, updateDoc, serverTimestamp } = firestoreModule;
+            await updateDoc(doc(window.db, 'users', window.auth.currentUser.uid), {
+                lastActive: serverTimestamp(),
+                lastActiveIso: new Date().toISOString()
+            });
+        } catch (error) {
+            // Non-blocking heartbeat
+            console.warn('Live chat widget presence heartbeat failed:', error);
+        }
+    }
+
+    startPresenceHeartbeat() {
+        if (this.presenceInterval || !this.isAuthenticated) return;
+
+        // Initial ping
+        this.updateLastActive();
+
+        // Periodic ping
+        this.presenceInterval = setInterval(() => {
+            this.updateLastActive();
+        }, 2 * 60 * 1000);
+
+        // Activity ping with throttle
+        this.presenceActivityHandler = () => {
+            const now = Date.now();
+            if (now - this.lastPresencePing > 45 * 1000) {
+                this.lastPresencePing = now;
+                this.updateLastActive();
+            }
+        };
+
+        ['click', 'keydown', 'touchstart', 'mousemove', 'scroll'].forEach((evt) => {
+            window.addEventListener(evt, this.presenceActivityHandler, { passive: true });
+        });
     }
 
     setupAnonymousUser() {

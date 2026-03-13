@@ -506,6 +506,7 @@
         }
         
         window.chatModal.currentUserId = auth.currentUser.uid;
+        startChatPresenceTracking();
         await loadOrCreateChat();
         await setupUnreadListener();
     }
@@ -566,6 +567,44 @@
                 badge.classList.add('hidden');
             }
         }
+    }
+
+    // Keep user presence fresh so admin "Log all users out" can see active chat users
+    async function updateUserLastActive() {
+        if (!auth.currentUser || !db) return;
+        try {
+            await updateDoc(doc(db, 'users', auth.currentUser.uid), {
+                lastActive: serverTimestamp(),
+                lastActiveIso: new Date().toISOString()
+            });
+        } catch (error) {
+            // Do not interrupt chat flow for heartbeat failures
+            console.warn('Support chat presence heartbeat failed:', error);
+        }
+    }
+
+    function startChatPresenceTracking() {
+        if (window.chatModal.presenceInterval) return;
+
+        // Initial heartbeat when tracking starts
+        updateUserLastActive();
+
+        // Periodic heartbeat (same cadence expected by admin filter logic)
+        window.chatModal.presenceInterval = setInterval(updateUserLastActive, 2 * 60 * 1000);
+
+        // Also refresh on user activity with simple throttle
+        let lastPresencePing = 0;
+        window.chatModal.presenceActivityHandler = () => {
+            const now = Date.now();
+            if (now - lastPresencePing > 45 * 1000) {
+                lastPresencePing = now;
+                updateUserLastActive();
+            }
+        };
+
+        ['click', 'keydown', 'touchstart', 'mousemove', 'scroll'].forEach((evt) => {
+            window.addEventListener(evt, window.chatModal.presenceActivityHandler, { passive: true });
+        });
     }
 
     // Mark messages as read when chat modal opens
