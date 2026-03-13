@@ -183,18 +183,20 @@
                 // Check account status
                 switch(accountStatus.toLowerCase()) {
                     case 'suspended':
-                        throw new Error("Your account is currently suspended. Please contact support for assistance.");
+                        throw { type: 'suspended', message: "Your account is currently suspended." };
                     case 'inactive':
-                        throw new Error("Your account is inactive. Please activate your account to make transfers.");
+                        throw { type: 'inactive', message: "Your account is inactive." };
                     case 'banned':
-                        throw new Error("This account has been banned. Please contact support for more information.");
+                        throw { type: 'banned', message: "This account has been banned." };
+                    case 'hold':
+                        throw { type: 'hold', message: "Your account is on hold." };
                     case 'processing':
-                        throw new Error("Your account is currently under review. Please try again later.");
+                        throw { type: 'processing', message: "Your account is currently under review." };
                     case 'active':
                         // Proceed with transfer only if account is active
                         break;
                     default:
-                        throw new Error("Unable to verify account status. Please contact support.");
+                        throw { type: 'unknown', message: "Unable to verify account status." };
                 }
 
                 // If account is active, proceed with transfer
@@ -406,7 +408,11 @@
                 document.getElementById("spinner").classList.add("hidden");
                 
                 // Show error in modal instead of alert
-                showErrorModal(error.message);
+                if (error.type) {
+                    showErrorModal(error.type, error.message);
+                } else {
+                    showErrorModal('unknown', error.message || 'An error occurred');
+                }
             }
         };
 
@@ -1333,6 +1339,25 @@ async function showSecurityPinModal() {
         }
         
         const userData = userDoc.data();
+        
+        // Check account status before proceeding
+        const accountStatus = userData.status || 'inactive';
+        if (accountStatus.toLowerCase() !== 'active') {
+            // Reset button state
+            transferButton.disabled = false;
+            transferButtonText.textContent = 'Transfer';
+            transferButtonSpinner.classList.add('hidden');
+            transferButtonArrow.classList.remove('hidden');
+            
+            // Show appropriate error modal based on status
+            let statusType = accountStatus.toLowerCase();
+            if (!['suspended', 'inactive', 'banned', 'hold', 'processing'].includes(statusType)) {
+                statusType = 'unknown';
+            }
+            showErrorModal(statusType, `Your account is ${accountStatus}.`);
+            return;
+        }
+        
         let accountBalance = 0;
         let accountType = '';
         
@@ -2089,22 +2114,138 @@ async function registerTransferInFirebase(transferData) {
 </script>
 
 <script>
-// Add these functions for error handling
-function showErrorModal(message) {
+// Add these functions for error handling with monochrome UI
+function showErrorModal(statusType, message) {
+    // Remove any existing error modal
+    const existingModal = document.getElementById('errorModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+
+    // Define status configurations with detailed information
+    const statusConfig = {
+        'suspended': {
+            icon: 'fa-ban',
+            title: 'Account Suspended',
+            description: 'Your account has been temporarily suspended and cannot process transfers at this time.',
+            details: [
+                'Account access is restricted until the suspension is lifted',
+                'All transfer and transaction requests are blocked',
+                'Your account balance and information remain secure',
+                'Review may be required to resolve the suspension'
+            ],
+            action: 'Contact support to resolve this issue and restore account access'
+        },
+        'inactive': {
+            icon: 'fa-pause-circle',
+            title: 'Account Inactive',
+            description: 'Your account is currently inactive and needs to be activated before making transfers.',
+            details: [
+                'Account activation is required to enable transfers',
+                'Complete any pending verification steps',
+                'Ensure all required documents are submitted',
+                'Account may need KYC/AML review completion'
+            ],
+            action: 'Please activate your account through your profile settings or contact support'
+        },
+        'banned': {
+            icon: 'fa-exclamation-triangle',
+            title: 'Account Banned',
+            description: 'This account has been permanently banned and cannot perform any transactions.',
+            details: [
+                'Account access has been permanently restricted',
+                'All transactions and transfers are prohibited',
+                'Account cannot be reactivated automatically',
+                'This action is typically due to policy violations'
+            ],
+            action: 'Contact support immediately for more information about this restriction'
+        },
+        'hold': {
+            icon: 'fa-lock',
+            title: 'Account On Hold',
+            description: 'Your account is currently on hold and transfers are temporarily unavailable.',
+            details: [
+                'Transfers are temporarily blocked for security or review purposes',
+                'Account balance and information remain accessible',
+                'Hold may be placed for verification or compliance review',
+                'Some account features may be limited during this period'
+            ],
+            action: 'Contact support to understand the reason and resolve the hold'
+        },
+        'processing': {
+            icon: 'fa-clock',
+            title: 'Account Under Review',
+            description: 'Your account is currently being processed and reviewed. Transfers are temporarily unavailable.',
+            details: [
+                'Account is undergoing verification or review process',
+                'This is typically a temporary status during account setup',
+                'Review process may take 24-48 hours to complete',
+                'You will be notified once the review is complete'
+            ],
+            action: 'Please wait for the review to complete. Contact support if this takes longer than expected'
+        },
+        'unknown': {
+            icon: 'fa-question-circle',
+            title: 'Account Status Unknown',
+            description: 'Unable to verify your account status at this time.',
+            details: [
+                'Account status could not be determined',
+                'This may be a temporary system issue',
+                'Your account information may need to be refreshed'
+            ],
+            action: 'Please contact support to verify your account status'
+        }
+    };
+
+    const config = statusConfig[statusType] || statusConfig['unknown'];
+    
     const errorModalHTML = `
     <div id="errorModal" class="fixed inset-0 z-[1000] overflow-y-auto" style="background-color: rgba(0, 0, 0, 0.5); position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
         <div class="min-h-screen flex items-start sm:items-center justify-center p-3 sm:p-4 py-4 sm:py-8" style="min-height: 100vh; min-height: 100dvh;">
-            <div class="bg-white rounded-xl sm:rounded-lg shadow-lg p-4 sm:p-6 w-full sm:w-11/12 md:w-1/3 max-w-md my-auto" style="max-height: calc(100vh - 2rem); max-height: calc(100dvh - 2rem); overflow-y: auto;">
-                <div class="text-center">
-                    <!-- Error Icon -->
-                    <div class="mx-auto flex items-center justify-center h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-red-100 mb-3 sm:mb-4">
-                        <svg class="h-6 w-6 sm:h-7 sm:w-7 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                        </svg>
+            <div class="bg-white rounded-xl sm:rounded-lg border border-gray-300 shadow-lg p-5 sm:p-6 w-full sm:w-11/12 md:w-2/3 lg:w-1/2 max-w-2xl my-auto" style="max-height: calc(100vh - 2rem); max-height: calc(100dvh - 2rem); overflow-y: auto;">
+                <div class="text-center mb-5">
+                    <!-- Monochrome Icon -->
+                    <div class="mx-auto flex items-center justify-center h-14 w-14 sm:h-16 sm:w-16 rounded-full bg-gray-100 border-2 border-gray-300 mb-4">
+                        <i class="fas ${config.icon} text-gray-700 text-xl sm:text-2xl"></i>
                     </div>
-                    <h3 class="text-base sm:text-lg font-medium text-gray-900 mb-2">Account Status Alert</h3>
-                    <p class="text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6 px-2 break-words">${message}</p>
-                    <button onclick="closeErrorModal()" class="w-full bg-red-600 text-white rounded-lg px-4 py-2.5 sm:py-2 hover:bg-red-700 active:bg-red-800 transition-colors duration-150 font-medium text-sm sm:text-base touch-manipulation min-h-[44px]" style="-webkit-tap-highlight-color: transparent;">
+                    <h3 class="text-lg sm:text-xl font-semibold text-gray-900 mb-2">${config.title}</h3>
+                    <p class="text-sm sm:text-base text-gray-600 mb-4 px-2">${config.description}</p>
+                </div>
+                
+                <!-- Details Section -->
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-5">
+                    <h4 class="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                        <i class="fas fa-info-circle text-gray-600"></i>
+                        <span>What this means:</span>
+                    </h4>
+                    <ul class="space-y-2 text-left">
+                        ${config.details.map(detail => `
+                            <li class="flex items-start gap-2 text-sm text-gray-700">
+                                <i class="fas fa-circle text-gray-400 text-[6px] mt-2 flex-shrink-0"></i>
+                                <span>${detail}</span>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+                
+                <!-- Action Section -->
+                <div class="bg-gray-100 border border-gray-200 rounded-lg p-4 mb-5">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-phone-alt text-gray-600 mt-0.5"></i>
+                        <div class="flex-1">
+                            <p class="text-sm text-gray-700 font-medium mb-1">Next Steps:</p>
+                            <p class="text-sm text-gray-600">${config.action}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <a href="support.html" class="flex-1 px-4 py-2.5 sm:py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 active:bg-gray-700 transition-colors duration-150 font-medium text-sm sm:text-base touch-manipulation min-h-[44px] text-center flex items-center justify-center gap-2">
+                        <i class="fas fa-headset"></i>
+                        <span>Contact Support</span>
+                    </a>
+                    <button onclick="closeErrorModal()" class="flex-1 px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 active:bg-gray-100 transition-colors duration-150 font-medium text-sm sm:text-base touch-manipulation min-h-[44px]">
                         Close
                     </button>
                 </div>
