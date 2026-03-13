@@ -99,7 +99,7 @@
     </div>
 
     <!-- Beneficiaries List -->
-    <div id="beneficiariesList" class="space-y-3 sm:space-y-4">
+    <div id="beneficiariesList" class="space-y-2">
         <!-- Loading state -->
         <div id="loadingState" class="text-center py-8 sm:py-12">
             <div class="inline-block animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-b-2 border-blue-600"></div>
@@ -376,50 +376,57 @@
     // Create beneficiary card element
     function createBeneficiaryCard(beneficiaryId, data) {
         const card = document.createElement('div');
-        card.className = 'beneficiary-card bg-white rounded-xl sm:rounded-2xl shadow-lg border border-gray-200 p-4 sm:p-6 hover:shadow-xl transition-shadow';
+        card.className = 'beneficiary-card bg-white rounded-lg border border-gray-200 p-3 hover:bg-gray-50 transition-colors';
         
         const createdAt = data.createdAtIso 
             ? new Date(data.createdAtIso).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
             : 'Recently added';
         
         card.innerHTML = `
-            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 gap-3">
-                <div class="flex-1 min-w-0">
-                    <h3 class="text-base sm:text-lg font-semibold text-gray-900 mb-1 truncate">${escapeHtml(data.accountName || 'N/A')}</h3>
-                    <p class="text-xs sm:text-sm text-gray-600 truncate">${escapeHtml(data.bankName || 'N/A')}</p>
+            <div class="flex items-center justify-between gap-3">
+                <div class="flex-1 min-w-0 flex items-center gap-3">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                        <i class="fas fa-user text-blue-600 text-sm"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 mb-0.5">
+                            <h3 class="text-sm font-semibold text-gray-900 truncate">${escapeHtml(data.accountName || 'N/A')}</h3>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs text-gray-600">
+                            <i class="fas fa-university text-xs"></i>
+                            <span class="truncate">${escapeHtml(data.bankName || 'N/A')}</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs text-gray-500 mt-1">
+                            <i class="fas fa-hashtag text-xs"></i>
+                            <span class="truncate">${escapeHtml(data.accountNumber || 'N/A')}</span>
+                        </div>
+                        ${data.swiftCode ? `
+                        <div class="flex items-center gap-2 text-xs text-gray-500 mt-0.5">
+                            <i class="fas fa-code text-xs"></i>
+                            <span class="truncate">${escapeHtml(data.swiftCode)}</span>
+                        </div>
+                        ` : ''}
+                        <div class="flex items-center gap-2 text-xs text-gray-400 mt-1">
+                            <i class="fas fa-calendar text-xs"></i>
+                            <span>${createdAt}</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="flex items-center gap-2 sm:flex-shrink-0">
+                <div class="flex items-center gap-2 flex-shrink-0">
                     <button 
                         onclick="useBeneficiary('${beneficiaryId}')"
-                        class="flex-1 sm:flex-none px-3 sm:px-4 py-2 bg-blue-600 text-white text-xs sm:text-sm rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-colors font-medium touch-manipulation"
+                        class="p-2 text-blue-600 hover:bg-blue-50 active:bg-blue-100 rounded-lg transition-colors touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center"
+                        title="Use for transfer"
                     >
-                        <i class="fas fa-paper-plane mr-1"></i>
-                        <span class="hidden sm:inline">Use for Transfer</span>
-                        <span class="sm:hidden">Use</span>
+                        <i class="fas fa-paper-plane text-sm"></i>
                     </button>
                     <button 
                         onclick="deleteBeneficiary('${beneficiaryId}')"
-                        class="p-2 sm:p-2 text-red-600 hover:bg-red-50 active:bg-red-100 rounded-lg transition-colors touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center"
+                        class="p-2 text-red-600 hover:bg-red-50 active:bg-red-100 rounded-lg transition-colors touch-manipulation min-w-[44px] min-h-[44px] flex items-center justify-center"
                         title="Delete beneficiary"
                     >
-                        <i class="fas fa-trash text-sm sm:text-base"></i>
+                        <i class="fas fa-trash text-sm"></i>
                     </button>
-                </div>
-            </div>
-            <div class="space-y-2 sm:space-y-2 text-xs sm:text-sm">
-                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0">
-                    <span class="text-gray-500 text-xs sm:text-sm">Account Number:</span>
-                    <span class="text-gray-900 font-medium break-all sm:break-normal text-right sm:text-left">${escapeHtml(data.accountNumber || 'N/A')}</span>
-                </div>
-                ${data.swiftCode ? `
-                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0">
-                    <span class="text-gray-500 text-xs sm:text-sm">SWIFT Code:</span>
-                    <span class="text-gray-900 font-medium break-all sm:break-normal text-right sm:text-left">${escapeHtml(data.swiftCode)}</span>
-                </div>
-                ` : ''}
-                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pt-2 border-t border-gray-200 gap-1 sm:gap-0">
-                    <span class="text-gray-500 text-xs sm:text-sm">Added:</span>
-                    <span class="text-gray-600 text-right sm:text-left">${createdAt}</span>
                 </div>
             </div>
         `;
