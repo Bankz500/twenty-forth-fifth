@@ -37,6 +37,7 @@ export default defineConfig({
         debitCard: './debit-card.html',
         onboarding: './onboarding.html',
         jointAccount: './joint-account.html',
+        beneficiaries: './beneficiaries.html',
       },
     },
   },
