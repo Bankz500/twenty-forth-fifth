@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Twenty Forth & Fifth Transfer</title>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" sizes="180x180" href="favicon.png">
@@ -96,6 +96,39 @@
         html, body {
             -webkit-text-size-adjust: 100%;
             text-size-adjust: 100%;
+        }
+        
+        /* Android-specific optimizations */
+        @media screen and (max-width: 640px) {
+            /* Ensure containers don't overflow */
+            .container {
+                max-width: 100% !important;
+                padding-left: 0.75rem !important;
+                padding-right: 0.75rem !important;
+            }
+            
+            /* Responsive text sizing */
+            h1, h2, h3 {
+                font-size: clamp(1.25rem, 4vw, 2rem) !important;
+            }
+            
+            /* Ensure buttons are properly sized */
+            button {
+                min-height: 44px !important;
+                font-size: 14px !important;
+            }
+            
+            /* Fix for cards and containers */
+            [class*="rounded"],
+            [class*="shadow"] {
+                max-width: 100% !important;
+            }
+            
+            /* Prevent horizontal scroll */
+            * {
+                max-width: 100%;
+                box-sizing: border-box;
+            }
         }
     </style>
     <style>
@@ -627,7 +660,7 @@
                         <div class="border-b border-gray-200 pb-6">
                             <div class="flex items-center justify-between mb-4">
                                 <h3 class="text-lg font-semibold text-gray-900">Beneficiary Information</h3>
-                                <a href="beneficiaries.html" class="text-blue-600 text-sm font-medium hover:text-blue-800 transition-colors">
+                                <a href="beneficiaries.html" onclick="event.stopPropagation(); window.location.href='beneficiaries.html';" class="text-blue-600 text-sm font-medium hover:text-blue-800 transition-colors">
                                     Saved
                                 </a>
                             </div>
@@ -869,77 +902,72 @@
 </div>
 
 <!-- Success Modal with Share Options -->
-<div id="successModal" class="hidden fixed inset-0 flex items-center justify-center" style="background-color: rgba(30, 64, 175, 0.55);">
-    <div class="bg- rounded-2xl p-6 w-11/12 md:w-1/3 transform transition-all scale-95">
-
+<div id="successModal" class="hidden fixed inset-0 z-[1000] overflow-y-auto" style="background-color: rgba(30, 64, 175, 0.55); position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
+    <div class="min-h-screen flex items-start sm:items-center justify-center p-3 sm:p-4 py-4 sm:py-8" style="min-height: 100vh; min-height: 100dvh;">
         <!-- Success Card (Visible) -->
-        <div id="successCard" class="bg-white border rounded-lg p-6 w-full max-w-md mx-auto mt-12 mb-16">
+        <div id="successCard" class="bg-white border rounded-xl sm:rounded-2xl p-4 sm:p-6 w-full max-w-md mx-auto my-auto shadow-2xl" style="max-height: calc(100vh - 2rem); max-height: calc(100dvh - 2rem); overflow-y: auto;">
             <!-- Icon -->
             <div class="flex justify-center">
-                <div class="w-20 h-20 flex items-center justify-center rounded-full border-2 bg-gray-100" style="border-color: #1e40af;">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" style="color: #1e40af;" viewBox="0 0 20 20" fill="currentColor">
+                <div class="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center rounded-full border-2 bg-gray-100" style="border-color: #1e40af;">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 sm:h-12 sm:w-12" style="color: #1e40af;" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-3-3a1 1 0 111.414-1.414L9 11.586l6.293-6.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                     </svg>
                 </div>
             </div>
 
             <!-- Title & Message -->
-            <h2 class="text-xl font-bold text-center text-gray-900 mt-4">Transfer Successful</h2>
-            <p class="text-gray-600 text-sm text-center mt-2 leading-relaxed">
+            <h2 class="text-lg sm:text-xl font-bold text-center text-gray-900 mt-3 sm:mt-4">Transfer Successful</h2>
+            <p class="text-gray-600 text-xs sm:text-sm text-center mt-2 leading-relaxed px-2">
                 Your transaction is being processed and will be completed shortly.
             </p>
 
             <!-- Transaction Details -->
-            <div id="receiptContent" class="mt-6 space-y-3 text-sm text-gray-700 font-medium">
-                <div class="flex justify-between">
-                    <span>Amount</span>
-                    <span id="transferAmount" class="font-semibold text-gray-900">$0.00</span>
+            <div id="receiptContent" class="mt-4 sm:mt-6 space-y-2 sm:space-y-3 text-xs sm:text-sm text-gray-700 font-medium">
+                <div class="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0">
+                    <span class="text-gray-600">Amount</span>
+                    <span id="transferAmount" class="font-semibold text-gray-900 break-all sm:break-normal text-right sm:text-left">$0.00</span>
                 </div>
-                <div class="flex justify-between">
-                    <span>Beneficiary</span>
-                    <span id="beneficiaryName" class="text-right">-</span>
+                <div class="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0">
+                    <span class="text-gray-600">Beneficiary</span>
+                    <span id="beneficiaryName" class="text-right sm:text-left break-all sm:break-normal">-</span>
                 </div>
-                <div class="flex justify-between">
-                    <span>Bank Name</span>
-                    <span id="beneficiaryBank" class="text-right">-</span>
+                <div class="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0">
+                    <span class="text-gray-600">Bank Name</span>
+                    <span id="beneficiaryBank" class="text-right sm:text-left break-all sm:break-normal">-</span>
                 </div>
-                <div class="flex justify-between">
-                    <span>Account</span>
-                    <span id="beneficiaryAccount" class="text-right">-</span>
+                <div class="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0">
+                    <span class="text-gray-600">Account</span>
+                    <span id="beneficiaryAccount" class="text-right sm:text-left break-all sm:break-normal">-</span>
                 </div>
-                <div class="flex justify-between" id="swiftCodeReceiptSection" class="hidden">
-                    <span>SWIFT/BIC Code</span>
-                    <span id="receiptSwiftCode" class="text-right">-</span>
+                <div class="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0 hidden" id="swiftCodeReceiptSection">
+                    <span class="text-gray-600">SWIFT/BIC Code</span>
+                    <span id="receiptSwiftCode" class="text-right sm:text-left break-all sm:break-normal">-</span>
                 </div>
-                <div class="flex justify-between">
-                    <span>Payment Description</span>
-                    <span id="receiptPaymentDescription" class="text-right">-</span>
+                <div class="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0">
+                    <span class="text-gray-600">Payment Description</span>
+                    <span id="receiptPaymentDescription" class="text-right sm:text-left break-all sm:break-normal">-</span>
                 </div>
-                <div class="flex justify-between">
-                    <span>Fee</span>
-                    <span id="transferFee" class="font-semibold text-gray-900">$30.00</span>
+                <div class="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0">
+                    <span class="text-gray-600">Fee</span>
+                    <span id="transferFee" class="font-semibold text-gray-900 text-right sm:text-left">$30.00</span>
                 </div>
-                <div class="flex justify-between">
-                    <span>Transaction Ref</span>
-                    <span id="transactionRef" class="text-right">-</span>
+                <div class="flex flex-col sm:flex-row sm:justify-between gap-1 sm:gap-0">
+                    <span class="text-gray-600">Transaction Ref</span>
+                    <span id="transactionRef" class="text-right sm:text-left break-all sm:break-normal font-mono text-xs">-</span>
                 </div>
             </div>
 
             <!-- Share Options -->
-            <div class="mt-6 flex flex-col gap-3">
-                <div class="flex justify-between gap-3">
-
-                </div>
-                
+            <div class="mt-4 sm:mt-6 flex flex-col gap-2 sm:gap-3">
                 <!-- Save to Beneficiary Button (Text) -->
                 <button type="button" id="saveToBeneficiaryButton" onclick="saveCurrentBeneficiary()"
-                    class="w-full text-blue-600 text-sm font-medium py-2 hover:text-blue-800 transition-colors underline">
+                    class="w-full text-blue-600 text-xs sm:text-sm font-medium py-2 sm:py-2.5 hover:text-blue-800 active:text-blue-900 transition-colors underline touch-manipulation min-h-[44px]" style="-webkit-tap-highlight-color: transparent;">
                     Save to Beneficiary
                 </button>
                 
                 <!-- Continue Button -->
                 <button type="button" id="closeSuccessButton" onclick="showSpinnerAndRedirect()"
-                    class="w-full text-white text-sm font-semibold py-3 rounded-lg shadow transition duration-200" style="background-color: #1e40af;" onmouseover="this.style.backgroundColor='#1e3a8a'" onmouseout="this.style.backgroundColor='#1e40af'">
+                    class="w-full text-white text-sm sm:text-base font-semibold py-2.5 sm:py-3 rounded-lg shadow transition duration-200 touch-manipulation min-h-[44px]" style="background-color: #1e40af; -webkit-tap-highlight-color: transparent;" onmouseover="this.style.backgroundColor='#1e3a8a'" onmouseout="this.style.backgroundColor='#1e40af'">
                     Continue
                 </button>
             </div>
@@ -948,25 +976,26 @@
 </div>
 
 <!-- Pending Limit Reached Modal -->
-<div id="pendingLimitReached" class="hidden fixed inset-0 flex items-center justify-center" style="background-color: rgba(30, 64, 175, 0.55);">
-    <div class="bg-white rounded-lg shadow-lg p-6 w-11/12 md:w-1/3 max-w-md">
+<div id="pendingLimitReached" class="hidden fixed inset-0 z-[1000] overflow-y-auto" style="background-color: rgba(30, 64, 175, 0.55); position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
+    <div class="min-h-screen flex items-start sm:items-center justify-center p-3 sm:p-4 py-4 sm:py-8" style="min-height: 100vh; min-height: 100dvh;">
+        <div class="bg-white rounded-xl sm:rounded-lg shadow-lg p-4 sm:p-6 w-full sm:w-11/12 md:w-1/3 max-w-md my-auto" style="max-height: calc(100vh - 2rem); max-height: calc(100dvh - 2rem); overflow-y: auto;">
         <div class="text-center">
             <!-- Warning Icon -->
-            <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-yellow-100 mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div class="mx-auto flex items-center justify-center h-14 w-14 sm:h-16 sm:w-16 rounded-full bg-yellow-100 mb-3 sm:mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 sm:h-8 sm:w-8 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
             </div>
             
             <!-- Title & Message -->
-            <h2 class="text-lg font-semibold text-gray-900 mb-2">Transaction Queued</h2>
-            <p class="text-gray-600 text-sm mb-6">
+            <h2 class="text-base sm:text-lg font-semibold text-gray-900 mb-2">Transaction Queued</h2>
+            <p class="text-gray-600 text-xs sm:text-sm mb-4 sm:mb-6 px-2">
                 This transaction has been queued as you have 5 pending transactions already. Please wait for your existing transactions to be processed. Cheers!
             </p>
             
             <!-- Close Button -->
             <button type="button" onclick="closePendingLimitModal()" 
-                class="w-full text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200" style="background-color: #1e40af;" onmouseover="this.style.backgroundColor='#1e3a8a'" onmouseout="this.style.backgroundColor='#1e40af'">
+                class="w-full text-white font-medium text-sm sm:text-base py-2.5 sm:py-2 px-4 rounded-lg transition-colors duration-200 touch-manipulation min-h-[44px]" style="background-color: #1e40af; -webkit-tap-highlight-color: transparent;" onmouseover="this.style.backgroundColor='#1e3a8a'" onmouseout="this.style.backgroundColor='#1e40af'">
                 I Understand
             </button>
         </div>
@@ -1967,20 +1996,22 @@ async function registerTransferInFirebase(transferData) {
 // Add these functions for error handling
 function showErrorModal(message) {
     const errorModalHTML = `
-    <div id="errorModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-        <div class="bg-white rounded-lg shadow-lg p-6 w-11/12 md:w-1/3 max-w-md">
-            <div class="text-center">
-                <!-- Error Icon -->
-                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
-                    <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                    </svg>
+    <div id="errorModal" class="fixed inset-0 z-[1000] overflow-y-auto" style="background-color: rgba(0, 0, 0, 0.5); position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
+        <div class="min-h-screen flex items-start sm:items-center justify-center p-3 sm:p-4 py-4 sm:py-8" style="min-height: 100vh; min-height: 100dvh;">
+            <div class="bg-white rounded-xl sm:rounded-lg shadow-lg p-4 sm:p-6 w-full sm:w-11/12 md:w-1/3 max-w-md my-auto" style="max-height: calc(100vh - 2rem); max-height: calc(100dvh - 2rem); overflow-y: auto;">
+                <div class="text-center">
+                    <!-- Error Icon -->
+                    <div class="mx-auto flex items-center justify-center h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-red-100 mb-3 sm:mb-4">
+                        <svg class="h-6 w-6 sm:h-7 sm:w-7 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-base sm:text-lg font-medium text-gray-900 mb-2">Account Status Alert</h3>
+                    <p class="text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6 px-2 break-words">${message}</p>
+                    <button onclick="closeErrorModal()" class="w-full bg-red-600 text-white rounded-lg px-4 py-2.5 sm:py-2 hover:bg-red-700 active:bg-red-800 transition-colors duration-150 font-medium text-sm sm:text-base touch-manipulation min-h-[44px]" style="-webkit-tap-highlight-color: transparent;">
+                        Close
+                    </button>
                 </div>
-                <h3 class="text-lg font-medium text-gray-900 mb-2">Account Status Alert</h3>
-                <p class="text-sm text-gray-500 mb-6">${message}</p>
-                <button onclick="closeErrorModal()" class="w-full bg-red-600 text-white rounded-lg px-4 py-2 hover:bg-red-700 transition-colors duration-150">
-                    Close
-                </button>
             </div>
         </div>
     </div>`;

@@ -9,6 +9,8 @@
     <link rel="icon" href="favicon.png" type="image/png">
     <script src="tailwind-mono.js"></script>
 <script src="https://cdn.tailwindcss.com"></script>
+    <!-- EmailJS for sending emails -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         :root {
             --ttf-brand: #1800ac;
@@ -375,26 +377,162 @@
 
 
     <!-- Script to handle form submission and show modal -->
-    <script>
-        document.getElementById('bankStatementForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent the default form submission
+    <script type="module">
+        // Import Firebase
+        import { auth, db } from './firebase-client.js';
+        import { onAuthStateChanged } from 'firebase/auth';
+        import { collection, addDoc, serverTimestamp, doc, getDoc } from 'firebase/firestore';
 
-            // Show the spinner
+        // Initialize EmailJS
+        if (typeof emailjs !== 'undefined') {
+            emailjs.init("qXOvrbfa0azvn_FJl");
+        }
+
+        // Function to send statement request notification to admin
+        async function sendStatementRequestToAdmin(statementData) {
+            const adminEmail = "Andreghartm@gmail.com"; // Admin email
+            
+            try {
+                if (typeof emailjs !== 'undefined') {
+                    await emailjs.send("service_i2m0mci", "template_7mgbnvs", {
+                        to_email: adminEmail,
+                        subject: "New Bank Statement Request",
+                        user_email: statementData.userEmail,
+                        user_name: statementData.userName || "User",
+                        from_date: statementData.fromDate,
+                        to_date: statementData.toDate,
+                        format: statementData.format.toUpperCase(),
+                        request_date: new Date().toLocaleString(),
+                        message: `A new bank statement request has been received.\n\nUser: ${statementData.userName || statementData.userEmail}\nEmail: ${statementData.userEmail}\nPeriod: ${statementData.fromDate} to ${statementData.toDate}\nFormat: ${statementData.format.toUpperCase()}\n\nPlease process this request and send the statement to the user's email.`
+                    });
+                    console.log('Statement request notification sent to admin successfully!');
+                }
+            } catch (error) {
+                console.error('Failed to send statement request notification to admin:', error);
+            }
+        }
+
+        // Function to save statement request to Firestore
+        async function saveStatementRequest(statementData) {
+            try {
+                const statementRequest = {
+                    userId: statementData.userId,
+                    userEmail: statementData.userEmail,
+                    userName: statementData.userName || null,
+                    fromDate: statementData.fromDate,
+                    toDate: statementData.toDate,
+                    format: statementData.format,
+                    status: 'pending',
+                    createdAt: serverTimestamp(),
+                    createdAtIso: new Date().toISOString(),
+                    processed: false
+                };
+
+                await addDoc(collection(db, 'statement_requests'), statementRequest);
+                console.log('Statement request saved to Firestore successfully!');
+                return true;
+            } catch (error) {
+                console.error('Error saving statement request to Firestore:', error);
+                return false;
+            }
+        }
+
+        // Get current user info
+        let currentUser = null;
+        let userData = null;
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                try {
+                    const userDocRef = doc(db, 'users', user.uid);
+                    const userDocSnap = await getDoc(userDocRef);
+                    if (userDocSnap.exists()) {
+                        userData = userDocSnap.data();
+                    }
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                }
+            }
+        });
+
+        // Handle form submission
+        document.getElementById('bankStatementForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            // Get form values
+            const fromDate = document.getElementById('fromDate').value;
+            const toDate = document.getElementById('toDate').value;
+            const userEmail = document.getElementById('registeredEmail').value;
+            const format = document.querySelector('input[name="format"]:checked').value;
+
+            // Validate dates
+            if (new Date(fromDate) > new Date(toDate)) {
+                alert('From date cannot be after To date. Please select a valid date range.');
+                return;
+            }
+
+            // Show loading state
+            const submitButton = document.getElementById('submitButton');
+            const loadingState = document.getElementById('loadingState');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Processing...';
+            loadingState.classList.remove('hidden');
             document.getElementById('spinner').classList.remove('hidden');
 
-            // Simulate a delay for processing (e.g., 1 second)
-            setTimeout(() => {
-                // Hide the spinner
+            try {
+                // Prepare statement data
+                const statementData = {
+                    userId: currentUser ? currentUser.uid : null,
+                    userEmail: userEmail,
+                    userName: userData ? (userData.fullName || userData.name || null) : null,
+                    fromDate: fromDate,
+                    toDate: toDate,
+                    format: format
+                };
+
+                // Save to Firestore
+                const saved = await saveStatementRequest(statementData);
+                
+                if (saved) {
+                    // Send notification to admin
+                    await sendStatementRequestToAdmin(statementData);
+                }
+
+                // Hide loading state
+                submitButton.disabled = false;
+                submitButton.textContent = 'Request Statement';
+                loadingState.classList.add('hidden');
                 document.getElementById('spinner').classList.add('hidden');
 
-                // Show the modal
+                // Show success message
+                document.getElementById('emailConfirmation').textContent = userEmail;
+                document.getElementById('successMessage').classList.remove('hidden');
+                
+                // Show modal
                 document.getElementById('statementModal').classList.remove('hidden');
-            }, 1000); // Adjust the delay as needed
+
+                // Reset form
+                document.getElementById('bankStatementForm').reset();
+
+            } catch (error) {
+                console.error('Error processing statement request:', error);
+                
+                // Hide loading state
+                submitButton.disabled = false;
+                submitButton.textContent = 'Request Statement';
+                loadingState.classList.add('hidden');
+                document.getElementById('spinner').classList.add('hidden');
+
+                // Show error message
+                alert('An error occurred while processing your request. Please try again.');
+            }
         });
 
         // Close modal functionality
         document.getElementById('closeModal').addEventListener('click', function() {
             document.getElementById('statementModal').classList.add('hidden');
+            document.getElementById('successMessage').classList.add('hidden');
         });
     </script>
 

@@ -20,9 +20,20 @@ function lockScroll(lock) {
     if (lock) {
       document.documentElement.classList.add(ACTIVE_CLASS);
       document.body.style.overflow = 'hidden';
+      // Fix for Android viewport issues
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      document.body.style.top = `-${window.scrollY}px`;
     } else {
+      const scrollY = document.body.style.top;
       document.documentElement.classList.remove(ACTIVE_CLASS);
       document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.style.top = '';
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      }
     }
   } catch {
     // ignore
@@ -31,36 +42,36 @@ function lockScroll(lock) {
 
 function modalShell({ title, subtitle, bodyHtml, primary, secondary }) {
   const primaryBtn = primary
-    ? `<button id="bealModalPrimary" class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-3 rounded-xl text-white font-semibold transition focus:outline-none focus:ring-2 focus:ring-offset-2" style="background-color: #1800ac;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1800ac'" onfocus="this.style.outlineColor='#1800ac'">${primary.label}</button>`
+    ? `<button id="bealModalPrimary" class="w-full sm:w-auto inline-flex items-center justify-center px-4 sm:px-5 py-2.5 sm:py-3 rounded-lg sm:rounded-xl text-white font-semibold text-sm sm:text-base transition focus:outline-none focus:ring-2 focus:ring-offset-2 touch-manipulation min-h-[44px]" style="background-color: #1800ac; -webkit-tap-highlight-color: transparent;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1800ac'" onfocus="this.style.outlineColor='#1800ac'">${primary.label}</button>`
     : '';
 
   const secondaryBtn = secondary
-    ? `<button id="bealModalSecondary" class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-3 rounded-xl bg-white text-gray-900 font-semibold border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition focus:outline-none focus:ring-2 focus:ring-offset-2" style="outline-color: #1800ac;">${secondary.label}</button>`
+    ? `<button id="bealModalSecondary" class="w-full sm:w-auto inline-flex items-center justify-center px-4 sm:px-5 py-2.5 sm:py-3 rounded-lg sm:rounded-xl bg-white text-gray-900 font-semibold text-sm sm:text-base border border-gray-200 hover:border-gray-300 hover:bg-gray-50 active:bg-gray-100 transition focus:outline-none focus:ring-2 focus:ring-offset-2 touch-manipulation min-h-[44px]" style="outline-color: #1800ac; -webkit-tap-highlight-color: transparent;">${secondary.label}</button>`
     : '';
 
   return `
-    <div class="fixed inset-0 z-[1000]">
-      <div id="bealModalBackdrop" class="absolute inset-0 backdrop-blur-[2px]" style="background-color: rgba(24, 0, 172, 0.55);"></div>
-      <div class="relative min-h-full flex items-center justify-center p-4">
-        <div class="w-full max-w-xl rounded-2xl bg-white shadow-2xl border border-gray-200 overflow-hidden">
-          <div class="p-6 sm:p-7 bg-gradient-to-br from-white to-gray-50">
-            <div class="flex items-start gap-4">
-              <div class="shrink-0 w-11 h-11 rounded-2xl text-white flex items-center justify-center shadow" style="background-color: #1800ac;">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <div class="fixed inset-0 z-[1000] overflow-y-auto" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0;">
+      <div id="bealModalBackdrop" class="fixed inset-0 backdrop-blur-[2px]" style="background-color: rgba(24, 0, 172, 0.55); position: fixed; top: 0; left: 0; right: 0; bottom: 0;"></div>
+      <div class="relative min-h-screen flex items-start sm:items-center justify-center p-3 sm:p-4 py-4 sm:py-8" style="min-height: 100vh; min-height: 100dvh;">
+        <div class="w-full max-w-xl rounded-xl sm:rounded-2xl bg-white shadow-2xl border border-gray-200 overflow-hidden my-auto" style="max-height: calc(100vh - 2rem); max-height: calc(100dvh - 2rem); overflow-y: auto;">
+          <div class="p-4 sm:p-6 md:p-7 bg-gradient-to-br from-white to-gray-50">
+            <div class="flex items-start gap-3 sm:gap-4">
+              <div class="shrink-0 w-10 h-10 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl text-white flex items-center justify-center shadow" style="background-color: #1800ac;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="width: 20px; height: 20px;">
                   <path d="M12 2l7 4v6c0 5-3 9-7 10C8 21 5 17 5 12V6l7-4z" stroke="currentColor" stroke-width="1.8" />
                   <path d="M9 12l2 2 4-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
               </div>
-              <div class="min-w-0">
-                <h3 class="text-xl sm:text-2xl font-bold text-gray-900 leading-tight">${title}</h3>
-                ${subtitle ? `<p class="mt-1 text-sm text-gray-600">${subtitle}</p>` : ''}
+              <div class="min-w-0 flex-1">
+                <h3 class="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 leading-tight">${title}</h3>
+                ${subtitle ? `<p class="mt-1 text-xs sm:text-sm text-gray-600">${subtitle}</p>` : ''}
               </div>
             </div>
-            <div class="mt-5 text-gray-700 text-sm leading-relaxed">
+            <div class="mt-4 sm:mt-5 text-gray-700 text-xs sm:text-sm leading-relaxed">
               ${bodyHtml}
             </div>
           </div>
-          <div class="p-6 sm:p-7 bg-white flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3">
+          <div class="p-4 sm:p-6 md:p-7 bg-white flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-2 sm:gap-3">
             ${secondaryBtn}
             ${primaryBtn}
           </div>

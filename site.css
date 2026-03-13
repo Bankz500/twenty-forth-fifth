@@ -17,7 +17,11 @@ html {
   overscroll-behavior: none;
   /* Prevent pull-to-refresh on mobile */
   overscroll-behavior-y: contain;
+  /* Android viewport fix */
+  height: 100%;
+  height: -webkit-fill-available;
 }
+
 body {
   background: var(--bg);
   color: var(--ink);
@@ -31,6 +35,15 @@ body {
   overscroll-behavior-y: contain;
   /* Prevent text selection that causes dragging, but allow in form fields */
   -webkit-touch-callout: none;
+  /* Android viewport fix */
+  min-height: 100%;
+  min-height: -webkit-fill-available;
+  min-height: 100vh;
+  min-height: 100dvh;
+  /* Better text rendering on Android */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 /* Allow text selection in form fields and content areas */
@@ -175,5 +188,219 @@ p, span, div[role="textbox"], .selectable {
 
 /* Mobile overlay toggle helpers (existing JS often toggles `.active`) */
 #overlay.active { display: block !important; }
+
+/* ============================================
+   ANDROID-SPECIFIC OPTIMIZATIONS
+   ============================================ */
+
+/* Android viewport height fix - use dvh when available */
+@supports (height: 100dvh) {
+  html {
+    height: 100dvh;
+  }
+  body {
+    min-height: 100dvh;
+  }
+}
+
+/* Responsive font scaling for Android */
+@media (max-width: 640px) {
+  /* Prevent text from being too large on small screens */
+  h1 {
+    font-size: clamp(1.5rem, 5vw, 2rem) !important;
+  }
+  h2 {
+    font-size: clamp(1.25rem, 4vw, 1.75rem) !important;
+  }
+  h3 {
+    font-size: clamp(1.125rem, 3.5vw, 1.5rem) !important;
+  }
+  h4 {
+    font-size: clamp(1rem, 3vw, 1.25rem) !important;
+  }
+  
+  /* Ensure body text is readable but not too large */
+  body {
+    font-size: clamp(14px, 3.5vw, 16px);
+  }
+  
+  /* Limit container max-widths on mobile */
+  .container {
+    max-width: 100% !important;
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+  
+  /* Ensure buttons are touch-friendly but not oversized */
+  button, .btn-blue, a[role="button"] {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    font-size: clamp(14px, 3.5vw, 16px) !important;
+    padding: 0.625rem 1rem !important;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* Prevent images from overflowing */
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+  
+  /* Fix for fixed positioned elements on Android */
+  [class*="fixed"] {
+    position: fixed !important;
+  }
+  
+  /* Ensure modals and overlays fit on screen */
+  [class*="modal"],
+  [class*="overlay"],
+  [id*="modal"],
+  [id*="Modal"] {
+    max-height: 100vh !important;
+    max-height: 100dvh !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  /* Better spacing on mobile */
+  .space-y-4 > * + * {
+    margin-top: 0.75rem !important;
+  }
+  .space-y-6 > * + * {
+    margin-top: 1rem !important;
+  }
+  .space-y-8 > * + * {
+    margin-top: 1.25rem !important;
+  }
+  
+  /* Reduce padding on cards and containers */
+  [class*="p-6"],
+  [class*="p-8"] {
+    padding: 1rem !important;
+  }
+  
+  /* Ensure input fields are properly sized */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  textarea,
+  select {
+    font-size: 16px !important; /* Prevents zoom on iOS/Android */
+    min-height: 44px !important;
+    padding: 0.625rem 0.875rem !important;
+  }
+  
+  /* Fix for cards and containers */
+  [class*="rounded"],
+  [class*="card"],
+  [class*="container"] {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  
+  /* Safe area insets for notched devices */
+  @supports (padding: max(0px)) {
+    body {
+      padding-left: max(0.75rem, env(safe-area-inset-left));
+      padding-right: max(0.75rem, env(safe-area-inset-right));
+    }
+    
+    [class*="fixed"][class*="bottom"] {
+      padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+    }
+    
+    [class*="fixed"][class*="top"] {
+      padding-top: max(0.75rem, env(safe-area-inset-top));
+    }
+  }
+}
+
+/* Android-specific fixes for common issues */
+@media screen and (max-width: 640px) {
+  /* Prevent horizontal scrolling */
+  * {
+    max-width: 100%;
+  }
+  
+  /* Fix for flex items that might overflow */
+  [class*="flex"] {
+    flex-wrap: wrap;
+  }
+  
+  /* Ensure text doesn't overflow containers */
+  p, span, div, h1, h2, h3, h4, h5, h6 {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+  
+  /* Better table handling on mobile */
+  table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+  }
+  
+  /* Fix for grid layouts */
+  [class*="grid"] {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem !important;
+  }
+  
+  /* Ensure proper z-index stacking */
+  [class*="z-"] {
+    position: relative;
+  }
+  [class*="z-50"],
+  [class*="z-\[1000\]"] {
+    position: fixed;
+  }
+}
+
+/* Touch optimization for all interactive elements */
+button,
+a,
+[role="button"],
+[onclick],
+input[type="submit"],
+input[type="button"] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+/* Prevent text selection on buttons (better UX) */
+button,
+.btn-blue,
+[role="button"] {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Smooth scrolling for Android */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Fix for Android keyboard appearing */
+@media screen and (max-width: 640px) {
+  /* Ensure viewport adjusts when keyboard appears */
+  body {
+    position: relative;
+  }
+  
+  /* Prevent layout shift when keyboard appears */
+  input:focus,
+  textarea:focus {
+    scroll-margin-top: 100px;
+  }
+}
 
 

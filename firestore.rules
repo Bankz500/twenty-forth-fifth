@@ -301,6 +301,27 @@ service cloud.firestore {
       allow update, delete: if isAdmin();
     }
     
+    // Statement requests collection - users can create requests, admins can read/update all
+    match /statement_requests/{requestId} {
+      // Allow authenticated users to create statement requests
+      allow create: if request.auth != null 
+                     && (request.resource.data.userId == request.auth.uid || request.resource.data.userId == null);
+      
+      // Allow admins to list/query all statement requests
+      allow list: if isAdmin();
+      
+      // Allow users to read their own statement requests
+      allow get: if isAdmin()
+                  || (request.auth != null && resource.data.userId == request.auth.uid);
+      
+      // Allow admins to update/delete statement requests
+      allow update, delete: if isAdmin();
+      
+      // Allow users to read their own requests (for status checking)
+      allow read: if request.auth != null 
+                   && resource.data.userId == request.auth.uid;
+    }
+    
     // Default deny all other access
     match /{document=**} {
       allow read, write: if false;

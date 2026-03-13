@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Twenty Forth & Fifth Dashboard</title>
     <style>
         :root {
@@ -20,12 +20,66 @@
             padding: 0;
             background-color: #f5f7fa;
             color: #333;
+            /* Android viewport fix */
+            min-height: 100vh;
+            min-height: 100dvh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
         
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+        }
+        
+        /* Android-specific optimizations */
+        @media screen and (max-width: 640px) {
+            .container {
+                max-width: 100% !important;
+                padding: 0.75rem !important;
+            }
+            
+            /* Responsive text sizing */
+            h1, h2, h3, h4 {
+                font-size: clamp(1.125rem, 4vw, 1.75rem) !important;
+            }
+            
+            /* Ensure buttons are touch-friendly */
+            button, .btn, a[role="button"] {
+                min-height: 44px !important;
+                min-width: 44px !important;
+                font-size: 14px !important;
+                padding: 0.625rem 1rem !important;
+                touch-action: manipulation;
+                -webkit-tap-highlight-color: transparent;
+            }
+            
+            /* Prevent horizontal scroll */
+            * {
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+            
+            /* Fix for cards */
+            [class*="rounded"],
+            [class*="shadow"],
+            [class*="card"] {
+                max-width: 100% !important;
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+            }
+            
+            /* Better spacing on mobile */
+            .space-y-4 > * + * {
+                margin-top: 0.75rem !important;
+            }
+            
+            /* Ensure inputs are properly sized */
+            input, select, textarea {
+                font-size: 16px !important;
+                min-height: 44px !important;
+            }
         }
         
         .header {
