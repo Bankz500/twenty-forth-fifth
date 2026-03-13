@@ -10,6 +10,8 @@
     <!-- Tailwind CSS -->
     <script src="tailwind-mono.js"></script>
 <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Chart.js Library -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script>
@@ -555,12 +557,38 @@
                             pinErrorElement.classList.remove('hidden');
                             window.location.href = 'pin.html'; // Redirect to PIN update page
                         } else if (enteredPin === savedPin) {
-                            // Proceed with the transfer
+                            // PIN is correct - reset attempts and proceed
+                            // Clear incorrect PIN attempts from sessionStorage
+                            sessionStorage.removeItem('transferPinAttempts');
                             document.getElementById('securityPinModal').classList.add('hidden');
                             executeTransfer();
                         } else {
-                            pinErrorElement.textContent = "Incorrect Pin. Please try again.";
-                            pinErrorElement.classList.remove('hidden');
+                            // PIN is incorrect - track attempts
+                            let attempts = parseInt(sessionStorage.getItem('transferPinAttempts') || '0');
+                            attempts += 1;
+                            sessionStorage.setItem('transferPinAttempts', attempts.toString());
+                            
+                            const remainingAttempts = 3 - attempts;
+                            
+                            if (attempts >= 3) {
+                                // After 3 incorrect attempts, cancel transfer and redirect to PIN change
+                                pinErrorElement.textContent = "Too many incorrect PIN attempts. Transfer cancelled. Please change your PIN.";
+                                pinErrorElement.classList.remove('hidden');
+                                
+                                // Clear attempts
+                                sessionStorage.removeItem('transferPinAttempts');
+                                
+                                // Close modal and redirect after a short delay
+                                setTimeout(() => {
+                                    document.getElementById('securityPinModal').classList.add('hidden');
+                                    document.getElementById('spinner').classList.add('hidden');
+                                    window.location.href = 'pin.html';
+                                }, 2000);
+                                return;
+                            } else {
+                                pinErrorElement.textContent = `Incorrect PIN. ${remainingAttempts} attempt${remainingAttempts > 1 ? 's' : ''} remaining.`;
+                                pinErrorElement.classList.remove('hidden');
+                            }
                         }
                     }
                 }
@@ -620,6 +648,15 @@
                 <span class="inline-flex h-2 w-2 rounded-full animate-pulse" style="background-color: #1e40af;"></span>
                 <span class="text-xs font-medium" style="color: #1e40af;">Secure</span>
             </div>
+            </div>
+            <div class="mt-2">
+                <a
+                    href="dashboard.html"
+                    class="inline-flex items-center gap-2 text-gray-900 hover:text-gray-700 transition-colors text-sm font-medium underline"
+                >
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Return to Home</span>
+                </a>
             </div>
         </div>
 
@@ -1855,15 +1892,61 @@ button {
 
 /* Keep bottom nav stable on mobile (override global flex-wrap rules) */
 .mobile-nav {
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    height: 100px !important;
+    background: #fff !important;
+    border-top: 1px solid #d1d5db !important;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08) !important;
     display: block !important;
-    z-index: 1000 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 12000 !important;
+    width: 100% !important;
+    max-width: 100% !important;
 }
-.mobile-nav > .flex {
+.mobile-nav .mobile-nav-track {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 100%;
+    padding: 0.5rem 0.75rem;
     flex-wrap: nowrap !important;
 }
 .mobile-nav .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
     flex: 1 1 0;
     min-width: 0;
+}
+.mobile-nav .nav-item span {
+    font-size: 0.75rem;
+    margin-top: 0.35rem;
+}
+
+/* Ensure hidden overlays never block bottom nav */
+#securityPinModal.hidden,
+#spinner.hidden,
+#successModal.hidden,
+#pendingLimitReached.hidden,
+#errorModal.hidden {
+    display: none !important;
+}
+
+#securityPinModal:not(.hidden),
+#spinner:not(.hidden) {
+    display: flex !important;
+}
+
+#successModal:not(.hidden),
+#pendingLimitReached:not(.hidden),
+#errorModal:not(.hidden) {
+    display: block !important;
 }
 </style>
     
@@ -1873,8 +1956,8 @@ button {
              
 
 <!-- Bottom Navbar (Mobile Friendly) -->
-<div class="mobile-nav fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-300 p-3" style="height: 100px; z-index: 100;">
-    <div class="flex justify-around items-center h-full">
+<div class="mobile-nav fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-300 p-3" style="height: 100px;">
+    <div class="mobile-nav-track flex justify-around items-center h-full">
         <!-- Home Icon -->
         <a href="dashboard.html" class="nav-item flex flex-col items-center" data-page="dashboard">
             <div class="bg-white rounded p-2">

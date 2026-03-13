@@ -18,14 +18,90 @@
         // Shared Firebase client (auth/db are consistent across all pages)
         import { auth, db } from "./firebase-client.js";
         import { onAuthStateChanged, signOut, signInWithEmailAndPassword } from "firebase/auth";
-        import { doc, getDoc, setDoc, collection, addDoc, serverTimestamp } from "firebase/firestore";
+        import { doc, getDoc, setDoc, collection, addDoc, serverTimestamp, Timestamp } from "firebase/firestore";
 
         let currentUser = null;
+
+        // Function to check PIN change attempts and cooldown
+        async function checkPinChangeLimit(user) {
+            const userDocRef = doc(db, 'users', user.uid);
+            const userDoc = await getDoc(userDocRef);
+            
+            if (userDoc.exists()) {
+                const userData = userDoc.data();
+                const pinChangeHistory = userData.pinChangeHistory || [];
+                const lastPinChangeTime = userData.lastPinChangeTime || null;
+                
+                // Check if user has changed PIN 3 times
+                if (pinChangeHistory.length >= 3) {
+                    if (lastPinChangeTime) {
+                        // Handle Firestore Timestamp
+                        let lastChangeDate;
+                        if (lastPinChangeTime.toDate) {
+                            lastChangeDate = lastPinChangeTime.toDate();
+                        } else if (lastPinChangeTime instanceof Timestamp) {
+                            lastChangeDate = lastPinChangeTime.toDate();
+                        } else if (lastPinChangeTime.seconds) {
+                            lastChangeDate = new Date(lastPinChangeTime.seconds * 1000);
+                        } else {
+                            lastChangeDate = new Date(lastPinChangeTime);
+                        }
+                        const now = new Date();
+                        const hoursSinceLastChange = (now - lastChangeDate) / (1000 * 60 * 60);
+                        
+                        // If less than 24 hours have passed, show contact support message
+                        if (hoursSinceLastChange < 24) {
+                            const hoursRemaining = Math.ceil(24 - hoursSinceLastChange);
+                            const errorMessage = document.createElement('div');
+                            errorMessage.className = 'bg-red-50 border border-red-200 rounded-lg p-4 mb-4';
+                            errorMessage.innerHTML = `
+                                <div class="flex items-start gap-3">
+                                    <i class="fas fa-exclamation-triangle text-red-600 mt-1"></i>
+                                    <div>
+                                        <h3 class="text-red-800 font-semibold mb-1">PIN Change Limit Reached</h3>
+                                        <p class="text-red-700 text-sm mb-2">
+                                            You have changed your PIN 3 times. Please contact support for assistance or wait ${hoursRemaining} hour${hoursRemaining > 1 ? 's' : ''} before trying again.
+                                        </p>
+                                        <a href="support.html" class="text-red-600 hover:text-red-800 underline text-sm font-medium">Contact Support</a>
+                                    </div>
+                                </div>
+                            `;
+                            
+                            // Insert error message before the PIN form
+                            const pinForm = document.getElementById('changePinForm');
+                            if (pinForm) {
+                                pinForm.parentElement.insertBefore(errorMessage, pinForm);
+                                // Disable the form
+                                pinForm.querySelector('input').disabled = true;
+                                pinForm.querySelector('button').disabled = true;
+                            }
+                            
+                            return false; // PIN change not allowed
+                        } else {
+                            // 24 hours have passed, reset the history
+                            await setDoc(userDocRef, {
+                                pinChangeHistory: [],
+                                lastPinChangeTime: null
+                            }, { merge: true });
+                            return true; // PIN change allowed
+                        }
+                    }
+                }
+                
+                return true; // PIN change allowed (less than 3 changes)
+            }
+            
+            return true; // Default: allow PIN change
+        }
 
         // Check if the user is authenticated
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
+                
+                // Check PIN change limit
+                await checkPinChangeLimit(user);
+                
                 const userDocRef = doc(db, 'users', user.uid);
                 const userDoc = await getDoc(userDocRef);
 
@@ -240,8 +316,37 @@
                 const user = userCredential.user;
 
                 if (user) {
+                    // Check PIN change limit before allowing change
+                    const canChangePin = await checkPinChangeLimit(user);
+                    if (!canChangePin) {
+                        alert('You have reached the PIN change limit. Please contact support or wait 24 hours.');
+                        confirmButton.disabled = false;
+                        confirmButton.textContent = 'Confirm';
+                        return;
+                    }
+
                     const userDocRef = doc(db, 'users', user.uid);
-                    await setDoc(userDocRef, { pin: newPin }, { merge: true });
+                    const userDoc = await getDoc(userDocRef);
+                    const userData = userDoc.exists() ? userDoc.data() : {};
+                    
+                    // Get existing PIN change history
+                    const pinChangeHistory = userData.pinChangeHistory || [];
+                    
+                    // Add new PIN change to history
+                    pinChangeHistory.push({
+                        timestamp: Timestamp.now(),
+                        pinChanged: true
+                    });
+                    
+                    // Keep only last 3 changes
+                    const updatedHistory = pinChangeHistory.slice(-3);
+
+                    // Save the new PIN and update history
+                    await setDoc(userDocRef, { 
+                        pin: newPin,
+                        pinChangeHistory: updatedHistory,
+                        lastPinChangeTime: Timestamp.now()
+                    }, { merge: true });
 
                     const successMessage = document.createElement('div');
                     successMessage.textContent = "PIN Change updated!";
@@ -252,6 +357,8 @@
 
                     setTimeout(() => {
                         document.getElementById("passwordModal").classList.add("hidden");
+                        // Reload page to show updated limit status
+                        window.location.reload();
                     }, 2000);
                 }
             } catch (error) {
