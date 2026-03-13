@@ -200,8 +200,14 @@ service cloud.firestore {
         // This ensures users can only read individual messages in chats they own
         allow get: if isAdmin() || parentOwner() || parentIsAnonymous();
 
-        // Allow update/delete only for admin (admin marks read / moderation)
-        allow update, delete: if isAdmin();
+        // Allow update only for admin (admin marks read / moderation)
+        allow update: if isAdmin();
+
+        // Allow delete for:
+        // - Admin
+        // - The owner of the parent chat deleting their own user-sent message
+        allow delete: if isAdmin()
+                      || (parentOwner() && resource.data.sender == 'user');
       }
     }
     

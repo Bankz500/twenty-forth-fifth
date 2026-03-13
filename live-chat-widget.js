@@ -432,19 +432,23 @@ class LiveChatWidget {
             this.sendMessage();
         });
         
-        // Handle textarea auto-resize and prevent Enter from sending
+        // Handle textarea auto-resize and Enter key behavior
         const chatInput = document.getElementById('chatMessageInput');
-        chatInput.addEventListener('keydown', (e) => {
-            // Prevent Enter from sending, allow Shift+Enter for new line
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-            }
-        });
-        chatInput.addEventListener('input', () => {
-            // Auto-resize textarea
-            chatInput.style.height = 'auto';
-            chatInput.style.height = Math.min(chatInput.scrollHeight, 150) + 'px';
-        });
+        if (chatInput) {
+            chatInput.addEventListener('keydown', (e) => {
+                // Enter (without Shift) = send message, Shift+Enter = new line (allows default behavior)
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    this.sendMessage();
+                }
+                // Shift+Enter will naturally create a new line (no preventDefault)
+            });
+            chatInput.addEventListener('input', () => {
+                // Auto-resize textarea
+                chatInput.style.height = 'auto';
+                chatInput.style.height = Math.min(chatInput.scrollHeight, 150) + 'px';
+            });
+        }
         document.getElementById('attachImageBtn').addEventListener('click', () => {
             document.getElementById('imageInput').click();
         });
@@ -1154,10 +1158,20 @@ class LiveChatWidget {
             msgDiv.innerHTML = `
                 <div class="max-w-[75%] bg-gradient-to-br from-blue-600 to-blue-600 text-white rounded-2xl rounded-tr-sm p-3 shadow-md">
                     ${imageHtml}
-                    ${messageText ? `<div class="text-sm leading-relaxed">${this.escapeHtml(messageText)}</div>` : ''}
-                    <div class="text-xs mt-1.5 text-blue-100 opacity-80 flex items-center justify-end gap-1">
-                        ${timeStr}
-                        ${readIcon}
+                    ${messageText ? `<div class="text-sm leading-relaxed whitespace-pre-wrap break-words">${this.escapeHtml(messageText)}</div>` : ''}
+                    <div class="text-xs mt-1.5 text-blue-100 opacity-80 flex items-center justify-end gap-2">
+                        <button
+                            type="button"
+                            onclick="window.liveChatWidget.deleteMessage('${msgId}')"
+                            class="text-blue-100 hover:text-red-200 transition-colors"
+                            title="Delete message"
+                        >
+                            <i class="fas fa-trash text-[10px]"></i>
+                        </button>
+                        <span class="flex items-center gap-1">
+                            ${timeStr}
+                            ${readIcon}
+                        </span>
                     </div>
                 </div>
             `;
@@ -1171,7 +1185,7 @@ class LiveChatWidget {
             msgDiv.innerHTML = `
                 <div class="max-w-[75%] bg-white text-gray-900 border border-gray-100 rounded-2xl rounded-tl-sm p-3 shadow-sm">
                     ${imageHtml}
-                    ${messageText ? `<div class="text-sm leading-relaxed text-gray-800">${this.escapeHtml(messageText)}</div>` : ''}
+                    ${messageText ? `<div class="text-sm leading-relaxed whitespace-pre-wrap break-words text-gray-800">${this.escapeHtml(messageText)}</div>` : ''}
                     <div class="text-xs mt-1.5 text-gray-400 flex items-center justify-start gap-1">
                         ${timeStr}
                         ${readIcon}
@@ -1431,6 +1445,38 @@ class LiveChatWidget {
                 sendBtn.disabled = false;
                 sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
             }
+        }
+    }
+
+    async deleteMessage(messageId) {
+        if (!this.currentChatId || !messageId) return;
+        if (!window.auth || !window.auth.currentUser) {
+            alert('Please log in to manage messages.');
+            return;
+        }
+
+        if (!confirm('Delete this message?')) return;
+
+        try {
+            const firestoreModule = await this.getFirestoreFunctions();
+            const { doc, getDoc, deleteDoc } = firestoreModule;
+
+            const messageRef = doc(window.db, 'live_chats', this.currentChatId, 'messages', messageId);
+            const messageSnap = await getDoc(messageRef);
+            if (!messageSnap.exists()) return;
+
+            const messageData = messageSnap.data() || {};
+            if (messageData.sender !== 'user') {
+                alert('Only your messages can be deleted.');
+                return;
+            }
+
+            await deleteDoc(messageRef);
+            const msgElement = document.querySelector(`[data-msg-id="${messageId}"]`);
+            if (msgElement) msgElement.remove();
+        } catch (error) {
+            console.error('Error deleting chat message:', error);
+            alert('Failed to delete message. Please try again.');
         }
     }
 

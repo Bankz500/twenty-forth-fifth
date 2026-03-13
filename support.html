@@ -447,7 +447,7 @@
                         class="w-full px-4 py-3 pr-12 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent bg-gray-50 resize-none"
                         style="font-size: 16px !important; min-height: 48px; max-height: 150px;"
                         rows="1"
-                        onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); }"
+                        onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendChatMessage(); }"
                         oninput="this.style.height = 'auto'; this.style.height = Math.min(this.scrollHeight, 150) + 'px';"></textarea>
                 </div>
                 <button onclick="sendChatMessage()" id="sendMessageBtn" class="bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-700 text-white px-4 py-3 rounded-xl transition-all shadow-lg hover:shadow-xl hover:scale-105">
@@ -464,7 +464,7 @@
 <!-- Chat Modal Script -->
 <script type="module">
     import { auth, db } from './firebase-client.js';
-    import { collection, addDoc, query, where, getDocs, orderBy, onSnapshot, updateDoc, doc, serverTimestamp } from 'firebase/firestore';
+    import { collection, addDoc, query, where, getDocs, getDoc, orderBy, onSnapshot, updateDoc, deleteDoc, doc, serverTimestamp } from 'firebase/firestore';
 
     // Make these available globally
     window.chatModal = {
@@ -945,10 +945,20 @@
             msgDiv.innerHTML = `
                 <div class="max-w-[75%] bg-gradient-to-br from-gray-900 to-gray-800 text-white rounded-2xl rounded-tr-sm p-3 shadow-md">
                     ${imageHtml}
-                    ${messageText ? `<div class="text-sm leading-relaxed">${escapeHtml(messageText)}</div>` : ''}
-                    <div class="text-xs mt-1.5 text-gray-300 opacity-80 flex items-center justify-end gap-1">
-                        ${timeStr}
-                        ${readIcon}
+                    ${messageText ? `<div class="text-sm leading-relaxed whitespace-pre-wrap break-words">${escapeHtml(messageText)}</div>` : ''}
+                    <div class="text-xs mt-1.5 text-gray-300 opacity-80 flex items-center justify-end gap-2">
+                        <button
+                            type="button"
+                            onclick="deleteChatMessage('${msgId}')"
+                            class="text-gray-300 hover:text-red-300 transition-colors"
+                            title="Delete message"
+                        >
+                            <i class="fas fa-trash text-[10px]"></i>
+                        </button>
+                        <span class="flex items-center gap-1">
+                            ${timeStr}
+                            ${readIcon}
+                        </span>
                     </div>
                 </div>
             `;
@@ -962,7 +972,7 @@
             msgDiv.innerHTML = `
                 <div class="max-w-[75%] bg-white text-gray-900 border border-gray-100 rounded-2xl rounded-tl-sm p-3 shadow-sm">
                     ${imageHtml}
-                    ${messageText ? `<div class="text-sm leading-relaxed text-gray-800">${escapeHtml(messageText)}</div>` : ''}
+                    ${messageText ? `<div class="text-sm leading-relaxed whitespace-pre-wrap break-words text-gray-800">${escapeHtml(messageText)}</div>` : ''}
                     <div class="text-xs mt-1.5 text-gray-400 flex items-center justify-start gap-1">
                         ${timeStr}
                         ${readIcon}
@@ -1241,6 +1251,39 @@
                 sendBtn.disabled = false;
                 sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
             }
+        }
+    };
+
+    // Delete a single user message
+    window.deleteChatMessage = async function(messageId) {
+        if (!window.chatModal.currentChatId || !messageId) return;
+        if (!auth.currentUser) {
+            alert('Please log in to manage messages.');
+            return;
+        }
+
+        if (!confirm('Delete this message?')) return;
+
+        try {
+            const messageRef = doc(db, 'live_chats', window.chatModal.currentChatId, 'messages', messageId);
+            const messageSnap = await getDoc(messageRef);
+            if (!messageSnap.exists()) {
+                alert('This message cannot be deleted.');
+                return;
+            }
+
+            const messageData = messageSnap.data() || {};
+            if (messageData.sender !== 'user') {
+                alert('Only your messages can be deleted.');
+                return;
+            }
+
+            await deleteDoc(messageRef);
+            const msgElement = document.querySelector(`[data-msg-id="${messageId}"]`);
+            if (msgElement) msgElement.remove();
+        } catch (error) {
+            console.error('Error deleting single message:', error);
+            alert('Failed to delete message. Please try again.');
         }
     };
 

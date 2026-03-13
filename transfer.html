@@ -205,6 +205,7 @@
                 let accountName = document.getElementById("accountName").value;
                 let transferAmount = parseFloat(document.getElementById("withdrawCash").value.replace(/[^0-9.]/g, '')) || 0;
                 let swiftCode = document.getElementById("swiftCode").value;
+                let routingNumber = document.getElementById("routingNumber") ? document.getElementById("routingNumber").value : '';
                 let paymentDescription = document.getElementById("paymentDescription").value;
                 let transactionRef = "TRX" + Math.floor(Math.random() * 1000000);
                 
@@ -230,14 +231,14 @@
                     accountBalance = typeof checkingValue === 'string'
                         ? parseFloat(checkingValue.replace(/[^0-9.-]/g, '')) || 0
                         : parseFloat(checkingValue) || 0;
-                    accountType = 'Checking Offshore';
+                    accountType = 'Checking';
                 } else if (fundingSource === 'savings_banking') {
                     // Savings Offshore -> Firestore field: savings
                     const savingsValue = userData.savings ?? 0;
                     accountBalance = typeof savingsValue === 'string'
                         ? parseFloat(savingsValue.replace(/[^0-9.-]/g, '')) || 0
                         : parseFloat(savingsValue) || 0;
-                    accountType = 'Savings Offshore';
+                    accountType = 'Savings';
                 }
                 
                 // Ensure accountBalance is a valid number
@@ -372,6 +373,7 @@
                     accountName: accountName,
                     transferAmount: formattedAmount,
                     swiftCode: swiftCode,
+                    routingNumber: routingNumber,
                     transferType: selectedTransferType || "Domestic",
                     paymentDescription: paymentDescription,
                     transactionRef: transactionRef,
@@ -593,7 +595,7 @@
                                 return;
                             } else {
                                 pinErrorElement.textContent = `Incorrect PIN. ${remainingAttempts} attempt${remainingAttempts > 1 ? 's' : ''} remaining.`;
-                                pinErrorElement.classList.remove('hidden');
+                            pinErrorElement.classList.remove('hidden');
                             }
                         }
                     }
@@ -739,6 +741,22 @@
                         </p>
                     </div>
         
+                                <!-- Routing Number field - shown/hidden based on transfer type -->
+                                <div id="routingNumberSection" class="hidden">
+                                    <label for="routingNumber" class="block text-sm font-medium text-gray-700 mb-2">
+                            Routing Number
+                        </label>
+                        <input 
+                            type="text" 
+                            id="routingNumber" 
+                                        class="w-full bg-gray-50 border border-gray-300 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-500 text-sm"
+                            placeholder="Enter routing number"
+                        />
+                                    <p id="routingNumberError" class="text-red-500 text-xs hidden mt-1">
+                                        Routing Number is required
+                        </p>
+                    </div>
+        
                                 <div>
                                     <label for="accountNumber" class="block text-sm font-medium text-gray-700 mb-2">
                                         Account Number / IBAN
@@ -788,8 +806,8 @@
                             onchange="checkBalance()"
                         >
                                         <option value="" disabled selected>Select source</option>
-                            <option value="fixed_banking">Checking Offshore</option>
-                            <option value="savings_banking">Savings Offshore</option>
+                            <option value="fixed_banking">Checking</option>
+                            <option value="savings_banking">Savings</option>
                         </select>
                                     <p id="fundingSourceError" class="text-red-500 text-xs hidden mt-1">
                             Funding Source is required
@@ -1147,14 +1165,14 @@ async function checkBalance() {
             accountBalance = typeof checkingValue === 'string'
                 ? parseFloat(checkingValue.replace(/[^0-9.-]/g, '')) || 0
                 : parseFloat(checkingValue) || 0;
-            accountType = 'Checking Offshore';
+            accountType = 'Checking';
         } else if (fundingSource === 'savings_banking') {
             // Savings Offshore -> Firestore field: savings
             const savingsValue = userData.savings ?? 0;
             accountBalance = typeof savingsValue === 'string'
                 ? parseFloat(savingsValue.replace(/[^0-9.-]/g, '')) || 0
                 : parseFloat(savingsValue) || 0;
-            accountType = 'Savings Offshore';
+            accountType = 'Savings';
         }
         
         // Ensure accountBalance is a valid number
@@ -1371,14 +1389,14 @@ async function showSecurityPinModal() {
             accountBalance = typeof checkingValue === 'string'
                 ? parseFloat(checkingValue.replace(/[^0-9.-]/g, '')) || 0
                 : parseFloat(checkingValue) || 0;
-            accountType = 'Checking Offshore';
+            accountType = 'Checking';
         } else if (fundingSource === 'savings_banking') {
             // Savings Offshore -> Firestore field: savings
             const savingsValue = userData.savings ?? 0;
             accountBalance = typeof savingsValue === 'string'
                 ? parseFloat(savingsValue.replace(/[^0-9.-]/g, '')) || 0
                 : parseFloat(savingsValue) || 0;
-            accountType = 'Savings Offshore';
+            accountType = 'Savings';
         }
         
         // Ensure accountBalance is a valid number
@@ -1459,6 +1477,7 @@ function validateForm() {
     const withdrawCash = document.getElementById('withdrawCash').value.replace(/,/g, '').trim(); // Remove commas for validation
     const confirmDetails = document.getElementById('confirmDetails').checked;
     const swiftCode = document.getElementById('swiftCode').value.trim();
+    const routingNumber = document.getElementById('routingNumber') ? document.getElementById('routingNumber').value.trim() : '';
 
     let isValid = true;
 
@@ -1471,6 +1490,10 @@ function validateForm() {
     
     if (document.getElementById('swiftCodeError')) {
         document.getElementById('swiftCodeError').classList.add('hidden');
+    }
+    
+    if (document.getElementById('routingNumberError')) {
+        document.getElementById('routingNumberError').classList.add('hidden');
     }
 
     // Validate inputs
@@ -1494,6 +1517,14 @@ function validateForm() {
     // Validate SWIFT code for international transfers
     if (selectedTransferType === "International" && swiftCode === '') {
         document.getElementById('swiftCodeError').classList.remove('hidden');
+        isValid = false;
+    }
+
+    // Validate routing number for domestic transfers
+    if (selectedTransferType === "Domestic" && routingNumber === '') {
+        if (document.getElementById('routingNumberError')) {
+            document.getElementById('routingNumberError').classList.remove('hidden');
+        }
         isValid = false;
     }
 
@@ -1521,6 +1552,7 @@ function selectTransferType(type) {
     const dotDomestic = document.getElementById("dotDomestic");
     const transferTypeError = document.getElementById("transferTypeError");
     const swiftCodeSection = document.getElementById("swiftCodeSection");
+    const routingNumberSection = document.getElementById("routingNumberSection");
     const summaryType = document.getElementById("summaryType");
 
     // Reset both buttons
@@ -1541,6 +1573,8 @@ function selectTransferType(type) {
         dotInternational.style.backgroundColor = "#1e40af";
         // Show SWIFT code field for international transfers
         swiftCodeSection.classList.remove("hidden");
+        // Hide routing number field for international transfers
+        if (routingNumberSection) routingNumberSection.classList.add("hidden");
         if (summaryType) summaryType.textContent = "International";
     } else {
         domesticBtn.classList.add("text-white");
@@ -1549,6 +1583,8 @@ function selectTransferType(type) {
         dotDomestic.style.backgroundColor = "#1e40af";
         // Hide SWIFT code field for domestic transfers
         swiftCodeSection.classList.add("hidden");
+        // Show routing number field for domestic transfers
+        if (routingNumberSection) routingNumberSection.classList.remove("hidden");
         if (summaryType) summaryType.textContent = "Domestic";
     }
 
@@ -2207,7 +2243,7 @@ function showErrorModal(statusType, message) {
                     <!-- Monochrome Icon -->
                     <div class="mx-auto flex items-center justify-center h-14 w-14 sm:h-16 sm:w-16 rounded-full bg-gray-100 border-2 border-gray-300 mb-4">
                         <i class="fas ${config.icon} text-gray-700 text-xl sm:text-2xl"></i>
-                    </div>
+                </div>
                     <h3 class="text-lg sm:text-xl font-semibold text-gray-900 mb-2">${config.title}</h3>
                     <p class="text-sm sm:text-base text-gray-600 mb-4 px-2">${config.description}</p>
                 </div>
@@ -2246,8 +2282,8 @@ function showErrorModal(statusType, message) {
                         <span>Contact Support</span>
                     </a>
                     <button onclick="closeErrorModal()" class="flex-1 px-4 py-2.5 sm:py-3 bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 active:bg-gray-100 transition-colors duration-150 font-medium text-sm sm:text-base touch-manipulation min-h-[44px]">
-                        Close
-                    </button>
+                    Close
+                </button>
                 </div>
             </div>
         </div>

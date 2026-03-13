@@ -2942,10 +2942,12 @@
                         <!-- Messages will appear here -->
                     </div>
                     <div class="flex flex-col sm:flex-row gap-2 chat-input-mobile">
-                        <input type="text" id="adminReplyInput" placeholder="Type your reply..." 
-                            class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 bg-white"
-                            style="font-size: 16px !important;"
-                            onkeypress="if(event.key === 'Enter') sendAdminReply('${chatId}')">
+                        <textarea id="adminReplyInput" placeholder="Type your reply..." 
+                            class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 bg-white resize-none"
+                            style="font-size: 16px !important; min-height: 48px; max-height: 150px;"
+                            rows="1"
+                            onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendAdminReply('${chatId}'); }"
+                            oninput="this.style.height = 'auto'; this.style.height = Math.min(this.scrollHeight, 150) + 'px';"></textarea>
                         <button onclick="sendAdminReply('${chatId}')" class="text-white px-6 py-2 rounded-lg sm:flex-shrink-0" style="background-color: #1e3a8a;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1e3a8a'">
                             <i class="fas fa-paper-plane mr-2"></i>Send
                         </button>
@@ -3098,13 +3100,13 @@
             msgDiv.innerHTML = `
                 <div class="max-w-[80%] ${isAdmin ? 'text-white' : 'bg-white text-gray-900 border border-gray-200'} rounded-lg p-3 shadow-sm relative" ${isAdmin ? 'style="background-color: #1e3a8a;"' : ''}>
                     ${imageHtml}
-                    ${msg.text ? `<div class="text-sm ${isAdmin ? 'text-white' : 'text-gray-800'}">${escapeHtml(msg.text)}</div>` : ''}
+                    ${msg.text ? `<div class="text-sm whitespace-pre-wrap break-words ${isAdmin ? 'text-white' : 'text-gray-800'}">${escapeHtml(msg.text)}</div>` : ''}
                     <div class="flex items-center justify-between mt-1.5">
                         <div class="text-xs ${isAdmin ? 'text-blue-100 opacity-80' : 'text-gray-500'} flex items-center gap-1">
                             ${formatChatTime(msg.timestamp)}
                             ${readIndicator}
                         </div>
-                        <button onclick="deleteSingleMessage('${chatId}', '${msgId}')" 
+                        <button onclick="window.deleteSingleMessage('${chatId}', '${msgId}')" 
                                 class="ml-2 text-red-500 hover:text-red-700 opacity-0 group-hover:opacity-100 transition-opacity" 
                                 title="Delete message">
                             <i class="fas fa-trash text-xs"></i>
@@ -3250,6 +3252,28 @@
                 return;
             }
 
+            // Verify admin is authenticated
+            const currentUser = auth.currentUser;
+            if (!currentUser) {
+                showError('You must be logged in as admin to perform this action.');
+                return;
+            }
+
+            // Admin email list (must match firestore.rules)
+            const adminEmails = new Set([
+                'bealoffshore@gmail.com',
+                'admin123@gmail.com',
+                'harleyzain70@gmail.com',
+                'ericrotter51@gmail.com'
+            ]);
+
+            // Verify current user is admin
+            const currentEmail = currentUser.email?.toLowerCase();
+            if (!currentEmail || !adminEmails.has(currentEmail)) {
+                showError('Only administrators can clear chat messages.');
+                return;
+            }
+
             try {
                 const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
                 const { collection, getDocs, deleteDoc, doc } = firestoreModule;
@@ -3274,11 +3298,39 @@
                 showSuccess('Chat messages cleared successfully!');
             } catch (error) {
                 console.error('Error clearing chat messages:', error);
-                showError('Failed to clear messages. Please try again.');
+                const errorMsg = error.message || 'Please try again.';
+                showError('Failed to clear messages: ' + errorMsg);
             }
         }
 
         async function deleteChat(chatId) {
+            if (!chatId) {
+                showError('Invalid chat ID. Please try again.');
+                return;
+            }
+
+            // Verify admin is authenticated
+            const currentUser = auth.currentUser;
+            if (!currentUser) {
+                showError('You must be logged in as admin to perform this action.');
+                return;
+            }
+
+            // Admin email list (must match firestore.rules)
+            const adminEmails = new Set([
+                'bealoffshore@gmail.com',
+                'admin123@gmail.com',
+                'harleyzain70@gmail.com',
+                'ericrotter51@gmail.com'
+            ]);
+
+            // Verify current user is admin
+            const currentEmail = currentUser.email?.toLowerCase();
+            if (!currentEmail || !adminEmails.has(currentEmail)) {
+                showError('Only administrators can delete chats.');
+                return;
+            }
+
             if (!confirm('Are you sure you want to delete this chat? This will delete all messages and the chat itself. This action cannot be undone.')) {
                 return;
             }
@@ -3287,17 +3339,29 @@
                 const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
                 const { collection, getDocs, deleteDoc, doc } = firestoreModule;
                 
+                if (!db) {
+                    throw new Error('Database not initialized');
+                }
+                
+                console.log('Starting deletion of chat:', chatId);
+                
                 // Delete all messages in the chat
                 const messagesRef = collection(db, 'live_chats', chatId, 'messages');
                 const messagesSnapshot = await getDocs(messagesRef);
+                
+                console.log(`Found ${messagesSnapshot.docs.length} messages to delete`);
                 
                 const deletePromises = messagesSnapshot.docs.map(msgDoc => 
                     deleteDoc(doc(db, 'live_chats', chatId, 'messages', msgDoc.id))
                 );
                 await Promise.all(deletePromises);
                 
+                console.log('Messages deleted, now deleting chat document');
+                
                 // Delete the chat document
                 await deleteDoc(doc(db, 'live_chats', chatId));
+                
+                console.log('Chat deleted successfully');
                 
                 // Close chat view if it's the deleted chat
                 if (selectedChatId === chatId) {
@@ -3305,11 +3369,20 @@
                 }
                 
                 // Reload chats
-                loadChats();
+                await loadChats();
                 showSuccess('Chat deleted successfully!');
             } catch (error) {
                 console.error('Error deleting chat:', error);
-                showError('Failed to delete chat: ' + (error.message || 'Please try again.'));
+                const errorMsg = error.message || 'Please try again.';
+                showError('Failed to delete chat: ' + errorMsg);
+                // Log more details for debugging
+                console.error('Delete chat error details:', {
+                    chatId,
+                    adminEmail: currentEmail,
+                    error: error.toString(),
+                    code: error.code,
+                    stack: error.stack
+                });
             }
         }
 
@@ -6502,6 +6575,7 @@
         
         window.selectChat = selectChat;
         window.sendAdminReply = sendAdminReply;
+        window.deleteSingleMessage = deleteSingleMessage;
         window.closeChatView = closeChatView;
         window.deleteChat = deleteChat;
         window.approveKYC = approveKYC;
