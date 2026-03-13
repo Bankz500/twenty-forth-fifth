@@ -83,25 +83,9 @@
         }
         
         .login-card {
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
             background: var(--surface);
-            border: 1px solid var(--border);
-        }
-        
-        .input-with-icon {
-            position: relative;
-        }
-        
-        .input-icon {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--subtle);
-        }
-        
-        .input-with-icon input {
-            padding-left: 40px;
+            border: 1px solid #E5E7EB;
         }
         
         .floating-shapes div {
@@ -317,69 +301,108 @@ window.togglePasswordVisibility = togglePasswordVisibility;
 </script>
 
 <!-- Login Section -->
-<section id="login-section" class="pt-24 md:pt-32 pb-16">
+<section id="login-section" class="pt-28 sm:pt-32 md:pt-40 pb-12 sm:pb-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
         <div class="flex items-center justify-center">
-            <div class="flex flex-col sm:flex-row login-card rounded-3xl overflow-hidden w-full sm:max-w-4xl shadow-lg">
+            <div class="flex flex-col sm:flex-row login-card rounded-2xl sm:rounded-3xl overflow-hidden w-full sm:max-w-4xl shadow-lg sm:shadow-xl">
                 <!-- Form Section -->
-                <div class="w-full sm:w-1/2 p-8 sm:p-12 bg-white">
-                    <div class="mb-10">
-                        <div class="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 rounded-full px-4 py-2 shadow-sm mb-4">
-                            <span class="w-2 h-2 rounded-full bg-blue-600"></span>
-                            <span class="text-blue-800 text-xs font-semibold uppercase tracking-wider">Secure Login</span>
-                        </div>
-                        <h2 class="text-3xl md:text-4xl font-extrabold text-blue-950 mb-2">Welcome Back</h2>
-                        <p class="text-blue-800">Sign in to continue to your account</p>
+                <div class="w-full sm:w-1/2 p-8 sm:p-10 md:p-12 bg-white">
+                    <div class="mb-10 sm:mb-12">
+                        <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2">Welcome Back</h2>
+                        <p class="text-sm sm:text-base text-gray-600">Sign in to continue to your account</p>
                     </div>
                     
-                    <form id="login-form" class="space-y-5">
-                        <div class="input-with-icon">
-                            <i class="fas fa-envelope input-icon"></i>
+                    <form id="login-form" class="space-y-6">
                             <div>
-                                <label for="email" class="block text-sm font-semibold text-blue-950 mb-2">Your Email</label>
-                                <input type="email" id="email" name="email" required placeholder="Enter your email"
-                                    class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-blue-950">
+                            <label for="email" class="block text-sm font-medium text-gray-900 mb-2">Email</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 hidden sm:flex items-center pointer-events-none">
+                                    <i class="fas fa-envelope text-gray-400 text-sm"></i>
+                                </div>
+                                <input 
+                                    type="email" 
+                                    id="email" 
+                                    name="email" 
+                                    required 
+                                    placeholder="name@example.com"
+                                    class="block w-full pl-3 sm:pl-10 pr-3 py-3 border border-gray-300 rounded-md text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 bg-white transition-colors"
+                                />
                             </div>
                         </div>
                         
-                        <div class="relative input-with-icon">
-                            <i class="fas fa-lock input-icon"></i>
                             <div>
-                                <label for="password" class="block text-sm font-semibold text-blue-950 mb-2">Password</label>
+                            <label for="password" class="block text-sm font-medium text-gray-900 mb-2">Password</label>
                                 <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 hidden sm:flex items-center pointer-events-none">
+                                    <i class="fas fa-lock text-gray-400 text-sm"></i>
+                                </div>
                                     <input 
                                         type="password" 
                                         id="password" 
                                         name="password" 
                                         required 
                                         placeholder="Enter your password"
-                                        class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 pr-12 bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-blue-950"
-                                    />
-                                    <button type="button" onclick="togglePasswordVisibility()" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-blue-700 hover:text-blue-950 focus:outline-none">
-                                        <i class="fas fa-eye" id="passwordEyeIcon"></i>
+                                    class="block w-full pl-3 sm:pl-10 pr-10 py-3 border border-gray-300 rounded-md text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 bg-white transition-colors"
+                                />
+                                <button 
+                                    type="button" 
+                                    onclick="togglePasswordVisibility()" 
+                                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none transition-colors"
+                                >
+                                    <i class="fas fa-eye text-sm" id="passwordEyeIcon"></i>
                                     </button>
-                                </div>
                             </div>
                         </div>
                         
-                        <div class="flex items-center justify-between">
-                            <label class="custom-checkbox">
-                                <span class="text-sm text-blue-800">Remember me</span>
-                                <input type="checkbox">
-                                <span class="checkmark"></span>
+                        <div class="flex items-center justify-between pt-1">
+                            <label class="flex items-center cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 text-gray-900 border-gray-300 rounded focus:ring-gray-900 focus:ring-1">
+                                <span class="ml-2 text-sm text-gray-700">Remember me</span>
                             </label>
-                            <a href="forgot-password.html" class="text-sm text-blue-800 hover:text-blue-950 font-semibold transition duration-200 hover:underline">Forgot password?</a>
+                            <a href="forgot-password.html" class="text-sm text-gray-600 hover:text-gray-900 font-medium transition-colors">Forgot password?</a>
                         </div>
                         
-                        <button type="submit" id="login-btn" data-no-loading="true" class="w-full btn-blue text-white py-4 rounded-xl font-semibold text-base transition duration-300 mt-4 shadow-lg">
-                            <i class="fas fa-sign-in-alt mr-2"></i>Log in
+                        <button type="submit" id="login-btn" data-no-loading="true" class="w-full bg-gray-900 text-white py-3 rounded-md font-medium text-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors mt-2">
+                            Sign in
                         </button>
                         <p id="login-status" class="hidden text-sm text-blue-900 bg-blue-50 border border-blue-200 rounded-xl px-4 py-3"></p>
                         <p id="login-error" class="hidden text-sm text-red-700 bg-red-50 border border-red-200 rounded-xl px-4 py-3"></p>
                     </form>
                     
-                    <div class="mt-8 text-center">
-                        <p class="text-blue-800">Don't have an account? <a href="sign-up.html" class="text-blue-950 font-semibold hover:text-blue-700 transition duration-200 hover:underline">Sign Up</a></p>
+                    <!-- Security Information (Mobile Only) -->
+                    <div class="mt-6 sm:hidden pt-4 border-t border-gray-200">
+                        <h3 class="text-sm font-semibold text-black mb-2.5">Sign in with confidence</h3>
+                        <p class="text-xs text-black mb-3.5 leading-relaxed">
+                            Encryption, session controls, and activity monitoring help protect every login to your Twenty Forth & Fifth account.
+                        </p>
+                        <ul class="space-y-2 mb-3.5">
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-check-circle text-blue-600 text-xs mt-0.5"></i>
+                                <span class="text-xs text-black leading-relaxed">Protected sessions on web and mobile</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-check-circle text-blue-600 text-xs mt-0.5"></i>
+                                <span class="text-xs text-black leading-relaxed">Multi‑factor verification available</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fas fa-check-circle text-blue-600 text-xs mt-0.5"></i>
+                                <span class="text-xs text-black leading-relaxed">Automatic monitoring for unusual activity</span>
+                            </li>
+                        </ul>
+                        <div class="flex items-center gap-2.5 mb-3">
+                            <div class="flex -space-x-1">
+                                <span class="w-7 h-7 rounded-full bg-blue-100 border border-blue-200 flex items-center justify-center text-[9px] font-semibold text-black">24/7</span>
+                                <span class="w-7 h-7 rounded-full bg-blue-100 border border-blue-200 flex items-center justify-center text-[9px] font-semibold text-black">KYC</span>
+                                <span class="w-7 h-7 rounded-full bg-blue-100 border border-blue-200 flex items-center justify-center text-[9px] font-semibold text-black">AML</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-black leading-relaxed">
+                            Continuous safeguards support sign‑ins and account access around the clock.
+                        </p>
+                    </div>
+                    
+                    <div class="mt-6 sm:mt-8 text-center">
+                        <p class="text-sm text-gray-600">Don't have an account? <a href="sign-up.html" class="text-gray-900 font-medium hover:text-gray-700 transition-colors">Sign Up</a></p>
                     </div>
                 </div>
                 
@@ -436,29 +459,25 @@ window.togglePasswordVisibility = togglePasswordVisibility;
 </section>
 
 <!-- OTP Section (Initially Hidden) -->
-<section id="otp-section" class="hidden pt-24 md:pt-32 pb-16">
+<section id="otp-section" class="hidden pt-28 sm:pt-32 md:pt-40 pb-12 sm:pb-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
         <div class="flex items-center justify-center">
-            <div class="flex flex-col sm:flex-row login-card rounded-3xl overflow-hidden w-full sm:max-w-4xl shadow-lg">
+            <div class="flex flex-col sm:flex-row login-card rounded-2xl sm:rounded-3xl overflow-hidden w-full sm:max-w-4xl shadow-lg sm:shadow-xl">
                 <!-- Form Section -->
-                <div class="w-full sm:w-1/2 p-8 sm:p-12 bg-white">
-                    <div class="mb-10">
-                        <div class="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 rounded-full px-4 py-2 shadow-sm mb-4">
-                            <span class="w-2 h-2 rounded-full bg-blue-600"></span>
-                            <span class="text-blue-800 text-xs font-semibold uppercase tracking-wider">Two-Factor Auth</span>
-                        </div>
-                        <h2 class="text-3xl md:text-4xl font-extrabold text-blue-950 mb-2">Verification Required</h2>
-                        <p class="text-blue-800">We've sent a 6-digit code to your email</p>
+                <div class="w-full sm:w-1/2 p-8 sm:p-10 md:p-12 bg-white">
+                    <div class="mb-8 sm:mb-10">
+                        <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2">Verification Required</h2>
+                        <p class="text-sm sm:text-base text-gray-600">We've sent a 6-digit code to your email</p>
                     </div>
                     
-                    <div class="bg-blue-50 border border-blue-200 p-4 rounded-xl mb-6">
+                    <div class="bg-gray-50 border border-gray-200 p-4 rounded-lg mb-6">
                         <div class="flex">
                             <div class="flex-shrink-0">
-                                <i class="fas fa-info-circle text-blue-600 text-xl"></i>
+                                <i class="fas fa-info-circle text-gray-600 text-lg"></i>
                             </div>
                             <div class="ml-3">
-                                <p class="text-sm text-blue-800">
-                                    A verification code has been sent to <span id="email-display" class="font-bold text-blue-950"></span>
+                                <p class="text-sm text-gray-700">
+                                    A verification code has been sent to <span id="email-display" class="font-semibold text-gray-900"></span>
                                 </p>
                             </div>
                         </div>
@@ -466,55 +485,55 @@ window.togglePasswordVisibility = togglePasswordVisibility;
                     
                     <form id="otp-form" class="space-y-5">
                         <div>
-                            <label for="otp" class="block text-sm font-semibold text-blue-950 mb-2">Enter Verification Code</label>
+                            <label for="otp" class="block text-sm font-medium text-gray-900 mb-2">Enter Verification Code</label>
                             <input type="text" id="otp" name="otp" maxlength="6" required placeholder="······"
-                                class="otp-input form-input-focus w-full border border-blue-200 rounded-xl p-4 bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-blue-950 text-center text-2xl font-semibold tracking-widest">
+                                class="otp-input form-input-focus w-full border border-gray-300 rounded-md p-4 bg-white focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 text-gray-900 text-center text-2xl font-semibold tracking-widest">
                         </div>
                         
-                        <button type="submit" id="verify-otp-btn" data-no-loading="true" class="w-full btn-blue text-white py-4 rounded-xl font-semibold text-base transition duration-300 mt-8 shadow-lg">
-                            <i class="fas fa-check mr-2"></i>Verify & Continue
+                        <button type="submit" id="verify-otp-btn" data-no-loading="true" class="w-full bg-gray-900 text-white py-3 rounded-md font-medium text-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors mt-4">
+                            Verify & Continue
                         </button>
                     </form>
                     
                     <div class="mt-8 text-center">
-                        <p class="text-blue-800 flex items-center justify-center">
-                            <i class="fas fa-clock mr-2 text-blue-600"></i>
-                            Code expires in <span class="font-semibold text-blue-950 mx-1">4:59</span>
+                        <p class="text-gray-600 flex items-center justify-center text-sm">
+                            <i class="fas fa-clock mr-2 text-gray-500"></i>
+                            Code expires in <span id="otp-countdown" class="font-semibold text-gray-900 mx-1">4:59</span>
                         </p>
                         <p class="mt-4">
-                            Didn't receive the code? <a href="#" id="resend-otp" class="text-blue-950 font-semibold hover:text-blue-700 transition duration-200 hover:underline">Resend Code</a>
+                            Didn't receive the code? <a href="#" id="resend-otp" class="text-gray-900 font-medium hover:text-gray-700 transition-colors">Resend Code</a>
                         </p>
                     </div>
                 </div>
                 
                 <!-- Visual Section (no image) -->
-                <div class="hidden sm:block w-full sm:w-1/2 bg-gradient-to-br from-blue-600 to-blue-900 relative overflow-hidden">
-                    <div class="absolute -inset-10 bg-gradient-to-tr from-blue-300/25 via-transparent to-blue-400/40 opacity-70"></div>
+                <div class="hidden sm:block w-full sm:w-1/2 bg-gradient-to-br from-gray-800 to-gray-900 relative overflow-hidden">
+                    <div class="absolute -inset-10 bg-gradient-to-tr from-gray-500/20 via-transparent to-gray-600/30 opacity-70"></div>
                     <div class="absolute inset-0 flex flex-col justify-center p-10 text-white">
                         <div class="max-w-sm space-y-6">
-                            <div class="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-2 shadow-sm">
-                                <span class="w-2 h-2 rounded-full bg-blue-300"></span>
+                            <div class="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-2">
+                                <span class="w-2 h-2 rounded-full bg-gray-300"></span>
                                 <span class="text-xs font-semibold tracking-widest uppercase">Step 2 of 2</span>
                             </div>
 
                             <div>
                                 <h3 class="text-2xl font-bold mb-2">Confirm it’s really you</h3>
-                                <p class="text-sm text-blue-100/90">
+                                <p class="text-sm text-gray-200/90">
                                     One‑time codes help us confirm your sign‑in and keep account access aligned to you and your devices.
                                 </p>
                             </div>
 
-                            <ul class="space-y-2 text-sm text-blue-50">
+                            <ul class="space-y-2 text-sm text-gray-100">
                                 <li class="flex items-center gap-2">
-                                    <i class="fas fa-check-circle text-blue-300"></i>
+                                    <i class="fas fa-check-circle text-gray-300"></i>
                                     <span>Email‑based verification codes</span>
                                 </li>
                                 <li class="flex items-center gap-2">
-                                    <i class="fas fa-check-circle text-blue-300"></i>
+                                    <i class="fas fa-check-circle text-gray-300"></i>
                                     <span>Short‑lived codes for added security</span>
                                 </li>
                                 <li class="flex items-center gap-2">
-                                    <i class="fas fa-check-circle text-blue-300"></i>
+                                    <i class="fas fa-check-circle text-gray-300"></i>
                                     <span>Additional monitoring for unusual activity</span>
                                 </li>
                             </ul>
@@ -555,10 +574,13 @@ window.togglePasswordVisibility = togglePasswordVisibility;
     const loginBtn = document.getElementById('login-btn');
     const resendOtpBtn = document.getElementById('resend-otp');
     const emailDisplay = document.getElementById('email-display');
+    const otpCountdownEl = document.getElementById('otp-countdown');
     const loginStatusEl = document.getElementById('login-status');
     const loginErrorEl = document.getElementById('login-error');
 
     let currentUser = null;
+    let otpCountdownInterval = null;
+    let otpExpiresAt = null;
     
     // If redirected here due to pending approval, show notice once.
     (async function maybeShowPendingNotice() {
@@ -583,6 +605,38 @@ window.togglePasswordVisibility = togglePasswordVisibility;
             t = setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms);
         });
         return Promise.race([promise, timeout]).finally(() => clearTimeout(t));
+    }
+
+    function formatCountdown(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        return `${mins}:${String(secs).padStart(2, '0')}`;
+    }
+
+    function stopOtpCountdown() {
+        if (otpCountdownInterval) {
+            clearInterval(otpCountdownInterval);
+            otpCountdownInterval = null;
+        }
+    }
+
+    function startOtpCountdown(durationSeconds = 299) {
+        stopOtpCountdown();
+        otpExpiresAt = Date.now() + durationSeconds * 1000;
+
+        const tick = () => {
+            if (!otpCountdownEl) return;
+            const remaining = Math.max(0, Math.ceil((otpExpiresAt - Date.now()) / 1000));
+            otpCountdownEl.textContent = formatCountdown(remaining);
+
+            if (remaining <= 0) {
+                stopOtpCountdown();
+                sessionStorage.removeItem('loginOtp');
+            }
+        };
+
+        tick();
+        otpCountdownInterval = setInterval(tick, 1000);
     }
 
     // Function to send OTP (EmailJS can sometimes hang; enforce a timeout)
@@ -724,6 +778,7 @@ window.togglePasswordVisibility = togglePasswordVisibility;
             emailDisplay.textContent = email;
             if (loginSection) loginSection.classList.add('hidden');
             if (otpSection) otpSection.classList.remove('hidden');
+            startOtpCountdown();
 
         } catch (error) {
             console.error('Login error:', error);
@@ -794,6 +849,7 @@ window.togglePasswordVisibility = togglePasswordVisibility;
 
             if (enteredOtp === storedOtp) {
                 sessionStorage.removeItem('loginOtp');
+                stopOtpCountdown();
                 
                 // Check if there's a redirect after login (e.g., from chat button)
                 const redirectAfterLogin = sessionStorage.getItem('redirectAfterLogin');
@@ -843,6 +899,7 @@ window.togglePasswordVisibility = togglePasswordVisibility;
 
         if (otpSent) {
             sessionStorage.setItem('loginOtp', newOtp);
+            startOtpCountdown();
             alert('New OTP has been sent to your email.');
         } else {
             alert('Failed to send new OTP. Please try again.');

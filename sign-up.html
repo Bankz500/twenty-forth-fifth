@@ -74,9 +74,9 @@
         }
         
         .account-card {
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
             background: var(--surface);
-            border: 1px solid var(--border);
+            border: 1px solid #E5E7EB;
             border-radius: 24px;
         }
         
@@ -201,11 +201,31 @@
             top: 50%;
             transform: translateY(-50%);
             color: var(--subtle);
+            font-size: 14px;
+            z-index: 1;
+        }
+        
+        @media (min-width: 640px) {
+            .input-icon {
+                left: 12px;
+                font-size: 16px;
+            }
         }
         
         .input-with-icon input,
         .input-with-icon select {
             padding-left: 40px;
+        }
+        
+        @media (max-width: 639px) {
+            .input-with-icon input,
+            .input-with-icon select {
+                padding-left: 36px;
+            }
+            .input-icon {
+                left: 10px;
+                font-size: 14px;
+            }
         }
         
         .floating-shapes div {
@@ -348,12 +368,22 @@ window.onload = function () {
     
 
 <!-- Open Account Section -->
-<section class="pt-24 md:pt-32 pb-16">
+<section class="pt-28 sm:pt-32 md:pt-40 pb-12 sm:pb-16">
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
         <div class="flex items-center justify-center">
-            <div class="account-card flex flex-col md:flex-row overflow-hidden max-w-5xl w-full shadow-lg">
+            <div class="account-card flex flex-col md:flex-row overflow-hidden max-w-5xl w-full shadow-lg sm:shadow-xl rounded-2xl sm:rounded-3xl">
                 <!-- Form Sections Container -->
-                <div class="w-full md:w-3/5 p-8 md:p-12 relative pt-16 md:pt-8 bg-white">
+                <div class="w-full md:w-3/5 p-5 sm:p-6 md:p-8 lg:p-12 relative pt-12 sm:pt-14 md:pt-8 bg-white">
+            <!-- Already have an account section -->
+            <div class="mb-6 text-center">
+                <p class="text-sm text-gray-600">
+                    Already have an account? 
+                    <a href="login.html" class="text-gray-900 font-medium hover:text-gray-700 transition-colors">
+                        Sign in
+                    </a>
+                </p>
+            </div>
+            
             <!-- Progress Steps Indicator -->
             <div class="step-indicator mb-8" id="step-indicator">
                 <div class="step active flex-1" id="step-0-indicator">
@@ -372,50 +402,46 @@ window.onload = function () {
             
             <!-- Form Section: Step 0 - Account Type Selection -->
             <div id="step-0" class="animate-fade-in">
-                <div class="text-center mb-8">
-                    <div class="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 rounded-full px-4 py-2 shadow-sm mb-4">
-                        <span class="w-2 h-2 rounded-full bg-blue-600"></span>
-                        <span class="text-blue-800 text-xs font-semibold uppercase tracking-wider">Account Setup</span>
-                    </div>
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-blue-950 mb-3">Choose Your Account Type</h2>
-                    <p class="text-blue-800 text-base max-w-lg mx-auto">
+                <div class="mb-10">
+                    <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2">Choose Your Account Type</h2>
+                    <p class="text-sm sm:text-base text-gray-600">
                         Select whether you want to open a personal, business, or joint account.
                     </p>
                 </div>
                 
                 <div class="space-y-4">
-                    <button type="button" id="account-type-personal" class="w-full border-2 border-blue-200 rounded-xl p-6 text-left hover:border-blue-500 hover:bg-blue-50 transition duration-300 account-type-btn bg-white" data-type="personal">
+                    <button type="button" id="account-type-personal" class="w-full border border-gray-300 rounded-md p-5 text-left hover:border-gray-900 hover:bg-gray-50 transition-colors account-type-btn bg-white" data-type="personal">
                         <div class="flex items-center">
-                            <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center mr-4">
-                                <i class="fas fa-user text-xl text-blue-700"></i>
+                            <div class="w-12 h-12 rounded-md bg-gray-100 flex items-center justify-center mr-4 flex-shrink-0">
+                                <i class="fas fa-user text-gray-600"></i>
                             </div>
-                            <div>
-                                <h3 class="text-lg font-bold text-blue-950">Personal Account</h3>
-                                <p class="text-sm text-blue-800">For individual banking needs</p>
+                            <div class="min-w-0">
+                                <h3 class="text-lg font-semibold text-gray-900">Personal Account</h3>
+                                <p class="text-sm text-gray-600">For individual banking needs</p>
                             </div>
                         </div>
                     </button>
                     
-                    <button type="button" id="account-type-business" class="w-full border-2 border-blue-200 rounded-xl p-6 text-left hover:border-blue-500 hover:bg-blue-50 transition duration-300 account-type-btn bg-white" data-type="business">
+                    <button type="button" id="account-type-business" class="w-full border border-gray-300 rounded-md p-5 text-left hover:border-gray-900 hover:bg-gray-50 transition-colors account-type-btn bg-white" data-type="business">
                         <div class="flex items-center">
-                            <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center mr-4">
-                                <i class="fas fa-building text-xl text-blue-700"></i>
+                            <div class="w-12 h-12 rounded-md bg-gray-100 flex items-center justify-center mr-4 flex-shrink-0">
+                                <i class="fas fa-building text-gray-600"></i>
                             </div>
-                            <div>
-                                <h3 class="text-lg font-bold text-blue-950">Business Account</h3>
-                                <p class="text-sm text-blue-800">For business banking needs</p>
+                            <div class="min-w-0">
+                                <h3 class="text-lg font-semibold text-gray-900">Business Account</h3>
+                                <p class="text-sm text-gray-600">For business banking needs</p>
                             </div>
                         </div>
                     </button>
                     
-                    <button type="button" id="account-type-joint" class="w-full border-2 border-blue-200 rounded-xl p-6 text-left hover:border-blue-500 hover:bg-blue-50 transition duration-300 account-type-btn bg-white" data-type="joint">
+                    <button type="button" id="account-type-joint" class="w-full border border-gray-300 rounded-md p-5 text-left hover:border-gray-900 hover:bg-gray-50 transition-colors account-type-btn bg-white" data-type="joint">
                         <div class="flex items-center">
-                            <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center mr-4">
-                                <i class="fas fa-users text-xl text-blue-700"></i>
+                            <div class="w-12 h-12 rounded-md bg-gray-100 flex items-center justify-center mr-4 flex-shrink-0">
+                                <i class="fas fa-users text-gray-600"></i>
                             </div>
-                            <div>
-                                <h3 class="text-lg font-bold text-blue-950">Joint Account</h3>
-                                <p class="text-sm text-blue-800">For shared banking with 2-3 account holders</p>
+                            <div class="min-w-0">
+                                <h3 class="text-lg font-semibold text-gray-900">Joint Account</h3>
+                                <p class="text-sm text-gray-600">For shared banking with 2-3 account holders</p>
                             </div>
                         </div>
                     </button>
@@ -424,57 +450,72 @@ window.onload = function () {
             
             <!-- Form Section: Step 1 - Personal Details -->
             <div id="step-1" class="hidden">
-                <div class="text-center mb-8">
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-blue-950 mb-3">Personal Information</h2>
-                    <p class="text-blue-800 text-base max-w-lg mx-auto">
+                <div class="mb-8 sm:mb-10">
+                    <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-2">Personal Information</h2>
+                    <p class="text-sm sm:text-base text-gray-600">
                         Please provide your personal details to continue.
                     </p>
                 </div>
                 
-                <form id="personal-info-form" class="space-y-3">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="input-with-icon">
-                            <i class="fas fa-user input-icon"></i>
-                            <div>
-                                <label for="first-name" class="block text-sm font-semibold text-blue-950 mb-2">First Name</label>
+                <form id="personal-info-form" class="space-y-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                            <label for="first-name" class="block text-sm font-medium text-gray-900 mb-2">First Name</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 hidden sm:flex items-center pointer-events-none">
+                                    <i class="fas fa-user text-gray-400 text-sm"></i>
+                                </div>
                                 <input type="text" id="first-name" name="first-name" required placeholder="Enter your first name" 
-                                    class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400 text-blue-950">
+                                    class="block w-full pl-3 sm:pl-10 pr-3 py-3 border border-gray-300 rounded-md text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 bg-white transition-colors"
+                                />
                             </div>
                         </div>
-                        <div class="input-with-icon">
-                            <i class="fas fa-user input-icon"></i>
-                            <div>
-                                <label for="last-name" class="block text-sm font-medium text-blue-950 mb-1">Last Name</label>
+                        <div>
+                            <label for="last-name" class="block text-sm font-medium text-gray-900 mb-2">Last Name</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 hidden sm:flex items-center pointer-events-none">
+                                    <i class="fas fa-user text-gray-400 text-sm"></i>
+                                </div>
                                 <input type="text" id="last-name" name="last-name" required placeholder="Enter your last name" 
-                                    class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400">
+                                    class="block w-full pl-3 sm:pl-10 pr-3 py-3 border border-gray-300 rounded-md text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 bg-white transition-colors"
+                                />
                             </div>
                         </div>
                     </div>
                     
-                    <div class="input-with-icon">
-                        <i class="fas fa-envelope input-icon"></i>
-                        <div>
-                            <label for="email" class="block text-sm font-medium text-blue-950 mb-1">Email Address</label>
-                            <input type="email" id="email" name="email" required placeholder="Enter your email" 
-                                class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400">
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-900 mb-2">Email Address</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 hidden sm:flex items-center pointer-events-none">
+                                <i class="fas fa-envelope text-gray-400 text-sm"></i>
+                            </div>
+                            <input type="email" id="email" name="email" required placeholder="name@example.com" 
+                                class="block w-full pl-3 sm:pl-10 pr-3 py-3 border border-gray-300 rounded-md text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 bg-white transition-colors"
+                            />
                         </div>
                     </div>
                     
-                    <div class="input-with-icon">
-                        <i class="fas fa-phone input-icon"></i>
-                        <div>
-                            <label for="phone-number" class="block text-sm font-medium text-blue-950 mb-1">Phone Number</label>
+                    <div>
+                        <label for="phone-number" class="block text-sm font-medium text-gray-900 mb-2">Phone Number</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 hidden sm:flex items-center pointer-events-none">
+                                <i class="fas fa-phone text-gray-400 text-sm"></i>
+                            </div>
                             <input type="tel" id="phone-number" name="phone-number" required placeholder="Enter your phone number" 
-                                class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400">
+                                class="block w-full pl-3 sm:pl-10 pr-3 py-3 border border-gray-300 rounded-md text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 bg-white transition-colors"
+                            />
                         </div>
                     </div>
                     
-                    <div class="input-with-icon">
-                        <i class="fas fa-building input-icon"></i>
-                        <div>
-                            <label for="account-type" class="block text-sm font-medium text-blue-950 mb-1">Account Type</label>
+                    <div>
+                        <label for="account-type" class="block text-sm font-medium text-gray-900 mb-2">Account Type</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 hidden sm:flex items-center pointer-events-none">
+                                <i class="fas fa-building text-gray-400 text-sm"></i>
+                            </div>
                             <select id="account-type" name="account-type" required 
-                                class="form-input-focus custom-select w-full border border-blue-200 rounded-xl p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none">
+                                class="block w-full pl-3 sm:pl-10 pr-3 py-3 border border-gray-300 rounded-md text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 bg-white transition-colors appearance-none"
+                            >
                                 <option value="">Select Account Type</option>
                                 <option value="checking">Fixed Deposit</option>
                                 <option value="savings">Savings Account</option>
@@ -487,43 +528,45 @@ window.onload = function () {
                     <input type="hidden" id="user-account-type" name="user-account-type" value="">
                     
                     <!-- Password -->
-                    <div class="relative input-with-icon">
-                        <i class="fas fa-lock input-icon"></i>
-                        <div>
-                            <label for="password" class="block text-sm font-medium text-blue-950 mb-1">Create Password</label>
-                            <div class="relative">
-                                <input type="password" id="password" name="password" required placeholder="Create a password"
-                                    class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400">
-                                <button type="button" onclick="togglePasswordVisibility('password', 'eyeIcon1')" 
-                                    class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-blue-950">
-                                    <i class="fas fa-eye" id="eyeIcon1"></i>
-                                </button>
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-900 mb-2">Create Password</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 hidden sm:flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-400 text-sm"></i>
                             </div>
+                            <input type="password" id="password" name="password" required placeholder="Create a password"
+                                class="block w-full pl-3 sm:pl-10 pr-10 py-3 border border-gray-300 rounded-md text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 bg-white transition-colors"
+                            />
+                            <button type="button" onclick="togglePasswordVisibility('password', 'eyeIcon1')" 
+                                class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none transition-colors">
+                                <i class="fas fa-eye text-sm" id="eyeIcon1"></i>
+                            </button>
                         </div>
                     </div>
 
                     <!-- Confirm Password -->
-                    <div class="relative input-with-icon">
-                        <i class="fas fa-lock input-icon"></i>
-                        <div>
-                            <label for="confirm-password" class="block text-sm font-medium text-blue-950 mb-1">Confirm Password</label>
-                            <div class="relative">
-                                <input type="password" id="confirm-password" name="confirm-password" required placeholder="Confirm your password"
-                                    class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400">
-                                <button type="button" onclick="togglePasswordVisibility('confirm-password', 'eyeIcon2')" 
-                                    class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-blue-950">
-                                    <i class="fas fa-eye" id="eyeIcon2"></i>
-                                </button>
+                    <div>
+                        <label for="confirm-password" class="block text-sm font-medium text-gray-900 mb-2">Confirm Password</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 hidden sm:flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-400 text-sm"></i>
                             </div>
+                            <input type="password" id="confirm-password" name="confirm-password" required placeholder="Confirm your password"
+                                class="block w-full pl-3 sm:pl-10 pr-10 py-3 border border-gray-300 rounded-md text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 bg-white transition-colors"
+                            />
+                            <button type="button" onclick="togglePasswordVisibility('confirm-password', 'eyeIcon2')" 
+                                class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none transition-colors">
+                                <i class="fas fa-eye text-sm" id="eyeIcon2"></i>
+                            </button>
                         </div>
                     </div>
 
-                    <div class="pt-4 flex space-x-4">
-                        <button type="button" id="back-to-account-type" class="w-1/3 bg-blue-100 text-blue-950 py-4 rounded-xl font-medium text-base transition duration-300 hover:bg-blue-200">
-                            <i class="fas fa-arrow-left mr-2"></i>Back
+                    <div class="pt-4 flex flex-col sm:flex-row gap-3 sm:gap-4">
+                        <button type="button" id="back-to-account-type" class="w-full sm:w-1/3 bg-white border border-gray-300 text-gray-900 py-3 rounded-md font-medium text-sm transition-colors hover:bg-gray-50">
+                            Back
                         </button>
-                        <button type="button" id="continue-btn" class="w-2/3 btn-gradient text-white py-4 rounded-xl font-medium text-base transition duration-300">
-                            <i class="fas fa-arrow-right mr-2"></i>Continue
+                        <button type="button" id="continue-btn" class="w-full sm:w-2/3 bg-gray-900 text-white py-3 rounded-md font-medium text-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors">
+                            Continue
                         </button>
                     </div>
                 </form>
@@ -531,124 +574,121 @@ window.onload = function () {
 
             <!-- Form Section: Step 2 - Personal Account Address & Phone -->
             <div id="step-2-personal" class="hidden">
-                <div class="mb-6">
-                    <div class="inline-flex items-center gap-2 bg-blue-50 border border-blue-100 rounded-full px-4 py-2 shadow-sm mb-4">
-                        <span class="w-2 h-2 rounded-full bg-blue-600"></span>
-                        <span class="text-blue-800 text-xs font-semibold uppercase tracking-wider">Account Setup</span>
-                    </div>
-                    <h2 class="text-2xl md:text-3xl font-extrabold text-blue-950 mb-2">account setup.</h2>
+                <div class="mb-8">
+                    <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Account Setup</h2>
+                    <p class="text-sm text-gray-600">Complete your contact details to finish setup.</p>
                 </div>
                 
-                <form id="personal-address-form" class="space-y-4">
+                <form id="personal-address-form" class="space-y-5">
                     <div class="input-with-icon">
-                        <i class="fas fa-phone input-icon"></i>
+                        <i class="fas fa-phone input-icon hidden sm:flex"></i>
                         <div>
-                            <label for="phone-number-alt" class="block text-sm font-medium text-blue-950 mb-1">Phone Number</label>
+                            <label for="phone-number-alt" class="block text-sm font-medium text-gray-900 mb-2">Phone Number</label>
                             <input type="tel" id="phone-number-alt" name="phone-number-alt" required placeholder="Enter your phone number" 
-                                class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400 text-blue-950">
+                                class="form-input-focus w-full border border-gray-300 rounded-md py-3 pl-3 sm:pl-12 pr-3 bg-white focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 placeholder-gray-400 text-gray-900">
                         </div>
                     </div>
                     
                     <div class="input-with-icon">
-                        <i class="fas fa-home input-icon"></i>
+                        <i class="fas fa-home input-icon hidden sm:flex"></i>
                         <div>
-                            <label for="home-address" class="block text-sm font-medium text-blue-950 mb-1">Home Address</label>
+                            <label for="home-address" class="block text-sm font-medium text-gray-900 mb-2">Home Address</label>
                             <input type="text" id="home-address" name="home-address" required placeholder="Enter your home address" 
-                                class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400 text-blue-950">
+                                class="form-input-focus w-full border border-gray-300 rounded-md py-3 pl-3 sm:pl-12 pr-3 bg-white focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 placeholder-gray-400 text-gray-900">
                         </div>
                     </div>
                     
                     <div class="input-with-icon">
-                        <i class="fas fa-map-marker-alt input-icon"></i>
+                        <i class="fas fa-map-marker-alt input-icon hidden sm:flex"></i>
                         <div>
-                            <label for="billing-address" class="block text-sm font-medium text-blue-950 mb-1">Billing Address</label>
+                            <label for="billing-address" class="block text-sm font-medium text-gray-900 mb-2">Billing Address</label>
                             <input type="text" id="billing-address" name="billing-address" required placeholder="Enter your billing address" 
-                                class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400 text-blue-950">
+                                class="form-input-focus w-full border border-gray-300 rounded-md py-3 pl-3 sm:pl-12 pr-3 bg-white focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 placeholder-gray-400 text-gray-900">
                         </div>
                     </div>
                     
                     <div class="flex items-start space-x-3 pt-2">
-                        <input type="checkbox" id="personal-terms-confirm" required class="mt-1 w-5 h-5 text-blue-950 border-2 border-blue-200 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer">
-                        <label for="personal-terms-confirm" class="text-sm text-blue-950 leading-relaxed cursor-pointer">
-                            I confirm that the information provided above is correct and all holders are in mutual understanding. I agree to the <a href="terms.html" class="text-blue-600 font-medium underline hover:text-blue-800">terms and conditions</a> of opening a joint account.
+                        <input type="checkbox" id="personal-terms-confirm" required class="mt-1 w-5 h-5 text-gray-900 border-2 border-gray-300 rounded focus:ring-1 focus:ring-gray-900 cursor-pointer">
+                        <label for="personal-terms-confirm" class="text-sm text-gray-700 leading-relaxed cursor-pointer">
+                            I confirm that the information provided above is correct and all holders are in mutual understanding. I agree to the <a href="terms.html" class="text-gray-900 font-medium underline hover:text-gray-700">terms and conditions</a> of opening a joint account.
                         </label>
                     </div>
                     
-                    <div class="flex space-x-4 pt-4">
-                        <button type="button" id="back-to-personal-details" class="w-1/3 bg-blue-100 text-blue-950 py-4 rounded-xl font-medium text-base transition duration-300 hover:bg-blue-200">
-                            <i class="fas fa-arrow-left mr-2"></i>← Back
+                    <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4">
+                        <button type="button" id="back-to-personal-details" class="w-full sm:w-1/3 bg-white border border-gray-300 text-gray-900 py-3 rounded-md font-medium text-sm transition-colors hover:bg-gray-50">
+                            Back
                         </button>
-                        <button type="submit" id="create-personal-account-btn" data-no-loading="true" class="w-2/3 btn-gradient text-white py-4 rounded-xl font-medium text-base transition duration-300">
+                        <button type="submit" id="create-personal-account-btn" data-no-loading="true" class="w-full sm:w-2/3 bg-gray-900 text-white py-3 rounded-md font-medium text-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors">
                             Create Account
                         </button>
                     </div>
                     
                     <div class="text-center pt-2">
-                        <p class="text-blue-800 text-sm">Already have an account? <a href="login.html" class="text-blue-600 font-medium hover:text-blue-800 transition duration-200 hover:underline">Log in</a></p>
+                        <p class="text-gray-600 text-sm">Already have an account? <a href="login.html" class="text-gray-900 font-medium hover:text-gray-700 transition-colors">Log in</a></p>
                     </div>
                 </form>
             </div>
 
             <!-- Form Section: Step 2 - Business Information -->
             <div id="step-2-business" class="hidden">
-                <div class="text-center mb-8">
-                    <h2 class="text-3xl font-bold text-blue-950 mb-3">Business Information</h2>
-                    <p class="text-blue-800 text-base max-w-lg mx-auto">
+                <div class="mb-8">
+                    <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">Business Information</h2>
+                    <p class="text-gray-600 text-sm sm:text-base max-w-lg">
                         Provide your business details to complete your account setup.
                     </p>
                 </div>
                 
-                <form id="business-info-form" class="space-y-3">
+                <form id="business-info-form" class="space-y-5">
                     <div class="input-with-icon">
-                        <i class="fas fa-building input-icon"></i>
+                        <i class="fas fa-building input-icon hidden sm:flex"></i>
                         <div>
-                            <label for="business-name" class="block text-sm font-medium text-blue-950 mb-1">Business Name</label>
+                            <label for="business-name" class="block text-sm font-medium text-gray-900 mb-2">Business Name</label>
                             <input type="text" id="business-name" name="business-name" required placeholder="Enter your business name" 
-                                class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400">
+                                class="form-input-focus w-full border border-gray-300 rounded-md py-3 pl-3 sm:pl-12 pr-3 bg-white focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 placeholder-gray-400 text-gray-900">
                         </div>
                     </div>
                     
                     <div class="input-with-icon">
-                        <i class="fas fa-building input-icon"></i>
+                        <i class="fas fa-building input-icon hidden sm:flex"></i>
                         <div>
-                            <label for="business-type" class="block text-sm font-medium text-blue-950 mb-1">Business Type</label>
+                            <label for="business-type" class="block text-sm font-medium text-gray-900 mb-2">Business Type</label>
                             <input type="text" id="business-type" name="business-type" required placeholder="Enter your business type" 
-                                class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400">
+                                class="form-input-focus w-full border border-gray-300 rounded-md py-3 pl-3 sm:pl-12 pr-3 bg-white focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 placeholder-gray-400 text-gray-900">
                         </div>
                     </div>
                     
                     <div class="input-with-icon">
-                        <i class="fas fa-hashtag input-icon"></i>
+                        <i class="fas fa-hashtag input-icon hidden sm:flex"></i>
                         <div>
-                            <label for="business-ein" class="block text-sm font-medium text-blue-950 mb-1">Business EIN</label>
+                            <label for="business-ein" class="block text-sm font-medium text-gray-900 mb-2">Business EIN</label>
                             <input type="text" id="business-ein" name="business-ein" required placeholder="Enter your business EIN" 
-                                class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400">
+                                class="form-input-focus w-full border border-gray-300 rounded-md py-3 pl-3 sm:pl-12 pr-3 bg-white focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 placeholder-gray-400 text-gray-900">
                         </div>
                     </div>
                     
                     <div class="input-with-icon">
-                        <i class="fas fa-file-signature input-icon"></i>
+                        <i class="fas fa-file-signature input-icon hidden sm:flex"></i>
                         <div>
-                            <label for="business-cert" class="block text-sm font-medium text-blue-950 mb-1">Business Certificate</label>
+                            <label for="business-cert" class="block text-sm font-medium text-gray-900 mb-2">Business Certificate</label>
                             <input type="text" id="business-cert" name="business-cert" required placeholder="Enter your business certificate" 
-                                class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400">
+                                class="form-input-focus w-full border border-gray-300 rounded-md py-3 pl-3 sm:pl-12 pr-3 bg-white focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 placeholder-gray-400 text-gray-900">
                         </div>
                     </div>
                     
                     <div class="input-with-icon">
-                        <i class="fas fa-phone input-icon"></i>
+                        <i class="fas fa-phone input-icon hidden sm:flex"></i>
                         <div>
-                            <label for="business-phone-number" class="block text-sm font-medium text-blue-950 mb-1">Phone Number</label>
+                            <label for="business-phone-number" class="block text-sm font-medium text-gray-900 mb-2">Phone Number</label>
                             <input type="tel" id="business-phone-number" name="business-phone-number" required placeholder="Enter your phone number" 
-                                class="form-input-focus w-full border border-blue-200 rounded-xl p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-blue-400">
+                                class="form-input-focus w-full border border-gray-300 rounded-md py-3 pl-3 sm:pl-12 pr-3 bg-white focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 placeholder-gray-400 text-gray-900">
                         </div>
                     </div>
                     
-                    <div class="flex space-x-4 pt-4">
-                        <button type="button" id="back-to-personal-details-business" class="w-1/3 bg-blue-100 text-blue-950 py-4 rounded-xl font-medium text-base transition duration-300 hover:bg-blue-200">
-                            <i class="fas fa-arrow-left mr-2"></i>Back
+                    <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4">
+                        <button type="button" id="back-to-personal-details-business" class="w-full sm:w-1/3 bg-white border border-gray-300 text-gray-900 py-3 rounded-md font-medium text-sm transition-colors hover:bg-gray-50">
+                            Back
                         </button>
-                        <button type="submit" id="create-account-btn" data-no-loading="true" class="w-2/3 btn-gradient text-white py-4 rounded-xl font-medium text-base transition duration-300">
+                        <button type="submit" id="create-account-btn" data-no-loading="true" class="w-full sm:w-2/3 bg-gray-900 text-white py-3 rounded-md font-medium text-sm hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors">
                             Create Account
                         </button>
                     </div>
@@ -704,6 +744,49 @@ window.onload = function () {
     html, body {
         overflow: auto; /* Ensures scrolling is enabled */
     }
+    @media (max-width: 640px) {
+        #joint-modal .joint-modal-panel {
+            max-width: 92vw;
+            border-radius: 12px;
+        }
+        #joint-modal .joint-modal-body {
+            padding: 0.75rem;
+            max-height: calc(92vh - 104px);
+        }
+        #joint-modal .joint-modal-title {
+            font-size: 1.125rem;
+            line-height: 1.25rem;
+        }
+        #joint-modal .joint-modal-subtitle {
+            font-size: 0.8rem;
+            line-height: 1.1rem;
+        }
+        #joint-modal .joint-card {
+            padding: 0.75rem !important;
+            border-radius: 0.75rem;
+        }
+        #joint-modal .joint-number-badge {
+            width: 1.6rem;
+            height: 1.6rem;
+        }
+        #joint-modal label {
+            font-size: 0.8rem;
+            margin-bottom: 0.35rem;
+        }
+        #joint-modal input:not([type="checkbox"]),
+        #joint-modal select,
+        #joint-modal textarea {
+            font-size: 0.88rem;
+            line-height: 1.2rem;
+            padding: 0.6rem 0.7rem;
+            border-radius: 0.7rem;
+        }
+        #joint-modal .joint-actions button {
+            font-size: 0.88rem;
+            padding-top: 0.7rem;
+            padding-bottom: 0.7rem;
+        }
+    }
     .loader {
         border: 8px solid rgba(0, 0, 0, 0.1); /* Light grey */
         border-top: 8px solid #3498db; /* Blue */
@@ -754,36 +837,31 @@ window.onload = function () {
         btn.addEventListener('click', function() {
             const accountType = this.dataset.type;
             
-            // If joint account, open the modal instead
+            // Joint account is handled on its own page
             if (accountType === 'joint') {
                 // Remove active state from all buttons
                 document.querySelectorAll('.account-type-btn').forEach(b => {
-                    b.classList.remove('border-gray-500', 'bg-gray-50');
-                    b.classList.add('border-blue-200');
+                    b.classList.remove('border-gray-900', 'bg-gray-50');
+                    b.classList.add('border-gray-300');
                 });
                 
                 // Add active state to clicked button
-                this.classList.remove('border-blue-200');
-                this.classList.add('border-gray-500', 'bg-gray-50');
-                
-                // Open joint account modal
-                const jointModal = document.getElementById('joint-modal');
-                if (jointModal) {
-                    jointModal.classList.remove('hidden');
-                    document.body.style.overflow = 'hidden';
-                }
+                this.classList.remove('border-gray-300');
+                this.classList.add('border-gray-900', 'bg-gray-50');
+
+                window.location.href = 'joint-account.html';
                 return;
             }
             
             // Remove active state from all buttons
             document.querySelectorAll('.account-type-btn').forEach(b => {
-                b.classList.remove('border-gray-500', 'bg-gray-50');
-                b.classList.add('border-blue-200');
+                b.classList.remove('border-gray-900', 'bg-gray-50');
+                b.classList.add('border-gray-300');
             });
             
             // Add active state to clicked button
-            this.classList.remove('border-blue-200');
-            this.classList.add('border-gray-500', 'bg-gray-50');
+            this.classList.remove('border-gray-300');
+            this.classList.add('border-gray-900', 'bg-gray-50');
             
             selectedAccountType = accountType;
             document.getElementById('user-account-type').value = selectedAccountType;
@@ -1590,15 +1668,15 @@ window.onload = function () {
 </div>
 
 <!-- Joint Account Modal -->
-<div id="joint-modal" class="fixed inset-0 z-50 hidden">
+<div id="joint-modal" class="fixed inset-0 z-[10000] hidden">
     <div id="joint-backdrop" class="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm"></div>
-    <div class="relative mx-auto my-4 md:my-8 max-w-[95vw] md:max-w-5xl bg-white rounded-xl shadow-2xl p-0 overflow-hidden max-h-[95vh] md:max-h-[90vh]">
+    <div class="joint-modal-panel relative mx-auto my-2 sm:my-4 md:my-8 max-w-[96vw] sm:max-w-[95vw] md:max-w-5xl bg-white rounded-lg sm:rounded-xl shadow-2xl p-0 overflow-hidden max-h-[96vh] sm:max-h-[95vh] md:max-h-[90vh]">
         <!-- Minimalist Header -->
-        <div class="border-b border-gray-200 bg-white px-6 md:px-8 py-5 md:py-6">
+        <div class="border-b border-gray-200 bg-white px-4 sm:px-6 md:px-8 py-4 sm:py-5 md:py-6">
             <div class="flex justify-between items-center">
                 <div>
-                    <h3 class="text-2xl md:text-3xl font-bold text-blue-950 mb-1">Joint Account</h3>
-                    <p class="text-sm text-gray-500">Complete the form below to open a joint account</p>
+                    <h3 class="joint-modal-title text-xl sm:text-2xl md:text-3xl font-bold text-blue-950 mb-1">Joint Account</h3>
+                    <p class="joint-modal-subtitle text-sm text-gray-500">Complete the form below to open a joint account</p>
                 </div>
                 <button type="button" id="close-joint-modal-btn" class="text-gray-400 hover:text-blue-800 transition-colors p-2 rounded-xl hover:bg-blue-50">
                     <i class="fas fa-times text-xl"></i>
@@ -1607,17 +1685,17 @@ window.onload = function () {
         </div>
 
         <!-- Form Container -->
-        <div class="p-6 md:p-10 overflow-y-auto max-h-[calc(95vh-140px)] md:max-h-[calc(90vh-160px)] bg-gray-50">
+        <div class="joint-modal-body p-4 sm:p-6 md:p-10 overflow-y-auto max-h-[calc(96vh-120px)] sm:max-h-[calc(95vh-140px)] md:max-h-[calc(90vh-160px)] bg-gray-50">
             <!-- Info Banner -->
-            <div class="mb-8 p-4 bg-white border-l-4 border-gray-400 rounded-r-lg">
+            <div class="mb-6 sm:mb-8 p-3 sm:p-4 bg-white border-l-4 border-gray-400 rounded-r-lg">
                 <p class="text-sm text-blue-950">
                     <span class="font-semibold">Note:</span> Create a joint account with 2–3 holders. The principal holder's email will be used for secure login. Business information is optional unless you select a Business account type.
                 </p>
             </div>
 
-            <form id="joint-account-form" class="space-y-8">
+            <form id="joint-account-form" class="space-y-6 sm:space-y-8">
                 <!-- Number of Holders -->
-                <div class="bg-white rounded-xl border border-gray-200 p-6">
+                <div class="joint-card bg-white rounded-xl border border-gray-200 p-4 sm:p-6">
                     <label for="holders-count" class="block text-sm font-semibold text-blue-950 mb-3">
                         Number of Account Holders
                     </label>
@@ -1633,11 +1711,11 @@ window.onload = function () {
                         <h4 class="text-lg font-bold text-blue-950">Account Holders</h4>
                     </div>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                         <!-- Primary Holder -->
-                        <div class="bg-white rounded-xl border border-gray-200 p-6 space-y-5">
+                        <div class="joint-card bg-white rounded-xl border border-gray-200 p-4 sm:p-6 space-y-4 sm:space-y-5">
                             <div class="flex items-center space-x-3 pb-4 border-b border-gray-200">
-                                <div class="w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center">
+                                <div class="joint-number-badge w-8 h-8 bg-gray-900 rounded-full flex items-center justify-center">
                                     <span class="text-white text-xs font-bold">1</span>
                                 </div>
                                 <h5 class="font-semibold text-blue-950">Primary Holder</h5>
@@ -1657,9 +1735,9 @@ window.onload = function () {
                         </div>
 
                         <!-- Secondary Holder -->
-                        <div class="bg-white rounded-xl border border-gray-200 p-6 space-y-5">
+                        <div class="joint-card bg-white rounded-xl border border-gray-200 p-4 sm:p-6 space-y-4 sm:space-y-5">
                             <div class="flex items-center space-x-3 pb-4 border-b border-gray-200">
-                                <div class="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center">
+                                <div class="joint-number-badge w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center">
                                     <span class="text-white text-xs font-bold">2</span>
                                 </div>
                                 <h5 class="font-semibold text-blue-950">Secondary Holder</h5>
@@ -1681,9 +1759,9 @@ window.onload = function () {
 
                     <!-- Third Holder (Conditional) -->
                     <div id="holder-3-group" class="hidden">
-                        <div class="bg-white rounded-xl border border-gray-200 p-6 space-y-5">
+                        <div class="joint-card bg-white rounded-xl border border-gray-200 p-4 sm:p-6 space-y-4 sm:space-y-5">
                             <div class="flex items-center space-x-3 pb-4 border-b border-gray-200">
-                                <div class="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
+                                <div class="joint-number-badge w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center">
                                     <span class="text-white text-xs font-bold">3</span>
                                 </div>
                                 <h5 class="font-semibold text-blue-950">Third Holder</h5>
@@ -1703,12 +1781,12 @@ window.onload = function () {
                 </div>
 
                 <!-- Account Details Section -->
-                <div class="bg-white rounded-xl border border-gray-200 p-6 space-y-6">
+                <div class="joint-card bg-white rounded-xl border border-gray-200 p-4 sm:p-6 space-y-5 sm:space-y-6">
                     <div class="flex items-center space-x-2 pb-4 border-b border-gray-200">
                         <h4 class="text-lg font-bold text-blue-950">Account Details</h4>
                     </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                         <div>
                             <label for="account-type-alt" class="block text-sm font-medium text-blue-950 mb-2">Account Type</label>
                             <select id="account-type-alt" class="w-full border border-blue-200 rounded-xl px-4 py-3 text-blue-950 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-gray-500 transition-all">
@@ -1725,13 +1803,13 @@ window.onload = function () {
                 </div>
 
                 <!-- Business Information Section -->
-                <div class="bg-white rounded-xl border border-gray-200 p-6 space-y-6">
+                <div class="joint-card bg-white rounded-xl border border-gray-200 p-4 sm:p-6 space-y-5 sm:space-y-6">
                     <div class="flex items-center space-x-2 pb-4 border-b border-gray-200">
                         <h4 class="text-lg font-bold text-blue-950">Business Information</h4>
                         <span class="text-xs text-gray-500 font-normal">(Optional)</span>
                     </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                         <div>
                             <label for="business-name-alt" class="block text-sm font-medium text-blue-950 mb-2">Business Name</label>
                             <input id="business-name-alt" type="text" class="w-full border border-blue-200 rounded-xl px-4 py-3 text-blue-950 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-gray-500 transition-all" placeholder="Enter business name" />
@@ -1749,7 +1827,7 @@ window.onload = function () {
                 </div>
 
                 <!-- Terms and Confirmation -->
-                <div class="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
+                <div class="joint-card bg-white rounded-xl border border-gray-200 p-4 sm:p-6 space-y-4">
                     <div class="flex items-start space-x-3 p-4 bg-gray-50 rounded-xl border border-gray-200">
                         <i class="fas fa-info-circle text-blue-800 mt-0.5"></i>
                         <p class="text-sm text-blue-950">
@@ -1766,11 +1844,11 @@ window.onload = function () {
                 </div>
 
                 <!-- Submit and Cancel Buttons -->
-                <div class="pt-4 flex gap-4">
-                    <button type="button" id="cancel-joint-modal-btn" class="flex-1 bg-white border-2 border-blue-200 hover:border-gray-400 text-blue-950 hover:text-blue-950 py-4 px-6 rounded-xl transition-all duration-200 font-semibold text-base shadow-sm hover:shadow-md">
+                <div class="joint-actions pt-4 flex flex-col sm:flex-row gap-3 sm:gap-4">
+                    <button type="button" id="cancel-joint-modal-btn" class="w-full sm:flex-1 bg-white border border-gray-300 hover:border-gray-500 text-gray-900 hover:text-gray-900 py-3 sm:py-4 px-4 sm:px-6 rounded-lg sm:rounded-xl transition-all duration-200 font-semibold text-sm sm:text-base shadow-sm hover:shadow-md">
                         Cancel
                     </button>
-                    <button id="joint-submit-btn" type="submit" class="flex-1 bg-gray-900 hover:bg-gray-800 text-white py-4 px-6 rounded-xl transition-all duration-200 font-semibold text-base shadow-md hover:shadow-lg flex items-center justify-center space-x-2">
+                    <button id="joint-submit-btn" type="submit" class="w-full sm:flex-1 bg-gray-900 hover:bg-gray-800 text-white py-3 sm:py-4 px-4 sm:px-6 rounded-lg sm:rounded-xl transition-all duration-200 font-semibold text-sm sm:text-base shadow-md hover:shadow-lg flex items-center justify-center space-x-2">
                         <span>Create Joint Account</span>
                         <i class="fas fa-arrow-right"></i>
                     </button>

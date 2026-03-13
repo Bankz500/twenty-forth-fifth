@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Joint Account Registration</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon.png">
+  <link rel="icon" href="favicon.png" type="image/png">
+  <script src="./tailwind-mono.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="./site.css">
+</head>
+<body class="font-sans antialiased bg-blue-50">
+  <div data-include="components/site-header.html"></div>
+
+  <section class="pt-28 sm:pt-32 md:pt-40 pb-12 sm:pb-16">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6">
+      <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+        <div class="border-b border-gray-200 px-4 sm:px-6 md:px-8 py-4 sm:py-5">
+          <div class="flex items-center justify-between gap-3">
+            <div>
+              <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">Joint Account Registration</h1>
+              <p class="text-sm text-gray-500 mt-1">Complete the form below to open a joint account.</p>
+            </div>
+            <a href="sign-up.html" class="text-sm text-gray-600 hover:text-gray-900">Back to Sign Up</a>
+          </div>
+        </div>
+
+        <div class="p-4 sm:p-6 md:p-8 bg-gray-50">
+          <div class="mb-6 p-3 sm:p-4 bg-white border-l-4 border-gray-400 rounded-r-lg">
+            <p class="text-sm text-gray-800">
+              <span class="font-semibold">Note:</span> Create a joint account with 2-3 holders. The principal holder's email will be used for secure login.
+            </p>
+          </div>
+
+          <form id="joint-account-form" class="space-y-6">
+            <div class="bg-white rounded-xl border border-gray-200 p-4 sm:p-6">
+              <label for="holders-count" class="block text-sm font-semibold text-gray-900 mb-3">Number of Account Holders</label>
+              <select id="holders-count" class="w-full md:w-72 border border-gray-300 rounded-lg px-4 py-3 text-gray-900 bg-white focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900">
+                <option value="2" selected>2 Account Holders</option>
+                <option value="3">3 Account Holders</option>
+              </select>
+            </div>
+
+            <div class="space-y-4">
+              <h2 class="text-lg font-bold text-gray-900 border-b border-gray-200 pb-2">Account Holders</h2>
+              <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div class="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 space-y-4">
+                  <h3 class="font-semibold text-gray-900">Primary Holder</h3>
+                  <div>
+                    <label for="holder-name-1" class="block text-sm font-medium text-gray-900 mb-2">Full Name</label>
+                    <input id="holder-name-1" type="text" required class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900" placeholder="Enter full name">
+                  </div>
+                  <div>
+                    <label for="principal-email" class="block text-sm font-medium text-gray-900 mb-2">Email Address</label>
+                    <input id="principal-email" type="email" required class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900" placeholder="primary@example.com">
+                  </div>
+                  <div>
+                    <label for="principal-phone" class="block text-sm font-medium text-gray-900 mb-2">Phone Number</label>
+                    <input id="principal-phone" type="tel" required class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900" placeholder="+1 234 567 8900">
+                  </div>
+                </div>
+
+                <div class="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 space-y-4">
+                  <h3 class="font-semibold text-gray-900">Secondary Holder</h3>
+                  <div>
+                    <label for="holder-name-2" class="block text-sm font-medium text-gray-900 mb-2">Full Name</label>
+                    <input id="holder-name-2" type="text" required class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900" placeholder="Enter full name">
+                  </div>
+                  <div>
+                    <label for="secondary-email" class="block text-sm font-medium text-gray-900 mb-2">Email Address</label>
+                    <input id="secondary-email" type="email" required class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900" placeholder="secondary@example.com">
+                  </div>
+                  <div>
+                    <label for="secondary-phone" class="block text-sm font-medium text-gray-900 mb-2">Phone Number</label>
+                    <input id="secondary-phone" type="tel" required class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900" placeholder="+1 234 567 8901">
+                  </div>
+                </div>
+              </div>
+
+              <div id="holder-3-group" class="hidden bg-white rounded-xl border border-gray-200 p-4 sm:p-5 space-y-4">
+                <h3 class="font-semibold text-gray-900">Third Holder</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label for="holder-name-3" class="block text-sm font-medium text-gray-900 mb-2">Full Name</label>
+                    <input id="holder-name-3" type="text" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900" placeholder="Enter full name">
+                  </div>
+                  <div>
+                    <label for="holder-name-3-email" class="block text-sm font-medium text-gray-900 mb-2">Email Address</label>
+                    <input id="holder-name-3-email" type="email" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900" placeholder="third@example.com">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 space-y-4">
+              <h2 class="text-lg font-bold text-gray-900 border-b border-gray-200 pb-2">Account Details</h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label for="account-type-alt" class="block text-sm font-medium text-gray-900 mb-2">Account Type</label>
+                  <select id="account-type-alt" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900">
+                    <option value="personal">Personal Account</option>
+                    <option value="business">Business Account</option>
+                    <option value="investment">Investment Account</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="password-alt" class="block text-sm font-medium text-gray-900 mb-2">Password</label>
+                  <input id="password-alt" type="password" required class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900" placeholder="Enter a secure password">
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label for="business-name-alt" class="block text-sm font-medium text-gray-900 mb-2">Business Name (Optional)</label>
+                  <input id="business-name-alt" type="text" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900" placeholder="Enter business name">
+                </div>
+                <div>
+                  <label for="business-reg" class="block text-sm font-medium text-gray-900 mb-2">Registration Number</label>
+                  <input id="business-reg" type="text" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900" placeholder="Enter registration number">
+                </div>
+              </div>
+              <div>
+                <label for="business-address" class="block text-sm font-medium text-gray-900 mb-2">Business Address</label>
+                <textarea id="business-address" rows="3" class="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-900 focus:border-gray-900 resize-none" placeholder="Enter complete business address"></textarea>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-xl border border-gray-200 p-4 sm:p-6 space-y-4">
+              <div class="flex items-start gap-3">
+                <input id="joint-confirm" type="checkbox" required class="mt-1 w-5 h-5 text-gray-900 border-2 border-gray-300 rounded focus:ring-1 focus:ring-gray-900 cursor-pointer">
+                <label for="joint-confirm" class="text-sm text-gray-700 leading-relaxed cursor-pointer">
+                  <span class="font-semibold text-gray-900">I confirm</span> that the information provided above is correct and all holders are in mutual understanding.
+                </label>
+              </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <a href="sign-up.html" class="w-full sm:w-1/3 text-center bg-white border border-gray-300 text-gray-900 py-3 rounded-md font-medium text-sm hover:bg-gray-50 transition-colors">Back</a>
+              <button id="joint-submit-btn" type="submit" class="w-full sm:w-2/3 bg-gray-900 hover:bg-gray-800 text-white py-3 rounded-md font-medium text-sm transition-colors">
+                Create Joint Account
+              </button>
+            </div>
+
+            <p id="joint-form-status" class="text-sm text-center text-gray-700"></p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script type="module" src="./firebase-runtime-config.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseCompatConfig = (typeof window !== 'undefined' && window.__FIREBASE_CONFIG__) ? window.__FIREBASE_CONFIG__ : null;
+    let authCompat = null;
+    let dbCompat = null;
+
+    if (firebaseCompatConfig && firebaseCompatConfig.apiKey) {
+      try {
+        if (!firebase.apps.length) firebase.initializeApp(firebaseCompatConfig);
+        authCompat = firebase.auth();
+        dbCompat = firebase.firestore();
+      } catch (e) {
+        console.error('Firebase init failed:', e);
+      }
+    }
+
+    const holdersCountEl = document.getElementById('holders-count');
+    const holder3Group = document.getElementById('holder-3-group');
+    const holder3Name = document.getElementById('holder-name-3');
+    const holder3Email = document.getElementById('holder-name-3-email');
+    const statusEl = document.getElementById('joint-form-status');
+    const form = document.getElementById('joint-account-form');
+    const submitBtn = document.getElementById('joint-submit-btn');
+
+    function toggleHolder3() {
+      const showThird = holdersCountEl.value === '3';
+      holder3Group.classList.toggle('hidden', !showThird);
+      holder3Name.required = showThird;
+      holder3Email.required = showThird;
+    }
+    holdersCountEl.addEventListener('change', toggleHolder3);
+    toggleHolder3();
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!authCompat || !dbCompat) {
+        statusEl.textContent = 'Firebase is not ready. Please refresh and try again.';
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Creating...';
+      statusEl.textContent = 'Submitting...';
+
+      try {
+        const holdersCount = parseInt(holdersCountEl.value, 10);
+        const holderName1 = document.getElementById('holder-name-1').value.trim();
+        const holderName2 = document.getElementById('holder-name-2').value.trim();
+        const holderName3 = holdersCount === 3 ? holder3Name.value.trim() : '';
+        const holderEmail3 = holdersCount === 3 ? holder3Email.value.trim() : '';
+        const principalEmail = document.getElementById('principal-email').value.trim();
+        const secondaryEmail = document.getElementById('secondary-email').value.trim();
+        const principalPhone = document.getElementById('principal-phone').value.trim();
+        const secondaryPhone = document.getElementById('secondary-phone').value.trim();
+        const accountType = document.getElementById('account-type-alt').value;
+        const password = document.getElementById('password-alt').value;
+        const businessName = document.getElementById('business-name-alt').value.trim();
+        const businessAddress = document.getElementById('business-address').value.trim();
+        const businessReg = document.getElementById('business-reg').value.trim();
+        const confirmed = document.getElementById('joint-confirm').checked;
+
+        if (!confirmed) throw new Error('Please confirm the details before submitting.');
+        if (password.length < 6) throw new Error('Password must be at least 6 characters.');
+
+        const userCredential = await authCompat.createUserWithEmailAndPassword(principalEmail, password);
+        const user = userCredential.user;
+
+        const payload = {
+          holdersCount,
+          holderNames: holdersCount === 3 ? [holderName1, holderName2, holderName3] : [holderName1, holderName2],
+          holderEmails: holdersCount === 3 ? [principalEmail, secondaryEmail, holderEmail3] : [principalEmail, secondaryEmail],
+          principalEmail,
+          secondaryEmail,
+          principalPhone,
+          secondaryPhone,
+          accountType,
+          business: {
+            name: businessName,
+            address: businessAddress,
+            registrationNumber: businessReg
+          },
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        await dbCompat.collection('joint_accounts').doc(user.uid).set(payload);
+        statusEl.textContent = 'Joint account registration submitted successfully.';
+        form.reset();
+        holdersCountEl.value = '2';
+        toggleHolder3();
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = 'Error: ' + (err.message || 'Failed to submit');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Create Joint Account';
+      }
+    });
+  </script>
+
+  <script src="./components/site-shell.js"></script>
+  <div data-include="components/cookie-consent.html"></div>
+</body>
+</html>
+

@@ -241,12 +241,6 @@ p, span, div[role="textbox"], .selectable {
     -webkit-tap-highlight-color: transparent;
   }
   
-  /* Prevent images from overflowing */
-  img {
-    max-width: 100% !important;
-    height: auto !important;
-  }
-  
   /* Fix for fixed positioned elements on Android */
   [class*="fixed"] {
     position: fixed !important;
@@ -319,9 +313,13 @@ p, span, div[role="textbox"], .selectable {
 
 /* Android-specific fixes for common issues */
 @media screen and (max-width: 640px) {
-  /* Prevent horizontal scrolling */
-  * {
+  /* Prevent horizontal scrolling - apply to containers, not logos/icons */
+  div:not(nav):not(header):not(footer),
+  section,
+  article,
+  main {
     max-width: 100%;
+    box-sizing: border-box;
   }
   
   /* Fix for flex items that might overflow */

@@ -659,100 +659,148 @@
     </section>
 
     <!-- 21st Century Digital Finance Section (Chase-inspired layout) -->
-    <section class="py-16 md:py-24 bg-blue-600 border-y border-blue-700">
+    <section class="py-12 sm:py-16 md:py-24 bg-blue-600 border-y border-blue-700">
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-                <div class="order-2 lg:order-1">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-10 items-start lg:items-center">
+                <div class="order-1 lg:order-1 w-full">
                     <div class="nav-pill nav-pill--on-dark"><i class="fas fa-bolt"></i> Digital finance</div>
-                    <h2 class="mt-4 text-3xl md:text-4xl font-extrabold text-white">Digital finance access</h2>
-                    <p class="mt-3 text-white/90 max-w-xl">
+                    <h2 class="mt-4 text-2xl sm:text-3xl md:text-4xl font-extrabold text-white">Digital finance access</h2>
+                    <p class="mt-3 text-sm sm:text-base text-white/90 max-w-xl">
                         Sign in to manage balances, review activity, and complete financial actions using the online experience.
                     </p>
 
-                    <div class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <div class="bg-white border border-blue-100 rounded-2xl p-4">
-                            <p class="text-sm font-semibold text-black">Security</p>
+                    <div class="mt-6 sm:mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div class="bg-white border border-blue-100 rounded-xl sm:rounded-2xl p-3 sm:p-4">
+                            <p class="text-xs sm:text-sm font-semibold text-black">Security</p>
                             <p class="text-xs text-black mt-1">Account protections</p>
                         </div>
-                        <div class="bg-white border border-blue-100 rounded-2xl p-4 shadow-sm">
-                            <p class="text-sm font-semibold text-black">Access</p>
+                        <div class="bg-white border border-blue-100 rounded-xl sm:rounded-2xl p-3 sm:p-4 shadow-sm">
+                            <p class="text-xs sm:text-sm font-semibold text-black">Access</p>
                             <p class="text-xs text-black mt-1">Desktop and mobile</p>
                         </div>
-                        <div class="bg-white border border-blue-100 rounded-2xl p-4 shadow-sm">
-                            <p class="text-sm font-semibold text-black">Transfers</p>
+                        <div class="bg-white border border-blue-100 rounded-xl sm:rounded-2xl p-3 sm:p-4 shadow-sm">
+                            <p class="text-xs sm:text-sm font-semibold text-black">Transfers</p>
                             <p class="text-xs text-black mt-1">Domestic and international</p>
                         </div>
                     </div>
 
-                    <div class="mt-8 flex flex-col sm:flex-row gap-3">
-                        <a href="login.html" class="btn-blue px-6 py-3 rounded-xl font-semibold inline-flex items-center justify-center">
+                    <div class="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3">
+                        <a href="login.html" class="btn-blue px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-semibold text-sm sm:text-base inline-flex items-center justify-center">
                             <i class="fas fa-lock mr-2"></i>Online finance
                         </a>
-                        <a href="support.html" class="px-6 py-3 rounded-xl border border-blue-200 bg-white text-black font-semibold hover:bg-blue-50 transition inline-flex items-center justify-center">
+                        <a href="support.html" class="px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl border border-blue-200 bg-white text-black font-semibold hover:bg-blue-50 transition inline-flex items-center justify-center text-sm sm:text-base">
                             Help Center <i class="fas fa-arrow-right ml-2 text-sm"></i>
                         </a>
                     </div>
                 </div>
 
-                <div class="order-1 lg:order-2">
-                    <div class="relative">
-                        <div class="absolute -inset-6 bg-gradient-to-br from-blue-200/40 via-white to-blue-100/40 rounded-[2.5rem]"></div>
-                        <div class="relative bg-white border border-blue-100 rounded-3xl overflow-hidden">
-                            <div class="p-5 md:p-7 border-b border-blue-100 flex items-center justify-between">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
-                                        <i class="fas fa-user-shield text-blue-600"></i>
+                <div class="order-2 lg:order-2 w-full">
+                    <div class="relative max-w-md mx-auto lg:max-w-none">
+                        <!-- <div class="absolute -inset-4 sm:-inset-6 bg-gradient-to-br from-blue-200/40 via-white to-blue-100/40 rounded-2xl sm:rounded-[2.5rem]"></div> -->
+                        <div class="relative bg-white border border-blue-100 rounded-2xl sm:rounded-3xl overflow-hidden">
+                            <div class="p-4 sm:p-5 md:p-7 border-b border-blue-100 flex items-center justify-between gap-2">
+                                <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+                                    <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-user-shield text-blue-600 text-sm sm:text-base"></i>
                                     </div>
-                                    <div>
-                                        <p class="text-black font-semibold leading-tight">Online finance</p>
+                                    <div class="min-w-0">
+                                        <p class="text-black font-semibold leading-tight text-sm sm:text-base">Online finance</p>
                                         <p class="text-black text-xs">Secure sign-in and account access</p>
                                     </div>
                                 </div>
-                                <span class="text-black text-xs font-semibold bg-blue-50 border border-blue-100 px-3 py-1 rounded-full">Preview</span>
+                                <span class="text-black text-xs font-semibold bg-blue-50 border border-blue-100 px-2 sm:px-3 py-1 rounded-full flex-shrink-0">Preview</span>
                             </div>
 
-                            <div class="p-5 md:p-7">
-                                <div class="bg-white border border-blue-100 rounded-2xl p-4 md:p-5 shadow-sm">
-                                    <div class="grid grid-cols-1 gap-3">
-                                        <div>
-                                            <label class="block text-xs font-semibold text-black mb-1">Email</label>
-                                            <div class="flex items-center gap-3 border border-blue-200 rounded-xl px-4 py-3">
-                                                <i class="fas fa-envelope text-blue-600"></i>
-                                                <span class="text-sm text-black">name@example.com</span>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <label class="block text-xs font-semibold text-black mb-1">Password</label>
-                                            <div class="flex items-center gap-3 border border-blue-200 rounded-xl px-4 py-3">
-                                                <i class="fas fa-lock text-blue-600"></i>
-                                                <span class="text-sm text-black">••••••••••</span>
-                                            </div>
-                                        </div>
-                                        <div class="flex items-center justify-between pt-2">
-                                            <div class="flex items-center gap-2 text-xs text-black">
-                                                <i class="fas fa-check-circle text-blue-600"></i><span>Two-factor available</span>
-                                            </div>
-                                            <span class="text-xs text-black">Session protected</span>
+                            <div class="p-4 sm:p-5 md:p-7">
+                                <div class="grid grid-cols-1 gap-2 sm:gap-3">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-black mb-1">Email</label>
+                                        <div class="flex items-center gap-2 sm:gap-3 border border-blue-200 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2 sm:py-3">
+                                            <i class="fas fa-envelope text-blue-600 text-xs sm:text-sm"></i>
+                                            <span class="text-xs sm:text-sm text-black truncate">name@example.com</span>
                                         </div>
                                     </div>
-                                    <div class="mt-4">
-                                        <div class="btn-blue w-full text-center py-3 rounded-xl font-semibold">Sign in</div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-black mb-1">Password</label>
+                                        <div class="flex items-center gap-2 sm:gap-3 border border-blue-200 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2 sm:py-3">
+                                            <i class="fas fa-lock text-blue-600 text-xs sm:text-sm"></i>
+                                            <span class="text-xs sm:text-sm text-black">••••••••••</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pt-2">
+                                        <div class="flex items-center gap-2 text-xs text-black">
+                                            <i class="fas fa-check-circle text-blue-600"></i><span>Two-factor available</span>
+                                        </div>
+                                        <span class="text-xs text-black">Session protected</span>
+                                    </div>
+                                </div>
+                                <div class="mt-3 sm:mt-4">
+                                    <div class="btn-blue w-full text-center py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-semibold text-sm sm:text-base">Sign in</div>
+                                </div>
+
+                                <div class="mt-4 sm:mt-5 grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
+                                    <div class="bg-blue-50 border border-blue-100 rounded-xl sm:rounded-2xl p-3 sm:p-4">
+                                        <p class="text-xs sm:text-sm font-semibold text-black">Balances</p>
+                                        <p class="text-xs text-black mt-1">Account overview</p>
+                                    </div>
+                                    <div class="bg-blue-50 border border-blue-100 rounded-xl sm:rounded-2xl p-3 sm:p-4">
+                                        <p class="text-xs sm:text-sm font-semibold text-black">Transfers</p>
+                                        <p class="text-xs text-black mt-1">Send and track</p>
+                                    </div>
+                                    <div class="bg-blue-50 border border-blue-100 rounded-xl sm:rounded-2xl p-3 sm:p-4">
+                                        <p class="text-xs sm:text-sm font-semibold text-black">Statements</p>
+                                        <p class="text-xs text-black mt-1">Download history</p>
                                     </div>
                                 </div>
 
-                                <div class="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                    <div class="bg-blue-50 border border-blue-100 rounded-2xl p-4">
-                                        <p class="text-sm font-semibold text-black">Balances</p>
-                                        <p class="text-xs text-black mt-1">Account overview</p>
+                                <!-- Security Information (Desktop/Tablet) -->
+                                <div class="hidden sm:block mt-4 sm:mt-5 pt-4 sm:pt-5 border-t border-gray-200">
+                                    <div class="space-y-2">
+                                        <div class="flex items-start gap-2">
+                                            <i class="fas fa-shield-alt text-gray-400 text-xs mt-0.5"></i>
+                                            <p class="text-xs text-gray-500 leading-relaxed">Your information is protected with bank-level encryption and secure authentication protocols.</p>
+                                        </div>
+                                        <div class="flex items-start gap-2">
+                                            <i class="fas fa-lock text-gray-400 text-xs mt-0.5"></i>
+                                            <p class="text-xs text-gray-500 leading-relaxed">All transactions are monitored 24/7 for suspicious activity and unauthorized access.</p>
+                                        </div>
+                                        <div class="flex items-start gap-2">
+                                            <i class="fas fa-user-shield text-gray-400 text-xs mt-0.5"></i>
+                                            <p class="text-xs text-gray-500 leading-relaxed">We never share your personal or financial information with third parties without your consent.</p>
+                                        </div>
                                     </div>
-                                    <div class="bg-blue-50 border border-blue-100 rounded-2xl p-4">
-                                        <p class="text-sm font-semibold text-black">Transfers</p>
-                                        <p class="text-xs text-black mt-1">Send and track</p>
+                                </div>
+
+                                <!-- Security Information (Mobile Only) -->
+                                <div class="sm:hidden mt-4 pt-4 border-t border-blue-100">
+                                    <p class="text-sm font-semibold text-black">Sign in with confidence</p>
+                                    <p class="mt-1 text-xs text-black leading-relaxed">
+                                        Encryption, session controls, and activity monitoring help protect every login to your Twenty Forth &amp; Fifth account.
+                                    </p>
+
+                                    <ul class="mt-3 space-y-2">
+                                        <li class="flex items-start gap-2">
+                                            <i class="fas fa-check-circle text-blue-600 text-xs mt-0.5"></i>
+                                            <span class="text-xs text-black leading-relaxed">Protected sessions on web and mobile</span>
+                                        </li>
+                                        <li class="flex items-start gap-2">
+                                            <i class="fas fa-check-circle text-blue-600 text-xs mt-0.5"></i>
+                                            <span class="text-xs text-black leading-relaxed">Multi‑factor verification available</span>
+                                        </li>
+                                        <li class="flex items-start gap-2">
+                                            <i class="fas fa-check-circle text-blue-600 text-xs mt-0.5"></i>
+                                            <span class="text-xs text-black leading-relaxed">Automatic monitoring for unusual activity</span>
+                                        </li>
+                                    </ul>
+
+                                    <div class="mt-3 flex flex-wrap items-center gap-2">
+                                        <span class="inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-[11px] font-semibold text-black">24/7</span>
+                                        <span class="inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-[11px] font-semibold text-black">KYC</span>
+                                        <span class="inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-[11px] font-semibold text-black">AML</span>
                                     </div>
-                                    <div class="bg-blue-50 border border-blue-100 rounded-2xl p-4">
-                                        <p class="text-sm font-semibold text-black">Statements</p>
-                                        <p class="text-xs text-black mt-1">Download history</p>
-                                    </div>
+                                    <p class="mt-2 text-xs text-black leading-relaxed">
+                                        Continuous safeguards support sign‑ins and account access around the clock.
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -1198,22 +1246,22 @@
             </div>
 
             <!-- Establishments (logo-style icons, no links) -->
-            <div class="max-w-6xl mx-auto mt-10">
-                <div class="flex items-center justify-center mb-4">
+            <div class="max-w-6xl mx-auto mt-6 sm:mt-8 md:mt-10">
+                <div class="flex items-center justify-center mb-3 sm:mb-4">
                     <span class="text-xs font-semibold tracking-[0.18em] uppercase text-black">Affiliations</span>
                 </div>
-                <div class="flex flex-wrap items-center justify-center gap-3 md:gap-4">
-                    <div class="h-14 w-32 md:h-16 md:w-40 rounded-2xl bg-white border border-blue-200 flex items-center justify-center shadow-sm px-3" title="FDIC — Federal Deposit Insurance Corporation">
-                        <img src="FDIC-logo-removebg-preview.png" alt="FDIC" class="max-h-18 w-auto object-contain">
+                <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3 md:gap-4">
+                    <div class="h-12 w-28 sm:h-14 sm:w-32 md:h-16 md:w-40 rounded-xl sm:rounded-2xl bg-white border border-blue-200 flex items-center justify-center shadow-sm px-2 sm:px-3" title="FDIC — Federal Deposit Insurance Corporation">
+                        <img src="FDIC-logo-removebg-preview.png" alt="FDIC" class="h-8 sm:h-10 md:h-12 w-auto object-contain" style="max-height: 100%;">
                     </div>
-                    <div class="h-14 w-32 md:h-16 md:w-40 rounded-2xl bg-white border border-blue-200 flex items-center justify-center shadow-sm px-3" title="CIMA — Cayman Islands Monetary Authority">
-                        <img src="cima_logo-removebg-preview.png" alt="CIMA" class="max-h-18 w-auto object-contain">
+                    <div class="h-12 w-28 sm:h-14 sm:w-32 md:h-16 md:w-40 rounded-xl sm:rounded-2xl bg-white border border-blue-200 flex items-center justify-center shadow-sm px-2 sm:px-3" title="CIMA — Cayman Islands Monetary Authority">
+                        <img src="cima_logo-removebg-preview.png" alt="CIMA" class="h-8 sm:h-10 md:h-12 w-auto object-contain" style="max-height: 100%;">
                     </div>
-                    <div class="h-14 w-32 md:h-16 md:w-40 rounded-2xl bg-white border border-blue-200 flex items-center justify-center shadow-sm px-3" title="BMA — Bermuda Monetary Authority">
-                        <img src="BMA.png" alt="BMA" class="max-h-18 w-auto object-contain">
+                    <div class="h-12 w-28 sm:h-14 sm:w-32 md:h-16 md:w-40 rounded-xl sm:rounded-2xl bg-white border border-blue-200 flex items-center justify-center shadow-sm px-2 sm:px-3" title="BMA — Bermuda Monetary Authority">
+                        <img src="BMA.png" alt="BMA" class="h-8 sm:h-10 md:h-12 w-auto object-contain" style="max-height: 100%;">
                     </div>
-                    <div class="h-14 w-32 md:h-16 md:w-40 rounded-2xl bg-white border border-blue-200 flex items-center justify-center shadow-sm px-3" title="FATF — Financial Action Task Force">
-                        <img src="FATF.png" alt="FATF" class="max-h-14 w-auto object-contain">
+                    <div class="h-12 w-28 sm:h-14 sm:w-32 md:h-16 md:w-40 rounded-xl sm:rounded-2xl bg-white border border-blue-200 flex items-center justify-center shadow-sm px-2 sm:px-3" title="FATF — Financial Action Task Force">
+                        <img src="FATF.png" alt="FATF" class="h-8 sm:h-10 md:h-12 w-auto object-contain" style="max-height: 100%;">
                     </div>
                 </div>
             </div>
