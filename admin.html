@@ -310,6 +310,14 @@
                     <span class="font-medium text-sm">Loan Requests</span>
                     <span id="adminLoanBadge" class="ml-auto text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5 hidden shadow-lg" style="background-color: #1e3a8a;">0</span>
                 </a>
+                <a href="#statements" onclick="showSection('statements'); return false;" 
+                   class="nav-item relative flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 cursor-pointer group">
+                    <div class="w-5 flex justify-center">
+                        <i class="fas fa-file-invoice text-slate-300 group-hover:text-white transition-colors"></i>
+                    </div>
+                    <span class="font-medium text-sm">Statement Requests</span>
+                    <span id="adminStatementBadge" class="ml-auto text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5 hidden shadow-lg" style="background-color: #1e3a8a;">0</span>
+                </a>
                 <a href="#transfers" onclick="showSection('transfers'); return false;" 
                    class="nav-item relative flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 cursor-pointer group">
                     <div class="w-5 flex justify-center">
@@ -590,6 +598,17 @@
             </h2>
             <div id="loansList" class="space-y-4">
                 <p class="text-gray-500 text-center py-8">Loading loan requests...</p>
+            </div>
+        </div>
+
+        <!-- Statement Requests Management Section -->
+        <div id="statementsSection" class="hidden bg-white border border-gray-200 rounded-xl shadow-sm p-6">
+            <h2 class="text-xl font-semibold text-gray-950 mb-4">
+                <i class="fas fa-file-invoice text-gray-800 mr-2"></i>
+                Statement Requests
+            </h2>
+            <div id="statementsList" class="space-y-4">
+                <p class="text-gray-500 text-center py-8">Loading statement requests...</p>
             </div>
         </div>
 
@@ -3301,6 +3320,10 @@
             document.getElementById('chatSection').classList.add('hidden');
             document.getElementById('kycSection').classList.add('hidden');
             document.getElementById('loansSection').classList.add('hidden');
+            const statementsSection = document.getElementById('statementsSection');
+            if (statementsSection) {
+                statementsSection.classList.add('hidden');
+            }
             const transfersSection = document.getElementById('transfersSection');
             if (transfersSection) {
                 transfersSection.classList.add('hidden');
@@ -3349,6 +3372,17 @@
                 // Load loan requests if not already loaded
                 if (document.getElementById('loansList').innerHTML.includes('Loading')) {
                     loadLoanRequests();
+                }
+            } else if (section === 'statements') {
+                if (statementsSection) {
+                    statementsSection.classList.remove('hidden');
+                }
+                const nav = document.querySelector('a[onclick*="statements"]');
+                if (nav) nav.classList.add('active');
+                document.getElementById('pageTitle').textContent = 'Statement Requests';
+                // Load statement requests if not already loaded
+                if (document.getElementById('statementsList').innerHTML.includes('Loading')) {
+                    loadStatementRequests();
                 }
             } else if (section === 'transfers') {
                 document.getElementById('transfersSection').classList.remove('hidden');
@@ -5315,6 +5349,200 @@
                 document.getElementById('loansList').innerHTML = '<p class="text-gray-700 text-center py-8">Error loading loan requests. Please refresh.</p>';
             }
         }
+
+        // Load Statement Requests
+        async function loadStatementRequests() {
+            try {
+                const currentUser = auth.currentUser;
+                if (!currentUser) {
+                    document.getElementById('statementsList').innerHTML = '<p class="text-gray-700 text-center py-8">Not authenticated. Please log in.</p>';
+                    return;
+                }
+
+                const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+                const { collection, query, orderBy, getDocs, onSnapshot, updateDoc, doc } = firestoreModule;
+                const statementsRef = collection(db, 'statement_requests');
+                
+                let q;
+                try {
+                    q = query(statementsRef, orderBy('createdAt', 'desc'));
+                } catch (orderError) {
+                    console.warn('OrderBy failed for statements, trying without order:', orderError);
+                    q = query(statementsRef);
+                }
+
+                onSnapshot(q, async (snapshot) => {
+                    const statementRequests = [];
+                    let pendingCount = 0;
+
+                    snapshot.forEach(docSnap => {
+                        const statementData = docSnap.data();
+                        statementRequests.push({
+                            id: docSnap.id,
+                            ...statementData
+                        });
+                        if (statementData.status === 'pending' || !statementData.processed) {
+                            pendingCount++;
+                        }
+                    });
+
+                    // Sort manually if orderBy failed
+                    if (statementRequests.length > 0 && statementRequests[0].createdAt) {
+                        statementRequests.sort((a, b) => {
+                            const timeA = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : (a.createdAtIso ? new Date(a.createdAtIso).getTime() : 0);
+                            const timeB = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : (b.createdAtIso ? new Date(b.createdAtIso).getTime() : 0);
+                            return timeB - timeA; // Descending
+                        });
+                    }
+
+                    renderStatementList(statementRequests);
+                    updateStatementBadge(pendingCount);
+                }, (err) => {
+                    console.error('Statement listener error:', err);
+                    document.getElementById('statementsList').innerHTML = '<p class="text-gray-700 text-center py-8">Error loading statement requests. Please refresh.</p>';
+                });
+            } catch (error) {
+                console.error('Error loading statement requests:', error);
+                document.getElementById('statementsList').innerHTML = '<p class="text-gray-700 text-center py-8">Error loading statement requests. Please refresh.</p>';
+            }
+        }
+
+        // Update Statement Badge
+        function updateStatementBadge(count) {
+            const badge = document.getElementById('adminStatementBadge');
+            if (badge) {
+                if (count > 0) {
+                    badge.textContent = count;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            }
+        }
+
+        // Render Statement list
+        function renderStatementList(statementRequests) {
+            const listEl = document.getElementById('statementsList');
+            
+            if (statementRequests.length === 0) {
+                listEl.innerHTML = '<p class="text-gray-500 text-center py-8">No statement requests found.</p>';
+                return;
+            }
+
+            listEl.innerHTML = statementRequests.map(statement => {
+                const createdDate = statement.createdAt?.toDate 
+                    ? statement.createdAt.toDate().toLocaleDateString() 
+                    : (statement.createdAtIso ? new Date(statement.createdAtIso).toLocaleDateString() : 'N/A');
+                const createdTime = statement.createdAt?.toDate 
+                    ? statement.createdAt.toDate().toLocaleTimeString() 
+                    : (statement.createdAtIso ? new Date(statement.createdAtIso).toLocaleTimeString() : '');
+                
+                const status = statement.processed ? 'processed' : (statement.status || 'pending');
+                const statusColor = status === 'processed' ? 'bg-green-100 text-green-800 border-green-200' : 'bg-yellow-100 text-yellow-800 border-yellow-200';
+                const statusBadge = `<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${statusColor} border">${status}</span>`;
+                
+                const formatLabel = statement.format ? statement.format.toUpperCase() : 'PDF';
+
+                return `
+                    <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <h3 class="text-lg font-semibold text-gray-900">${statement.userName || statement.userEmail || 'Unknown User'}</h3>
+                                    ${statusBadge}
+                                </div>
+                                <p class="text-sm text-gray-600">Email: <a href="mailto:${statement.userEmail}" class="text-blue-600 hover:underline">${statement.userEmail}</a></p>
+                                <p class="text-sm text-gray-600">Requested: ${createdDate} ${createdTime}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 text-sm">
+                            <div>
+                                <p class="text-gray-600"><span class="font-semibold">From Date:</span> ${statement.fromDate || 'N/A'}</p>
+                                <p class="text-gray-600"><span class="font-semibold">To Date:</span> ${statement.toDate || 'N/A'}</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-600"><span class="font-semibold">Format:</span> ${formatLabel}</p>
+                                <p class="text-gray-600"><span class="font-semibold">User ID:</span> <span class="font-mono text-xs">${statement.userId || 'N/A'}</span></p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col sm:flex-row gap-2 mt-4">
+                            ${!statement.processed ? `
+                            <button data-statement-id="${statement.id}" 
+                                class="mark-processed-btn flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium">
+                                <i class="fas fa-check mr-2"></i>Mark as Processed
+                            </button>
+                            ` : ''}
+                            <a href="mailto:${statement.userEmail}?subject=Bank Statement Request&body=Dear ${statement.userName || 'Customer'},%0D%0A%0D%0AYour bank statement request for the period ${statement.fromDate} to ${statement.toDate} in ${formatLabel} format has been processed. Please find the statement attached.%0D%0A%0D%0ABest regards,%0D%0ATwenty Forth & Fifth" 
+                                class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium text-center">
+                                <i class="fas fa-envelope mr-2"></i>Send Statement Email
+                            </a>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Attach event listeners to mark processed buttons
+            listEl.querySelectorAll('.mark-processed-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const statementId = this.getAttribute('data-statement-id');
+                    if (statementId) {
+                        window.markStatementProcessed(statementId);
+                    } else {
+                        console.error('Statement ID not found on button');
+                        alert('Error: Could not find statement ID.');
+                    }
+                });
+            });
+        }
+
+        // Mark Statement as Processed
+        window.markStatementProcessed = async function(statementId) {
+            if (!statementId) {
+                console.error('Statement ID is required');
+                alert('Error: Statement ID is missing.');
+                return;
+            }
+
+            if (!confirm('Mark this statement request as processed?')) {
+                return;
+            }
+
+            try {
+                const currentUser = auth.currentUser;
+                if (!currentUser) {
+                    alert('You must be logged in to perform this action.');
+                    return;
+                }
+
+                const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
+                const { doc, updateDoc, serverTimestamp } = firestoreModule;
+                
+                const statementRef = doc(db, 'statement_requests', statementId);
+                
+                await updateDoc(statementRef, {
+                    processed: true,
+                    status: 'processed',
+                    processedAt: serverTimestamp(),
+                    processedAtIso: new Date().toISOString(),
+                    processedBy: currentUser.email || 'admin'
+                });
+
+                alert('Statement request marked as processed successfully!');
+                
+                // Reload the statement requests to reflect the change
+                loadStatementRequests();
+            } catch (error) {
+                console.error('Error marking statement as processed:', error);
+                console.error('Error details:', {
+                    statementId,
+                    errorCode: error.code,
+                    errorMessage: error.message
+                });
+                alert('Error updating statement request: ' + (error.message || 'Please try again.'));
+            }
+        };
 
         // Render Loan list
         function renderLoanList(loanRequests) {
