@@ -36,6 +36,7 @@ export default defineConfig({
         policy: './policy.html',
         debitCard: './debit-card.html',
         onboarding: './onboarding.html',
+        jointAccount: './joint-account.html',
       },
     },
   },
