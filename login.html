@@ -639,20 +639,34 @@ window.togglePasswordVisibility = togglePasswordVisibility;
         otpCountdownInterval = setInterval(tick, 1000);
     }
 
-    // Function to send OTP (EmailJS can sometimes hang; enforce a timeout)
+    // Function to send OTP (EmailJS can be slow/intermittent; use longer timeout + retry)
     async function sendOtp(email, otp) {
-        try {
-            const p = emailjs.send("service_a778apr", "template_38p7h6g", {
-                to_email: email,  // send to user's email
-                email: email,     // template compatibility
-                otp: otp
-            });
-            await withTimeout(p, 12000, 'OTP send');
-            return true;
-        } catch (error) {
-            console.error('Error sending OTP:', error);
-            return false;
+        const maxAttempts = 2;
+        const otpSendTimeoutMs = 30000;
+        let lastError = null;
+
+        for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+            try {
+                const p = emailjs.send("service_a778apr", "template_38p7h6g", {
+                    to_email: email,  // send to user's email
+                    email: email,     // template compatibility
+                    otp: otp
+                });
+                await withTimeout(p, otpSendTimeoutMs, `OTP send attempt ${attempt}`);
+                return true;
+            } catch (error) {
+                lastError = error;
+                console.warn(`OTP send attempt ${attempt} failed:`, error);
+
+                // Small backoff before retrying transient failures
+                if (attempt < maxAttempts) {
+                    await new Promise((resolve) => setTimeout(resolve, 1500));
+                }
+            }
         }
+
+        console.error('Error sending OTP:', lastError);
+        return false;
     }
 
     // Handle Login Form Submit
@@ -788,8 +802,10 @@ window.togglePasswordVisibility = togglePasswordVisibility;
                 errorMessage = 'Invalid email or password.';
             } else if (error.code === 'auth/too-many-requests') {
                 errorMessage = 'Too many failed attempts. Please try again later.';
+            } else if (String(error?.message || '').includes('Failed to send OTP')) {
+                errorMessage = 'Could not send verification code right now. Please wait a few seconds and try again.';
             } else if (String(error?.message || '').includes('timed out')) {
-                errorMessage = 'Network timeout while signing in. Please check your connection and try again.';
+                errorMessage = 'Request timed out. Please check your connection and try again.';
             }
             
             // Show specific error to the user without navigating to OTP

@@ -103,6 +103,7 @@
         const maxLimit = document.getElementById('maxTransferLimit');
         const verificationTier = document.getElementById('verificationTier');
         const upgradeSection = document.getElementById('upgradeTransferLimitSection');
+        const upgradeTransferLimitButton = document.getElementById('upgradeTransferLimitButton');
 
         if (!tierBadge || !tierText || !minLimit || !maxLimit || !verificationTier) {
             return;
@@ -169,6 +170,18 @@
             } else {
                 upgradeSection.classList.add('hidden');
             }
+        }
+
+        // Disable direct upgrade action when user is already on the highest tier.
+        if (upgradeTransferLimitButton) {
+            const isHighestTier = tier === 3;
+            upgradeTransferLimitButton.disabled = isHighestTier;
+            upgradeTransferLimitButton.classList.toggle('opacity-60', isHighestTier);
+            upgradeTransferLimitButton.classList.toggle('cursor-not-allowed', isHighestTier);
+            upgradeTransferLimitButton.setAttribute('aria-disabled', isHighestTier ? 'true' : 'false');
+            upgradeTransferLimitButton.title = isHighestTier
+                ? 'You are already on the highest transfer tier.'
+                : '';
         }
     }
 
@@ -548,7 +561,7 @@
                     </div>
 
                     <div class="mt-6">
-                        <button onclick="navigateWithSpinner('security.html')" class="bg-gray-900 hover:bg-gray-800 text-white text-sm md:text-base font-semibold py-3 md:py-4 px-6 rounded-lg w-full transition-all duration-200 flex items-center justify-center group focus:outline-none focus:ring-2 focus:ring-gray-800 focus:ring-offset-2">
+                        <button id="upgradeTransferLimitButton" onclick="navigateWithSpinner('security.html')" class="bg-gray-900 hover:bg-gray-800 text-white text-sm md:text-base font-semibold py-3 md:py-4 px-6 rounded-lg w-full transition-all duration-200 flex items-center justify-center group focus:outline-none focus:ring-2 focus:ring-gray-800 focus:ring-offset-2">
                             <span>Upgrade Transfer Limit</span>
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 md:h-5 md:w-5 ml-2 group-hover:translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
@@ -744,6 +757,65 @@
             const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dmgcagkqa/image/upload';
             const CLOUDINARY_UPLOAD_PRESET = 'ASHB_profile';
         
+            function getFriendlyImageUploadError(error, responseStatus) {
+                const rawMessage = (error && error.message ? error.message : '').toLowerCase();
+
+                if (responseStatus === 401 || responseStatus === 403 || rawMessage.includes('unauthorized')) {
+                    return 'Your session has expired. Please sign in again and retry.';
+                }
+                if (responseStatus === 413 || rawMessage.includes('too large')) {
+                    return 'That image is too large. Please choose one under 2MB.';
+                }
+                if (responseStatus === 429 || rawMessage.includes('rate')) {
+                    return 'Too many upload attempts. Please wait a moment and try again.';
+                }
+                if (rawMessage.includes('network') || rawMessage.includes('failed to fetch')) {
+                    return 'Network issue detected. Check your connection and try again.';
+                }
+                return 'We could not update your profile photo right now. Please try again.';
+            }
+
+            function setProfileImageSavingState(isSaving) {
+                const fileInput = document.getElementById('profileImageInput');
+                const profileImageButton = document.getElementById('changeProfileImageButton');
+
+                if (fileInput) {
+                    fileInput.disabled = isSaving;
+                }
+
+                if (profileImageButton) {
+                    if (!profileImageButton.dataset.defaultText) {
+                        profileImageButton.dataset.defaultText = profileImageButton.textContent.trim() || 'Change Photo';
+                    }
+                    profileImageButton.disabled = isSaving;
+                    profileImageButton.classList.toggle('opacity-60', isSaving);
+                    profileImageButton.classList.toggle('cursor-not-allowed', isSaving);
+                    profileImageButton.textContent = isSaving
+                        ? 'Saving image...'
+                        : profileImageButton.dataset.defaultText;
+                }
+            }
+
+            function showProfileImageStatus(message, type) {
+                const statusEl = document.getElementById('profileImageStatus');
+                if (!statusEl) {
+                    if (type === 'error' || type === 'success') {
+                        alert(message);
+                    }
+                    return;
+                }
+
+                statusEl.classList.remove('hidden', 'text-red-600', 'text-green-600', 'text-gray-600');
+                if (type === 'error') {
+                    statusEl.classList.add('text-red-600');
+                } else if (type === 'success') {
+                    statusEl.classList.add('text-green-600');
+                } else {
+                    statusEl.classList.add('text-gray-600');
+                }
+                statusEl.textContent = message;
+            }
+
             // Function to upload the profile picture to Cloudinary
             async function uploadProfilePicture(event) {
                 const file = event.target.files[0];
@@ -772,6 +844,9 @@
                 formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
         
                 try {
+                    setProfileImageSavingState(true);
+                    showProfileImageStatus('Saving your new profile image...', 'info');
+
                     // Upload the image to Cloudinary
                     const response = await fetch(CLOUDINARY_URL, {
                         method: 'POST',
@@ -793,14 +868,18 @@
                             { profilePicture: imageUrl },
                             { merge: true }
                         );
-        
-                        alert('Profile picture updated successfully!');
+                        showProfileImageStatus('Profile image updated successfully.', 'success');
                     } else {
-                        alert('Error uploading the image to Cloudinary. Please try again.');
+                        showProfileImageStatus(
+                            getFriendlyImageUploadError(null, response.status),
+                            'error'
+                        );
                     }
                 } catch (error) {
                     console.error('Error uploading the profile picture:', error);
-                    alert('An error occurred while uploading the profile picture. Please try again.');
+                    showProfileImageStatus(getFriendlyImageUploadError(error), 'error');
+                } finally {
+                    setProfileImageSavingState(false);
                 }
             }
         
