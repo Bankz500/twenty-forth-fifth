@@ -2089,13 +2089,13 @@
             // Store generated histories
             let generatedHistories = [];
 
-            // Generate 15 history variations
+            // Generate 30 history variations
             function generateHistories(template) {
                 try {
                     const parsed = parseHistoryEntry(template);
                     generatedHistories = [];
 
-                    for (let i = 1; i <= 15; i++) {
+                    for (let i = 1; i <= 30; i++) {
                         const dt = getRandomBusinessDay();
                 const txnId = randomTxnId(15);
 
@@ -2132,7 +2132,7 @@
                     // Show success message
                     const statusEl = document.getElementById('history-status');
                     if (statusEl) {
-                        statusEl.textContent = '✓ Generated 15 history entries successfully!';
+                        statusEl.textContent = '✓ Generated 30 history entries successfully!';
                         statusEl.className = 'text-sm text-blue-600';
                     }
 

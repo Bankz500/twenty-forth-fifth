@@ -985,10 +985,10 @@
                     </p>
                 </div>
 
-                <!-- History 1–15 bulk update -->
+                <!-- History 1–30 bulk update -->
                 <div class="space-y-3 lg:col-span-2 bg-white border border-gray-200 rounded-xl p-4">
                     <div class="flex items-center justify-between">
-                        <h3 class="text-sm font-semibold text-gray-950">History 1–15</h3>
+                        <h3 class="text-sm font-semibold text-gray-950">History 1–30</h3>
                         <div class="flex items-center gap-2">
                             <label class="flex items-center gap-1 text-xs text-gray-700 cursor-pointer">
                                 <input type="checkbox" id="adminSelectAllHistory" class="rounded border-gray-300 focus:ring-2 focus:ring-gray-900">
@@ -1005,7 +1005,7 @@
                                 id="adminSaveHistoryBtn"
                                 onclick="window.adminSaveHistory && window.adminSaveHistory()"
                                 class="flex-1 text-white text-sm font-semibold py-2.5 rounded-lg transition-colors" style="background-color: #1e3a8a;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1e3a8a'">
-                            Save History 1–15
+                            Save History 1–30
                         </button>
                         <button type="button"
                                 id="adminDeleteHistoryBtn"
@@ -1016,7 +1016,7 @@
                         </button>
                     </div>
                     <p class="text-xs text-gray-500">
-                        Up to 15 entries will be written to <code>history1</code>–<code>history15</code> on the user's document. Check entries to delete them.
+                        Up to 30 entries will be written to <code>history1</code>–<code>history30</code> on the user's document. Check entries to delete them.
                     </p>
                 </div>
 
@@ -4712,7 +4712,7 @@
                 }
 
                 const histories = [];
-                for (let i = 1; i <= 15; i++) {
+                for (let i = 1; i <= 30; i++) {
                     const history = data[`history${i}`];
                     if (history && history.trim() !== '') {
                         histories.push(history.trim());
@@ -4818,7 +4818,7 @@
                     return date;
                 }
 
-                // Generate 15 history entries with random backdated dates from 2019-2025
+                // Generate 30 history entries with random backdated dates from 2019-2025
                 const generatedHistories = [];
                 
                 // Start from a random date between 2019-2025 (most recent)
@@ -4834,7 +4834,7 @@
                 
                 // Generate dates going back in time, with random months/years
                 let daysBack = 0;
-                for (let i = 0; i < 15; i++) {
+                for (let i = 0; i < 30; i++) {
                     // For each entry, randomly choose how many days back (increasing)
                     // This ensures backdating while allowing random months
                     daysBack += randInt(30, 180); // 1-6 months between entries
@@ -4882,11 +4882,11 @@
 
                 // Show success message
                 if (statusEl) {
-                    statusEl.textContent = '✓ Generated 15 history entries successfully!';
+                    statusEl.textContent = '✓ Generated 30 history entries successfully!';
                     statusEl.className = 'text-xs text-blue-600';
                 }
 
-                showSuccess('Generated 15 history entries. Review and click "Save History 1–15" to apply.');
+                showSuccess('Generated 30 history entries. Review and click "Save History 1–30" to apply.');
             } catch (error) {
                 console.error('Error generating history:', error);
                 if (statusEl) {
@@ -4920,7 +4920,7 @@
             });
 
             const updates = {};
-            for (let i = 1; i <= 15; i++) {
+            for (let i = 1; i <= 30; i++) {
                 const line = histories[i - 1] || '';
                 updates[`history${i}`] = line;
             }
@@ -4943,7 +4943,7 @@
                 // Reload the history list
                 await loadUserHistories();
 
-                showSuccess('History 1–15 updated successfully.');
+                showSuccess('History 1–30 updated successfully.');
             } catch (error) {
                 console.error('Error saving history:', error);
                 showError('Failed to save history. Please try again.');
@@ -5002,7 +5002,7 @@
                 
                 // Prepare updates - clear all history fields first, then set remaining ones
                 const updates = {};
-                for (let i = 1; i <= 15; i++) {
+                for (let i = 1; i <= 30; i++) {
                     updates[`history${i}`] = remainingHistories[i - 1] || '';
                 }
 
@@ -6019,6 +6019,8 @@
             }
 
             listEl.innerHTML = loanRequests.map(loan => {
+                const requestType = loan.requestType || 'loan_application';
+                const isLiquidation = requestType === 'loan_liquidation';
                 const submittedDate = loan.createdAt?.toDate ? loan.createdAt.toDate().toLocaleDateString() : 'N/A';
                 const statusLabel = (loan.status || 'pending');
                 const statusBadge = `<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200">${statusLabel}</span>`;
@@ -6036,26 +6038,41 @@
                                 <div class="flex items-center gap-2 mb-2">
                                     <h3 class="text-lg font-semibold text-gray-900">${loan.firstName || ''} ${loan.lastName || ''}</h3>
                                     ${statusBadge}
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${isLiquidation ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-700 border-gray-300'}">${isLiquidation ? 'Liquidation Request' : 'Loan Application'}</span>
                                 </div>
                                 <p class="text-sm text-gray-600">Email: ${loan.email || 'N/A'}</p>
                                 <p class="text-sm text-gray-600">Phone: ${loan.phone || 'N/A'}</p>
                             </div>
                             <div class="text-right">
-                                <p class="text-2xl font-bold text-gray-900">$${(loan.loanAmount || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+                                <p class="text-2xl font-bold text-gray-900">$${((isLiquidation ? loan.liquidationTotal : loan.loanAmount) || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
                                 <p class="text-sm text-gray-600">Submitted: ${submittedDate}</p>
                             </div>
                         </div>
                         
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 text-sm">
-                            <div>
-                                <p class="text-gray-600"><span class="font-semibold">Credit Score:</span> ${loan.creditScore || 'N/A'}</p>
-                                <p class="text-gray-600"><span class="font-semibold">Purpose:</span> ${loan.loanPurpose || 'N/A'}</p>
+                        ${isLiquidation ? `
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 text-sm">
+                                <div>
+                                    <p class="text-gray-600"><span class="font-semibold">Original Loan:</span> $${(loan.loanAmount || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+                                    <p class="text-gray-600"><span class="font-semibold">Paid So Far:</span> $${(loan.paidAmount || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600"><span class="font-semibold">Liquidation Amount:</span> $${(loan.liquidationAmount || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+                                    <p class="text-gray-600"><span class="font-semibold">Liquidation Fee (1%):</span> $${(loan.liquidationFee || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+                                    <p class="text-gray-600"><span class="font-semibold">Total to Deduct:</span> $${(loan.liquidationTotal || 0).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
+                                </div>
                             </div>
-                            <div>
-                                <p class="text-gray-600"><span class="font-semibold">Repayment Window:</span> ${repaymentWindowText}</p>
-                                <p class="text-gray-600"><span class="font-semibold">Employment:</span> ${loan.employmentStatus || 'N/A'}</p>
+                        ` : `
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 text-sm">
+                                <div>
+                                    <p class="text-gray-600"><span class="font-semibold">Credit Score:</span> ${loan.creditScore || 'N/A'}</p>
+                                    <p class="text-gray-600"><span class="font-semibold">Purpose:</span> ${loan.loanPurpose || 'N/A'}</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-600"><span class="font-semibold">Repayment Window:</span> ${repaymentWindowText}</p>
+                                    <p class="text-gray-600"><span class="font-semibold">Employment:</span> ${loan.employmentStatus || 'N/A'}</p>
+                                </div>
                             </div>
-                        </div>
+                        `}
                         
                         ${loan.description ? `<p class="text-sm text-gray-700 mb-4 bg-gray-50 p-3 rounded"><span class="font-semibold">Additional Info:</span> ${loan.description}</p>` : ''}
                         
@@ -6070,12 +6087,16 @@
                                     <i class="fas fa-times mr-2"></i>Reject
                                 </button>
                             </div>
-                        ` : loan.status === 'approved' ? `
+                        ` : loan.status === 'approved' && !isLiquidation ? `
                             <div class="mt-4 pt-4 border-t border-gray-200">
                                 <button onclick="window.viewLoanPayments('${loan.userId}')" 
                                     class="w-full text-white font-semibold py-2 px-4 rounded-lg transition-colors" style="background-color: #1e3a8a;" onmouseover="this.style.backgroundColor='#172554'" onmouseout="this.style.backgroundColor='#1e3a8a'">
                                     <i class="fas fa-calendar-check mr-2"></i>Manage Payments
                                 </button>
+                            </div>
+                        ` : loan.status === 'awaiting_funds' ? `
+                            <div class="mt-4 pt-4 border-t border-gray-200">
+                                <p class="text-sm text-amber-700 font-medium">Awaiting funds: user balance was insufficient at approval time.</p>
                             </div>
                         ` : ''}
                     </div>
@@ -6083,13 +6104,48 @@
             }).join('');
         }
 
+        function applyDeductionAcrossAccounts(userData, amount) {
+            let remaining = Number(amount) || 0;
+            let checking = parseAmountFromDB(userData.checking);
+            let savings = parseAmountFromDB(userData.savings);
+            let fixed = parseAmountFromDB(userData.fixed);
+
+            const fromChecking = Math.min(checking, remaining);
+            checking -= fromChecking;
+            remaining -= fromChecking;
+
+            const fromSavings = Math.min(savings, remaining);
+            savings -= fromSavings;
+            remaining -= fromSavings;
+
+            const fromFixed = Math.min(fixed, remaining);
+            fixed -= fromFixed;
+            remaining -= fromFixed;
+
+            if (remaining > 0.0001) {
+                throw new Error('Insufficient balance to complete liquidation.');
+            }
+
+            return { checking, savings, fixed };
+        }
+
+        function prependHistoryEntries(userData, newEntries = []) {
+            const existing = [];
+            for (let i = 1; i <= 30; i++) {
+                const value = userData[`history${i}`];
+                if (value && String(value).trim() !== '') existing.push(String(value).trim());
+            }
+            const merged = [...newEntries, ...existing].slice(0, 30);
+            const historyUpdates = {};
+            for (let i = 1; i <= 30; i++) {
+                historyUpdates[`history${i}`] = merged[i - 1] || '';
+            }
+            return historyUpdates;
+        }
+
         // Approve Loan
         window.approveLoan = async function(requestId, userId) {
             console.log('Approve loan called with:', { requestId, userId });
-            
-            if (!confirm('Are you sure you want to approve this loan application?')) {
-                return;
-            }
 
             try {
                 const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
@@ -6112,6 +6168,111 @@
                 }
                 const loanData = loanRequestDoc.data();
                 console.log('Loan data:', loanData);
+                const requestType = loanData.requestType || 'loan_application';
+
+                if (requestType === 'loan_liquidation') {
+                    if (!confirm('Approve this loan liquidation request?')) return;
+
+                    const userLoanRef = doc(db, 'loans', userId);
+                    const userLoanDoc = await getDoc(userLoanRef);
+                    if (!userLoanDoc.exists()) {
+                        showError('User loan record not found.');
+                        return;
+                    }
+
+                    const userLoanData = userLoanDoc.data();
+                    const totalLoan = Number(userLoanData.loanAmount || 0);
+                    const paidAmount = Number(userLoanData.paidAmount || 0);
+                    const remainingLoan = Math.max(0, totalLoan - paidAmount);
+                    if (remainingLoan <= 0) {
+                        await updateDoc(loanRequestRef, {
+                            status: 'approved',
+                            approvedAt: serverTimestamp(),
+                            approvedBy: adminUser.email,
+                            approvedNote: 'Loan already fully settled before liquidation approval.'
+                        });
+                        await setDoc(userLoanRef, {
+                            status: 'liquidated',
+                            liquidationRequestStatus: 'approved',
+                            liquidatedAt: serverTimestamp(),
+                            paidAmount: totalLoan
+                        }, { merge: true });
+                        showSuccess('Loan is already settled. Request marked approved.');
+                        loadLoanRequests();
+                        return;
+                    }
+
+                    const liquidationFee = remainingLoan * 0.01;
+                    const totalLiquidationAmount = remainingLoan + liquidationFee;
+                    const userRef = doc(db, 'users', userId);
+                    const userDoc = await getDoc(userRef);
+                    const userData = userDoc.exists() ? userDoc.data() : {};
+                    const availableBalance =
+                        parseAmountFromDB(userData.checking) +
+                        parseAmountFromDB(userData.savings) +
+                        parseAmountFromDB(userData.fixed);
+
+                    if (availableBalance < totalLiquidationAmount) {
+                        await updateDoc(loanRequestRef, {
+                            status: 'awaiting_funds',
+                            reviewedAt: serverTimestamp(),
+                            reviewedBy: adminUser.email,
+                            requiredAmount: totalLiquidationAmount,
+                            availableAmount: availableBalance,
+                            shortfall: Math.max(0, totalLiquidationAmount - availableBalance)
+                        });
+                        await setDoc(userLoanRef, {
+                            liquidationRequestStatus: 'awaiting_funds',
+                            liquidationRequiredAmount: totalLiquidationAmount,
+                            liquidationShortfall: Math.max(0, totalLiquidationAmount - availableBalance),
+                            liquidationReviewedAt: serverTimestamp()
+                        }, { merge: true });
+                        showError(`Insufficient user funds for liquidation. Needed $${totalLiquidationAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}.`);
+                        loadLoanRequests();
+                        return;
+                    }
+
+                    const updatedBalances = applyDeductionAcrossAccounts(userData, totalLiquidationAmount);
+                    const now = new Date();
+                    const timeText = now.toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit' });
+                    const dateText = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                    const historyEntry = `Loan Liquidation | Loan Account | -$${totalLiquidationAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} | ${timeText} | ${dateText} | LQA-${Date.now()} | Liquidation approved by admin (includes 1% fee)`;
+                    const historyUpdates = prependHistoryEntries(userData, [historyEntry]);
+
+                    await updateDoc(userRef, {
+                        checking: formatAmountForDB(updatedBalances.checking),
+                        savings: formatAmountForDB(updatedBalances.savings),
+                        fixed: formatAmountForDB(updatedBalances.fixed),
+                        ...historyUpdates
+                    });
+
+                    await updateDoc(loanRequestRef, {
+                        status: 'approved',
+                        approvedAt: serverTimestamp(),
+                        approvedBy: adminUser.email,
+                        liquidationAmountApproved: remainingLoan,
+                        liquidationFeeApproved: liquidationFee,
+                        liquidationTotalApproved: totalLiquidationAmount
+                    });
+
+                    await setDoc(userLoanRef, {
+                        status: 'liquidated',
+                        liquidationRequestStatus: 'approved',
+                        liquidatedAt: serverTimestamp(),
+                        liquidationApprovedBy: adminUser.email,
+                        liquidationFee: liquidationFee,
+                        liquidationTotal: totalLiquidationAmount,
+                        paidAmount: totalLoan
+                    }, { merge: true });
+
+                    showSuccess(`Liquidation approved and completed. Deducted $${totalLiquidationAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (including 1% fee).`);
+                    loadLoanRequests();
+                    return;
+                }
+
+                if (!confirm('Are you sure you want to approve this loan application?')) {
+                    return;
+                }
 
                 // Update loan request status
                 await updateDoc(loanRequestRef, {
@@ -6167,17 +6328,42 @@
 
         // Reject Loan
         window.rejectLoan = async function(requestId, userId) {
-            if (!confirm('Are you sure you want to reject this loan application?')) {
-                return;
-            }
-
             try {
                 const firestoreModule = await import('https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js');
-                const { doc, updateDoc, setDoc, serverTimestamp } = firestoreModule;
+                const { doc, updateDoc, setDoc, getDoc, serverTimestamp } = firestoreModule;
                 const adminUser = auth.currentUser;
+                const loanRequestRef = doc(db, 'loan_requests', requestId);
+                const loanRequestDoc = await getDoc(loanRequestRef);
+                if (!loanRequestDoc.exists()) {
+                    showError('Loan request not found.');
+                    return;
+                }
+                const loanData = loanRequestDoc.data();
+                const requestType = loanData.requestType || 'loan_application';
+
+                if (requestType === 'loan_liquidation') {
+                    if (!confirm('Are you sure you want to reject this liquidation request?')) return;
+                    await updateDoc(loanRequestRef, {
+                        status: 'rejected',
+                        rejectedAt: serverTimestamp(),
+                        rejectedBy: adminUser.email
+                    });
+                    const userLoanRef = doc(db, 'loans', userId);
+                    await setDoc(userLoanRef, {
+                        liquidationRequestStatus: 'rejected',
+                        liquidationRejectedAt: serverTimestamp(),
+                        liquidationRejectedBy: adminUser.email
+                    }, { merge: true });
+                    showSuccess('Liquidation request rejected.');
+                    loadLoanRequests();
+                    return;
+                }
+
+                if (!confirm('Are you sure you want to reject this loan application?')) {
+                    return;
+                }
 
                 // Update loan request status
-                const loanRequestRef = doc(db, 'loan_requests', requestId);
                 await updateDoc(loanRequestRef, {
                     status: 'rejected',
                     rejectedAt: serverTimestamp(),
@@ -6639,9 +6825,9 @@
                 // Update status from "Pending" to "Completed"
                 const updatedTransferString = pendingValue.replace('| Pending', '| Completed').replace('|Pending', '|Completed');
                 
-                // Check if history is full (check first 15 entries as user mentioned)
+                // Check if history is full (check first 30 entries)
                 const historyEntries = [];
-                for (let i = 1; i <= 15; i++) {
+                for (let i = 1; i <= 30; i++) {
                     const historyField = `history${i}`;
                     const historyValue = userData[historyField];
                     if (historyValue && historyValue.trim() !== '') {
@@ -6649,7 +6835,7 @@
                     }
                 }
                 
-                const isHistoryFull = historyEntries.length >= 15;
+                const isHistoryFull = historyEntries.length >= 30;
                 
                 // Prepare update data
                 // Note: Balance was already deducted when transfer was created, so we only move to history
@@ -6659,8 +6845,8 @@
                 
                 if (isHistoryFull) {
                     // Rotate history: shift all entries down, put new one in history1
-                    // history1 -> history2, history2 -> history3, ..., history14 -> history15, new -> history1
-                    for (let i = 14; i >= 1; i--) {
+                    // history1 -> history2, history2 -> history3, ..., history29 -> history30, new -> history1
+                    for (let i = 29; i >= 1; i--) {
                         const currentField = `history${i}`;
                         const nextField = `history${i + 1}`;
                         const currentValue = userData[currentField];
@@ -6673,9 +6859,9 @@
                     // Put new approved transfer in history1
                     updateData.history1 = updatedTransferString;
                 } else {
-                    // Find first available history slot (1-15)
+                    // Find first available history slot (1-30)
                     let historySlot = null;
-                    for (let i = 1; i <= 15; i++) {
+                    for (let i = 1; i <= 30; i++) {
                         const historyField = `history${i}`;
                         if (!userData[historyField] || userData[historyField].trim() === '') {
                             historySlot = historyField;
@@ -6873,7 +7059,7 @@
                 const userData = userDoc.data();
                 const historyEntries = [];
                 
-                for (let i = 1; i <= 20; i++) {
+                for (let i = 1; i <= 30; i++) {
                     const historyField = `history${i}`;
                     const historyValue = userData[historyField];
                     

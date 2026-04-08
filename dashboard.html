@@ -2297,11 +2297,21 @@
             const rawStatus = loanData.status || loanData.loanStatus || 'pending';
             const status = String(rawStatus).toLowerCase().trim();
             const loanAmount = loanData.loanAmount || 0;
+            const paidAmount = Number(loanData.paidAmount || 0);
             const submittedAt = loanData.submittedAt || loanData.createdAt;
+
+            // Hide loan status card once loan is fully settled/cleared.
+            const settledStatuses = new Set(['paid', 'settled', 'cleared', 'liquidated', 'closed', 'completed']);
+            const isFullyPaid = Number(loanAmount) > 0 && paidAmount >= Number(loanAmount);
+            if (settledStatuses.has(status) || isFullyPaid) {
+                hideLoanStatusDisplay();
+                return;
+            }
             
             console.log('Updating loan status display:', {
                 rawStatus: rawStatus,
                 normalizedStatus: status,
+                paidAmount: paidAmount,
                 fullLoanData: loanData
             });
             

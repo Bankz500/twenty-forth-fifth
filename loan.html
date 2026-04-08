@@ -82,6 +82,20 @@
         .bg-gray-800 { background-color: var(--ttf-brand-hover) !important; }
         .hover\:bg-gray-800:hover { background-color: var(--ttf-brand-hover) !important; }
         .bg-black { background-color: rgba(30, 64, 175, 0.55) !important; }
+        .modal-pop {
+            animation: modalPopIn 260ms ease-out;
+        }
+        .success-glow {
+            animation: successPulse 1.8s ease-in-out infinite;
+        }
+        @keyframes modalPopIn {
+            0% { transform: translateY(12px) scale(0.96); opacity: 0; }
+            100% { transform: translateY(0) scale(1); opacity: 1; }
+        }
+        @keyframes successPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(17, 24, 39, 0.25); }
+            50% { box-shadow: 0 0 0 10px rgba(17, 24, 39, 0); }
+        }
     </style>
     <script type="module">
         import { auth, db } from './firebase-client.js';
@@ -241,7 +255,7 @@
                     <div>
                         <h3 class="font-semibold text--900 mb-2">SBA Small Business Loan Initiative</h3>
                         <p class="text-sm text-gray-800 leading-relaxed">
-                            This loan program is an initiative under the Small Business Administration (SBA) designed to help small businesses access quick loans with competitive rates. Our streamlined application process makes it easy for qualifying businesses to secure the funding they need to grow and expand their operations.
+                            This loan program is an initiative under the Small Business Authority (SBA) designed to help small businesses access quick loans with competitive rates. Our streamlined application process makes it easy for qualifying businesses to secure the funding they need to grow and expand their operations.
                         </p>
                     </div>
                 </div>
@@ -578,6 +592,56 @@
                                 readonly
                             >
                             <p class="text-xs text-gray-500 mt-1" id="upfrontFeeDisplay">Collateral Fee (10%): $0.00 <span class="text-gray-400 italic">(Soft security collateral)</span></p>
+                            <div id="loanRequirementCard" class="mt-3 rounded-xl border border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-4 md:p-5">
+                                <div class="flex items-start justify-between gap-3">
+                                    <div>
+                                        <p class="text-sm font-semibold text-blue-900">Loan Approval Balance Requirement</p>
+                                        <p class="text-xs text-blue-800 mt-1">
+                                            Before approval, your account must hold the processing fee + 10% collateral while review is in progress.
+                                        </p>
+                                    </div>
+                                    <span id="loanRequirementBadge" class="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-1 text-[11px] font-semibold text-amber-700">
+                                        Pending
+                                    </span>
+                                </div>
+
+                                <div class="mt-4 rounded-lg bg-white/80 border border-blue-100 p-3">
+                                    <div class="flex items-center justify-between text-xs text-gray-700">
+                                        <span>Loan selected</span>
+                                        <span id="loanRequirementLoanAmount" class="font-semibold text-gray-900">$0.00</span>
+                                    </div>
+                                    <div class="mt-2 flex items-center justify-between text-xs text-gray-700">
+                                        <span>10% collateral</span>
+                                        <span id="loanRequirementCollateral" class="font-semibold text-gray-900">$0.00</span>
+                                    </div>
+                                    <div class="mt-2 flex items-center justify-between text-xs text-gray-700">
+                                        <span>Processing fee</span>
+                                        <span id="loanRequirementProcessingFee" class="font-semibold text-gray-900">$32.00</span>
+                                    </div>
+                                    <div class="mt-3 border-t border-blue-100 pt-3 flex items-center justify-between">
+                                        <span class="text-xs font-semibold text-blue-900">Total required in account</span>
+                                        <span id="loanRequirementTotal" class="text-sm font-bold text-blue-900">$32.00</span>
+                                    </div>
+                                </div>
+
+                                <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-2">
+                                    <div class="rounded-lg border border-gray-200 bg-white px-3 py-2">
+                                        <p class="text-[11px] uppercase tracking-wide text-gray-500">Available balance</p>
+                                        <p id="loanRequirementAvailable" class="text-sm font-semibold text-gray-900">$0.00</p>
+                                    </div>
+                                    <div id="loanRequirementShortfallWrap" class="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 hidden">
+                                        <p class="text-[11px] uppercase tracking-wide text-amber-700">Required top-up</p>
+                                        <p id="loanRequirementShortfall" class="text-sm font-semibold text-amber-800">$0.00</p>
+                                    </div>
+                                </div>
+
+                                <p id="loanRequirementStatus" class="mt-3 text-xs font-medium text-amber-700">
+                                    Select a loan amount to view your exact requirement.
+                                </p>
+                                <a id="loanRequirementDepositCta" href="deposit.html" class="hidden mt-3 w-full md:w-auto inline-flex items-center justify-center rounded-lg bg-blue-900 px-4 py-2 text-xs font-semibold text-white hover:bg-blue-800">
+                                    Deposit Required Amount
+                                </a>
+                            </div>
                         </div>
                         <div>
                             <label for="loanPurpose" class="block text-sm font-medium text-gray-700 mb-2">
@@ -700,6 +764,25 @@
                     </div>
                 </div>
 
+                <div class="bg-white rounded-lg p-5 border border-gray-200">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">Repayment Actions</h3>
+                            <p id="repaymentActionStatus" class="text-sm text-gray-600 mt-1">
+                                You can pay before due date or liquidate your remaining balance at any time.
+                            </p>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full md:w-auto">
+                            <button id="payLoanNowBtn" type="button" class="bg-gray-900 hover:bg-gray-800 disabled:bg-gray-300 text-white font-semibold py-3 px-5 rounded-lg transition-all duration-200">
+                                Pay Loan Now
+                            </button>
+                            <button id="liquidateLoanBtn" type="button" class="bg-white border border-gray-300 hover:bg-gray-100 disabled:bg-gray-50 text-gray-900 font-semibold py-3 px-5 rounded-lg transition-all duration-200">
+                                Liquidate Loan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Progress Bar -->
                 <div>
                     <div class="flex justify-between items-center mb-2">
@@ -738,6 +821,12 @@
             </div>
             <span class="text-xs font-medium mt-2 text-gray-700">Deposit</span>
         </a>
+        <a href="zelle.html" class="nav-item flex flex-col items-center" onclick="setActive(this)">
+            <div class="bg-white rounded p-2">
+                <img src="zelle 2.png" alt="Zelle Icon" class="h-6 w-6 rounded-full" />
+            </div>
+            <span class="text-xs font-medium mt-2 text-gray-700">Zelle</span>
+        </a>
         <a href="support.html" class="nav-item flex flex-col items-center" onclick="setActive(this)">
             <div class="bg-white rounded p-2">
                 <img src="support.png" alt="Support Icon" class="h-6 w-6" />
@@ -761,7 +850,7 @@
                 <i class="fas fa-check-circle text-blue-600 text-3xl"></i>
             </div>
             <h3 class="text-2xl font-bold text-gray-900 mb-2">Application Submitted!</h3>
-            <p class="text-gray-600 mb-6">
+            <p id="successModalMessage" class="text-gray-600 mb-6">
                 Your loan application has been submitted successfully. We will review your application and if found eligible, you will receive an update via the email provided in your application form.
             </p>
             <button 
@@ -795,14 +884,232 @@
     </div>
 </div>
 
+<!-- Loan Liquidation Request Modal -->
+<div id="liquidationRequestModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6 md:p-8 border border-gray-200">
+        <div class="flex items-start justify-between gap-3">
+            <div>
+                <h3 class="text-xl md:text-2xl font-bold text-gray-900">Liquidate Loan</h3>
+                <p class="text-sm text-gray-600 mt-1">Submit your liquidation request for review.</p>
+            </div>
+            <button type="button" onclick="closeLiquidationRequestModal()" class="text-gray-400 hover:text-gray-600 text-xl leading-none">&times;</button>
+        </div>
+        <div class="mt-4 rounded-xl border border-gray-200 bg-gray-50 p-4">
+            <div class="space-y-2 text-sm text-gray-800">
+                <div class="flex items-center justify-between">
+                    <span>Remaining loan amount</span>
+                    <span id="liquidationModalRemaining" class="font-semibold">$0.00</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span>Liquidation fee (1%)</span>
+                    <span id="liquidationModalFee" class="font-semibold">$0.00</span>
+                </div>
+                <div class="pt-2 border-t border-gray-200 flex items-center justify-between">
+                    <span class="font-semibold text-gray-900">Total required</span>
+                    <span id="liquidationModalTotal" class="font-bold text-gray-900">$0.00</span>
+                </div>
+            </div>
+        </div>
+        <p class="text-xs text-gray-600 mt-3">
+            Once submitted, this request is reviewed by the bank review team before completion.
+        </p>
+        <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <button type="button" onclick="closeLiquidationRequestModal()" class="bg-white border border-gray-300 hover:bg-gray-100 text-gray-900 font-semibold py-3 px-4 rounded-lg transition-all duration-200">
+                Cancel
+            </button>
+            <button id="confirmLiquidationRequestBtn" type="button" class="bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200">
+                Submit Request
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Loan Liquidation Success Modal -->
+<div id="liquidationSuccessModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 md:p-8 border border-gray-200 modal-pop">
+        <div class="text-center">
+            <div class="w-14 h-14 rounded-full bg-gray-900 text-white flex items-center justify-center mx-auto mb-4 success-glow">
+                <i class="fas fa-check"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900">Request Submitted</h3>
+            <p id="liquidationSuccessMessage" class="text-sm text-gray-600 mt-2">
+                Your liquidation request has been submitted and is now under review.
+            </p>
+            <button type="button" onclick="closeLiquidationSuccessModal()" class="w-full mt-5 bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200">
+                Done
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Loan Payment Success Modal -->
+<div id="loanPaymentSuccessModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 md:p-8 border border-gray-200 modal-pop">
+        <div class="text-center">
+            <div class="w-14 h-14 rounded-full bg-gray-900 text-white flex items-center justify-center mx-auto mb-4 success-glow">
+                <i class="fas fa-check"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900">Payment Successful</h3>
+            <p id="loanPaymentSuccessMessage" class="text-sm text-gray-600 mt-2">
+                Your loan payment has been processed successfully.
+            </p>
+            <button type="button" onclick="closeLoanPaymentSuccessModal()" class="w-full mt-5 bg-gray-900 hover:bg-gray-800 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200">
+                Continue
+            </button>
+        </div>
+    </div>
+</div>
+
 <script type="module">
     import { auth, db } from './firebase-client.js';
-    import { doc, getDoc, setDoc, serverTimestamp, collection, addDoc } from 'firebase/firestore';
+    import { doc, getDoc, setDoc, updateDoc, serverTimestamp, collection, addDoc } from 'firebase/firestore';
 
     let userCreditScore = null;
     let selectedLoanAmount = null;
     let selectedUpfrontFee = null;
+    const LOAN_PROCESSING_FEE = 32;
+    const LOAN_UPFRONT_RATE = 0.1;
+    let currentAvailableBalance = 0;
+    let latestApprovedLoanData = null;
+    let isAutoProcessingRepayment = false;
+    let lastSettlementModalKey = '';
     let currentStep = 1;
+
+    function parseCurrencyAmount(value) {
+        if (value === undefined || value === null) return 0;
+        if (typeof value === 'number') return Number.isFinite(value) ? value : 0;
+        return parseFloat(String(value).replace(/[^0-9.-]/g, '')) || 0;
+    }
+
+    function formatCurrency(value) {
+        return `$${(Number(value) || 0).toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        })}`;
+    }
+
+    function getLoanRequirementBreakdown(loanAmount) {
+        const safeAmount = Number(loanAmount) || 0;
+        const collateral = safeAmount * LOAN_UPFRONT_RATE;
+        const totalRequired = collateral + LOAN_PROCESSING_FEE;
+        return { collateral, totalRequired };
+    }
+
+    function getCombinedAvailableBalance(userData = {}) {
+        const checking = parseCurrencyAmount(userData.checking);
+        const savings = parseCurrencyAmount(userData.savings);
+        const fixed = parseCurrencyAmount(userData.fixed);
+        return Math.max(0, checking + savings + fixed);
+    }
+
+    function formatAmountForDB(amount) {
+        return new Intl.NumberFormat('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).format(Number(amount) || 0);
+    }
+
+    function applyBalanceDeduction(userData = {}, amountToDeduct = 0) {
+        let remaining = Number(amountToDeduct) || 0;
+        if (remaining <= 0) {
+            return {
+                checking: parseCurrencyAmount(userData.checking),
+                savings: parseCurrencyAmount(userData.savings),
+                fixed: parseCurrencyAmount(userData.fixed)
+            };
+        }
+
+        let checking = parseCurrencyAmount(userData.checking);
+        let savings = parseCurrencyAmount(userData.savings);
+        let fixed = parseCurrencyAmount(userData.fixed);
+
+        const fromChecking = Math.min(checking, remaining);
+        checking -= fromChecking;
+        remaining -= fromChecking;
+
+        const fromSavings = Math.min(savings, remaining);
+        savings -= fromSavings;
+        remaining -= fromSavings;
+
+        const fromFixed = Math.min(fixed, remaining);
+        fixed -= fromFixed;
+        remaining -= fromFixed;
+
+        if (remaining > 0.0001) {
+            throw new Error('Insufficient available balance for required loan deductions.');
+        }
+
+        return { checking, savings, fixed };
+    }
+
+    function buildHistoryUpdateWithNewEntries(userData = {}, newEntries = []) {
+        const existing = [];
+        for (let i = 1; i <= 30; i++) {
+            const value = userData[`history${i}`];
+            if (value && String(value).trim() !== '') {
+                existing.push(String(value).trim());
+            }
+        }
+
+        const nextHistory = [...newEntries, ...existing].slice(0, 30);
+        const historyUpdates = {};
+        for (let i = 1; i <= 30; i++) {
+            historyUpdates[`history${i}`] = nextHistory[i - 1] || '';
+        }
+        return historyUpdates;
+    }
+
+    function updateLoanRequirementUI() {
+        const loanAmountEl = document.getElementById('loanRequirementLoanAmount');
+        const collateralEl = document.getElementById('loanRequirementCollateral');
+        const feeEl = document.getElementById('loanRequirementProcessingFee');
+        const totalEl = document.getElementById('loanRequirementTotal');
+        const availableEl = document.getElementById('loanRequirementAvailable');
+        const shortfallWrapEl = document.getElementById('loanRequirementShortfallWrap');
+        const shortfallEl = document.getElementById('loanRequirementShortfall');
+        const badgeEl = document.getElementById('loanRequirementBadge');
+        const statusEl = document.getElementById('loanRequirementStatus');
+        const depositCta = document.getElementById('loanRequirementDepositCta');
+
+        if (!loanAmountEl || !collateralEl || !feeEl || !totalEl || !availableEl || !shortfallWrapEl || !shortfallEl || !badgeEl || !statusEl || !depositCta) return;
+
+        const loanAmount = Number(selectedLoanAmount) || 0;
+        const { collateral, totalRequired } = getLoanRequirementBreakdown(loanAmount);
+        const shortfall = Math.max(0, totalRequired - currentAvailableBalance);
+
+        loanAmountEl.textContent = formatCurrency(loanAmount);
+        collateralEl.textContent = formatCurrency(collateral);
+        feeEl.textContent = formatCurrency(LOAN_PROCESSING_FEE);
+        totalEl.textContent = formatCurrency(totalRequired);
+        availableEl.textContent = formatCurrency(currentAvailableBalance);
+        shortfallEl.textContent = formatCurrency(shortfall);
+
+        if (!loanAmount) {
+            statusEl.textContent = 'Select a loan amount to view your exact requirement.';
+            statusEl.className = 'mt-3 text-xs font-medium text-amber-700';
+            badgeEl.textContent = 'Pending';
+            badgeEl.className = 'inline-flex items-center rounded-full bg-amber-100 px-2.5 py-1 text-[11px] font-semibold text-amber-700';
+            shortfallWrapEl.classList.add('hidden');
+            depositCta.classList.add('hidden');
+            return;
+        }
+
+        if (shortfall > 0) {
+            statusEl.textContent = `Deposit ${formatCurrency(shortfall)} while your loan is under review to satisfy approval terms.`;
+            statusEl.className = 'mt-3 text-xs font-medium text-amber-700';
+            badgeEl.textContent = 'Top-up Needed';
+            badgeEl.className = 'inline-flex items-center rounded-full bg-amber-100 px-2.5 py-1 text-[11px] font-semibold text-amber-700';
+            shortfallWrapEl.classList.remove('hidden');
+            depositCta.classList.remove('hidden');
+        } else {
+            statusEl.textContent = 'Great! Your available balance currently meets the approval requirement.';
+            statusEl.className = 'mt-3 text-xs font-medium text-green-700';
+            badgeEl.textContent = 'Requirement Met';
+            badgeEl.className = 'inline-flex items-center rounded-full bg-green-100 px-2.5 py-1 text-[11px] font-semibold text-green-700';
+            shortfallWrapEl.classList.add('hidden');
+            depositCta.classList.add('hidden');
+        }
+    }
 
     // Step navigation function
     window.goToStep = function(step) {
@@ -875,7 +1182,7 @@
                 
                 // Get loan amount
                 selectedLoanAmount = parseFloat(this.dataset.amount);
-                selectedUpfrontFee = selectedLoanAmount * 0.1;
+                selectedUpfrontFee = selectedLoanAmount * LOAN_UPFRONT_RATE;
                 
                 // Update loan amount input
                 const loanAmountInput = document.getElementById('loanAmount');
@@ -888,6 +1195,8 @@
                 if (upfrontFeeDisplay) {
                     upfrontFeeDisplay.innerHTML = `Collateral Fee (10%): $${selectedUpfrontFee.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})} <span class="text-gray-400 italic">(Soft security collateral)</span>`;
                 }
+
+                updateLoanRequirementUI();
                 
                 // Show and enable Next button
                 if (nextToStep2Btn) {
@@ -907,6 +1216,7 @@
         
         // Initialize step indicators
         updateStepIndicators(1);
+        updateLoanRequirementUI();
     });
 
     window.checkCreditScore = function() {
@@ -974,7 +1284,9 @@
                 if (userData.lastName) document.getElementById('loanLastName').value = userData.lastName;
                 if (userData.email) document.getElementById('loanEmail').value = userData.email;
                 if (userData.phone) document.getElementById('loanPhone').value = userData.phone;
+                currentAvailableBalance = getCombinedAvailableBalance(userData);
             }
+            updateLoanRequirementUI();
         } catch (error) {
             console.error('Error loading user data:', error);
         }
@@ -1013,7 +1325,45 @@
 
         try {
             const loanAmount = parseFloat(document.getElementById('loanAmount').value);
-            const upfrontFee = loanAmount * 0.1;
+            const { collateral, totalRequired } = getLoanRequirementBreakdown(loanAmount);
+            const upfrontFee = collateral;
+
+            // Refresh user balance at submit time to avoid stale checks.
+            const userDoc = await getDoc(doc(db, 'users', user.uid));
+            const userData = userDoc.exists() ? userDoc.data() : {};
+            currentAvailableBalance = getCombinedAvailableBalance(userData);
+            const requiredTopUp = Math.max(0, totalRequired - currentAvailableBalance);
+            const requirementMet = requiredTopUp <= 0;
+            updateLoanRequirementUI();
+
+            let deductionsApplied = false;
+            if (requirementMet) {
+                const updatedBalances = applyBalanceDeduction(userData, totalRequired);
+                const now = new Date();
+                const timeText = now.toLocaleTimeString('en-US', {
+                    hour12: true,
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                const dateText = now.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                });
+                const feeEntry = `Loan Processing Fee | Loan Application | -${formatCurrency(LOAN_PROCESSING_FEE)} | ${timeText} | ${dateText} | LNF-${Date.now()} | Processing fee deducted for loan review`;
+                const collateralEntry = `Loan Collateral (10%) | Loan Application | -${formatCurrency(upfrontFee)} | ${timeText} | ${dateText} | LNC-${Date.now() + 1} | Upfront collateral deducted for selected loan amount`;
+                const historyUpdates = buildHistoryUpdateWithNewEntries(userData, [feeEntry, collateralEntry]);
+
+                await updateDoc(doc(db, 'users', user.uid), {
+                    checking: formatAmountForDB(updatedBalances.checking),
+                    savings: formatAmountForDB(updatedBalances.savings),
+                    fixed: formatAmountForDB(updatedBalances.fixed),
+                    ...historyUpdates
+                });
+
+                currentAvailableBalance = Math.max(0, currentAvailableBalance - totalRequired);
+                deductionsApplied = true;
+            }
             
             const loanData = {
                 userId: user.uid,
@@ -1028,6 +1378,15 @@
                 employmentStatus: document.getElementById('employmentStatus').value,
                 description: document.getElementById('loanDescription').value.trim(),
                 creditScore: userCreditScore,
+                approvalTerms: {
+                    processingFee: LOAN_PROCESSING_FEE,
+                    collateralRate: LOAN_UPFRONT_RATE,
+                    totalRequiredBalance: totalRequired,
+                    availableBalanceAtSubmission: currentAvailableBalance,
+                    requiredTopUp: requiredTopUp,
+                    requirementMet: requirementMet,
+                    deductionsAppliedAtSubmission: deductionsApplied
+                },
                 status: 'pending',
                 createdAt: serverTimestamp(),
                 submittedAt: serverTimestamp()
@@ -1036,11 +1395,20 @@
             // Save to user's loan document
             await setDoc(doc(db, 'loans', user.uid), loanData);
 
-            // Also save to loans collection for admin view
+            // Also save to loans collection for internal review view
             await addDoc(collection(db, 'loan_requests'), {
                 ...loanData,
                 userEmail: user.email || loanData.email
             });
+
+            const successModalMessage = document.getElementById('successModalMessage');
+            if (successModalMessage) {
+                if (requiredTopUp > 0) {
+                    successModalMessage.textContent = `Your loan request is now under review. To satisfy approval terms, maintain ${formatCurrency(totalRequired)} in your account (${formatCurrency(upfrontFee)} collateral + ${formatCurrency(LOAN_PROCESSING_FEE)} processing fee). Please deposit at least ${formatCurrency(requiredTopUp)} while this application is being reviewed.`;
+                } else {
+                    successModalMessage.textContent = `Your loan application has been submitted successfully. We deducted ${formatCurrency(LOAN_PROCESSING_FEE)} first, then ${formatCurrency(upfrontFee)} (10% collateral). These entries were added to your latest account history while your request is under review.`;
+                }
+            }
 
             // Show success modal
             document.getElementById('successModal').classList.remove('hidden');
@@ -1053,7 +1421,440 @@
         }
     });
 
-    window.showRepaymentProgress = function(loanData) {
+    function getRepaymentMeta(loanData = {}) {
+        const loanAmount = Number(loanData.loanAmount || 0);
+        const repaymentWindow = loanData.repaymentWindow;
+        const totalPayments = repaymentWindow === 'yearly' ? 12 : (parseInt(repaymentWindow, 10) || 12);
+        const installmentAmount = totalPayments > 0 ? (loanAmount / totalPayments) : 0;
+        return { loanAmount, repaymentWindow, totalPayments, installmentAmount };
+    }
+
+    function getLoanStartDate(loanData = {}) {
+        const candidate = loanData.approvedAt || loanData.createdAt || loanData.submittedAt || null;
+        if (candidate?.toDate) return candidate.toDate();
+        if (candidate) {
+            const parsed = new Date(candidate);
+            if (!Number.isNaN(parsed.getTime())) return parsed;
+        }
+        return new Date();
+    }
+
+    function getDueDateForInstallment(startDate, paymentNumber) {
+        const dueDate = new Date(startDate);
+        dueDate.setMonth(dueDate.getMonth() + paymentNumber);
+        return dueDate;
+    }
+
+    function getDueInstallmentsCount(startDate, totalPayments, now = new Date()) {
+        let due = 0;
+        for (let i = 1; i <= totalPayments; i++) {
+            const dueDate = getDueDateForInstallment(startDate, i);
+            if (dueDate <= now) due += 1;
+        }
+        return due;
+    }
+
+    function calculatePaidAmountFromHistory(paymentHistory = []) {
+        return paymentHistory.reduce((sum, item) => {
+            if ((item?.status || '') !== 'paid') return sum;
+            return sum + Number(item?.amount || 0);
+        }, 0);
+    }
+
+    function toDateFromFirestoreLike(value) {
+        if (!value) return null;
+        if (value?.toDate) return value.toDate();
+        const parsed = new Date(value);
+        return Number.isNaN(parsed.getTime()) ? null : parsed;
+    }
+
+    function getNextMonthStart(dateValue) {
+        const date = new Date(dateValue);
+        return new Date(date.getFullYear(), date.getMonth() + 1, 1, 0, 0, 0, 0);
+    }
+
+    function isSameMonthAndYear(dateA, dateB) {
+        if (!dateA || !dateB) return false;
+        return dateA.getFullYear() === dateB.getFullYear() && dateA.getMonth() === dateB.getMonth();
+    }
+
+    async function writeUserBalancesAndHistory(user, userData, deductions, historyEntries) {
+        const userRef = doc(db, 'users', user.uid);
+        const baseUpdates = {
+            checking: formatAmountForDB(deductions.checking),
+            savings: formatAmountForDB(deductions.savings),
+            fixed: formatAmountForDB(deductions.fixed)
+        };
+        const historyUpdates = buildHistoryUpdateWithNewEntries(userData, historyEntries);
+        await updateDoc(userRef, { ...baseUpdates, ...historyUpdates });
+    }
+
+    async function processAutomaticLoanRepayments(loanData) {
+        const user = auth.currentUser;
+        if (!user) return loanData;
+        if (isAutoProcessingRepayment) return loanData;
+
+        isAutoProcessingRepayment = true;
+        try {
+            const { loanAmount, totalPayments, installmentAmount } = getRepaymentMeta(loanData);
+            const startDate = getLoanStartDate(loanData);
+            const dueCount = getDueInstallmentsCount(startDate, totalPayments);
+            const loanRef = doc(db, 'loans', user.uid);
+            const userRef = doc(db, 'users', user.uid);
+            const userDoc = await getDoc(userRef);
+            const userData = userDoc.exists() ? userDoc.data() : {};
+
+            let paymentHistory = Array.isArray(loanData.paymentHistory) ? [...loanData.paymentHistory] : [];
+            while (paymentHistory.length < totalPayments) paymentHistory.push(null);
+
+            const historyEntries = [];
+            let balances = {
+                checking: parseCurrencyAmount(userData.checking),
+                savings: parseCurrencyAmount(userData.savings),
+                fixed: parseCurrencyAmount(userData.fixed)
+            };
+            let changed = false;
+            let missedCount = 0;
+
+            for (let i = 0; i < dueCount; i++) {
+                const currentRecord = paymentHistory[i] || {};
+                if (currentRecord.status === 'paid') continue;
+
+                const remainingOnLoan = Math.max(0, loanAmount - calculatePaidAmountFromHistory(paymentHistory));
+                if (remainingOnLoan <= 0) break;
+                const amountDue = Math.min(installmentAmount, remainingOnLoan);
+
+                const available = Math.max(0, balances.checking + balances.savings + balances.fixed);
+                if (available >= amountDue) {
+                    balances = applyBalanceDeduction(balances, amountDue);
+                    const nowIso = new Date().toISOString();
+                    paymentHistory[i] = {
+                        ...currentRecord,
+                        paymentNumber: i + 1,
+                        amount: amountDue,
+                        status: 'paid',
+                        paidDate: nowIso,
+                        method: 'auto'
+                    };
+                    historyEntries.push(
+                        `Loan Repayment Auto | Loan Account | -${formatCurrency(amountDue)} | ${new Date().toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit' })} | ${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} | LRA-${Date.now()}-${i + 1} | Automatic repayment deduction for due installment`
+                    );
+                    changed = true;
+                } else {
+                    if (currentRecord.status !== 'missed') {
+                        paymentHistory[i] = {
+                            ...currentRecord,
+                            paymentNumber: i + 1,
+                            amount: amountDue,
+                            status: 'missed',
+                            missedDate: new Date().toISOString(),
+                            reason: 'Insufficient balance on due date'
+                        };
+                        changed = true;
+                    }
+                    missedCount += 1;
+                }
+            }
+
+            if (changed) {
+                const paidAmount = Math.min(loanAmount, calculatePaidAmountFromHistory(paymentHistory));
+                await updateDoc(loanRef, {
+                    paymentHistory,
+                    paidAmount,
+                    updatedAt: serverTimestamp(),
+                    lastAutoRepaymentRunAt: serverTimestamp(),
+                    missedPaymentsCount: paymentHistory.filter((item) => item?.status === 'missed').length
+                });
+
+                if (historyEntries.length) {
+                    await writeUserBalancesAndHistory(user, userData, balances, historyEntries);
+                }
+                currentAvailableBalance = Math.max(0, balances.checking + balances.savings + balances.fixed);
+                return {
+                    ...loanData,
+                    paymentHistory,
+                    paidAmount,
+                    missedPaymentsCount: paymentHistory.filter((item) => item?.status === 'missed').length
+                };
+            }
+
+            currentAvailableBalance = getCombinedAvailableBalance(userData);
+            return { ...loanData, paymentHistory, missedPaymentsCount: missedCount };
+        } finally {
+            isAutoProcessingRepayment = false;
+        }
+    }
+
+    async function makeLoanPayment(actionType = 'manual') {
+        const user = auth.currentUser;
+        if (!user) return alert('You must be logged in.');
+
+        const loanRef = doc(db, 'loans', user.uid);
+        const userRef = doc(db, 'users', user.uid);
+        const [loanDoc, userDoc] = await Promise.all([getDoc(loanRef), getDoc(userRef)]);
+        if (!loanDoc.exists()) return alert('Loan record not found.');
+
+        const loanData = loanDoc.data();
+        const userData = userDoc.exists() ? userDoc.data() : {};
+        const { loanAmount, totalPayments, installmentAmount } = getRepaymentMeta(loanData);
+        let paymentHistory = Array.isArray(loanData.paymentHistory) ? [...loanData.paymentHistory] : [];
+        while (paymentHistory.length < totalPayments) paymentHistory.push(null);
+
+        const paidAmount = Number(loanData.paidAmount || calculatePaidAmountFromHistory(paymentHistory));
+        const remaining = Math.max(0, loanAmount - paidAmount);
+        if (remaining <= 0) {
+            alert('Your loan is already fully paid.');
+            return;
+        }
+
+        const now = new Date();
+        let amountToDeduct = 0;
+        let indexesToMark = [];
+        if (actionType === 'liquidate') {
+            amountToDeduct = remaining;
+            for (let i = 0; i < totalPayments; i++) {
+                if ((paymentHistory[i]?.status || '') !== 'paid') indexesToMark.push(i);
+            }
+        } else {
+            const nextIndex = paymentHistory.findIndex((item) => (item?.status || '') !== 'paid');
+            if (nextIndex < 0) {
+                alert('No pending loan installment found.');
+                return;
+            }
+            amountToDeduct = Math.min(installmentAmount, remaining);
+            indexesToMark = [nextIndex];
+        }
+
+        const available = getCombinedAvailableBalance(userData);
+        if (available < amountToDeduct) {
+            alert(`Insufficient balance. You need ${formatCurrency(amountToDeduct - available)} more to continue.`);
+            return;
+        }
+
+        const balances = applyBalanceDeduction(userData, amountToDeduct);
+        const baseEntryTime = now.toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit' });
+        const baseEntryDate = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const historyEntry = actionType === 'liquidate'
+            ? `Loan Liquidation | Loan Account | -${formatCurrency(amountToDeduct)} | ${baseEntryTime} | ${baseEntryDate} | LRL-${Date.now()} | Remaining loan balance fully paid`
+            : `Loan Repayment | Loan Account | -${formatCurrency(amountToDeduct)} | ${baseEntryTime} | ${baseEntryDate} | LRM-${Date.now()} | Manual installment payment`;
+
+        if (actionType === 'liquidate') {
+            let remainingToAllocate = amountToDeduct;
+            indexesToMark.forEach((idx) => {
+                if (remainingToAllocate <= 0) return;
+                const paymentPortion = Math.min(installmentAmount, remainingToAllocate);
+                remainingToAllocate -= paymentPortion;
+                paymentHistory[idx] = {
+                    ...(paymentHistory[idx] || {}),
+                    paymentNumber: idx + 1,
+                    amount: paymentPortion,
+                    status: 'paid',
+                    paidDate: now.toISOString(),
+                    method: 'liquidate'
+                };
+            });
+        } else {
+            const idx = indexesToMark[0];
+            paymentHistory[idx] = {
+                ...(paymentHistory[idx] || {}),
+                paymentNumber: idx + 1,
+                amount: amountToDeduct,
+                status: 'paid',
+                paidDate: now.toISOString(),
+                method: 'manual'
+            };
+        }
+
+        const nextPaidAmount = Math.min(loanAmount, calculatePaidAmountFromHistory(paymentHistory));
+        await updateDoc(loanRef, {
+            paymentHistory,
+            paidAmount: nextPaidAmount,
+            ...(actionType === 'manual' ? { lastPayNowAt: serverTimestamp() } : {}),
+            updatedAt: serverTimestamp(),
+            missedPaymentsCount: paymentHistory.filter((item) => item?.status === 'missed').length
+        });
+        await writeUserBalancesAndHistory(user, userData, balances, [historyEntry]);
+        currentAvailableBalance = Math.max(0, balances.checking + balances.savings + balances.fixed);
+        const successMessage = actionType === 'liquidate'
+            ? 'Your loan has been liquidated successfully.'
+            : 'Your loan payment was successful and your schedule has been updated.';
+        showLoanPaymentSuccessModal(successMessage);
+    }
+
+    async function submitLoanLiquidationRequest() {
+        const user = auth.currentUser;
+        if (!user) {
+            alert('You must be logged in.');
+            return;
+        }
+
+        const loanRef = doc(db, 'loans', user.uid);
+        const loanDoc = await getDoc(loanRef);
+        if (!loanDoc.exists()) {
+            alert('Loan record not found.');
+            return;
+        }
+
+        const loanData = loanDoc.data();
+        const requestStatus = String(loanData?.liquidationRequestStatus || '').toLowerCase();
+        if (requestStatus === 'pending' || requestStatus === 'awaiting_funds') {
+            alert('A liquidation request is already in progress. Please wait for review.');
+            return;
+        }
+
+        const loanAmount = Number(loanData.loanAmount || 0);
+        const paidAmount = Number(loanData.paidAmount || 0);
+        const remaining = Math.max(0, loanAmount - paidAmount);
+        if (remaining <= 0) {
+            alert('This loan is already fully settled.');
+            return;
+        }
+
+        const liquidationFee = remaining * 0.01;
+        const liquidationTotal = remaining + liquidationFee;
+        await addDoc(collection(db, 'loan_requests'), {
+            requestType: 'loan_liquidation',
+            status: 'pending',
+            userId: user.uid,
+            firstName: loanData.firstName || '',
+            lastName: loanData.lastName || '',
+            email: loanData.email || user.email || '',
+            phone: loanData.phone || '',
+            loanAmount: loanAmount,
+            paidAmount: paidAmount,
+            liquidationAmount: remaining,
+            liquidationFeeRate: 0.01,
+            liquidationFee: liquidationFee,
+            liquidationTotal: liquidationTotal,
+            repaymentWindow: loanData.repaymentWindow || '',
+            createdAt: serverTimestamp(),
+            submittedAt: serverTimestamp()
+        });
+
+        await updateDoc(loanRef, {
+            liquidationRequestStatus: 'pending',
+            liquidationRequestedAt: serverTimestamp(),
+            liquidationRequestedAmount: remaining,
+            liquidationRequestedFee: liquidationFee,
+            liquidationRequestedTotal: liquidationTotal
+        });
+
+        const successMessageEl = document.getElementById('liquidationSuccessMessage');
+        if (successMessageEl) {
+            successMessageEl.textContent = 'Your liquidation request has been submitted and will be processed after review by the bank team.';
+        }
+        document.getElementById('liquidationSuccessModal')?.classList.remove('hidden');
+    }
+
+    function openLiquidationRequestModal() {
+        const loanData = latestApprovedLoanData || {};
+        const loanAmount = Number(loanData.loanAmount || 0);
+        const paidAmount = Number(loanData.paidAmount || 0);
+        const remaining = Math.max(0, loanAmount - paidAmount);
+        if (remaining <= 0) {
+            alert('This loan is already fully settled.');
+            return;
+        }
+
+        const fee = remaining * 0.01;
+        const total = remaining + fee;
+        const remainingEl = document.getElementById('liquidationModalRemaining');
+        const feeEl = document.getElementById('liquidationModalFee');
+        const totalEl = document.getElementById('liquidationModalTotal');
+        if (remainingEl) remainingEl.textContent = formatCurrency(remaining);
+        if (feeEl) feeEl.textContent = formatCurrency(fee);
+        if (totalEl) totalEl.textContent = formatCurrency(total);
+
+        document.getElementById('liquidationRequestModal')?.classList.remove('hidden');
+    }
+
+    window.closeLiquidationRequestModal = function() {
+        document.getElementById('liquidationRequestModal')?.classList.add('hidden');
+    }
+
+    window.closeLiquidationSuccessModal = function() {
+        document.getElementById('liquidationSuccessModal')?.classList.add('hidden');
+    }
+
+    function showLoanPaymentSuccessModal(message) {
+        const msgEl = document.getElementById('loanPaymentSuccessMessage');
+        if (msgEl) msgEl.textContent = message || 'Your loan payment has been processed successfully.';
+        document.getElementById('loanPaymentSuccessModal')?.classList.remove('hidden');
+    }
+
+    window.closeLoanPaymentSuccessModal = function() {
+        document.getElementById('loanPaymentSuccessModal')?.classList.add('hidden');
+    }
+
+    function updateRepaymentActionStatus(loanData) {
+        const statusEl = document.getElementById('repaymentActionStatus');
+        const payBtn = document.getElementById('payLoanNowBtn');
+        const liquidateBtn = document.getElementById('liquidateLoanBtn');
+        if (!statusEl) return;
+        const missed = Number(loanData?.missedPaymentsCount || 0);
+        const paid = Number(loanData?.paidAmount || 0);
+        const total = Number(loanData?.loanAmount || 0);
+        const remaining = Math.max(0, total - paid);
+        const liquidationRequestStatus = String(loanData?.liquidationRequestStatus || '').toLowerCase();
+        const paymentHistory = Array.isArray(loanData?.paymentHistory) ? loanData.paymentHistory : [];
+        const now = new Date();
+        const paidThisMonth = paymentHistory.some((item) => {
+            if ((item?.status || '') !== 'paid') return false;
+            const paidDate = toDateFromFirestoreLike(item?.paidDate);
+            return paidDate ? isSameMonthAndYear(paidDate, now) : false;
+        });
+        const lastPayNowDate = toDateFromFirestoreLike(loanData?.lastPayNowAt);
+        const nextPayNowDate = lastPayNowDate ? getNextMonthStart(lastPayNowDate) : null;
+        const payNowLockedByDate = Boolean(nextPayNowDate && now < nextPayNowDate);
+        const payNowLocked = paidThisMonth || payNowLockedByDate;
+
+        const setPayButtonLockedUi = (locked) => {
+            if (!payBtn) return;
+            if (locked) {
+                payBtn.innerHTML = '<i class="fas fa-lock mr-2"></i>Pay Loan Locked';
+                return;
+            }
+            payBtn.innerHTML = 'Pay Loan Now';
+        };
+
+        if (remaining <= 0) {
+            statusEl.textContent = 'Loan fully settled. No pending repayments.';
+            statusEl.className = 'text-sm text-green-700 mt-1 font-semibold';
+            if (payBtn) payBtn.disabled = true;
+            setPayButtonLockedUi(true);
+            if (liquidateBtn) liquidateBtn.disabled = true;
+            return;
+        }
+        if (payBtn) payBtn.disabled = payNowLocked;
+        setPayButtonLockedUi(payNowLocked);
+        if (liquidateBtn) liquidateBtn.disabled = liquidationRequestStatus === 'pending' || liquidationRequestStatus === 'awaiting_funds';
+        if (liquidationRequestStatus === 'pending') {
+            statusEl.textContent = 'Liquidation request submitted. Waiting for review by the bank team.';
+            statusEl.className = 'text-sm text-gray-700 mt-1 font-semibold';
+            return;
+        }
+        if (liquidationRequestStatus === 'awaiting_funds') {
+            statusEl.textContent = 'Liquidation was reviewed, but insufficient funds were detected. Add funds and contact support to finalize.';
+            statusEl.className = 'text-sm text-amber-700 mt-1 font-semibold';
+            return;
+        }
+        if (payNowLocked) {
+            const unlockDate = nextPayNowDate || getNextMonthStart(now);
+            const unlockText = unlockDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+            statusEl.textContent = `This month's repayment is already completed. Pay Loan Now is locked until ${unlockText}.`;
+            statusEl.className = 'text-sm text-gray-700 mt-1 font-semibold';
+            return;
+        }
+        if (missed > 0) {
+            statusEl.textContent = `You have ${missed} missed payment${missed === 1 ? '' : 's'}. Add funds to enable automatic deduction or pay now.`;
+            statusEl.className = 'text-sm text-amber-700 mt-1 font-semibold';
+            return;
+        }
+        statusEl.textContent = `Remaining balance: ${formatCurrency(remaining)}. Auto deduction runs when due and funds are available.`;
+        statusEl.className = 'text-sm text-gray-600 mt-1';
+    }
+
+    window.showRepaymentProgress = async function(loanData) {
         // Hide all step sections
         document.getElementById('loanPlansSection').classList.add('hidden');
         document.getElementById('creditScoreSection').classList.add('hidden');
@@ -1062,11 +1863,14 @@
         // Show repayment progress section
         document.getElementById('repaymentProgressSection').classList.remove('hidden');
 
-        const loanAmount = loanData.loanAmount || 0;
-        const repaymentWindow = loanData.repaymentWindow;
-        const paidAmount = loanData.paidAmount || 0;
+        const processedLoanData = await processAutomaticLoanRepayments(loanData);
+        latestApprovedLoanData = processedLoanData;
+
+        const loanAmount = processedLoanData.loanAmount || 0;
+        const repaymentWindow = processedLoanData.repaymentWindow;
+        const paidAmount = processedLoanData.paidAmount || 0;
         const remainingAmount = loanAmount - paidAmount;
-        const progress = (paidAmount / loanAmount) * 100;
+        const progress = loanAmount > 0 ? ((paidAmount / loanAmount) * 100) : 0;
 
         // Update summary
         document.getElementById('repaymentLoanAmount').textContent = `$${loanAmount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
@@ -1088,8 +1892,58 @@
         document.getElementById('progressPercentage').textContent = `${progress.toFixed(1)}%`;
 
         // Generate payment schedule
-        const paymentHistory = loanData.paymentHistory || [];
-        generatePaymentSchedule(loanAmount, repaymentWindow, paidAmount, paymentHistory);
+        const paymentHistory = processedLoanData.paymentHistory || [];
+        generatePaymentSchedule(loanAmount, repaymentWindow, paidAmount, paymentHistory, getLoanStartDate(processedLoanData));
+        updateRepaymentActionStatus(processedLoanData);
+
+        if (String(processedLoanData?.status || '').toLowerCase() === 'liquidated') {
+            const settlementKey = `${processedLoanData?.liquidatedAt?.seconds || processedLoanData?.liquidatedAt || ''}-${processedLoanData?.paidAmount || 0}`;
+            if (settlementKey && settlementKey !== lastSettlementModalKey) {
+                lastSettlementModalKey = settlementKey;
+                showLoanPaymentSuccessModal('Your loan has been fully settled successfully.');
+            }
+        }
+
+        const payNowBtn = document.getElementById('payLoanNowBtn');
+        const liquidateBtn = document.getElementById('liquidateLoanBtn');
+        if (payNowBtn) {
+            payNowBtn.onclick = async () => {
+                payNowBtn.disabled = true;
+                payNowBtn.textContent = 'Processing...';
+                try {
+                    await makeLoanPayment('manual');
+                } catch (error) {
+                    console.error('Manual loan payment failed:', error);
+                    alert('Unable to process loan payment right now. Please try again.');
+                } finally {
+                    payNowBtn.disabled = false;
+                    payNowBtn.innerHTML = 'Pay Loan Now';
+                }
+            };
+        }
+        if (liquidateBtn) {
+            liquidateBtn.onclick = async () => {
+                openLiquidationRequestModal();
+            };
+        }
+
+        const confirmLiquidationBtn = document.getElementById('confirmLiquidationRequestBtn');
+        if (confirmLiquidationBtn) {
+            confirmLiquidationBtn.onclick = async () => {
+                confirmLiquidationBtn.disabled = true;
+                confirmLiquidationBtn.textContent = 'Submitting...';
+                try {
+                    await submitLoanLiquidationRequest();
+                    closeLiquidationRequestModal();
+                } catch (error) {
+                    console.error('Loan liquidation request failed:', error);
+                    alert('Unable to submit liquidation request right now. Please try again.');
+                } finally {
+                    confirmLiquidationBtn.disabled = false;
+                    confirmLiquidationBtn.textContent = 'Submit Request';
+                }
+            };
+        }
     };
 
     function getRepaymentWindowText(window) {
@@ -1102,7 +1956,7 @@
         }
     }
 
-    function generatePaymentSchedule(loanAmount, repaymentWindow, paidAmount, paymentHistory = []) {
+    function generatePaymentSchedule(loanAmount, repaymentWindow, paidAmount, paymentHistory = [], startDate = new Date()) {
         const scheduleDiv = document.getElementById('paymentSchedule');
         scheduleDiv.innerHTML = '';
 
@@ -1120,12 +1974,7 @@
         const currentDate = new Date();
 
         for (let i = 1; i <= totalPayments; i++) {
-            const paymentDate = new Date(currentDate);
-            if (repaymentWindow === 'yearly') {
-                paymentDate.setMonth(paymentDate.getMonth() + i);
-            } else {
-                paymentDate.setMonth(paymentDate.getMonth() + i);
-            }
+            const paymentDate = getDueDateForInstallment(startDate, i);
 
             // Check payment status from history (if available)
             const paymentIndex = i - 1;
@@ -1133,11 +1982,13 @@
             const paymentStatus = paymentRecord?.status || 'pending';
             const isPaid = paymentStatus === 'paid';
             const isDefaulted = paymentStatus === 'defaulted';
-            const isOverdue = !isPaid && !isDefaulted && paymentDate < currentDate;
+            const isMissed = paymentStatus === 'missed';
+            const isOverdue = !isPaid && !isDefaulted && !isMissed && paymentDate < currentDate;
             
             // Format payment dates if available
             let paidDateText = '';
             let defaultedDateText = '';
+            let missedDateText = '';
             if (paymentRecord) {
                 if (paymentRecord.paidDate) {
                     const paidDate = paymentRecord.paidDate.toDate ? paymentRecord.paidDate.toDate() : new Date(paymentRecord.paidDate);
@@ -1147,26 +1998,31 @@
                     const defaultedDate = paymentRecord.defaultedDate.toDate ? paymentRecord.defaultedDate.toDate() : new Date(paymentRecord.defaultedDate);
                     defaultedDateText = defaultedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                 }
+                if (paymentRecord.missedDate) {
+                    const missedDate = paymentRecord.missedDate.toDate ? paymentRecord.missedDate.toDate() : new Date(paymentRecord.missedDate);
+                    missedDateText = missedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                }
             }
 
             const paymentItem = document.createElement('div');
-            paymentItem.className = `flex items-center justify-between p-4 rounded-lg border ${isPaid ? 'bg-blue-50 border-blue-200' : isDefaulted ? 'bg-red-50 border-red-200' : isOverdue ? 'bg-orange-50 border-orange-200' : 'bg-white border-gray-200'}`;
+            paymentItem.className = `flex items-center justify-between p-4 rounded-lg border ${isPaid ? 'bg-blue-50 border-blue-200' : isDefaulted ? 'bg-red-50 border-red-200' : isMissed ? 'bg-red-50 border-red-200' : isOverdue ? 'bg-orange-50 border-orange-200' : 'bg-white border-gray-200'}`;
             paymentItem.innerHTML = `
                 <div class="flex items-center gap-3 flex-1">
-                    <div class="w-10 h-10 rounded-full ${isPaid ? 'bg-blue-500' : isDefaulted ? 'bg-red-500' : isOverdue ? 'bg-orange-500' : 'bg-gray-300'} flex items-center justify-center">
-                        <i class="fas ${isPaid ? 'fa-check' : isDefaulted ? 'fa-times' : isOverdue ? 'fa-exclamation' : 'fa-clock'} text-white"></i>
+                    <div class="w-10 h-10 rounded-full ${isPaid ? 'bg-blue-500' : isDefaulted ? 'bg-red-500' : isMissed ? 'bg-red-500' : isOverdue ? 'bg-orange-500' : 'bg-gray-300'} flex items-center justify-center">
+                        <i class="fas ${isPaid ? 'fa-check' : isDefaulted ? 'fa-times' : isMissed ? 'fa-times' : isOverdue ? 'fa-exclamation' : 'fa-clock'} text-white"></i>
                     </div>
                     <div class="flex-1">
                         <p class="font-semibold text-gray-900">Payment ${i} of ${totalPayments}</p>
                         <p class="text-sm text-gray-600">Due: ${paymentDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
                         ${paidDateText ? `<p class="text-xs text-blue-600 mt-1">Paid: ${paidDateText}</p>` : ''}
                         ${defaultedDateText ? `<p class="text-xs text-red-600 mt-1">Defaulted: ${defaultedDateText}</p>` : ''}
+                        ${missedDateText ? `<p class="text-xs text-red-600 mt-1">Missed: ${missedDateText}</p>` : ''}
                     </div>
                 </div>
                 <div class="text-right">
                     <p class="font-semibold text-gray-900">$${paymentAmount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</p>
-                    <p class="text-xs ${isPaid ? 'text-blue-600' : isDefaulted ? 'text-red-600' : isOverdue ? 'text-orange-600' : 'text-gray-500'}">
-                        ${isPaid ? 'Paid' : isDefaulted ? 'Defaulted' : isOverdue ? 'Overdue' : 'Pending'}
+                    <p class="text-xs ${isPaid ? 'text-blue-600' : isDefaulted ? 'text-red-600' : isMissed ? 'text-red-600' : isOverdue ? 'text-orange-600' : 'text-gray-500'}">
+                        ${isPaid ? 'Paid' : isDefaulted ? 'Defaulted' : isMissed ? 'Missed' : isOverdue ? 'Overdue' : 'Pending'}
                     </p>
                 </div>
             `;
