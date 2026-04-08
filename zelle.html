@@ -500,7 +500,7 @@
                     <h3 class="font-semibold text-gray-900">How It Works</h3>
                     <ol class="mt-3 space-y-3 text-sm text-gray-700">
                         <li class="flex gap-2"><span class="icon-badge">1</span><span>Open Zelle and continue onboarding.</span></li>
-                        <li class="flex gap-2"><span class="icon-badge">2</span><span>Old users check availability, then confirm email.</span></li>
+                        <li class="flex gap-2"><span class="icon-badge">2</span><span>Only new or restricted users run availability check.</span></li>
                         <li class="flex gap-2"><span class="icon-badge">3</span><span>New users submit enrollment for review.</span></li>
                     </ol>
                 </div>
@@ -589,6 +589,7 @@
         let currentZelleUserId = '';
         let zelleIsEligible = false;
         let zelleDeniedByAdmin = false;
+        let hasInitializedZelleEntry = false;
 
         const welcomeText = document.getElementById('zelleWelcomeText');
         const welcomeCta = document.getElementById('zelleWelcomeCta');
@@ -646,6 +647,15 @@
 
         function isValidEmail(value) {
             return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((value || '').trim());
+        }
+
+        function getExpectedUserEmail() {
+            const candidates = [
+                lastUserData?.email,
+                auth.currentUser?.email
+            ];
+            const found = candidates.find((email) => typeof email === 'string' && email.trim() !== '');
+            return (found || '').trim();
         }
 
         function toggleButtonLoading(buttonTextId, loaderId, isLoading, loadingText, idleText) {
@@ -789,15 +799,18 @@
         }
 
         function continueZelleWelcome() {
-            if (zelleUserCategory === 'new' && zelleEnrollmentStatus !== 'approved') {
-                setZelleStep('zelleStepNewEnroll');
+            const shouldShowAvailability = zelleUserCategory === 'new' || zelleDeniedByAdmin;
+            if (shouldShowAvailability) {
+                setZelleStep('zelleStepAvailability');
                 return;
             }
-            if (zelleDeniedByAdmin) {
-                setZelleStep('zelleStepOldError');
-            } else {
-                setZelleStep('zelleStepAvailability');
+
+            if (zelleIsEligible) {
+                setZelleStep('zelleStepActions');
+                return;
             }
+
+            setZelleStep('zelleStepOldError');
         }
 
         function getFundingSourceLabel() {
@@ -1135,7 +1148,26 @@
             setTimeout(() => {
                 toggleButtonLoading('zelleCheckBtnText', 'zelleCheckBtnLoader', false, 'Checking...', 'Check Availability');
                 checkBtn.disabled = false;
-                setZelleStep('zelleStepOldEmail');
+                if (zelleDeniedByAdmin) {
+                    setZelleStep('zelleStepOldError');
+                    return;
+                }
+
+                if (zelleUserCategory === 'new') {
+                    if (zelleEnrollmentStatus === 'approved' && zelleIsEligible) {
+                        setZelleStep('zelleStepActions');
+                    } else {
+                        setZelleStep('zelleStepNewEnroll');
+                    }
+                    return;
+                }
+
+                if (zelleIsEligible) {
+                    setZelleStep('zelleStepActions');
+                    return;
+                }
+
+                setZelleStep('zelleStepOldError');
             }, 1800);
         }
 
@@ -1143,9 +1175,29 @@
             const emailInput = document.getElementById('zelleOldEmail');
             const emailError = document.getElementById('zelleOldEmailError');
             const emailValue = emailInput ? emailInput.value : '';
+            const normalizedEnteredEmail = String(emailValue || '').trim().toLowerCase();
+            const expectedEmail = getExpectedUserEmail();
+            const normalizedExpectedEmail = expectedEmail.toLowerCase();
 
             if (!isValidEmail(emailValue)) {
-                if (emailError) emailError.classList.remove('hidden');
+                if (emailError) {
+                    emailError.textContent = 'Please enter a valid email address.';
+                    emailError.classList.remove('hidden');
+                }
+                return;
+            }
+            if (!normalizedExpectedEmail) {
+                if (emailError) {
+                    emailError.textContent = 'Unable to verify account email right now. Please sign in again and retry.';
+                    emailError.classList.remove('hidden');
+                }
+                return;
+            }
+            if (normalizedEnteredEmail !== normalizedExpectedEmail) {
+                if (emailError) {
+                    emailError.textContent = 'This email must match your signed-in account email.';
+                    emailError.classList.remove('hidden');
+                }
                 return;
             }
             if (emailError) emailError.classList.add('hidden');
@@ -1381,9 +1433,12 @@
 
                     if (zelleUserCategory === 'new') {
                         welcomeText.textContent = 'New users must enroll before using Zelle. Enrollment requests are reviewed for eligibility.';
-                        welcomeCta.textContent = 'Start Enrollment';
+                        welcomeCta.textContent = 'Check Availability';
+                    } else if (zelleDeniedByAdmin) {
+                        welcomeText.textContent = 'Your account currently needs a fresh availability check before using Zelle.';
+                        welcomeCta.textContent = 'Check Availability';
                     } else {
-                        welcomeText.textContent = 'Welcome back. We will quickly check if Zelle is available in your app profile.';
+                        welcomeText.textContent = 'Welcome back. Your profile is already eligible for Zelle. Continue with your email confirmation.';
                         welcomeCta.textContent = 'Continue';
                     }
 
@@ -1391,6 +1446,17 @@
                     updateReceiveContacts(userData);
                     renderLimitUi();
                     renderActivity();
+
+                    // Eligible users should land directly on Send/Receive.
+                    // New/unapproved or restricted users should continue through onboarding/availability checks.
+                    if (!hasInitializedZelleEntry) {
+                        if (zelleIsEligible && !zelleDeniedByAdmin) {
+                            setZelleStep('zelleStepActions');
+                        } else {
+                            setZelleStep('zelleStepWelcome');
+                        }
+                        hasInitializedZelleEntry = true;
+                    }
                 });
             } catch (error) {
                 console.error('Error loading Zelle profile:', error);
