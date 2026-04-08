@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Twenty Forth & Fifth Zelle</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --ttf-brand: #1e40af;
+            --ttf-brand-hover: #1e3a8a;
+            --zelle-purple-start: #6d1ed4;
+            --zelle-purple-end: #7c3aed;
+            --zelle-ink: #24123b;
+        }
+
+        body {
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+            font-family: "Nunito Sans", "Avenir Next", "Segoe UI", Arial, sans-serif;
+            color: var(--zelle-ink);
+        }
+
+        h1, h2, h3 {
+            letter-spacing: -0.01em;
+            font-weight: 800;
+            color: #1e1033;
+        }
+
+        .zelle-cta {
+            background: linear-gradient(135deg, var(--zelle-purple-start), var(--zelle-purple-end));
+            border-radius: 9999px;
+            box-shadow: 0 10px 24px rgba(109, 30, 212, 0.22);
+            transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
+        }
+
+        .zelle-cta:hover {
+            filter: brightness(1.02);
+            transform: translateY(-1px);
+            box-shadow: 0 14px 28px rgba(109, 30, 212, 0.28);
+        }
+
+        .zelle-hero {
+            background: radial-gradient(circle at top right, #f0ddff 0%, #f8f2ff 28%, #ffffff 62%);
+            border: 1px solid #e9d5ff;
+            box-shadow: 0 14px 32px rgba(91, 33, 182, 0.08);
+        }
+
+        .info-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            background: #fff;
+            padding: 0.9rem;
+            box-shadow: 0 2px 8px rgba(17, 24, 39, 0.04);
+        }
+
+        .icon-badge {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #f3e8ff;
+            color: #7c3aed;
+            flex-shrink: 0;
+        }
+
+        .zelle-chip {
+            width: 76px;
+            height: 76px;
+            border-radius: 9999px;
+            background: linear-gradient(135deg, var(--zelle-purple-start), var(--zelle-purple-end));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(109, 30, 212, 0.28);
+        }
+
+        .zelle-loader {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.45);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .zelle-action-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            background: #ffffff;
+            padding: 1rem;
+            box-shadow: 0 2px 8px rgba(17, 24, 39, 0.04);
+        }
+
+        .zelle-action-btn {
+            border-radius: 9999px;
+            border: 1px solid #d8b4fe;
+            background: linear-gradient(180deg, #fcf7ff, #f4e8ff);
+            color: #6b21a8;
+            font-weight: 700;
+            font-size: 0.95rem;
+            padding: 0.85rem 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .zelle-action-btn:hover {
+            background: #f3e8ff;
+        }
+
+        /* Safety net for manually typed "grey" utility classes */
+        .border-grey-200 { border-color: #e5e7eb !important; }
+        .bg-grey-50 { background-color: #f9fafb !important; }
+        .text-grey-900 { color: #111827 !important; }
+        .text-grey-800 { color: #1f2937 !important; }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .mobile-nav {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 100px;
+            background: #fff;
+            border-top: 1px solid #d1d5db;
+            box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+            z-index: 12000;
+        }
+
+        .receipt-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(17, 24, 39, 0.45);
+            z-index: 13000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased bg-gray-50">
+    <nav class="bg-white border-b border-gray-300 p-4 fixed top-0 w-full z-50 shadow-sm">
+        <div class="container mx-auto flex items-center justify-between">
+            <a href="index.html" class="flex items-center">
+                <img src="11.png" alt="Twenty Forth & Fifth Logo" class="h-14 md:h-16 w-auto">
+            </a>
+            <a href="dashboard.html" class="text-sm font-medium text-gray-700 underline">Back Home</a>
+        </div>
+    </nav>
+
+    <div class="h-20 mt-16"></div>
+
+    <main class="container mx-auto px-4 py-6 pb-32 max-w-6xl">
+        <section class="zelle-hero rounded-2xl p-5 md:p-6 mb-5">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <p class="text-xs tracking-wide uppercase font-semibold text-purple-700">Instant Payments</p>
+                    <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mt-1">Zelle in Twenty Forth & Fifth</h1>
+                    <p class="text-sm text-gray-700 mt-2 max-w-2xl">
+                        Fast money movement with people you trust. Use your email to check availability or enroll for access.
+                        Enrollment requests for new users are reviewed for eligibility.
+                    </p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="zelle-chip">
+                        <img src="zelle 2.png" alt="Zelle Icon" class="w-12 h-12 rounded-full" />
+                    </div>
+                    <div class="text-sm">
+                        <p class="font-semibold text-gray-900">Secure Enrollment</p>
+                        <p class="text-gray-600">Email verification and eligibility review</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            <div class="lg:col-span-2 flex flex-col">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-5 order-2">
+                    <div class="info-card">
+                        <div class="icon-badge mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 5v5h4a1 1 0 110 2h-5a1 1 0 01-1-1V7a1 1 0 112 0z"/></svg>
+                        </div>
+                        <h3 class="font-semibold text-sm text-gray-900">Quick Availability Check</h3>
+                        <p class="text-xs text-gray-600 mt-1">See if your profile can use Zelle right now.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="icon-badge mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1a5 5 0 00-5 5v2H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2v-9a2 2 0 00-2-2h-1V6a5 5 0 00-5-5zm-3 7V6a3 3 0 116 0v2H9z"/></svg>
+                        </div>
+                        <h3 class="font-semibold text-sm text-gray-900">Bank-Level Protection</h3>
+                        <p class="text-xs text-gray-600 mt-1">Enrollment status is tracked securely in your account.</p>
+                    </div>
+                    <div class="info-card">
+                        <div class="icon-badge mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l7 4v6c0 5-3.8 9.7-7 10-3.2-.3-7-5-7-10V6l7-4zm-1 12l5-5-1.4-1.4L11 11.2 9.4 9.6 8 11l3 3z"/></svg>
+                        </div>
+                        <h3 class="font-semibold text-sm text-gray-900">Approval for New Users</h3>
+                        <p class="text-xs text-gray-600 mt-1">New-user enrollment is reviewed before activation.</p>
+                    </div>
+                </div>
+
+                <section class="bg-white rounded-2xl border border-gray-200 shadow-lg p-6 order-1 mb-5">
+                    <div class="mb-5">
+                        <h2 class="text-lg font-semibold text-gray-900">Get Started</h2>
+                        <p class="text-sm text-gray-600 mt-1">Follow the guided flow below to continue with Zelle.</p>
+                    </div>
+                    <div id="zelleApprovalStatusCard" class="hidden mb-5 rounded-xl border border-gray-200 bg-gray-50 p-4">
+                        <div class="flex items-center justify-between gap-3">
+                            <p class="text-sm font-semibold text-gray-900">Enrollment Approval Status</p>
+                            <span id="zelleApprovalStatusBadge" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-200 text-gray-700">
+                                Not submitted
+                            </span>
+                        </div>
+                        <p id="zelleApprovalStatusText" class="text-xs text-gray-600 mt-2">
+                            Submit your enrollment to start eligibility review.
+                        </p>
+                        <div class="w-full h-2 rounded-full bg-gray-200 mt-3 overflow-hidden">
+                            <div id="zelleApprovalStatusProgress" class="h-full rounded-full transition-all duration-500" style="width: 0%; background-color: #9ca3af;"></div>
+                        </div>
+                    </div>
+
+                    <div id="zelleStepWelcome" class="zelle-step">
+                        <h3 class="text-2xl font-bold text-center text-gray-900">Welcome to Zelle</h3>
+                        <p id="zelleWelcomeText" class="text-sm text-gray-600 text-center mt-2">
+                            Send and receive money with people you trust using just an email or U.S. mobile number.
+                        </p>
+                        <button id="zelleWelcomeCta" type="button" class="zelle-cta w-full mt-6 text-white font-semibold py-3 rounded-lg">
+                            Continue
+                        </button>
+                    </div>
+
+                    <div id="zelleStepAvailability" class="zelle-step hidden">
+                        <h3 class="text-lg font-semibold text-gray-900 text-center">Check App Availability</h3>
+                        <p class="text-sm text-gray-600 text-center mt-2">
+                            Let's check whether Zelle is currently available for your account in this app.
+                        </p>
+                        <button id="zelleCheckBtn" type="button" class="zelle-cta w-full mt-6 text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-2">
+                            <span id="zelleCheckBtnText">Check Availability</span>
+                            <span id="zelleCheckBtnLoader" class="zelle-loader hidden"></span>
+                        </button>
+                    </div>
+
+                    <div id="zelleStepOldEmail" class="zelle-step hidden">
+                        <h3 class="text-lg font-semibold text-gray-900 text-center">Enter Your Email</h3>
+                        <p class="text-sm text-gray-600 text-center mt-2">Use the email address you want to use with Zelle.</p>
+                        <input id="zelleOldEmail" type="email" placeholder="name@example.com" class="w-full mt-4 border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                        <p id="zelleOldEmailError" class="hidden text-red-500 text-xs mt-2">Please enter a valid email address.</p>
+                        <button id="zelleOldEmailBtn" type="button" class="zelle-cta w-full mt-5 text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-2">
+                            <span id="zelleOldEmailBtnText">Continue</span>
+                            <span id="zelleOldEmailBtnLoader" class="zelle-loader hidden"></span>
+                        </button>
+                    </div>
+
+                    <div id="zelleStepOldError" class="zelle-step hidden text-center">
+                        <div class="mx-auto flex items-center justify-center w-14 h-14 rounded-full bg-red-100 mb-3">
+                            <span class="text-red-600 text-2xl">!</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900">Zelle Unavailable</h3>
+                        <p class="text-sm text-gray-600 mt-2">
+                            You can't use Zelle in this app at the moment. Please try again later or contact support.
+                        </p>
+                        <a href="support.html" class="inline-block w-full mt-5 border border-gray-300 text-gray-800 font-semibold py-3 rounded-lg hover:bg-gray-50">
+                            Contact Support
+                        </a>
+                    </div>
+
+                    <div id="zelleStepNewEnroll" class="zelle-step hidden">
+                        <h3 class="text-lg font-semibold text-gray-900 text-center">Enroll in Zelle</h3>
+                        <p class="text-sm text-gray-600 text-center mt-2">
+                            Enrollment is required for new users and is subject to review.
+                        </p>
+                        <input id="zelleNewEmail" type="email" placeholder="name@example.com" class="w-full mt-4 border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                        <p id="zelleNewEmailError" class="hidden text-red-500 text-xs mt-2">Please enter a valid email address.</p>
+                        <p id="zelleNewEnrollmentNote" class="hidden text-xs mt-2 text-gray-600"></p>
+                        <button id="zelleNewEnrollBtn" type="button" class="zelle-cta w-full mt-5 text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-2">
+                            <span id="zelleNewEnrollBtnText">Submit Enrollment</span>
+                            <span id="zelleNewEnrollBtnLoader" class="zelle-loader hidden"></span>
+                        </button>
+                    </div>
+
+                    <div id="zelleStepNewPending" class="zelle-step hidden text-center">
+                        <div class="mx-auto flex items-center justify-center w-14 h-14 rounded-full bg-green-100 mb-3">
+                            <span class="text-green-600 text-2xl">&#10003;</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900">Enrollment Submitted</h3>
+                        <p class="text-sm text-gray-600 mt-2">
+                            Your Zelle enrollment request was sent and is currently under review.
+                        </p>
+                        <a href="dashboard.html" class="inline-block w-full mt-5 border border-gray-300 text-gray-800 font-semibold py-3 rounded-lg hover:bg-gray-50">
+                            Done
+                        </a>
+                    </div>
+
+                    <div id="zelleStepActions" class="zelle-step hidden">
+                        <h3 class="text-lg font-semibold text-gray-900 text-center">Send or Receive with Zelle</h3>
+                        <p class="text-sm text-gray-600 text-center mt-2">
+                            You're eligible to use Zelle. Choose what you want to do.
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5">
+                            <button id="zelleSendActionBtn" type="button" class="zelle-action-btn">Send Money</button>
+                            <button id="zelleReceiveActionBtn" type="button" class="zelle-action-btn">Receive / Request</button>
+                        </div>
+                        <div class="zelle-action-card mt-4">
+                            <h4 class="text-sm font-semibold text-gray-900">Activity</h4>
+                            <p id="zelleActivityEmpty" class="text-xs text-gray-600 mt-1">No recent Zelle activity yet.</p>
+                            <div id="zelleActivityList" class="mt-2 space-y-2"></div>
+                        </div>
+                        <div class="zelle-action-card mt-4">
+                            <h4 class="text-sm font-semibold text-gray-900">Transfer Limits</h4>
+                            <p class="text-xs text-gray-600 mt-1">Daily max: $2,000. Weekly max: $5,000.</p>
+                            <div class="mt-3 space-y-2">
+                                <div>
+                                    <div class="flex items-center justify-between text-xs text-gray-700">
+                                        <span>Today used</span>
+                                        <span id="zelleLimitDailyText">$0.00 / $2,000.00</span>
+                                    </div>
+                                    <div class="w-full h-2 rounded-full bg-gray-200 mt-1 overflow-hidden">
+                                        <div id="zelleLimitDailyBar" class="h-full rounded-full bg-purple-500" style="width: 0%;"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex items-center justify-between text-xs text-gray-700">
+                                        <span>This week used</span>
+                                        <span id="zelleLimitWeeklyText">$0.00 / $5,000.00</span>
+                                    </div>
+                                    <div class="w-full h-2 rounded-full bg-gray-200 mt-1 overflow-hidden">
+                                        <div id="zelleLimitWeeklyBar" class="h-full rounded-full bg-purple-700" style="width: 0%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p id="zelleLimitResetText" class="text-xs text-gray-500 mt-3">Weekly limit resets in 7 days.</p>
+                        </div>
+                        <div class="rounded-xl border border-grey-200 bg-grey-50 p-3 mt-4">
+                            <p class="text-xs text-grey-900 font-medium">Fraud notice</p>
+                            <p class="text-xs text-grey-800 mt-1">
+                                Send money only to people you know and trust. Authorized Zelle payments are typically not reversible.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div id="zelleStepSendFlow" class="zelle-step hidden">
+                        <h3 class="text-lg font-semibold text-gray-900 text-center">Send Money</h3>
+                        <p class="text-sm text-gray-600 text-center mt-2">
+                            Enter recipient details, amount, and a note to continue.
+                        </p>
+                        <div class="zelle-action-card mt-4">
+                            <h4 class="text-sm font-semibold text-gray-900">Funding Source</h4>
+                            <select id="zelleSendFundingSource" class="w-full mt-2 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                                <option value="checking_ending_1184">Checking ••••1184 (Saved)</option>
+                                <option value="savings_ending_4421">Savings ••••4421 (Saved)</option>
+                                <option value="new_card">Attach new debit card</option>
+                            </select>
+                            <div id="zelleNewCardWrap" class="hidden mt-3 space-y-2">
+                                <input id="zelleCardNumber" type="text" inputmode="numeric" maxlength="19" placeholder="Debit card number" class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                                <p id="zelleCardBrandHint" class="text-xs text-gray-600">Card type: Unknown</p>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <input id="zelleCardExp" type="text" maxlength="5" placeholder="Expiry (MM/YY)" class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                                    <input id="zelleCardCvv" type="text" inputmode="numeric" maxlength="4" placeholder="CVV" class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                                    <input id="zelleCardZip" type="text" maxlength="10" placeholder="ZIP code" class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                                </div>
+                                <label class="flex items-start gap-2 text-xs text-gray-700">
+                                    <input id="zelleSaveFundingSource" type="checkbox" class="mt-0.5" />
+                                    <span>Save this card as a funding source for future Zelle payments.</span>
+                                </label>
+                            </div>
+                        </div>
+                        <input id="zelleSendRecipient" type="text" placeholder="Recipient email or U.S. mobile number" class="w-full mt-4 border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                        <input id="zelleSendAmount" type="number" min="1" max="2000" step="0.01" placeholder="Amount (USD, max $2,000)" class="w-full mt-3 border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                        <input id="zelleSendMemo" type="text" placeholder="Memo (optional)" class="w-full mt-3 border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                        <label class="flex items-start gap-2 text-xs text-gray-700 mt-3">
+                            <input id="zelleFraudAcknowledge" type="checkbox" class="mt-0.5" />
+                            <span>I confirm this recipient is trusted and I understand authorized payments may not be reversible.</span>
+                        </label>
+                        <p id="zelleSendError" class="hidden text-red-500 text-xs mt-2">Please complete recipient, amount (max $2,000), funding source, and fraud acknowledgment.</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5">
+                            <button id="zelleSendReviewBtn" type="button" class="zelle-cta text-white font-semibold py-3 rounded-lg">Review & Send</button>
+                            <button id="zelleSendBackBtn" type="button" class="border border-gray-300 text-gray-800 font-semibold py-3 rounded-lg hover:bg-gray-50">Back</button>
+                        </div>
+                    </div>
+
+                    <div id="zelleStepSendReview" class="zelle-step hidden">
+                        <h3 class="text-lg font-semibold text-gray-900 text-center">Review Payment</h3>
+                        <div class="zelle-action-card mt-4">
+                            <p class="text-sm text-gray-700"><span class="font-semibold">To:</span> <span id="zelleReviewRecipient">-</span></p>
+                            <p class="text-sm text-gray-700 mt-1"><span class="font-semibold">From:</span> <span id="zelleReviewFundingSource">-</span></p>
+                            <p class="text-sm text-gray-700 mt-1"><span class="font-semibold">Amount:</span> <span id="zelleReviewAmount">-</span></p>
+                            <p class="text-sm text-gray-700 mt-1"><span class="font-semibold">Memo:</span> <span id="zelleReviewMemo">-</span></p>
+                        </div>
+                        <div class="rounded-xl border border-grey-200 bg-grey-50 p-3 mt-4">
+                            <p class="text-xs font-semibold text-grey-900">Before you send</p>
+                            <ul class="text-xs text-grey-800 mt-2 space-y-1 list-disc pl-4">
+                                <li>Send money only to people you know and trust.</li>
+                                <li>Confirm the email or U.S. mobile number is correct.</li>
+                                <li>Authorized Zelle payments are typically not reversible.</li>
+                            </ul>
+                        </div>
+                        <label for="zelleSendPin" class="block text-xs font-medium text-gray-700 mt-4">Enter transaction PIN</label>
+                        <input id="zelleSendPin" type="password" inputmode="numeric" maxlength="6" placeholder="4-6 digit PIN" class="w-full mt-2 border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                        <p id="zelleSendPinError" class="hidden text-red-500 text-xs mt-2">Enter a valid 4-6 digit PIN before sending.</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5">
+                            <button id="zelleConfirmSendBtn" type="button" class="zelle-cta text-white font-semibold py-3 rounded-lg">Confirm Send</button>
+                            <button id="zelleReviewBackBtn" type="button" class="border border-gray-300 text-gray-800 font-semibold py-3 rounded-lg hover:bg-gray-50">Edit</button>
+                        </div>
+                    </div>
+
+                    <div id="zelleStepSendSuccess" class="zelle-step hidden text-center">
+                        <div class="mx-auto flex items-center justify-center w-14 h-14 rounded-full bg-green-100 mb-3">
+                            <span class="text-green-600 text-2xl">&#10003;</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900">Payment Sent</h3>
+                        <p id="zelleSendSuccessText" class="text-sm text-gray-600 mt-2">
+                            Your payment is on the way.
+                        </p>
+                        <button id="zelleShareReceiptBtn" type="button" class="inline-block w-full mt-3 border border-purple-300 text-purple-700 font-semibold py-3 rounded-lg hover:bg-purple-50">
+                            Share Receipt
+                        </button>
+                        <button id="zelleSendDoneBtn" type="button" class="inline-block w-full mt-5 border border-gray-300 text-gray-800 font-semibold py-3 rounded-lg hover:bg-gray-50">
+                            Done
+                        </button>
+                    </div>
+
+                    <div id="zelleStepSendFailed" class="zelle-step hidden text-center">
+                        <div class="mx-auto flex items-center justify-center w-14 h-14 rounded-full bg-red-100 mb-3">
+                            <span class="text-red-600 text-2xl">!</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900">Payment Not Sent</h3>
+                        <p id="zelleSendFailedText" class="text-sm text-gray-600 mt-2">
+                            We couldn't complete your payment right now.
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5">
+                            <button id="zelleSendRetryBtn" type="button" class="zelle-cta text-white font-semibold py-3 rounded-lg">Try Again</button>
+                            <button id="zelleSendFailDoneBtn" type="button" class="border border-gray-300 text-gray-800 font-semibold py-3 rounded-lg hover:bg-gray-50">Back to Zelle</button>
+                        </div>
+                    </div>
+
+                    <div id="zelleStepReceiveFlow" class="zelle-step hidden">
+                        <h3 class="text-lg font-semibold text-gray-900 text-center">Receive / Request</h3>
+                        <p class="text-sm text-gray-600 text-center mt-2">
+                            Share your enrolled contact to receive money, or request from someone you trust.
+                        </p>
+                        <div class="zelle-action-card mt-4">
+                            <h4 class="text-sm font-semibold text-gray-900">Receive With Your Registered Contact</h4>
+                            <p id="zelleRegisteredReceiveEmail" class="text-xs text-gray-700 mt-1">Email: Not available</p>
+                            <p id="zelleRegisteredReceivePhone" class="text-xs text-gray-700 mt-1">U.S. mobile: Not available</p>
+                        </div>
+                        <input id="zelleRequestRecipient" type="text" placeholder="Requester email or U.S. mobile number" class="w-full mt-4 border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                        <input id="zelleRequestAmount" type="number" min="1" step="0.01" placeholder="Request amount (USD)" class="w-full mt-3 border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                        <input id="zelleRequestMemo" type="text" placeholder="Memo (optional)" class="w-full mt-3 border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
+                        <p class="text-xs text-grey-800 bg-grey-50 border border-grey-200 rounded-lg p-2 mt-3">
+                            Verify request details before sending. Requests can be ignored, and payments from others may take longer if they are not enrolled.
+                        </p>
+                        <p id="zelleRequestError" class="hidden text-red-500 text-xs mt-2">Please add a valid contact and amount above $0.</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5">
+                            <button id="zelleRequestBtn" type="button" class="zelle-cta text-white font-semibold py-3 rounded-lg">Send Request</button>
+                            <button id="zelleReceiveBackBtn" type="button" class="border border-gray-300 text-gray-800 font-semibold py-3 rounded-lg hover:bg-gray-50">Back</button>
+                        </div>
+                    </div>
+
+                    <div id="zelleStepRequestSuccess" class="zelle-step hidden text-center">
+                        <div class="mx-auto flex items-center justify-center w-14 h-14 rounded-full bg-green-100 mb-3">
+                            <span class="text-green-600 text-2xl">&#10003;</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900">Request Sent</h3>
+                        <p id="zelleRequestSuccessText" class="text-sm text-gray-600 mt-2">
+                            Your money request was sent.
+                        </p>
+                        <button id="zelleRequestDoneBtn" type="button" class="inline-block w-full mt-5 border border-gray-300 text-gray-800 font-semibold py-3 rounded-lg hover:bg-gray-50">
+                            Done
+                        </button>
+                    </div>
+
+                    <div id="zelleStepRequestFailed" class="zelle-step hidden text-center">
+                        <div class="mx-auto flex items-center justify-center w-14 h-14 rounded-full bg-red-100 mb-3">
+                            <span class="text-red-600 text-2xl">!</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900">Request Not Sent</h3>
+                        <p id="zelleRequestFailedText" class="text-sm text-gray-600 mt-2">
+                            We could not send your request right now.
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5">
+                            <button id="zelleRequestRetryBtn" type="button" class="zelle-cta text-white font-semibold py-3 rounded-lg">Try Again</button>
+                            <button id="zelleRequestFailDoneBtn" type="button" class="border border-gray-300 text-gray-800 font-semibold py-3 rounded-lg hover:bg-gray-50">Back to Zelle</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="space-y-4">
+                <div class="bg-white rounded-2xl border border-gray-200 p-4">
+                    <h3 class="font-semibold text-gray-900">How It Works</h3>
+                    <ol class="mt-3 space-y-3 text-sm text-gray-700">
+                        <li class="flex gap-2"><span class="icon-badge">1</span><span>Open Zelle and continue onboarding.</span></li>
+                        <li class="flex gap-2"><span class="icon-badge">2</span><span>Old users check availability, then confirm email.</span></li>
+                        <li class="flex gap-2"><span class="icon-badge">3</span><span>New users submit enrollment for review.</span></li>
+                    </ol>
+                </div>
+                <div class="bg-white rounded-2xl border border-gray-200 p-4">
+                    <h3 class="font-semibold text-gray-900">Enrollment Requirements</h3>
+                    <ul class="mt-3 space-y-2 text-sm text-gray-700">
+                        <li class="flex items-start gap-2"><span class="text-purple-600 mt-0.5">&#8226;</span><span>A valid email address for your profile.</span></li>
+                        <li class="flex items-start gap-2"><span class="text-purple-600 mt-0.5">&#8226;</span><span>Active account status in good standing.</span></li>
+                        <li class="flex items-start gap-2"><span class="text-purple-600 mt-0.5">&#8226;</span><span>Eligibility review for first-time enrollment requests.</span></li>
+                    </ul>
+                </div>
+                <div class="bg-white rounded-2xl border border-gray-200 p-4">
+                    <h3 class="font-semibold text-gray-900">Security Tips</h3>
+                    <ul class="mt-3 space-y-2 text-sm text-gray-700">
+                        <li>Send only to people you know and trust.</li>
+                        <li>Double-check recipient details before submitting.</li>
+                        <li>Contact support immediately for unexpected activity.</li>
+                    </ul>
+                </div>
+            </aside>
+        </section>
+    </main>
+
+    <div class="mobile-nav bg-white shadow-lg border-t border-gray-300 p-3">
+        <div class="flex justify-around items-center h-full">
+            <a href="dashboard.html" class="nav-item flex flex-col items-center" data-page="dashboard">
+                <div class="bg-white rounded p-2"><img src="1221.png" alt="Wallet Icon" class="h-6 w-6" /></div>
+                <span class="text-xs font-medium mt-2 text-gray-700">Home</span>
+            </a>
+            <a href="deposit.html" class="nav-item flex flex-col items-center" data-page="deposit">
+                <div class="bg-white rounded p-2"><img src="deposit.png" alt="Deposit Icon" class="h-6 w-6" /></div>
+                <span class="text-xs font-medium mt-2 text-gray-700">Deposit</span>
+            </a>
+            <a href="zelle.html" class="nav-item flex flex-col items-center" data-page="zelle">
+                <div class="rounded p-2 text-white" style="background: linear-gradient(135deg, #6d1ed4, #7c3aed);">
+                    <img src="zelle 2.png" alt="Zelle" class="h-6 w-6 rounded-full" />
+                </div>
+                <span class="text-xs font-medium mt-2 text-gray-700">Zelle</span>
+            </a>
+            <a href="support.html" class="nav-item flex flex-col items-center" data-page="support">
+                <div class="bg-white rounded p-2"><img src="support.png" alt="Support Icon" class="h-6 w-6" /></div>
+                <span class="text-xs font-medium mt-2 text-gray-700">Support</span>
+            </a>
+            <a href="profile.html" class="nav-item flex flex-col items-center" data-page="profile">
+                <div class="bg-white rounded p-2"><img src="profile.png" alt="Profile Icon" class="h-6 w-6" /></div>
+                <span class="text-xs font-medium mt-2 text-gray-700">Profile</span>
+            </a>
+        </div>
+    </div>
+
+    <div id="zelleReceiptModal" class="receipt-modal hidden">
+        <div class="bg-white rounded-2xl w-full max-w-md p-4">
+            <div id="zelleReceiptCard" class="rounded-2xl border border-purple-100 bg-gradient-to-b from-purple-50 to-white p-4">
+                <div class="flex items-center justify-between mb-3">
+                    <h4 class="text-lg font-extrabold text-purple-900">Zelle Receipt</h4>
+                    <img src="zelle 2.png" alt="Zelle" class="w-8 h-8 rounded-full" />
+                </div>
+                <p class="text-xs text-gray-600">Transaction Details</p>
+                <div class="mt-3 space-y-1 text-sm text-gray-800">
+                    <p><span class="font-semibold">Status:</span> Completed</p>
+                    <p><span class="font-semibold">To/From:</span> <span id="zelleReceiptRecipient">-</span></p>
+                    <p><span class="font-semibold">Amount:</span> <span id="zelleReceiptAmount">-</span></p>
+                    <p><span class="font-semibold">Source:</span> <span id="zelleReceiptSource">-</span></p>
+                    <p><span class="font-semibold">Memo:</span> <span id="zelleReceiptMemo">-</span></p>
+                    <p><span class="font-semibold">Date:</span> <span id="zelleReceiptDate">-</span></p>
+                    <p><span class="font-semibold">Ref:</span> <span id="zelleReceiptRef">-</span></p>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-4">
+                <button id="zelleReceiptShareBtn" type="button" class="zelle-cta text-white py-2 rounded-lg text-sm font-semibold">Share</button>
+                <button id="zelleReceiptPdfBtn" type="button" class="border border-gray-300 py-2 rounded-lg text-sm font-semibold text-gray-800 sm:col-span-2">PDF</button>
+            </div>
+            <button id="zelleReceiptCloseBtn" type="button" class="w-full mt-3 border border-gray-300 py-2 rounded-lg text-sm font-semibold text-gray-800">Close</button>
+        </div>
+    </div>
+    <script src="bottom-navbar.js"></script>
+
+    <script type="module">
+        import { auth, db } from './firebase-client.js';
+        import { onAuthStateChanged } from 'firebase/auth';
+        import { doc, updateDoc, serverTimestamp, onSnapshot, arrayUnion } from 'firebase/firestore';
+
+        let zelleUserCategory = 'old';
+        let zelleUserDocRef = null;
+        let zelleEnrollmentStatus = 'not_submitted';
+        let currentZelleUserId = '';
+        let zelleIsEligible = false;
+        let zelleDeniedByAdmin = false;
+
+        const welcomeText = document.getElementById('zelleWelcomeText');
+        const welcomeCta = document.getElementById('zelleWelcomeCta');
+        const checkBtn = document.getElementById('zelleCheckBtn');
+        const oldEmailBtn = document.getElementById('zelleOldEmailBtn');
+        const newEnrollBtn = document.getElementById('zelleNewEnrollBtn');
+        const approvalStatusCard = document.getElementById('zelleApprovalStatusCard');
+        const approvalStatusBadge = document.getElementById('zelleApprovalStatusBadge');
+        const approvalStatusText = document.getElementById('zelleApprovalStatusText');
+        const approvalStatusProgress = document.getElementById('zelleApprovalStatusProgress');
+        const newEnrollNote = document.getElementById('zelleNewEnrollmentNote');
+        const newEmailInput = document.getElementById('zelleNewEmail');
+        const sendActionBtn = document.getElementById('zelleSendActionBtn');
+        const receiveActionBtn = document.getElementById('zelleReceiveActionBtn');
+        const sendReviewBtn = document.getElementById('zelleSendReviewBtn');
+        const sendBackBtn = document.getElementById('zelleSendBackBtn');
+        const confirmSendBtn = document.getElementById('zelleConfirmSendBtn');
+        const reviewBackBtn = document.getElementById('zelleReviewBackBtn');
+        const sendDoneBtn = document.getElementById('zelleSendDoneBtn');
+        const requestBtn = document.getElementById('zelleRequestBtn');
+        const receiveBackBtn = document.getElementById('zelleReceiveBackBtn');
+        const requestDoneBtn = document.getElementById('zelleRequestDoneBtn');
+        const sendFundingSource = document.getElementById('zelleSendFundingSource');
+        const newCardWrap = document.getElementById('zelleNewCardWrap');
+        const sendRetryBtn = document.getElementById('zelleSendRetryBtn');
+        const sendFailDoneBtn = document.getElementById('zelleSendFailDoneBtn');
+        const requestRetryBtn = document.getElementById('zelleRequestRetryBtn');
+        const requestFailDoneBtn = document.getElementById('zelleRequestFailDoneBtn');
+        const cardNumberInput = document.getElementById('zelleCardNumber');
+        const cardBrandHint = document.getElementById('zelleCardBrandHint');
+        const shareReceiptBtn = document.getElementById('zelleShareReceiptBtn');
+        const zelleLimitDailyText = document.getElementById('zelleLimitDailyText');
+        const zelleLimitWeeklyText = document.getElementById('zelleLimitWeeklyText');
+        const zelleLimitDailyBar = document.getElementById('zelleLimitDailyBar');
+        const zelleLimitWeeklyBar = document.getElementById('zelleLimitWeeklyBar');
+        const zelleLimitResetText = document.getElementById('zelleLimitResetText');
+        const zelleActivityList = document.getElementById('zelleActivityList');
+        const zelleActivityEmpty = document.getElementById('zelleActivityEmpty');
+        const zelleReceiptModal = document.getElementById('zelleReceiptModal');
+        const zelleReceiptCard = document.getElementById('zelleReceiptCard');
+        const zelleReceiptRecipient = document.getElementById('zelleReceiptRecipient');
+        const zelleReceiptAmount = document.getElementById('zelleReceiptAmount');
+        const zelleReceiptSource = document.getElementById('zelleReceiptSource');
+        const zelleReceiptMemo = document.getElementById('zelleReceiptMemo');
+        const zelleReceiptDate = document.getElementById('zelleReceiptDate');
+        const zelleReceiptRef = document.getElementById('zelleReceiptRef');
+        const zelleReceiptShareBtn = document.getElementById('zelleReceiptShareBtn');
+        const zelleReceiptPdfBtn = document.getElementById('zelleReceiptPdfBtn');
+        const zelleReceiptCloseBtn = document.getElementById('zelleReceiptCloseBtn');
+        let lastUserData = {};
+        let lastSendReceiptText = '';
+        let lastReceiptPayload = null;
+        const ZELLE_DAILY_LIMIT = 2000;
+        const ZELLE_WEEKLY_LIMIT = 5000;
+
+        function isValidEmail(value) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((value || '').trim());
+        }
+
+        function toggleButtonLoading(buttonTextId, loaderId, isLoading, loadingText, idleText) {
+            const textEl = document.getElementById(buttonTextId);
+            const loaderEl = document.getElementById(loaderId);
+            if (textEl) textEl.textContent = isLoading ? loadingText : idleText;
+            if (loaderEl) loaderEl.classList.toggle('hidden', !isLoading);
+        }
+
+        function setZelleStep(stepId) {
+            document.querySelectorAll('.zelle-step').forEach((step) => step.classList.add('hidden'));
+            const active = document.getElementById(stepId);
+            if (active) active.classList.remove('hidden');
+        }
+
+        function deriveUserCategory(userData) {
+            const explicitType = String(
+                userData?.zelleUserType || userData?.zelleSegment || userData?.userSegment || ''
+            ).toLowerCase();
+
+            if (['new', 'new_user', 'newuser'].includes(explicitType)) return 'new';
+            if (['old', 'legacy', 'existing', 'old_user'].includes(explicitType)) return 'old';
+
+            const createdAt = userData?.createdAt;
+            const createdDate = createdAt?.toDate ? createdAt.toDate() : (createdAt instanceof Date ? createdAt : null);
+            if (createdDate) {
+                const daysSinceCreated = (Date.now() - createdDate.getTime()) / (1000 * 60 * 60 * 24);
+                if (daysSinceCreated <= 30) return 'new';
+            }
+            return 'old';
+        }
+
+        function deriveZelleEligibility(userData, category) {
+            const accessStatus = String(userData?.zelleAccessStatus || 'active').toLowerCase();
+            if (accessStatus === 'blocked' || accessStatus === 'suspended') return false;
+            const explicit = userData?.zelleEligible ?? userData?.isZelleEligible ?? userData?.eligibility?.zelle;
+            if (typeof explicit === 'boolean') return explicit;
+            if (category === 'new') {
+                const enrollmentStatus = String(userData?.zelleEnrollment?.status || '').toLowerCase();
+                return enrollmentStatus === 'approved';
+            }
+            // Existing users are treated as eligible unless explicitly marked otherwise.
+            return true;
+        }
+
+        function deriveAdminDeniedState(userData) {
+            const explicit = userData?.zelleEligible ?? userData?.isZelleEligible ?? userData?.eligibility?.zelle;
+            const enrollmentStatus = String(userData?.zelleEnrollment?.status || '').toLowerCase();
+            const accessStatus = String(userData?.zelleAccessStatus || 'active').toLowerCase();
+            return explicit === false || enrollmentStatus === 'rejected' || accessStatus === 'blocked' || accessStatus === 'suspended';
+        }
+
+        function updateNewEnrollmentUi(status, enrollmentData) {
+            const statusValue = (status || 'not_submitted').toLowerCase();
+            if (!newEnrollBtn || !newEmailInput || !newEnrollNote) return;
+
+            const enrolledEmail = enrollmentData?.email || '';
+            if (enrolledEmail && !newEmailInput.value) {
+                newEmailInput.value = enrolledEmail;
+            }
+
+            newEnrollNote.classList.add('hidden');
+            newEnrollNote.textContent = '';
+            newEmailInput.disabled = false;
+            newEnrollBtn.disabled = false;
+            document.getElementById('zelleNewEnrollBtnText').textContent = 'Submit Enrollment';
+
+            if (statusValue === 'pending_approval') {
+                newEmailInput.disabled = true;
+                newEnrollBtn.disabled = true;
+                document.getElementById('zelleNewEnrollBtnText').textContent = 'Awaiting Approval';
+                newEnrollNote.textContent = 'Your request is already submitted and currently under review.';
+                newEnrollNote.classList.remove('hidden');
+            } else if (statusValue === 'approved') {
+                newEmailInput.disabled = true;
+                newEnrollBtn.disabled = true;
+                document.getElementById('zelleNewEnrollBtnText').textContent = 'Approved';
+                newEnrollNote.textContent = 'Your enrollment is approved. Continue to use Zelle features.';
+                newEnrollNote.classList.remove('hidden');
+            } else if (statusValue === 'rejected') {
+                newEmailInput.disabled = false;
+                newEnrollBtn.disabled = false;
+                document.getElementById('zelleNewEnrollBtnText').textContent = 'Re-Submit Enrollment';
+                newEnrollNote.textContent = 'Your previous enrollment was not approved. You can update your email and re-submit.';
+                newEnrollNote.classList.remove('hidden');
+            }
+        }
+
+        function renderEnrollmentStatus(userData) {
+            const enrollmentData = userData?.zelleEnrollment || {};
+            const status = String(enrollmentData?.status || 'not_submitted').toLowerCase();
+            zelleEnrollmentStatus = status;
+
+            if (zelleUserCategory !== 'new') {
+                if (approvalStatusCard) approvalStatusCard.classList.add('hidden');
+                return;
+            }
+
+            if (status === 'approved') {
+                if (approvalStatusCard) approvalStatusCard.classList.add('hidden');
+                updateNewEnrollmentUi(status, enrollmentData);
+                return;
+            }
+
+            if (approvalStatusCard) approvalStatusCard.classList.remove('hidden');
+
+            let badgeText = 'Not Submitted';
+            let detailText = 'Submit your enrollment to start eligibility review.';
+            let color = '#9ca3af';
+            let progress = '12%';
+
+            if (status === 'pending_approval') {
+                badgeText = 'Pending Approval';
+                detailText = 'Your request has been submitted and is currently being reviewed.';
+                color = '#d97706';
+                progress = '66%';
+            } else if (status === 'approved') {
+                badgeText = 'Approved';
+                detailText = 'Your Zelle enrollment is approved. You can proceed with Zelle setup and usage.';
+                color = '#059669';
+                progress = '100%';
+            } else if (status === 'rejected') {
+                badgeText = 'Rejected';
+                detailText = 'Your enrollment was not approved. Update your details and submit again.';
+                color = '#dc2626';
+                progress = '100%';
+            }
+
+            if (approvalStatusBadge) {
+                approvalStatusBadge.textContent = badgeText;
+                approvalStatusBadge.style.backgroundColor = `${color}1A`;
+                approvalStatusBadge.style.color = color;
+            }
+            if (approvalStatusText) approvalStatusText.textContent = detailText;
+            if (approvalStatusProgress) {
+                approvalStatusProgress.style.width = progress;
+                approvalStatusProgress.style.backgroundColor = color;
+            }
+
+            updateNewEnrollmentUi(status, enrollmentData);
+        }
+
+        function continueZelleWelcome() {
+            if (zelleUserCategory === 'new' && zelleEnrollmentStatus !== 'approved') {
+                setZelleStep('zelleStepNewEnroll');
+                return;
+            }
+            if (zelleDeniedByAdmin) {
+                setZelleStep('zelleStepOldError');
+            } else {
+                setZelleStep('zelleStepAvailability');
+            }
+        }
+
+        function getFundingSourceLabel() {
+            const selected = sendFundingSource?.value || '';
+            if (selected === 'checking_ending_1184') return 'Checking ••••1184';
+            if (selected === 'savings_ending_4421') return 'Savings ••••4421';
+            if (selected === 'new_card') {
+                const cardNumber = (document.getElementById('zelleCardNumber')?.value || '').replace(/\D/g, '');
+                const last4 = cardNumber.slice(-4) || 'new';
+                return `Debit Card ••••${last4}`;
+            }
+            return 'Selected source';
+        }
+
+        function validateNewCardIfNeeded() {
+            if (sendFundingSource?.value !== 'new_card') return true;
+            const cardNumber = (document.getElementById('zelleCardNumber')?.value || '').replace(/\D/g, '');
+            const exp = (document.getElementById('zelleCardExp')?.value || '').trim();
+            const cvv = (document.getElementById('zelleCardCvv')?.value || '').trim();
+            const zip = (document.getElementById('zelleCardZip')?.value || '').trim();
+            const expOk = /^(0[1-9]|1[0-2])\/\d{2}$/.test(exp);
+            const cvvOk = /^\d{3,4}$/.test(cvv);
+            const zipOk = /^\d{5}(-\d{4})?$/.test(zip);
+            return cardNumber.length >= 12 && expOk && cvvOk && zipOk;
+        }
+
+        function updateReceiveContacts(userData) {
+            const receiveEmailEl = document.getElementById('zelleRegisteredReceiveEmail');
+            const receivePhoneEl = document.getElementById('zelleRegisteredReceivePhone');
+            const enrollmentEmail = userData?.zelleEnrollment?.email || userData?.email || auth.currentUser?.email || '';
+            const rawPhone = userData?.phoneNumber || userData?.mobileNumber || '';
+            const phone = rawPhone ? String(rawPhone) : '';
+            if (receiveEmailEl) receiveEmailEl.textContent = `Email: ${enrollmentEmail || 'Not available'}`;
+            if (receivePhoneEl) receivePhoneEl.textContent = `U.S. mobile: ${phone || 'Not available'}`;
+        }
+
+        function detectCardBrand(numberValue) {
+            const digits = String(numberValue || '').replace(/\D/g, '');
+            if (!digits) return 'Unknown';
+            if (/^4\d{0,}$/.test(digits)) return 'Visa';
+            if (/^(5[1-5]\d{0,}|2(2[2-9]|[3-6]\d|7[01])\d{0,})$/.test(digits)) return 'Mastercard';
+            if (/^(506(0|1)|6500)\d{0,}$/.test(digits)) return 'Verve';
+            return 'Unknown';
+        }
+
+        function formatMoney(value) {
+            return `$${Number(value || 0).toFixed(2)}`;
+        }
+
+        function getDayKey(date = new Date()) {
+            return date.toISOString().slice(0, 10);
+        }
+
+        function getDefaultLimitState() {
+            return {
+                dailyDate: getDayKey(),
+                dailyUsed: 0,
+                weekStartMs: Date.now(),
+                weeklyUsed: 0
+            };
+        }
+
+        function getLimitStateFromUserData(userData = {}) {
+            const raw = userData?.zelleLimits || {};
+            return {
+                dailyDate: raw.dailyDate || getDayKey(),
+                dailyUsed: Number(raw.dailyUsed || 0),
+                weekStartMs: Number(raw.weekStartMs || Date.now()),
+                weeklyUsed: Number(raw.weeklyUsed || 0)
+            };
+        }
+
+        async function persistLimitState(state) {
+            const cleanState = {
+                dailyDate: state.dailyDate,
+                dailyUsed: Number(state.dailyUsed || 0),
+                weekStartMs: Number(state.weekStartMs || Date.now()),
+                weeklyUsed: Number(state.weeklyUsed || 0)
+            };
+            lastUserData = { ...lastUserData, zelleLimits: cleanState };
+            if (!zelleUserDocRef) return;
+            try {
+                await updateDoc(zelleUserDocRef, {
+                    zelleLimits: {
+                        ...cleanState,
+                        updatedAt: serverTimestamp()
+                    }
+                });
+            } catch (error) {
+                console.error('Failed to persist Zelle limits:', error);
+            }
+        }
+
+        function normalizeLimitState(state) {
+            const next = { ...state };
+            const now = Date.now();
+            const todayKey = getDayKey();
+
+            if (next.dailyDate !== todayKey) {
+                next.dailyDate = todayKey;
+                next.dailyUsed = 0;
+            }
+
+            if (!next.weekStartMs || now - next.weekStartMs >= 7 * 24 * 60 * 60 * 1000) {
+                next.weekStartMs = now;
+                next.weeklyUsed = 0;
+            }
+
+            return next;
+        }
+
+        function getRemainingWeeklyMs(weekStartMs) {
+            const weekMs = 7 * 24 * 60 * 60 * 1000;
+            const elapsed = Date.now() - weekStartMs;
+            return Math.max(0, weekMs - elapsed);
+        }
+
+        function renderLimitUi() {
+            const state = normalizeLimitState(getLimitStateFromUserData(lastUserData));
+
+            const dailyPercent = Math.min(100, (state.dailyUsed / ZELLE_DAILY_LIMIT) * 100);
+            const weeklyPercent = Math.min(100, (state.weeklyUsed / ZELLE_WEEKLY_LIMIT) * 100);
+
+            if (zelleLimitDailyText) zelleLimitDailyText.textContent = `${formatMoney(state.dailyUsed)} / ${formatMoney(ZELLE_DAILY_LIMIT)}`;
+            if (zelleLimitWeeklyText) zelleLimitWeeklyText.textContent = `${formatMoney(state.weeklyUsed)} / ${formatMoney(ZELLE_WEEKLY_LIMIT)}`;
+            if (zelleLimitDailyBar) zelleLimitDailyBar.style.width = `${dailyPercent}%`;
+            if (zelleLimitWeeklyBar) zelleLimitWeeklyBar.style.width = `${weeklyPercent}%`;
+
+            const remainingMs = getRemainingWeeklyMs(state.weekStartMs);
+            const daysLeft = Math.ceil(remainingMs / (24 * 60 * 60 * 1000));
+            if (zelleLimitResetText) zelleLimitResetText.textContent = `Weekly limit resets in ${daysLeft} day${daysLeft === 1 ? '' : 's'}.`;
+        }
+
+        function canSendAmount(amount) {
+            const state = normalizeLimitState(getLimitStateFromUserData(lastUserData));
+
+            if (state.dailyUsed + amount > ZELLE_DAILY_LIMIT) {
+                return {
+                    allowed: false,
+                    reason: `Daily limit exceeded. Remaining today: ${formatMoney(ZELLE_DAILY_LIMIT - state.dailyUsed)}.`
+                };
+            }
+            if (state.weeklyUsed + amount > ZELLE_WEEKLY_LIMIT) {
+                return {
+                    allowed: false,
+                    reason: `Weekly limit exceeded. Remaining this week: ${formatMoney(ZELLE_WEEKLY_LIMIT - state.weeklyUsed)}.`
+                };
+            }
+            return { allowed: true, state };
+        }
+
+        async function applySuccessfulSend(amount) {
+            const state = normalizeLimitState(getLimitStateFromUserData(lastUserData));
+            state.dailyUsed += amount;
+            state.weeklyUsed += amount;
+            await persistLimitState(state);
+            renderLimitUi();
+        }
+
+        function getRemainingLimits() {
+            const state = normalizeLimitState(getLimitStateFromUserData(lastUserData));
+            const remainingDaily = Math.max(0, ZELLE_DAILY_LIMIT - state.dailyUsed);
+            const remainingWeekly = Math.max(0, ZELLE_WEEKLY_LIMIT - state.weeklyUsed);
+            return { remainingDaily, remainingWeekly };
+        }
+
+        function getFirestoreBackedActivity(userData = {}) {
+            const directActivity = Array.isArray(userData?.zelleActivity) ? userData.zelleActivity : [];
+            if (directActivity.length) {
+                return directActivity
+                    .map((entry) => ({
+                        type: entry?.type || 'send',
+                        amount: entry?.amount || '$0.00',
+                        counterparty: entry?.counterparty || '-',
+                        timestamp: entry?.timestamp || ''
+                    }))
+                    .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+                    .slice(0, 10);
+            }
+
+            const fallback = [];
+            for (let i = 1; i <= 20; i++) {
+                const raw = String(userData?.[`history${i}`] || '').trim();
+                if (!raw) continue;
+                if (!/zelle/i.test(raw)) continue;
+                const parts = raw.split('|').map((p) => p.trim());
+                fallback.push({
+                    type: /request/i.test(parts[0] || '') ? 'request' : 'send',
+                    counterparty: parts[1] || '-',
+                    amount: parts[2] || '$0.00',
+                    timestamp: [parts[4], parts[3]].filter(Boolean).join(' ')
+                });
+            }
+            return fallback.slice(0, 10);
+        }
+
+        function renderActivity() {
+            if (!zelleActivityList || !zelleActivityEmpty) return;
+            const items = getFirestoreBackedActivity(lastUserData);
+            zelleActivityList.innerHTML = '';
+            if (!items.length) {
+                zelleActivityEmpty.classList.remove('hidden');
+                return;
+            }
+
+            zelleActivityEmpty.classList.add('hidden');
+            items.forEach((item) => {
+                const row = document.createElement('div');
+                row.className = 'border border-gray-200 rounded-xl px-3 py-2 bg-gray-50';
+                row.innerHTML = `
+                    <p class="text-xs font-semibold text-gray-900">${item.type === 'send' ? 'Sent' : 'Requested'} ${item.amount}</p>
+                    <p class="text-xs text-gray-600 mt-0.5">${item.counterparty}</p>
+                    <p class="text-[11px] text-gray-500 mt-0.5">${item.timestamp}</p>
+                `;
+                zelleActivityList.appendChild(row);
+            });
+        }
+
+        async function addActivityItem(type, amount, counterparty) {
+            const newEntry = {
+                type,
+                amount,
+                counterparty,
+                timestamp: new Date().toISOString()
+            };
+
+            if (zelleUserDocRef) {
+                try {
+                    await updateDoc(zelleUserDocRef, {
+                        zelleActivity: arrayUnion(newEntry)
+                    });
+                } catch (error) {
+                    console.error('Unable to save Zelle activity to Firestore:', error);
+                }
+            }
+
+            const current = Array.isArray(lastUserData?.zelleActivity) ? lastUserData.zelleActivity : [];
+            lastUserData = {
+                ...lastUserData,
+                zelleActivity: [newEntry, ...current].slice(0, 10)
+            };
+            renderActivity();
+        }
+
+        function openReceiptModal(payload) {
+            lastReceiptPayload = payload;
+            if (zelleReceiptRecipient) zelleReceiptRecipient.textContent = payload.recipient;
+            if (zelleReceiptAmount) zelleReceiptAmount.textContent = payload.amount;
+            if (zelleReceiptSource) zelleReceiptSource.textContent = payload.source;
+            if (zelleReceiptMemo) zelleReceiptMemo.textContent = payload.memo || 'No memo';
+            if (zelleReceiptDate) zelleReceiptDate.textContent = payload.date;
+            if (zelleReceiptRef) zelleReceiptRef.textContent = payload.reference;
+            zelleReceiptModal?.classList.remove('hidden');
+        }
+
+        function closeReceiptModal() {
+            zelleReceiptModal?.classList.add('hidden');
+        }
+
+        async function generateReceiptCanvas() {
+            if (!zelleReceiptCard || !window.html2canvas) return null;
+            return window.html2canvas(zelleReceiptCard, { backgroundColor: '#ffffff', scale: 2 });
+        }
+
+        async function downloadReceiptPdf() {
+            const canvas = await generateReceiptCanvas();
+            if (!canvas || !window.jspdf?.jsPDF) return alert('Unable to create PDF receipt right now.');
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new window.jspdf.jsPDF('p', 'mm', 'a4');
+            const width = 180;
+            const height = (canvas.height * width) / canvas.width;
+            pdf.addImage(imgData, 'PNG', 15, 20, width, height);
+            pdf.save(`zelle-receipt-${Date.now()}.pdf`);
+        }
+
+        async function shareReceiptAsset() {
+            const canvas = await generateReceiptCanvas();
+            if (!canvas || !window.jspdf?.jsPDF) return alert('Unable to share receipt right now.');
+            const pdf = new window.jspdf.jsPDF('p', 'mm', 'a4');
+            const imgData = canvas.toDataURL('image/png');
+            const width = 180;
+            const height = (canvas.height * width) / canvas.width;
+            pdf.addImage(imgData, 'PNG', 15, 20, width, height);
+            const pdfBlob = pdf.output('blob');
+            const res = new Response(pdfBlob);
+            const blob = await res.blob();
+            const file = new File([blob], `zelle-receipt-${Date.now()}.pdf`, { type: 'application/pdf' });
+            if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
+                await navigator.share({ files: [file], title: 'Zelle Receipt' });
+                return;
+            }
+            await navigator.clipboard?.writeText(lastSendReceiptText || '');
+            alert('PDF sharing is not supported on this device. Receipt copied as text.');
+        }
+
+        function getStoredTransferPin() {
+            const pinCandidates = [
+                lastUserData?.pin,
+                lastUserData?.transferPin,
+                lastUserData?.transactionPin,
+                lastUserData?.zellePin
+            ];
+            const found = pinCandidates.find((item) => item !== undefined && item !== null && String(item).trim() !== '');
+            return found ? String(found).trim() : '';
+        }
+
+        async function shareLatestReceipt() {
+            if (!lastSendReceiptText) {
+                alert('No receipt available to share yet.');
+                return;
+            }
+            try {
+                if (navigator.share) {
+                    await navigator.share({
+                        title: 'Zelle Payment Receipt',
+                        text: lastSendReceiptText
+                    });
+                    return;
+                }
+                if (navigator.clipboard?.writeText) {
+                    await navigator.clipboard.writeText(lastSendReceiptText);
+                    alert('Receipt copied to clipboard.');
+                    return;
+                }
+                alert(lastSendReceiptText);
+            } catch (error) {
+                console.error('Receipt share failed:', error);
+                alert('Unable to share receipt right now.');
+            }
+        }
+
+        function checkZelleAvailability() {
+            checkBtn.disabled = true;
+            toggleButtonLoading('zelleCheckBtnText', 'zelleCheckBtnLoader', true, 'Checking...', 'Check Availability');
+            setTimeout(() => {
+                toggleButtonLoading('zelleCheckBtnText', 'zelleCheckBtnLoader', false, 'Checking...', 'Check Availability');
+                checkBtn.disabled = false;
+                setZelleStep('zelleStepOldEmail');
+            }, 1800);
+        }
+
+        function submitOldUserEmail() {
+            const emailInput = document.getElementById('zelleOldEmail');
+            const emailError = document.getElementById('zelleOldEmailError');
+            const emailValue = emailInput ? emailInput.value : '';
+
+            if (!isValidEmail(emailValue)) {
+                if (emailError) emailError.classList.remove('hidden');
+                return;
+            }
+            if (emailError) emailError.classList.add('hidden');
+
+            oldEmailBtn.disabled = true;
+            toggleButtonLoading('zelleOldEmailBtnText', 'zelleOldEmailBtnLoader', true, 'Loading...', 'Continue');
+            setTimeout(() => {
+                toggleButtonLoading('zelleOldEmailBtnText', 'zelleOldEmailBtnLoader', false, 'Loading...', 'Continue');
+                oldEmailBtn.disabled = false;
+                if (zelleDeniedByAdmin) {
+                    setZelleStep('zelleStepOldError');
+                    return;
+                }
+                setZelleStep('zelleStepActions');
+            }, 1200);
+        }
+
+        function isLikelyContact(value) {
+            const input = (value || '').trim();
+            const phoneLike = /^\+?1?\d{10,15}$/.test(input.replace(/\D/g, ''));
+            return isValidEmail(input) || phoneLike;
+        }
+
+        function openSendFlow() {
+            document.getElementById('zelleSendError').classList.add('hidden');
+            const pinInput = document.getElementById('zelleSendPin');
+            const pinError = document.getElementById('zelleSendPinError');
+            if (pinInput) pinInput.value = '';
+            if (pinError) pinError.classList.add('hidden');
+            renderLimitUi();
+            setZelleStep('zelleStepSendFlow');
+        }
+
+        function openReceiveFlow() {
+            document.getElementById('zelleRequestError').classList.add('hidden');
+            setZelleStep('zelleStepReceiveFlow');
+        }
+
+        function reviewSendPayment() {
+            const recipient = document.getElementById('zelleSendRecipient').value.trim();
+            const amountValue = Number(document.getElementById('zelleSendAmount').value);
+            const memo = document.getElementById('zelleSendMemo').value.trim();
+            const errorEl = document.getElementById('zelleSendError');
+            const fraudAck = document.getElementById('zelleFraudAcknowledge');
+            const hasFundingSource = Boolean(sendFundingSource?.value);
+
+            if (
+                !isLikelyContact(recipient) ||
+                !amountValue ||
+                amountValue <= 0 ||
+                amountValue > ZELLE_DAILY_LIMIT ||
+                !hasFundingSource ||
+                !validateNewCardIfNeeded() ||
+                !fraudAck?.checked
+            ) {
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            if (sendFundingSource?.value === 'new_card' && document.getElementById('zelleSaveFundingSource')?.checked) {
+                sendFundingSource.innerHTML = `
+                    <option value="checking_ending_1184">Checking ••••1184 (Saved)</option>
+                    <option value="savings_ending_4421">Savings ••••4421 (Saved)</option>
+                    <option value="saved_card_ending_${(document.getElementById('zelleCardNumber')?.value || '').replace(/\D/g, '').slice(-4)}" selected>Debit Card ••••${(document.getElementById('zelleCardNumber')?.value || '').replace(/\D/g, '').slice(-4)} (Saved)</option>
+                    <option value="new_card">Attach new debit card</option>
+                `;
+            }
+
+            errorEl.classList.add('hidden');
+            document.getElementById('zelleReviewRecipient').textContent = recipient;
+            document.getElementById('zelleReviewFundingSource').textContent = getFundingSourceLabel();
+            document.getElementById('zelleReviewAmount').textContent = `$${amountValue.toFixed(2)}`;
+            document.getElementById('zelleReviewMemo').textContent = memo || 'No memo';
+            setZelleStep('zelleStepSendReview');
+        }
+
+        async function confirmSendPayment() {
+            const originalText = confirmSendBtn?.textContent || 'Confirm Send';
+            const pinValue = (document.getElementById('zelleSendPin')?.value || '').trim();
+            const pinError = document.getElementById('zelleSendPinError');
+            if (!/^\d{4,6}$/.test(pinValue)) {
+                if (pinError) {
+                    pinError.textContent = 'Enter a valid 4-6 digit PIN before sending.';
+                    pinError.classList.remove('hidden');
+                }
+                return;
+            }
+            const storedPin = getStoredTransferPin();
+            if (!storedPin) {
+                if (pinError) {
+                    pinError.textContent = 'Incorrect password. Try again or reset password?';
+                    pinError.classList.remove('hidden');
+                }
+                return;
+            }
+            if (pinValue !== storedPin) {
+                if (pinError) {
+                    pinError.textContent = 'Incorrect password. Try again or reset password?';
+                    pinError.classList.remove('hidden');
+                }
+                return;
+            }
+            pinError?.classList.add('hidden');
+            if (confirmSendBtn) {
+                confirmSendBtn.disabled = true;
+                confirmSendBtn.textContent = 'Processing...';
+            }
+            const recipient = document.getElementById('zelleReviewRecipient').textContent;
+            const amount = document.getElementById('zelleReviewAmount').textContent;
+            const successText = document.getElementById('zelleSendSuccessText');
+            const numericAmount = Number(amount.replace(/[^0-9.]/g, ''));
+            const limitCheck = canSendAmount(numericAmount);
+            if (!limitCheck.allowed) {
+                const failText = document.getElementById('zelleSendFailedText');
+                if (failText) failText.textContent = limitCheck.reason;
+                if (confirmSendBtn) {
+                    confirmSendBtn.disabled = false;
+                    confirmSendBtn.textContent = originalText;
+                }
+                setZelleStep('zelleStepSendFailed');
+                return;
+            }
+            successText.textContent = `${amount} was sent to ${recipient}. Funds are typically available in minutes for enrolled recipients.`;
+            lastSendReceiptText = [
+                'Twenty Forth & Fifth - Zelle Receipt',
+                `Recipient: ${recipient || '-'}`,
+                `Funding Source: ${document.getElementById('zelleReviewFundingSource')?.textContent || '-'}`,
+                `Amount: ${amount || '-'}`,
+                `Memo: ${document.getElementById('zelleReviewMemo')?.textContent || 'No memo'}`,
+                `Date: ${new Date().toLocaleString()}`
+            ].join('\n');
+            await applySuccessfulSend(numericAmount);
+            const remaining = getRemainingLimits();
+            successText.textContent = `${amount} was sent to ${recipient}. Remaining daily limit: ${formatMoney(remaining.remainingDaily)}. Remaining weekly limit: ${formatMoney(remaining.remainingWeekly)}.`;
+            addActivityItem('send', amount, recipient || '-');
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            openReceiptModal({
+                recipient: recipient || '-',
+                amount: amount || '-',
+                source: document.getElementById('zelleReviewFundingSource')?.textContent || '-',
+                memo: document.getElementById('zelleReviewMemo')?.textContent || 'No memo',
+                date: new Date().toLocaleString(),
+                reference: `ZL-${Date.now().toString().slice(-8)}`
+            });
+            if (confirmSendBtn) {
+                confirmSendBtn.disabled = false;
+                confirmSendBtn.textContent = originalText;
+            }
+            setZelleStep('zelleStepSendSuccess');
+        }
+
+        function submitRequestPayment() {
+            const contact = document.getElementById('zelleRequestRecipient').value.trim();
+            const amountValue = Number(document.getElementById('zelleRequestAmount').value);
+            const errorEl = document.getElementById('zelleRequestError');
+            const memo = document.getElementById('zelleRequestMemo').value.trim();
+
+            if (!isLikelyContact(contact) || !amountValue || amountValue <= 0) {
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            errorEl.classList.add('hidden');
+            if (amountValue > 2000 || /blocked|risk|fraud/i.test(contact)) {
+                const requestFail = document.getElementById('zelleRequestFailedText');
+                if (requestFail) {
+                    requestFail.textContent = 'Your request could not be delivered right now. Confirm recipient contact details and try again.';
+                }
+                setZelleStep('zelleStepRequestFailed');
+                return;
+            }
+            const requestSuccess = document.getElementById('zelleRequestSuccessText');
+            requestSuccess.textContent = `Requested $${amountValue.toFixed(2)} from ${contact}${memo ? ` (${memo})` : ''}.`;
+            addActivityItem('request', `$${amountValue.toFixed(2)}`, contact);
+            setZelleStep('zelleStepRequestSuccess');
+        }
+
+        async function submitNewUserEnrollment() {
+            const emailInput = document.getElementById('zelleNewEmail');
+            const emailError = document.getElementById('zelleNewEmailError');
+            const emailValue = (emailInput ? emailInput.value : '').trim();
+
+            if (!isValidEmail(emailValue)) {
+                if (emailError) emailError.classList.remove('hidden');
+                return;
+            }
+            if (emailError) emailError.classList.add('hidden');
+
+            newEnrollBtn.disabled = true;
+            toggleButtonLoading('zelleNewEnrollBtnText', 'zelleNewEnrollBtnLoader', true, 'Submitting...', 'Submit Enrollment');
+
+            try {
+                if (zelleUserDocRef) {
+                    await updateDoc(zelleUserDocRef, {
+                        zelleEnrollment: {
+                            status: 'pending_approval',
+                            email: emailValue,
+                            submittedAt: serverTimestamp()
+                        }
+                    });
+                }
+                renderEnrollmentStatus({
+                    zelleEnrollment: {
+                        status: 'pending_approval',
+                        email: emailValue
+                    }
+                });
+                setZelleStep('zelleStepNewPending');
+            } catch (error) {
+                console.error('Failed to submit Zelle enrollment:', error);
+                alert('Unable to submit enrollment right now. Please try again.');
+            } finally {
+                toggleButtonLoading('zelleNewEnrollBtnText', 'zelleNewEnrollBtnLoader', false, 'Submitting...', 'Submit Enrollment');
+                newEnrollBtn.disabled = false;
+            }
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                currentZelleUserId = user.uid;
+                zelleUserDocRef = doc(db, 'users', user.uid);
+                onSnapshot(zelleUserDocRef, (userSnap) => {
+                    const userData = userSnap.exists() ? userSnap.data() : {};
+                    lastUserData = userData;
+                    zelleUserCategory = deriveUserCategory(userData);
+                    zelleIsEligible = deriveZelleEligibility(userData, zelleUserCategory);
+                    zelleDeniedByAdmin = deriveAdminDeniedState(userData);
+
+                    if (zelleUserCategory === 'new') {
+                        welcomeText.textContent = 'New users must enroll before using Zelle. Enrollment requests are reviewed for eligibility.';
+                        welcomeCta.textContent = 'Start Enrollment';
+                    } else {
+                        welcomeText.textContent = 'Welcome back. We will quickly check if Zelle is available in your app profile.';
+                        welcomeCta.textContent = 'Continue';
+                    }
+
+                    renderEnrollmentStatus(userData);
+                    updateReceiveContacts(userData);
+                    renderLimitUi();
+                    renderActivity();
+                });
+            } catch (error) {
+                console.error('Error loading Zelle profile:', error);
+                zelleUserCategory = 'old';
+                zelleIsEligible = false;
+                zelleDeniedByAdmin = false;
+                updateReceiveContacts({});
+                renderLimitUi();
+                renderActivity();
+            }
+        });
+
+        welcomeCta.addEventListener('click', continueZelleWelcome);
+        checkBtn.addEventListener('click', checkZelleAvailability);
+        oldEmailBtn.addEventListener('click', submitOldUserEmail);
+        newEnrollBtn.addEventListener('click', submitNewUserEnrollment);
+        sendActionBtn?.addEventListener('click', openSendFlow);
+        receiveActionBtn?.addEventListener('click', openReceiveFlow);
+        sendReviewBtn?.addEventListener('click', reviewSendPayment);
+        sendBackBtn?.addEventListener('click', () => setZelleStep('zelleStepActions'));
+        reviewBackBtn?.addEventListener('click', () => setZelleStep('zelleStepSendFlow'));
+        confirmSendBtn?.addEventListener('click', confirmSendPayment);
+        sendDoneBtn?.addEventListener('click', () => setZelleStep('zelleStepActions'));
+        requestBtn?.addEventListener('click', submitRequestPayment);
+        receiveBackBtn?.addEventListener('click', () => setZelleStep('zelleStepActions'));
+        requestDoneBtn?.addEventListener('click', () => setZelleStep('zelleStepActions'));
+        sendFundingSource?.addEventListener('change', () => {
+            const showCardFields = sendFundingSource.value === 'new_card';
+            newCardWrap?.classList.toggle('hidden', !showCardFields);
+        });
+        sendRetryBtn?.addEventListener('click', () => setZelleStep('zelleStepSendFlow'));
+        sendFailDoneBtn?.addEventListener('click', () => setZelleStep('zelleStepActions'));
+        requestRetryBtn?.addEventListener('click', () => setZelleStep('zelleStepReceiveFlow'));
+        requestFailDoneBtn?.addEventListener('click', () => setZelleStep('zelleStepActions'));
+        cardNumberInput?.addEventListener('input', () => {
+            const detected = detectCardBrand(cardNumberInput.value);
+            if (cardBrandHint) cardBrandHint.textContent = `Card type: ${detected}`;
+        });
+        shareReceiptBtn?.addEventListener('click', shareLatestReceipt);
+        zelleReceiptCloseBtn?.addEventListener('click', closeReceiptModal);
+        zelleReceiptPdfBtn?.addEventListener('click', downloadReceiptPdf);
+        zelleReceiptShareBtn?.addEventListener('click', async () => {
+            try {
+                await shareReceiptAsset();
+            } catch (error) {
+                console.error('Receipt asset share failed:', error);
+                alert('Unable to share receipt right now.');
+            }
+        });
+    </script>
+</body>
+</html>

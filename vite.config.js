@@ -19,6 +19,7 @@ export default defineConfig({
         personal: './personal.html',
         business: './business.html',
         transfer: './transfer.html',
+        zelle: './zelle.html',
         statement: './statement.html',
         profile2: './profile-2.html',
         login: './login.html',

@@ -12,13 +12,14 @@
             'dashboard': 'dashboard',
             'deposit': 'deposit',
             'transfer': 'deposit', // Transfer uses deposit icon
+            'zelle': 'zelle',
             'debit-card': 'dashboard', // Debit Card page lives under dashboard
             'support': 'support',
             'profile': 'profile',
             'profile-2': 'profile',
             'security': 'profile' // Security is under profile
         };
-        
+
         const activePage = pageMap[currentPage] || 'dashboard';
         
         // Reset all items
